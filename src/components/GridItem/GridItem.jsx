@@ -9,6 +9,10 @@ const Item = styled.div`
 
 const Image = styled.img`
   border: 0;
+  @media (max-width: 767px) {
+    width: 145px;
+    height: 145px;
+  }  
 `;
 
 const Category = styled.p`
@@ -16,6 +20,7 @@ const Category = styled.p`
 `;
 const Product = styled.div`
   color:${props => props.theme.primary}
+  font-weight: bold;
 `;
 
 const Description = styled.p`
@@ -24,6 +29,12 @@ const Price = styled.p`
 `;
 
 class GridItem extends Component {
+  getPrice = (price) => {
+    const options = { style: 'currency', currency: 'BRL' };
+    const numberFormat = new Intl.NumberFormat('pt-BR', options);
+    return numberFormat.format(price);
+  }
+
   render() {
     const { item } = this.props;
     return (
@@ -32,7 +43,7 @@ class GridItem extends Component {
         <Category>{item.category.name}</Category>
         <Product>
           <Description>{item.name}</Description>
-          <Price>{item.price}</Price>
+          <Price>{this.getPrice(item.price)}</Price>
         </Product>
       </Item>
     );
