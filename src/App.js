@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
-import logo from 'logo.svg';
 import 'App.scss';
+import { ThemeProvider } from 'styled-components';
+import defaultTheme from 'styles/DefaultTheme';
+import GridList from 'components/GridList';
+import itens from 'produtos';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit
-            <code>src/App.js</code>
-            and save to reload.
-          </p>
-          <button type="button" className="button is-primary is-large">Learn React</button>
-        </header>
-      </div>
+      <ThemeProvider theme={defaultTheme}>
+        <GridList itens={itens} />
+      </ThemeProvider>
     );
   }
 }
