@@ -5,9 +5,9 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "eslint": "eslint src/**/*.js",
-    "eslint-fix": "eslint --fix src/**/*.js",
-    "stylelint": "stylelint",
+    "eslint": "eslint src/**/*.js src/**/*.jsx",
+    "eslint-fix": "eslint --fix src/**/*.js src/**/*.jsx",
+    "stylelint": "stylelint src/**/*.jsx",
     "lint": "yarn run eslint && yarn run stylelint",
     "update-merge": "git fetch && git merge origin/develop",
     "test": "react-scripts test --env=jsdom --modulePaths=src"

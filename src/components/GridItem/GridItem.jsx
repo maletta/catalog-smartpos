@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 
 const Item = styled.div`
@@ -38,7 +37,7 @@ class GridItem extends Component {
   render() {
     const { item } = this.props;
     return (
-      <Item className={classNames('column is-6-mobile is-3-tablet is-2-desktop')}>
+      <Item className="column is-6-mobile is-3-tablet is-2-desktop">
         <Image src={item.img} />
         <Category>{item.category.name}</Category>
         <Product>
