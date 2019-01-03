@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { injectIntl, intlShape } from 'react-intl';
 
 const Item = styled.div`
   text-align: center;
@@ -28,21 +29,15 @@ const Price = styled.p`
 `;
 
 class GridItem extends Component {
-  getPrice = (price) => {
-    const options = { style: 'currency', currency: 'BRL' };
-    const numberFormat = new Intl.NumberFormat('pt-BR', options);
-    return numberFormat.format(price);
-  }
-
   render() {
-    const { item } = this.props;
+    const { item, intl } = this.props;
     return (
       <Item className="column is-6-mobile is-3-tablet is-2-desktop">
         <Image src={item.img} />
         <Category>{item.category.name}</Category>
         <Product>
           <Description>{item.name}</Description>
-          <Price>{this.getPrice(item.price)}</Price>
+          <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
         </Product>
       </Item>
     );
@@ -60,10 +55,11 @@ GridItem.propTypes = {
     }).isRequired,
     image: PropTypes.string,
   }).isRequired,
+  intl: intlShape.isRequired,
 };
 
 GridItem.defaultProps = {
 };
 
 
-export default GridItem;
+export default injectIntl(GridItem);

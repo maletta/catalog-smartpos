@@ -1,8 +1,8 @@
 export default [
-  { id: 1, name: 'Salgados' },
-  { id: 2, name: 'Doces' },
-  { id: 3, name: 'Lanches' },
-  { id: 4, name: 'Sucos' },
-  { id: 5, name: 'Bebidas' },
-  { id: 6, name: 'Outros' },
+  { id: 1, title: 'Salgados' },
+  { id: 2, title: 'Doces' },
+  { id: 3, title: 'Lanches' },
+  { id: 4, title: 'Sucos' },
+  { id: 5, title: 'Bebidas' },
+  { id: 6, title: 'Outros' },
 ];

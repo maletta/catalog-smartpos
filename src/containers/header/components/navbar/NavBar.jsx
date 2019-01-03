@@ -12,7 +12,7 @@ const Nav = styled.nav`
   height: 126px;
   padding: 15px 60px;
   position: fixed;
-  top: -1px;
+  top: 0px;
   right: 0;
   left: 0;
   z-index: 10;

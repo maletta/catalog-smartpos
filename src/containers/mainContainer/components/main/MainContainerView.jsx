@@ -3,19 +3,26 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const Main = styled.main`
-  transition: margin-left 0.3s;
+  position:absolute;
 
   @media (max-width: 767px) {
     margin-left: 15px !important;
     margin-right: 15px !important;
-    margin-top: 85px !important;
+    margin-top: 116px !important;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 768px) and (max-width: 1088px) {
+    margin-left: 25px !important;
+    margin-right: 25px !important;
+    margin-top: 190px !important;
+  }
+
+  @media (min-width: 1088px) {
     margin-left: 50px !important;
     margin-right: 50px !important;
-    margin-top: 160px !important;
+    margin-top: 150px !important;
   }
+
 `;
 
 const ContainerFluid = styled.div`
