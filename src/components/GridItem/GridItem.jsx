@@ -9,23 +9,19 @@ const Item = styled.div`
 
 const Image = styled.img`
   border: 0;
-  @media (max-width: 767px) {
+
+  @media (max-width: 769px) {
     width: 145px;
     height: 145px;
-  }  
+  }
 `;
 
 const Category = styled.p`
-  color:${props => props.theme.secondary}
+  color: ${props => props.theme.secondary};
 `;
 const Product = styled.div`
-  color:${props => props.theme.primary}
+  color: ${props => props.theme.primary};
   font-weight: bold;
-`;
-
-const Description = styled.p`
-`;
-const Price = styled.p`
 `;
 
 class GridItem extends Component {
@@ -36,8 +32,8 @@ class GridItem extends Component {
         <Image src={item.img} />
         <Category>{item.category.name}</Category>
         <Product>
-          <Description>{item.name}</Description>
-          <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
+          <p>{item.name}</p>
+          <p>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</p>
         </Product>
       </Item>
     );

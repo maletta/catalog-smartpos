@@ -4,20 +4,21 @@ import PropTypes from 'prop-types';
 // import { Link } from 'react-router-dom';
 
 const NavLogo = styled.a`
-  line-height: 0px;
+  line-height: 0;
   position: absolute;
   left: 0;
   right: 0;
-  margin: 0px auto;
-  text-align: center;  
+  margin: 0 auto;
+  text-align: center;
 `;
 
 const LogoImage = styled.img`
-  @media (min-width: 768px) {
+  @media (min-width: 769px) {
     width: 96px;
     height: 96px;
   }
-  @media (max-width: 767px) {
+
+  @media (max-width: 768px) {
     width: 47px;
     height: 47px;
   }

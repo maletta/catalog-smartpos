@@ -4,18 +4,19 @@ import PropTypes from 'prop-types';
 
 const Hero = styled.div`
   position: fixed;
-  left:0;
-  right:0;
-  z-index:9;
+  left: 0;
+  right: 0;
+  z-index: 9;
+
   @media (max-width: 767px) {
-    margin-left: 0px !important;
-    margin-right: 0px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     margin-top: 57px !important;
   }
 
   @media (min-width: 768px) {
-    margin-left: 0px !important;
-    margin-right: 0px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     margin-top: 126px !important;
   }
 `;

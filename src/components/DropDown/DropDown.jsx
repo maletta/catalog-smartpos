@@ -9,30 +9,27 @@ const DropDownMenu = styled.div`
 
 const HeaderBody = styled.div`
   padding: 10px 5px;
-  background-color: rgba(0,0,0,0.7);
-`;
-
-const HeaderTitle = styled.div`
+  background-color: rgba(0, 0, 0, 0.7);
 `;
 
 const ItemsContainer = styled.ul`
-  height: ${props => (props.listOpen ? 'auto' : '0px')};
-  background-color: rgba(0,0,0,0.7);
+  height: auto;
+  max-height: ${props => (props.listOpen ? `calc(${props.itemsLength} * 45px)` : '0px')};
+  background-color: rgba(0, 0, 0, 0.7);
   transition: all 1.5s ease-in-out;
-  padding:5px;
 `;
 
 const Item = styled.li`
-  padding:10px;
+  padding: 10px;
 `;
 
 const Header = ({ title, isOpen, toggleList }) => (
   <HeaderBody onClick={() => toggleList()}>
-    <HeaderTitle>
+    <div>
       {title}
       {' '}
       {isOpen ? '^' : 'v'}
-    </HeaderTitle>
+    </div>
   </HeaderBody>
 );
 
@@ -49,7 +46,7 @@ const Items = ({ listOpen, list, selectItem }) => {
     </Item>
   ));
   return (
-    <ItemsContainer listOpen={listOpen}>
+    <ItemsContainer listOpen={listOpen} itemsLength={items.length}>
       {items}
     </ItemsContainer>
   );

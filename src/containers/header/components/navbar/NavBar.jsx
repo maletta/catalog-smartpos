@@ -12,7 +12,7 @@ const Nav = styled.nav`
   height: 126px;
   padding: 15px 60px;
   position: fixed;
-  top: 0px;
+  top: 0;
   right: 0;
   left: 0;
   z-index: 10;
@@ -21,7 +21,7 @@ const Nav = styled.nav`
     display: none;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 769px) {
     height: 57px;
     padding: 5px;
     padding-left: 30px;
