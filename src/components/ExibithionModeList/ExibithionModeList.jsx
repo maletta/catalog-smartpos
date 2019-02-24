@@ -1,38 +1,36 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { List, LinkItem } from 'components/List';
-import exibithions from './exibithions';
 
 class ExibithionModeList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { selected: exibithions[0] };
-  }
-
-  selectCategory(item) {
-    this.setState({ selected: item });
-  }
-
   isSelected(item) {
-    const { selected } = this.state;
-    if (!item && !selected) {
+    const { viewMode } = this.props;
+    if (!item && !viewMode) {
       return true;
     }
-    if ((item && !selected) || (!item && selected)) {
+    if ((item && !viewMode) || (!item && viewMode)) {
       return false;
     }
-    return (item.id === selected.id);
+    return (item === viewMode);
   }
 
   render() {
-    const items = exibithions.map(item => (
-      <LinkItem
-        key={item.id}
-        text={item.title}
-        iconName={item.iconName}
-        selected={this.isSelected(item)}
-        onClick={() => this.selectCategory(item)}
-      />
-    ));
+    const items = [
+      (<LinkItem
+        key={1}
+        text="Lista"
+        iconName="list"
+        selected={this.isSelected('LIST')}
+        onClick={() => this.props.onChangeView('LIST')}
+      />),
+      (<LinkItem
+        key={2}
+        text="Grid"
+        iconName="th"
+        selected={this.isSelected('GRID')}
+        onClick={() => this.props.onChangeView('GRID')}
+      />),
+    ];
     return (
       <List title="Exibir como">
         {items}
@@ -42,9 +40,12 @@ class ExibithionModeList extends Component {
 }
 
 ExibithionModeList.propTypes = {
+  viewMode: PropTypes.string,
+  onChangeView: PropTypes.func.isRequired,
 };
 
 ExibithionModeList.defaultProps = {
+  viewMode: 'GRID',
 };
 
 

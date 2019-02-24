@@ -8,7 +8,11 @@ const Icon = styled.span`
   display: inline-block;
 `;
 
-const Link = styled.a`
+const Button = styled.button`
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
   color: ${props => props.color || props.theme.secondary} !important;
 `;
 
@@ -29,10 +33,10 @@ class LinkItem extends Component {
     ) : <Icon />;
     return (
       <li>
-        <Link color={selected ? '#6DB65B' : '#929292'} onClick={onClick}>
+        <Button color={selected ? '#6DB65B' : '#929292'} onClick={onClick}>
           {icon}
           {text}
-        </Link>
+        </Button>
       </li>
     );
   }

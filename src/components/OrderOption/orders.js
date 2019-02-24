@@ -1,7 +1,6 @@
 export default [
-  { id: 1, title: 'Categoria' },
-  { id: 2, title: 'Menor preço' },
-  { id: 3, title: 'Maior preço' },
-  { id: 4, title: 'A-Z' },
-  { id: 5, title: 'Z-A' },
+  { id: 'AZ', title: 'A-Z' },
+  { id: 'ZA', title: 'Z-A' },
+  { id: 'LESS', title: 'Menor preço' },
+  { id: 'GREATER', title: 'Maior preço' },
 ];

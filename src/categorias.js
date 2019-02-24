@@ -4,5 +4,4 @@ export default [
   { id: 3, title: 'Lanches' },
   { id: 4, title: 'Sucos' },
   { id: 5, title: 'Bebidas' },
-  { id: 6, title: 'Outros' },
 ];

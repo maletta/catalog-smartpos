@@ -1,26 +1,19 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import categories from 'categorias';
 import { List, LinkItem } from 'components/List';
 
 class CategoryFilterList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { };
-  }
-
-  selectCategory(item) {
-    this.setState({ selected: item });
-  }
-
   isSelected(item) {
-    const { selected } = this.state;
-    if (!item && !selected) {
+    const { categoryFilter } = this.props;
+
+    if (!item && !categoryFilter) {
       return true;
     }
-    if ((item && !selected) || (!item && selected)) {
+    if ((item && !categoryFilter) || (!item && categoryFilter)) {
       return false;
     }
-    return (item.id === selected.id);
+    return (item === categoryFilter);
   }
 
   render() {
@@ -28,18 +21,18 @@ class CategoryFilterList extends Component {
       <LinkItem
         key={item.id}
         text={item.title}
-        iconName={this.isSelected(item) ? 'check' : ''}
-        selected={this.isSelected(item)}
-        onClick={() => this.selectCategory(item)}
+        iconName={this.isSelected(item.id) ? 'check' : ''}
+        selected={this.isSelected(item.id)}
+        onClick={() => this.props.onFilterCategory(item.id)}
       />
     ));
     return (
       <List title="Categorias">
         <LinkItem
           text="Tudo"
-          iconName={this.isSelected() ? 'check' : ''}
-          selected={this.isSelected()}
-          onClick={() => this.selectCategory()}
+          iconName={this.isSelected(-1) ? 'check' : ''}
+          selected={this.isSelected(-1)}
+          onClick={() => this.props.onFilterCategory(-1)}
         />
         {items}
       </List>
@@ -48,9 +41,12 @@ class CategoryFilterList extends Component {
 }
 
 CategoryFilterList.propTypes = {
+  categoryFilter: PropTypes.number,
+  onFilterCategory: PropTypes.func.isRequired,
 };
 
 CategoryFilterList.defaultProps = {
+  categoryFilter: -1,
 };
 
 
