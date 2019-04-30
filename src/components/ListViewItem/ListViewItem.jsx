@@ -62,7 +62,7 @@ class ListViewItem extends Component {
             <p>{item.name}</p>
             <Category>{item.category.name}</Category>
             <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
-            <Description>Lorem ipsum dolor sit amet, consectetur massa placerat condimentum.</Description>
+            <Description>Lorem ipsum dolor placerat condimentum.</Description>
           </Product>
         </Content>
       </Item>
