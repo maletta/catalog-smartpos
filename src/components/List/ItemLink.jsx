@@ -2,59 +2,54 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import GenericItem from './GenericItem';
 
 const Icon = styled.span`
   min-width: 20px;
   display: inline-block;
 `;
 
-const Button = styled.button`
-  background: none;
-  border: none;
-  width: 100%;
-  text-align: left;
-  color: ${props => props.color || props.theme.secondary} !important;
+const Link = styled.a`
+  display: inline-block !important;
+  padding: 1px !important;
 `;
 
-
-class LinkItem extends Component {
+class ItemLink extends Component {
   render() {
     const {
-      text, iconName, onClick, selected,
+      text, link, iconName, iconColor,
     } = this.props;
     const icon = iconName ? (
       <Icon>
         <FontAwesomeIcon
           icon={iconName}
-          color={selected ? '#F38A00' : '#929292'}
+          color={iconColor}
           size="sm"
         />
       </Icon>
     ) : <Icon />;
     return (
-      <li>
-        <Button color={selected ? '#F38A00' : '#929292'} onClick={onClick}>
-          {icon}
-          {text}
-        </Button>
-      </li>
+      <GenericItem>
+        {icon}
+        <Link href={link} target="_blank" rel="noopener noreferrer">{text}</Link>
+      </GenericItem>
     );
   }
 }
 
-LinkItem.propTypes = {
+ItemLink.propTypes = {
   text: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired,
   iconName: PropTypes.oneOfType([PropTypes.string,
     PropTypes.arrayOf(PropTypes.string),
     PropTypes.object]),
-  onClick: PropTypes.func.isRequired,
-  selected: PropTypes.bool,
+  iconColor: PropTypes.string,
 };
 
-LinkItem.defaultProps = {
+ItemLink.defaultProps = {
   iconName: undefined,
-  selected: false,
+  iconColor: undefined,
 };
 
 
-export default LinkItem;
+export default ItemLink;

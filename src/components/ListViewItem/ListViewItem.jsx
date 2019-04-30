@@ -35,6 +35,10 @@ const Category = styled.p`
   font-size: 13px;
 `;
 
+const Price = styled.p`
+  color: #f38a00;
+`;
+
 const Description = styled.p`
   color: ${props => props.theme.secondary};
   font-size: 13px;
@@ -57,7 +61,7 @@ class ListViewItem extends Component {
           <Product>
             <p>{item.name}</p>
             <Category>{item.category.name}</Category>
-            <p>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</p>
+            <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
             <Description>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam imperdiet sed quam ut ultricies. Fusce maximus a massa placerat condimentum.</Description>
           </Product>
         </Content>

@@ -19,7 +19,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      viewMode: 'LIST',
+      viewMode: 'GRID',
       categoryFilter: -1,
       order: 'AZ',
     };

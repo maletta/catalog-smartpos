@@ -21,6 +21,11 @@ const Image = styled.img`
 const Category = styled.p`
   color: ${props => props.theme.secondary};
 `;
+
+const Price = styled.p`
+  color: #f38a00;
+`;
+
 const Product = styled.div`
   color: ${props => props.theme.primary};
   font-weight: bold;
@@ -36,7 +41,7 @@ class GridItem extends Component {
           <Category>{item.category.name}</Category>
           <Product>
             <p>{item.name}</p>
-            <p>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</p>
+            <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
           </Product>
         </div>
       </Item>

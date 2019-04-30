@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import categories from 'categorias';
 import { LinkItem } from 'components/List';
 import styled from 'styled-components';
@@ -22,24 +23,25 @@ class CategoryFilterListBottom extends Component {
     this.state = { isOpen: false };
   }
 
-  selectCategory(item) {
-    this.setState({ selected: item, isOpen: false });
-  }
-
   openCategories() {
     const { isOpen } = this.state;
     this.setState({ isOpen: !isOpen });
   }
 
+  selectCategory(item) {
+    this.props.onFilterCategory(item);
+    this.setState({ isOpen: false });
+  }
+
   isSelected(item) {
-    const { selected } = this.state;
-    if (!item && !selected) {
+    const { categoryFilter } = this.props;
+    if (!item && !categoryFilter) {
       return true;
     }
-    if ((item && !selected) || (!item && selected)) {
+    if ((item && !categoryFilter) || (!item && categoryFilter)) {
       return false;
     }
-    return (item.id === selected.id);
+    return (item === categoryFilter);
   }
 
   renderTitle() {
@@ -54,9 +56,9 @@ class CategoryFilterListBottom extends Component {
       <LinkItem
         key={item.id}
         text={item.title}
-        iconName={this.isSelected(item) ? 'check' : ''}
-        selected={this.isSelected(item)}
-        onClick={() => this.selectCategory(item)}
+        iconName={this.isSelected(item.id) ? 'check' : ''}
+        selected={this.isSelected(item.id)}
+        onClick={() => this.selectCategory(item.id)}
       />
     ));
     return (
@@ -65,9 +67,9 @@ class CategoryFilterListBottom extends Component {
           <List>
             <LinkItem
               text="Tudo"
-              iconName={this.isSelected() ? 'check' : ''}
-              selected={this.isSelected()}
-              onClick={() => this.selectCategory()}
+              iconName={this.isSelected(-1) ? 'check' : ''}
+              selected={this.isSelected(-1)}
+              onClick={() => this.selectCategory(-1)}
             />
             { items }
           </List>
@@ -84,9 +86,12 @@ class CategoryFilterListBottom extends Component {
 }
 
 CategoryFilterListBottom.propTypes = {
+  categoryFilter: PropTypes.number,
+  onFilterCategory: PropTypes.func.isRequired,
 };
 
 CategoryFilterListBottom.defaultProps = {
+  categoryFilter: -1,
 };
 
 
