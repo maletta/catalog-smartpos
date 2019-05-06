@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
 import ExibithionModeBottom from 'components/ExibithionModeBottom';
 import OrderFilterBottom from 'components/OrderFilterBottom';
 import CategoryFilterListBottom from 'components/CategoryFilterListBottom';
-import styled from 'styled-components';
+
 
 const Nav = styled.nav`
   display: flex;
@@ -14,36 +16,44 @@ const Category = styled.div`
   width: 100%;
   position: relative;
 `;
+
 const Options = styled.div`
   position: absolute;
   right: 0;
   bottom: 0;
 `;
 
-class BottomBar extends Component {
-  render() {
-    return (
-      <Nav className="navbar is-fixed-bottom has-shadow is-hidden-desktop">
-        <Category>
-          <CategoryFilterListBottom
-            categoryFilter={this.props.categoryFilter}
-            onFilterCategory={this.props.onFilterCategory}
+const BottomBar = (props) => {
+  const {
+    categoryFilter,
+    onFilterCategory,
+    order,
+    onChangeOrder,
+    viewMode,
+    onChangeView,
+  } = props;
+
+  return (
+    <Nav className="navbar is-fixed-bottom has-shadow is-hidden-desktop">
+      <Category>
+        <CategoryFilterListBottom
+          categoryFilter={categoryFilter}
+          onFilterCategory={onFilterCategory}
+        />
+        <Options>
+          <OrderFilterBottom
+            order={order}
+            onChangeOrder={onChangeOrder}
           />
-          <Options>
-            <OrderFilterBottom
-              order={this.props.order}
-              onChangeOrder={this.props.onChangeOrder}
-            />
-            <ExibithionModeBottom
-              viewMode={this.props.viewMode}
-              onChangeView={this.props.onChangeView}
-            />
-          </Options>
-        </Category>
-      </Nav>
-    );
-  }
-}
+          <ExibithionModeBottom
+            viewMode={viewMode}
+            onChangeView={onChangeView}
+          />
+        </Options>
+      </Category>
+    </Nav>
+  );
+};
 
 BottomBar.propTypes = {
   viewMode: PropTypes.string,
