@@ -24,7 +24,7 @@ const CategoryFilterListBottom = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const openCategories = () => {
-    setIsOpen(!isOpen && true);
+    setIsOpen(!isOpen);
   };
 
   const selectCategory = (item) => {
