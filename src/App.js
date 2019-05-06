@@ -22,17 +22,11 @@ const App = () => {
   const [categoryFilter, setCategoryFilter] = useState(-1);
   const [order, setOrder] = useState('AZ');
 
-  const onChangeView = (view) => {
-    setViewMode(view);
-  };
+  const onChangeView = view => setViewMode(view);
 
-  const onFilterCategory = (filter) => {
-    setCategoryFilter(filter);
-  };
+  const onFilterCategory = filter => setCategoryFilter(filter);
 
-  const onChangeOrder = (ordenation) => {
-    setOrder(ordenation);
-  };
+  const onChangeOrder = ordenation => setOrder(ordenation);
 
   const filterItens = item => categoryFilter === -1 || item.category.id === categoryFilter;
 
