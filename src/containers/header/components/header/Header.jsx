@@ -1,18 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import NavBar from '../navbar/NavBar';
 import Logo from '../logo/Logo';
 
-class Header extends Component {
-  render() {
-    const { logo } = this.props;
-    return (
-      <NavBar>
-        <Logo logo={logo} />
-      </NavBar>
-    );
-  }
-}
+const Header = (props) => {
+  const { logo } = props;
+  return (
+    <NavBar>
+      <Logo logo={logo} />
+    </NavBar>
+  );
+};
 
 
 Header.propTypes = {

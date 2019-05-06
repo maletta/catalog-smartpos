@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-class List extends Component {
-  render() {
-    const { children, title } = this.props;
-    return (
-      <>
-        {title ? (<p className="menu-label is-hidden-touch">{title}</p>) : (<></>)}
-        <ul className="menu-list">
-          {children}
-        </ul>
-      </>
-    );
-  }
-}
+const List = (props) => {
+  const { children, title } = props;
+  return (
+    <>
+      {title ? (<p className="menu-label is-hidden-touch">{title}</p>) : (<></>)}
+      <ul className="menu-list">
+        {children}
+      </ul>
+    </>
+  );
+};
 
 List.propTypes = {
   title: PropTypes.string,

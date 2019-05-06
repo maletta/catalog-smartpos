@@ -1,12 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Footer extends Component {
-  render() {
-    return (
-      <div>Oi Julie</div>
-    );
-  }
-}
+const Footer = () => (
+  <div>Oi Julie</div>
+);
 
 
 Footer.propTypes = {

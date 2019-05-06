@@ -1,12 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import categories from 'categorias';
+
 import { List, LinkItem } from 'components/List';
+// A  aqui a request das categorias
+import categories from 'categorias';
 
-class CategoryFilterList extends Component {
-  isSelected(item) {
-    const { categoryFilter } = this.props;
+const CategoryFilterList = (props) => {
+  const {
+    categoryFilter,
+    onFilterCategory,
+  } = props;
 
+  const isSelected = (item) => {
     if (!item && !categoryFilter) {
       return true;
     }
@@ -14,31 +19,30 @@ class CategoryFilterList extends Component {
       return false;
     }
     return (item === categoryFilter);
-  }
+  };
 
-  render() {
-    const items = categories.map(item => (
+  const items = categories.map(item => (
+    <LinkItem
+      key={item.id}
+      text={item.title}
+      iconName={isSelected(item.id) ? 'check' : ''}
+      selected={isSelected(item.id)}
+      onClick={() => onFilterCategory(item.id)}
+    />
+  ));
+
+  return (
+    <List title="Categorias">
       <LinkItem
-        key={item.id}
-        text={item.title}
-        iconName={this.isSelected(item.id) ? 'check' : ''}
-        selected={this.isSelected(item.id)}
-        onClick={() => this.props.onFilterCategory(item.id)}
+        text="Tudo"
+        iconName={isSelected(-1, props.categoryFilter) ? 'check' : ''}
+        selected={isSelected(-1, props.categoryFilter)}
+        onClick={() => onFilterCategory(-1)}
       />
-    ));
-    return (
-      <List title="Categorias">
-        <LinkItem
-          text="Tudo"
-          iconName={this.isSelected(-1) ? 'check' : ''}
-          selected={this.isSelected(-1)}
-          onClick={() => this.props.onFilterCategory(-1)}
-        />
-        {items}
-      </List>
-    );
-  }
-}
+      {items}
+    </List>
+  );
+};
 
 CategoryFilterList.propTypes = {
   categoryFilter: PropTypes.number,
@@ -48,6 +52,5 @@ CategoryFilterList.propTypes = {
 CategoryFilterList.defaultProps = {
   categoryFilter: -1,
 };
-
 
 export default CategoryFilterList;

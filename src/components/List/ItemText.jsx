@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import GenericItem from './GenericItem';
 
 const Icon = styled.span`
@@ -9,26 +10,24 @@ const Icon = styled.span`
   display: inline-block;
 `;
 
-class ItemText extends Component {
-  render() {
-    const { text, iconName, iconColor } = this.props;
-    const icon = iconName ? (
-      <Icon>
-        <FontAwesomeIcon
-          icon={iconName}
-          color={iconColor}
-          size="sm"
-        />
-      </Icon>
-    ) : <Icon />;
-    return (
-      <GenericItem>
-        {icon}
-        {text}
-      </GenericItem>
-    );
-  }
-}
+const ItemText = (props) => {
+  const { text, iconName, iconColor } = props;
+  const icon = iconName ? (
+    <Icon>
+      <FontAwesomeIcon
+        icon={iconName}
+        color={iconColor}
+        size="sm"
+      />
+    </Icon>
+  ) : <Icon />;
+  return (
+    <GenericItem>
+      {icon}
+      {text}
+    </GenericItem>
+  );
+};
 
 ItemText.propTypes = {
   text: PropTypes.string.isRequired,

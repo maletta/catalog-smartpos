@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,30 +17,31 @@ const Button = styled.button`
 `;
 
 
-class LinkItem extends Component {
-  render() {
-    const {
-      text, iconName, onClick, selected,
-    } = this.props;
-    const icon = iconName ? (
-      <Icon>
-        <FontAwesomeIcon
-          icon={iconName}
-          color={selected ? '#F38A00' : '#929292'}
-          size="sm"
-        />
-      </Icon>
-    ) : <Icon />;
-    return (
-      <li>
-        <Button color={selected ? '#F38A00' : '#929292'} onClick={onClick}>
-          {icon}
-          {text}
-        </Button>
-      </li>
-    );
-  }
-}
+const LinkItem = (props) => {
+  const {
+    text,
+    iconName,
+    onClick,
+    selected,
+  } = props;
+  const icon = iconName ? (
+    <Icon>
+      <FontAwesomeIcon
+        icon={iconName}
+        color={selected ? '#F38A00' : '#929292'}
+        size="sm"
+      />
+    </Icon>
+  ) : <Icon />;
+  return (
+    <li>
+      <Button color={selected ? '#F38A00' : '#929292'} onClick={onClick}>
+        {icon}
+        {text}
+      </Button>
+    </li>
+  );
+};
 
 LinkItem.propTypes = {
   text: PropTypes.string.isRequired,

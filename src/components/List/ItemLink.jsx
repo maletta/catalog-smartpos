@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import GenericItem from './GenericItem';
 
 const Icon = styled.span`
@@ -14,28 +15,29 @@ const Link = styled.a`
   padding: 1px !important;
 `;
 
-class ItemLink extends Component {
-  render() {
-    const {
-      text, link, iconName, iconColor,
-    } = this.props;
-    const icon = iconName ? (
-      <Icon>
-        <FontAwesomeIcon
-          icon={iconName}
-          color={iconColor}
-          size="sm"
-        />
-      </Icon>
-    ) : <Icon />;
-    return (
-      <GenericItem>
-        {icon}
-        <Link href={link} target="_blank" rel="noopener noreferrer">{text}</Link>
-      </GenericItem>
-    );
-  }
-}
+const ItemLink = (props) => {
+  const {
+    text,
+    link,
+    iconName,
+    iconColor,
+  } = props;
+  const icon = iconName ? (
+    <Icon>
+      <FontAwesomeIcon
+        icon={iconName}
+        color={iconColor}
+        size="sm"
+      />
+    </Icon>
+  ) : <Icon />;
+  return (
+    <GenericItem>
+      {icon}
+      <Link href={link} target="_blank" rel="noopener noreferrer">{text}</Link>
+    </GenericItem>
+  );
+};
 
 ItemLink.propTypes = {
   text: PropTypes.string.isRequired,
