@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,29 +9,24 @@ const Icon = styled.span`
   padding: 8px;
 `;
 
+const ExibithionModeList = (props) => {
+  const { viewMode, onChangeView } = props;
 
-class ExibithionModeList extends Component {
-  getIconName() {
-    const { viewMode } = this.props;
-    return viewMode === 'GRID' ? 'th' : 'list';
-  }
+  const getIconName = () => (viewMode === 'GRID' ? 'th' : 'list');
 
-  toggleMode() {
-    const { viewMode } = this.props;
-    this.props.onChangeView(viewMode === 'GRID' ? 'LIST' : 'GRID');
-  }
+  const toggleMode = () => {
+    onChangeView(viewMode === 'GRID' ? 'LIST' : 'GRID');
+  };
 
-  render() {
-    return (
-      <Icon onClick={() => this.toggleMode()}>
-        <FontAwesomeIcon
-          icon={this.getIconName()}
-          size="lg"
-        />
-      </Icon>
-    );
-  }
-}
+  return (
+    <Icon onClick={() => toggleMode()}>
+      <FontAwesomeIcon
+        icon={getIconName()}
+        size="lg"
+      />
+    </Icon>
+  );
+};
 
 ExibithionModeList.propTypes = {
   viewMode: PropTypes.string,
@@ -41,6 +36,5 @@ ExibithionModeList.propTypes = {
 ExibithionModeList.defaultProps = {
   viewMode: 'LIST',
 };
-
 
 export default ExibithionModeList;

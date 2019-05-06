@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
@@ -31,23 +31,21 @@ const Product = styled.div`
   font-weight: bold;
 `;
 
-class GridItem extends Component {
-  render() {
-    const { item, intl } = this.props;
-    return (
-      <Item className="column is-6-mobile is-3-tablet is-2-desktop">
-        <div>
-          <Image src={item.img} />
-          <Category>{item.category.name}</Category>
-          <Product>
-            <p>{item.name}</p>
-            <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
-          </Product>
-        </div>
-      </Item>
-    );
-  }
-}
+const GridItem = (props) => {
+  const { item, intl } = props;
+  return (
+    <Item className="column is-6-mobile is-3-tablet is-2-desktop">
+      <div>
+        <Image src={item.img} />
+        <Category>{item.category.name}</Category>
+        <Product>
+          <p>{item.name}</p>
+          <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
+        </Product>
+      </div>
+    </Item>
+  );
+};
 
 GridItem.propTypes = {
   item: PropTypes.shape({

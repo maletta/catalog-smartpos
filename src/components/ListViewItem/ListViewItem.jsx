@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
@@ -49,26 +49,24 @@ const Product = styled.div`
   font-weight: bold;
 `;
 
-class ListViewItem extends Component {
-  render() {
-    const { item, intl } = this.props;
-    return (
-      <Item className="column is-full">
-        <div>
-          <Image src={item.img} />
-        </div>
-        <Content>
-          <Product>
-            <p>{item.name}</p>
-            <Category>{item.category.name}</Category>
-            <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
-            <Description>Lorem ipsum dolor placerat condimentum.</Description>
-          </Product>
-        </Content>
-      </Item>
-    );
-  }
-}
+const ListViewItem = (props) => {
+  const { item, intl } = props;
+  return (
+    <Item className="column is-full">
+      <div>
+        <Image src={item.img} />
+      </div>
+      <Content>
+        <Product>
+          <p>{item.name}</p>
+          <Category>{item.category.name}</Category>
+          <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
+          <Description>Lorem ipsum dolor placerat condimentum.</Description>
+        </Product>
+      </Content>
+    </Item>
+  );
+};
 
 ListViewItem.propTypes = {
   item: PropTypes.shape({

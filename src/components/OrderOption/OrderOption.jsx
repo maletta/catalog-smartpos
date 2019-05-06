@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { List, LinkItem } from 'components/List';
 import orders from './orders';
 
-class OrderOption extends Component {
-  isSelected(item) {
-    const { order } = this.props;
+const OrderOption = (props) => {
+  const { order, onChangeOrder } = props;
+  const isSelected = (item) => {
     if (!item && !order) {
       return true;
     }
@@ -13,25 +13,23 @@ class OrderOption extends Component {
       return false;
     }
     return (item === order);
-  }
+  };
 
-  render() {
-    const items = orders.map(item => (
-      <LinkItem
-        key={item.id}
-        text={item.title}
-        iconName={this.isSelected(item.id) ? 'check' : ''}
-        selected={this.isSelected(item.id)}
-        onClick={() => this.props.onChangeOrder(item.id)}
-      />
-    ));
-    return (
-      <List title="Ordernar por">
-        {items}
-      </List>
-    );
-  }
-}
+  const items = orders.map(item => (
+    <LinkItem
+      key={item.id}
+      text={item.title}
+      iconName={isSelected(item.id) ? 'check' : ''}
+      selected={isSelected(item.id)}
+      onClick={() => onChangeOrder(item.id)}
+    />
+  ));
+  return (
+    <List title="Ordernar por">
+      {items}
+    </List>
+  );
+};
 
 OrderOption.propTypes = {
   order: PropTypes.string,

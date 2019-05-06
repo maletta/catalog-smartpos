@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,9 +9,10 @@ const Icon = styled.span`
   padding: 8px;
 `;
 
-class OrderFilterBottom extends Component {
-  toggleOrder() {
-    const { order } = this.props;
+const OrderFilterBottom = (props) => {
+  const { order, onChangeOrder } = props;
+
+  const toggleOrder = () => {
     if (order === 'AZ') {
       return 'ZA';
     }
@@ -22,19 +23,17 @@ class OrderFilterBottom extends Component {
       return 'GREATER';
     }
     return 'AZ';
-  }
+  };
 
-  render() {
-    return (
-      <Icon onClick={() => this.props.onChangeOrder(this.toggleOrder())}>
-        <FontAwesomeIcon
-          icon="sort"
-          size="lg"
-        />
-      </Icon>
-    );
-  }
-}
+  return (
+    <Icon onClick={() => onChangeOrder(toggleOrder())}>
+      <FontAwesomeIcon
+        icon="sort"
+        size="lg"
+      />
+    </Icon>
+  );
+};
 
 OrderFilterBottom.propTypes = {
   order: PropTypes.string,
