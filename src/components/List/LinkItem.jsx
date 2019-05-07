@@ -8,12 +8,13 @@ const Icon = styled.span`
   display: inline-block;
 `;
 
-const Button = styled.button`
+const Button = styled.a`
   background: none;
   border: none;
   width: 100%;
   text-align: left;
   color: ${props => props.color || props.theme.secondary} !important;
+  cursor: pointer;
 `;
 
 
