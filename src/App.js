@@ -26,7 +26,7 @@ const App = () => {
   const [viewMode, setViewMode] = useState('GRID');
   const [categoryFilter, setCategoryFilter] = useState(-1);
   const [order, setOrder] = useState('AZ');
-  const [store, setStore] = useState([]);
+  const [store, setStore] = useState({});
 
   useEffect(() => {
     getStoreInfo(process.env.REACT_APP_STORE).then(response => setStore(response.data));
