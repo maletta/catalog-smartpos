@@ -1,16 +1,7 @@
 module.exports = {
-  extends: [
-    'airbnb',
-    'plugin:cypress/recommended',
-  ],
+  extends: ['airbnb'],
   parser: 'babel-eslint',
-  plugins: [
-    'react',
-    'jsx-a11y',
-    'import',
-    'cypress',
-    'chai-friendly',
-  ],
+  plugins: ['react', 'jsx-a11y', 'import'],
   globals: {
     document: false,
     window: false,
@@ -20,26 +11,16 @@ module.exports = {
     'react/prefer-stateless-function': 'off',
     'linebreak-style': 'off',
     'react/jsx-filename-extension': 'off',
-    'react/destructuring-assignment': 'off',
-    'react/require-default-props': 'off',
-    'jsx-a11y/label-has-for': 'off',
-    'jsx-a11y/label-has-associated-control': [ 2, {
-      'labelComponents': ['label', 'Label', 'StyledLabel'],
-      'labelAttributes': ['htmlFor'],
-      'controlComponents': ['input']
-    }],
-    'react/forbid-prop-types': 'off',
-    "no-unused-expressions": 0,
-    "chai-friendly/no-unused-expressions": 2,
+    "react/destructuring-assignment": 'off',
+    "react/forbid-prop-types": "off",
   },
   env: {
     jest: true,
-    "cypress/globals": true,
   },
   settings: {
-    'import/resolver': {
+    "import/resolver": {
       node: {
-        paths: ['src']
+        paths: ["src"]
       }
     }
   }

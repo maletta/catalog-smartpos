@@ -30,19 +30,17 @@ const Icon = styled.span`
 `;
 
 
-const Footer = (props) => {
-
-  return (
-    <>
-      <Container>
-        <Row>
-          <Icon>
+const Footer = () => (
+  <>
+    <Container>
+      <Row>
+        <Icon>
           <FontAwesomeIcon icon="map-marker-alt" color="white" size="sm" />
         </Icon>
-          <span>Rua Ézio Wagner da Silva, 114 Ap 33 Bl 01 - Campinas/SP - 13060-367</span>
-        </Row>
-        <Row>
-          <ul>
+        <span>Rua Ézio Wagner da Silva, 114 Ap 33 Bl 01 - Campinas/SP - 13060-367</span>
+      </Row>
+      <Row>
+        <ul>
           <Li>
             <Icon>
               <FontAwesomeIcon icon={['fab', 'whatsapp']} color="white" size="sm" />
@@ -56,9 +54,9 @@ const Footer = (props) => {
             <span>comercial@smartpos.net.br</span>
           </Li>
         </ul>
-        </Row>
-        <Row>
-          <ul>
+      </Row>
+      <Row>
+        <ul>
           <Li>
             <Icon>
               <FontAwesomeIcon icon={['fab', 'facebook-f']} color="white" size="sm" />
@@ -72,11 +70,10 @@ const Footer = (props) => {
             <span> /instagram</span>
           </Li>
         </ul>
-        </Row>
-      </Container>
-    </>
-  );
-};
+      </Row>
+    </Container>
+  </>
+);
 
 
 Footer.propTypes = {

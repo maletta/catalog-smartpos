@@ -45,7 +45,7 @@ const CategoryFilterList = (props) => {
 CategoryFilterList.propTypes = {
   categoryFilter: PropTypes.number,
   onFilterCategory: PropTypes.func.isRequired,
-  categoriesList: PropTypes.array,
+  categoriesList: PropTypes.array.isRequired,
 };
 
 CategoryFilterList.defaultProps = {
