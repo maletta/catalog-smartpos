@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const Main = styled.section`
-  position: absolute;
-
   @media (max-width: 768px) {
     margin-top: 57px !important;
   }

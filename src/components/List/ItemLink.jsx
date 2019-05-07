@@ -10,9 +10,9 @@ const Icon = styled.span`
   display: inline-block;
 `;
 
-const Link = styled.a`
+const Link = styled.span`
   display: inline-block !important;
-  padding: 1px !important;
+  color: ${props => props.iconColor};
 `;
 
 const ItemLink = (props) => {
