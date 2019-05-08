@@ -4,33 +4,42 @@ import ListViewMode from 'components/ListViewMode';
 import Header from 'containers/header';
 import MainContainer from 'containers/mainContainer';
 import Footer from 'containers/footer';
-// a aqui o request da lista dos produtos
-import itens from 'produtos';
 import SideBar from 'components/SideBar';
 import BottomBar from 'components/BottomBar';
+import Spinner from 'components/Spinner';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faSort,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
-import { getStoreInfo } from 'requests';
+import { getStoreInfo, getProducts } from 'requests';
 
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF,
   faWhatsapp, faInstagram, faSort);
-
-
 const App = () => {
   const [storeId] = useState(process.env.REACT_APP_STORE);
   const [viewMode, setViewMode] = useState('GRID');
   const [categoryFilter, setCategoryFilter] = useState(-1);
   const [order, setOrder] = useState('AZ');
   const [store, setStore] = useState({});
+  const [products, setProducts] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const getItems = (data) => {
+    getProducts(data.id)
+      .then(response => setProducts(response.data))
+      .finally(() => setLoading(false));
+  };
 
   useEffect(() => {
-    getStoreInfo(storeId).then(response => setStore(response.data));
+    getStoreInfo(storeId).then((response) => {
+      setStore(response.data);
+      getItems(response.data);
+    });
   }, [storeId]);
+
 
   const onChangeView = view => setViewMode(view);
 
@@ -38,12 +47,14 @@ const App = () => {
 
   const onChangeOrder = ordenation => setOrder(ordenation);
 
-  const filterItens = item => categoryFilter === -1 || item.category.id === categoryFilter;
+  const filterItens = item => categoryFilter === -1 || item.categoria_id === categoryFilter;
 
-  const itensFiltered = itens.filter(item => filterItens(item)).sort((a, b) => {
+  const prodArray = Object.keys(products).map(i => products[i]);
+
+  const itensFiltered = prodArray.filter(item => filterItens(item)).sort((a, b) => {
     if (order === 'AZ') {
-      const x = a.name.toLowerCase();
-      const y = b.name.toLowerCase();
+      const x = a.descricao.toLowerCase();
+      const y = b.descricao.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -52,8 +63,8 @@ const App = () => {
       }
       return 0;
     } if (order === 'ZA') {
-      const x = b.name.toLowerCase();
-      const y = a.name.toLowerCase();
+      const x = b.descricao.toLowerCase();
+      const y = a.descricao.toLowerCase();
       if (x < y) {
         return -1;
       }
@@ -62,12 +73,14 @@ const App = () => {
       }
       return 0;
     } if (order === 'LESS') {
-      return a.price - b.price;
+      return a.valorVenda - b.valorVenda;
     } if (order === 'GREATER') {
-      return b.price - a.price;
+      return b.valorVenda - a.valorVenda;
     }
     return 0;
   });
+
+  const grid = () => (viewMode === 'GRID' ? (<GridList itens={itensFiltered} />) : (<ListViewMode itens={itensFiltered} />));
 
   return (
     <>
@@ -81,8 +94,9 @@ const App = () => {
           categoryFilter={categoryFilter}
           onFilterCategory={category => onFilterCategory(category)}
           storeInfo={store}
+          loading={loading}
         />
-        {viewMode === 'GRID' ? (<GridList itens={itensFiltered} />) : (<ListViewMode itens={itensFiltered} />)}
+        {loading ? <Spinner /> : grid()}
       </MainContainer>
       <BottomBar
         viewMode={viewMode}

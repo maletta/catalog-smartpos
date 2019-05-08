@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 
 const Item = styled.div`
-  text-align: center;
   display: flex !important;
-  flex-direction: column-reverse !important;
+  text-align: center;
+  justify-content: center;
 `;
 
 const Image = styled.img`
@@ -16,10 +16,6 @@ const Image = styled.img`
     width: 145px;
     height: 145px;
   }
-`;
-
-const Category = styled.p`
-  color: ${props => props.theme.secondary};
 `;
 
 const Price = styled.p`
@@ -36,11 +32,10 @@ const GridItem = (props) => {
   return (
     <Item className="column is-6-mobile is-3-tablet is-2-desktop">
       <div>
-        <Image src={item.img} />
-        <Category>{item.category.name}</Category>
+        <Image src={`${process.env.REACT_APP_IMG_API}product/${item.id}`} />
         <Product>
-          <p>{item.name}</p>
-          <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
+          <p>{item.descricao}</p>
+          <Price>{intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}</Price>
         </Product>
       </div>
     </Item>
@@ -50,12 +45,8 @@ const GridItem = (props) => {
 GridItem.propTypes = {
   item: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    category: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-    }).isRequired,
+    descricao: PropTypes.string.isRequired,
+    valorVenda: PropTypes.number.isRequired,
     image: PropTypes.string,
   }).isRequired,
   intl: intlShape.isRequired,
