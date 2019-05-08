@@ -22,14 +22,14 @@ library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebo
 
 
 const App = () => {
-  const [storeId] = useState(true);
+  const [storeId] = useState(process.env.REACT_APP_STORE);
   const [viewMode, setViewMode] = useState('GRID');
   const [categoryFilter, setCategoryFilter] = useState(-1);
   const [order, setOrder] = useState('AZ');
   const [store, setStore] = useState({});
 
   useEffect(() => {
-    getStoreInfo(process.env.REACT_APP_STORE).then(response => setStore(response.data));
+    getStoreInfo(storeId).then(response => setStore(response.data));
   }, [storeId]);
 
   const onChangeView = view => setViewMode(view);
