@@ -50,7 +50,7 @@ SideBar.propTypes = {
   onChangeOrder: PropTypes.func.isRequired,
   categoryFilter: PropTypes.number,
   onFilterCategory: PropTypes.func.isRequired,
-  storeInfo: PropTypes.object,
+  storeInfo: PropTypes.object.isRequired,
 };
 
 SideBar.defaultProps = {
