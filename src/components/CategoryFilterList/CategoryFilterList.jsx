@@ -2,15 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { List, LinkItem } from 'components/List';
-// A  aqui a request das categorias
-import categories from 'categorias';
 
 const CategoryFilterList = (props) => {
   const {
     categoryFilter,
     onFilterCategory,
+    categoriesList,
   } = props;
-
   const isSelected = (item) => {
     if (!item && !categoryFilter) {
       return true;
@@ -21,10 +19,10 @@ const CategoryFilterList = (props) => {
     return (item === categoryFilter);
   };
 
-  const items = categories.map(item => (
+  const items = categoriesList.map(item => (
     <LinkItem
       key={item.id}
-      text={item.title}
+      text={item.descricao}
       iconName={isSelected(item.id) ? 'check' : ''}
       selected={isSelected(item.id)}
       onClick={() => onFilterCategory(item.id)}
@@ -47,6 +45,7 @@ const CategoryFilterList = (props) => {
 CategoryFilterList.propTypes = {
   categoryFilter: PropTypes.number,
   onFilterCategory: PropTypes.func.isRequired,
+  categoriesList: PropTypes.array.isRequired,
 };
 
 CategoryFilterList.defaultProps = {

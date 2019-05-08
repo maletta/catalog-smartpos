@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import CategoryFilterList from 'components/CategoryFilterList';
 import OrderOption from 'components/OrderOption';
 import ExibithionModeList from 'components/ExibithionModeList';
-import SideBarFooter from 'components/SideBarFooter';
+
+import { getCategories } from 'requests';
 
 const SideBar = (props) => {
   const {
@@ -13,13 +14,22 @@ const SideBar = (props) => {
     onChangeOrder,
     viewMode,
     onChangeView,
+    storeInfo,
   } = props;
+
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    if (storeInfo.id) {
+      getCategories(storeInfo.id).then(response => setCategories(response.data));
+    }
+  }, [storeInfo.id]);
 
   return (
     <aside className="column is-one-fifth is-narrow-mobile is-fullheight section is-hidden-touch">
       <CategoryFilterList
         categoryFilter={categoryFilter}
         onFilterCategory={onFilterCategory}
+        categoriesList={categories}
       />
       <OrderOption
         order={order}
@@ -29,7 +39,6 @@ const SideBar = (props) => {
         viewMode={viewMode}
         onChangeView={onChangeView}
       />
-      <SideBarFooter />
     </aside>
   );
 };
@@ -41,6 +50,7 @@ SideBar.propTypes = {
   onChangeOrder: PropTypes.func.isRequired,
   categoryFilter: PropTypes.number,
   onFilterCategory: PropTypes.func.isRequired,
+  storeInfo: PropTypes.object.isRequired,
 };
 
 SideBar.defaultProps = {

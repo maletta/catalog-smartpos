@@ -12,6 +12,7 @@ module.exports = {
     'linebreak-style': 'off',
     'react/jsx-filename-extension': 'off',
     "react/destructuring-assignment": 'off',
+    "react/forbid-prop-types": "off",
   },
   env: {
     jest: true,

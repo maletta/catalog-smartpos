@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import GridList from 'components/GridList';
 import ListViewMode from 'components/ListViewMode';
 import Header from 'containers/header';
 import MainContainer from 'containers/mainContainer';
+import Footer from 'containers/footer';
 // a aqui o request da lista dos produtos
 import itens from 'produtos';
 import SideBar from 'components/SideBar';
@@ -13,14 +14,23 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
 
+import { getStoreInfo } from 'requests';
+
+
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF,
   faWhatsapp, faInstagram, faSort);
 
 
 const App = () => {
+  const [storeId] = useState(process.env.REACT_APP_STORE);
   const [viewMode, setViewMode] = useState('GRID');
   const [categoryFilter, setCategoryFilter] = useState(-1);
   const [order, setOrder] = useState('AZ');
+  const [store, setStore] = useState({});
+
+  useEffect(() => {
+    getStoreInfo(storeId).then(response => setStore(response.data));
+  }, [storeId]);
 
   const onChangeView = view => setViewMode(view);
 
@@ -70,6 +80,7 @@ const App = () => {
           onChangeOrder={orderField => onChangeOrder(orderField)}
           categoryFilter={categoryFilter}
           onFilterCategory={category => onFilterCategory(category)}
+          storeInfo={store}
         />
         {viewMode === 'GRID' ? (<GridList itens={itensFiltered} />) : (<ListViewMode itens={itensFiltered} />)}
       </MainContainer>
@@ -81,6 +92,7 @@ const App = () => {
         categoryFilter={categoryFilter}
         onFilterCategory={category => onFilterCategory(category)}
       />
+      <Footer storeInfo={store} />
     </>
   );
 };
