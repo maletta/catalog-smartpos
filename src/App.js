@@ -70,7 +70,7 @@ const App = () => {
   });
 
   return (
-    <>
+    <div className="container">
       <Header logo="https://lh3.googleusercontent.com/YPwFZ4FHxrKgvgvCgeZPCmfRSPsSwvBsB_9DvXtxcuaYax2cRemjR3mrZbqB4Qq41j4" />
       <MainContainer>
         <SideBar
@@ -93,7 +93,7 @@ const App = () => {
         onFilterCategory={category => onFilterCategory(category)}
       />
       <Footer storeInfo={store} />
-    </>
+    </div>
   );
 };
 
