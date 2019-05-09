@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import {
-  List, GenericItem, ItemLink,
+  List, GenericItem,
 } from 'components/List';
 
 const Footer = styled.div`
