@@ -7,6 +7,8 @@ import Footer from 'containers/footer';
 import SideBar from 'components/SideBar';
 import BottomBar from 'components/BottomBar';
 import Spinner from 'components/Spinner';
+import getStoreName from 'getStoreName';
+import NotFound from 'NotFound';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faSort,
@@ -15,11 +17,12 @@ import { faFacebookF, faWhatsapp, faInstagram } from '@fortawesome/free-brands-s
 
 import { getStoreInfo, getProducts } from 'requests';
 
-
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF,
   faWhatsapp, faInstagram, faSort);
+
 const App = () => {
-  const [storeId] = useState(process.env.REACT_APP_STORE);
+  const [storeId] = useState(getStoreName());
+  const [found, setFound] = useState();
   const [viewMode, setViewMode] = useState('GRID');
   const [categoryFilter, setCategoryFilter] = useState(-1);
   const [order, setOrder] = useState('AZ');
@@ -29,15 +32,19 @@ const App = () => {
 
   const getItems = (data) => {
     getProducts(data.id)
-      .then(response => setProducts(response.data))
+      .then(response => setProducts(response.data.produtos))
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
-    getStoreInfo(storeId).then((response) => {
-      setStore(response.data);
-      getItems(response.data);
-    });
+    getStoreInfo(storeId)
+      .then((response) => {
+        setStore(response.data);
+        getItems(response.data);
+        setFound(true);
+      })
+      .catch(() => setFound(false))
+      .finally(() => setLoading(false));
   }, [storeId]);
 
 
@@ -48,6 +55,8 @@ const App = () => {
   const onChangeOrder = ordenation => setOrder(ordenation);
 
   const filterItens = item => categoryFilter === -1 || item.categoria_id === categoryFilter;
+
+  const notFoundHandle = () => (loading ? (<Spinner />) : !loading && (<NotFound />));
 
   const prodArray = Object.keys(products).map(i => products[i]);
 
@@ -84,29 +93,37 @@ const App = () => {
 
   return (
     <>
-      <Header logo="https://lh3.googleusercontent.com/YPwFZ4FHxrKgvgvCgeZPCmfRSPsSwvBsB_9DvXtxcuaYax2cRemjR3mrZbqB4Qq41j4" />
-      <MainContainer>
-        <SideBar
-          viewMode={viewMode}
-          onChangeView={view => onChangeView(view)}
-          order={order}
-          onChangeOrder={orderField => onChangeOrder(orderField)}
-          categoryFilter={categoryFilter}
-          onFilterCategory={category => onFilterCategory(category)}
-          storeInfo={store}
-          loading={loading}
-        />
-        {loading ? <Spinner /> : grid()}
-      </MainContainer>
-      <BottomBar
-        viewMode={viewMode}
-        onChangeView={view => onChangeView(view)}
-        order={order}
-        onChangeOrder={orderField => onChangeOrder(orderField)}
-        categoryFilter={categoryFilter}
-        onFilterCategory={category => onFilterCategory(category)}
-      />
-      <Footer storeInfo={store} />
+      {found
+        ? (
+          <>
+            <div className="container">
+              <Header logo="https://lh3.googleusercontent.com/YPwFZ4FHxrKgvgvCgeZPCmfRSPsSwvBsB_9DvXtxcuaYax2cRemjR3mrZbqB4Qq41j4" />
+              <MainContainer>
+                <SideBar
+                  viewMode={viewMode}
+                  onChangeView={view => onChangeView(view)}
+                  order={order}
+                  onChangeOrder={orderField => onChangeOrder(orderField)}
+                  categoryFilter={categoryFilter}
+                  onFilterCategory={category => onFilterCategory(category)}
+                  storeInfo={store}
+                  loading={loading}
+                />
+                {loading ? <Spinner /> : grid()}
+              </MainContainer>
+              <BottomBar
+                viewMode={viewMode}
+                onChangeView={view => onChangeView(view)}
+                order={order}
+                onChangeOrder={orderField => onChangeOrder(orderField)}
+                categoryFilter={categoryFilter}
+                onFilterCategory={category => onFilterCategory(category)}
+              />
+            </div>
+            <Footer storeInfo={store} />
+          </>
+        ) : (notFoundHandle())}
+
     </>
   );
 };

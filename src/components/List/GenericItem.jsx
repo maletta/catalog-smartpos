@@ -4,6 +4,8 @@ import styled from 'styled-components';
 
 const Item = styled.div`
   padding: 0.5em 0.75em;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const GenericItem = (props) => {
