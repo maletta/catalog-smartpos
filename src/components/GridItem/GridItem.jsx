@@ -9,40 +9,76 @@ const Item = styled.div`
   flex-direction: column-reverse !important;
 `;
 
-const Image = styled.img`
-  padding: 10px;
+const Container = styled.div`
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
+  max-width: 340px;
+  max-height: 380px;
+  background-color: #ffff;
+  cursor: pointer;
 
-  @media (max-width: 769px) {
-    width: 145px;
-    height: 145px;
+  :hover {
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+    font-weight: bold;
   }
 `;
 
-const Category = styled.p`
-  color: ${props => props.theme.secondary};
+const ContainerImage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: auto;
+  padding: 10px;
+`;
+
+const Img = styled.img`
+  display: block;
+  max-width: 160px;
+  max-height: 160px;
+  width: auto;
+  height: auto;
+  padding: 10px;
+`;
+
+const Descricao = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 20px;
+`;
+
+const Preco = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 10px;
+  font-weight: bold;
 `;
 
 const Price = styled.p`
   color: #f38a00;
-`;
-
-const Product = styled.div`
-  color: ${props => props.theme.primary};
-  font-weight: bold;
+  font-size: 16px;
 `;
 
 const GridItem = (props) => {
   const { item, intl } = props;
   return (
-    <Item className="column is-6-mobile is-3-tablet is-2-desktop">
-      <div>
-        <Image src={item.img} />
-        <Category>{item.category.name}</Category>
-        <Product>
-          <p>{item.name}</p>
+    <Item className="column is-6-mobile is-4-tablet is-4-desktop">
+      <Container>
+        <ContainerImage>
+          <div className="image is-160x160">
+            <Img src={item.img} />
+          </div>
+        </ContainerImage>
+        <Preco>
           <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
-        </Product>
-      </div>
+        </Preco>
+        <Descricao>
+          <p>{item.name}</p>
+        </Descricao>
+      </Container>
     </Item>
   );
 };
