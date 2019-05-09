@@ -11,7 +11,7 @@ const Item = styled.div`
 
 const Container = styled.div`
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
-  max-width: 340px;
+  width: 100%;
   max-height: 380px;
   background-color: #ffff;
   cursor: pointer;
@@ -45,8 +45,6 @@ const Descricao = styled.div`
   align-items: center;
   justify-content: center;
   text-align: center;
-  max-width: 150px;
-  padding-left: 35px;
   padding-bottom: 20px;
 `;
 
@@ -73,9 +71,8 @@ const GridItem = (props) => {
     <Item className="column is-6-mobile is-4-tablet is-4-desktop">
       <Container>
         <ContainerImage>
-          <div className="image is-160x160">
-            { error ? (<Img src="https://cdn.dicionariopopular.com/imagens/olokinho-meu-o-audio-do-mini-faustinho-54n.jpg" />) : (<Img src={`${process.env.REACT_APP_IMG_API}product/${item.id}`} onError={() => setError(true)} />) }
-          </div>
+          { error ? (<Img src="https://www.magazinerural.com.br/media/padroes/produto-sem-imagem.png" />)
+            : (<Img src={`${process.env.REACT_APP_IMG_API}product/${item.id}`} onError={() => setError(true)} />) }
         </ContainerImage>
         <Preco>
           <Price>{intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}</Price>

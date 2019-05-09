@@ -89,7 +89,7 @@ const App = () => {
     return 0;
   });
 
-  const grid = () => (viewMode === 'GRID' ? (<GridList itens={itensFiltered} />) : (<ListViewMode itens={itensFiltered} />));
+  const grid = () => (viewMode === 'GRID' ? (<GridList itens={itensFiltered} loading={loading} />) : (<ListViewMode itens={itensFiltered} />));
 
   return (
     <>
