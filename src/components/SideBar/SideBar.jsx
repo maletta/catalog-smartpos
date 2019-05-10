@@ -18,9 +18,13 @@ const SideBar = (props) => {
   } = props;
 
   const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     if (storeInfo.id) {
-      getCategories(storeInfo.id).then(response => setCategories(response.data));
+      getCategories(storeInfo.id)
+        .then(response => setCategories(response.data))
+        .finally(() => setLoading(false));
     }
   }, [storeInfo.id]);
 
@@ -30,6 +34,7 @@ const SideBar = (props) => {
         categoryFilter={categoryFilter}
         onFilterCategory={onFilterCategory}
         categoriesList={categories}
+        loading={loading}
       />
       <OrderOption
         order={order}

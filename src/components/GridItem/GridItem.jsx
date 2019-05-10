@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 
 const Item = styled.div`
-  text-align: center;
   display: flex !important;
-  flex-direction: column-reverse !important;
+  text-align: center;
+  justify-content: center;
 `;
 
 const Container = styled.div`
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
-  max-width: 340px;
+  width: 100%;
   max-height: 380px;
   background-color: #ffff;
   cursor: pointer;
@@ -44,7 +44,7 @@ const Descricao = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
+  text-align: center;
   padding-bottom: 20px;
 `;
 
@@ -62,21 +62,23 @@ const Price = styled.p`
   font-size: 16px;
 `;
 
+
 const GridItem = (props) => {
   const { item, intl } = props;
+  const [error, setError] = useState(false);
+
   return (
     <Item className="column is-6-mobile is-4-tablet is-4-desktop">
       <Container>
         <ContainerImage>
-          <div className="image is-160x160">
-            <Img src={item.img} />
-          </div>
+          { error ? (<Img src="https://www.magazinerural.com.br/media/padroes/produto-sem-imagem.png" />)
+            : (<Img src={`${process.env.REACT_APP_IMG_API}product/${item.id}`} onError={() => setError(true)} />) }
         </ContainerImage>
         <Preco>
-          <Price>{intl.formatNumber(item.price, { style: 'currency', currency: 'BRL' })}</Price>
+          <Price>{intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}</Price>
         </Preco>
         <Descricao>
-          <p>{item.name}</p>
+          <p>{item.descricao}</p>
         </Descricao>
       </Container>
     </Item>
@@ -86,13 +88,8 @@ const GridItem = (props) => {
 GridItem.propTypes = {
   item: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    name: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    category: PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      name: PropTypes.string.isRequired,
-    }).isRequired,
-    image: PropTypes.string,
+    descricao: PropTypes.string.isRequired,
+    valorVenda: PropTypes.number.isRequired,
   }).isRequired,
   intl: intlShape.isRequired,
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Spinner from 'components/Spinner';
 
 import { List, LinkItem } from 'components/List';
 
@@ -8,6 +9,7 @@ const CategoryFilterList = (props) => {
     categoryFilter,
     onFilterCategory,
     categoriesList,
+    loading,
   } = props;
   const isSelected = (item) => {
     if (!item && !categoryFilter) {
@@ -37,7 +39,7 @@ const CategoryFilterList = (props) => {
         selected={isSelected(-1, props.categoryFilter)}
         onClick={() => onFilterCategory(-1)}
       />
-      {items}
+      {loading ? <Spinner /> : items}
     </List>
   );
 };
@@ -46,6 +48,7 @@ CategoryFilterList.propTypes = {
   categoryFilter: PropTypes.number,
   onFilterCategory: PropTypes.func.isRequired,
   categoriesList: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 CategoryFilterList.defaultProps = {
