@@ -4,7 +4,7 @@ const getStoreInfo = async id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1
 
 const getCategories = async id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/categorias/${id}`);
 
-const getProducts = async id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/produtos/${id}?page=1&sortBy=valorVenda&orderBy=asc`);
+const getProducts = async id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/produtos/${id}?page=1&sortBy=descricao&orderBy=asc`);
 
 export {
   getStoreInfo,

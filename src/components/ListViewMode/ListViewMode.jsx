@@ -5,7 +5,7 @@ import ListViewItem from 'components/ListViewItem/ListViewItem';
 const ListViewMode = (props) => {
   const itens = props.itens.map(item => <ListViewItem key={item.id} item={item} />);
   return (
-    <div className="column section is-fluid">
+    <div className="column is-fluid">
       <div className="columns is-mobile is-multiline">
         {itens}
       </div>
