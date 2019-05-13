@@ -6,6 +6,7 @@ module.exports = {
     document: false,
     window: false,
     localStorage: false,
+    Image: true,
   },
   rules: {
     'react/prefer-stateless-function': 'off',

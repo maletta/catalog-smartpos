@@ -1,6 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-// import styled from 'styled-components';
+import styled from 'styled-components';
+
+
+const Container = styled.div`
+  &&& {
+    padding-top: 50px;
+  }
+`;
+const Button = styled.button`
+  &&& {
+    border-color: #f38a00;
+    background-color: white;
+    color: #f38a00;
+    cursor: pointer;
+    ${props => props.current && (
+    `   background-color: #f38a00;
+        color: white;`
+  )}
+  }
+`;
 
 const Pagination = (props) => {
   const { setPage, currentPage, maxPage } = props;
@@ -23,78 +42,75 @@ const Pagination = (props) => {
   };
 
   return (
-    <div className="column is-half is-offset-one-quarter">
+    <Container className="column is-half is-offset-one-quarter">
       <nav className="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
-        <button type="button" onClick={() => previusPage()} className="pagination-previous"> Anterior  </button>
-        <button type="button" onClick={() => nextPage()} className="pagination-next"> Próxima  </button>
+        {Number(currentPage) > 1 && (<Button type="Button" onClick={() => previusPage()} className="pagination-previous"> 🡐  </Button>)}
+        {Number(currentPage) < Number(maxPage) && (<Button type="Button" onClick={() => nextPage()} className="pagination-next"> 🡒  </Button>)}
         <ul className="pagination-list">
           <li>
             {Number(currentPage) > 2 && (
-            <button
-              type="button"
+            <Button
+              type="Button"
               onClick={() => gotoPage(Number(currentPage) - 2)}
               className="pagination-link"
             >
               {`${Number(currentPage) - 2}`}
-            </button>
+            </Button>
             )}
           </li>
           <li>
             {Number(currentPage) > 1 && (
-              <button
-                type="button"
+              <Button
+                type="Button"
                 onClick={() => gotoPage(Number(currentPage) - 1)}
                 className="pagination-link"
               >
                 {`${Number(currentPage) - 1}`}
-              </button>
+              </Button>
             )}
           </li>
           <li>
-            <button
-              type="button"
+            <Button
+              type="Button"
               className="pagination-link is-current"
+              current
               aria-current="page"
             >
               {currentPage}
-            </button>
+            </Button>
           </li>
           <li>
             {Number(currentPage) < Number(maxPage) && (
-              <button
-                type="button"
+              <Button
+                type="Button"
                 onClick={() => gotoPage(Number(currentPage) + 1)}
                 className="pagination-link"
               >
                 {`${Number(currentPage) + 1}`}
-              </button>
+              </Button>
             )}
           </li>
           <li>
-            {Number(currentPage) < Number(maxPage) && (
-              <button
-                type="button"
+            {Number(currentPage + 1) < Number(maxPage) && (
+              <Button
+                type="Button"
                 onClick={() => gotoPage(Number(currentPage) + 2)}
                 className="pagination-link"
               >
                 {`${Number(currentPage) + 2}`}
-              </button>
+              </Button>
             )}
           </li>
         </ul>
       </nav>
-    </div>
+    </Container>
   );
 };
 
 Pagination.propTypes = {
   setPage: PropTypes.func.isRequired,
-  currentPage: PropTypes.string,
-  maxPage: PropTypes.string.isRequired,
-};
-
-Pagination.defaultProps = {
-  currentPage: '1',
+  currentPage: PropTypes.number.isRequired,
+  maxPage: PropTypes.number.isRequired,
 };
 
 export default Pagination;
