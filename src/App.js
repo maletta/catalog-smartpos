@@ -9,6 +9,7 @@ import BottomBar from 'components/BottomBar';
 import Spinner from 'components/Spinner';
 import getStoreName from 'getStoreName';
 import NotFound from 'NotFound';
+import Pagination from 'components/Pagination';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faSort,
@@ -24,20 +25,28 @@ library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebo
 const App = () => {
   const [storeId] = useState(getStoreName());
   const [found, setFound] = useState();
+  const [store, setStore] = useState({});
+  const [products, setProducts] = useState({});
+  const [params, setParams] = useState({ page: 1 });
+
+  const [maxPage, setMaxPage] = useState(1);
   const [viewMode, setViewMode] = useState('GRID');
   const [categoryFilter, setCategoryFilter] = useState(-1);
   const [order, setOrder] = useState('AZ');
-  const [store, setStore] = useState({});
-  const [products, setProducts] = useState({});
   const [loading, setLoading] = useState(true);
 
   const getItems = (data) => {
-    getProducts(data.id)
-      .then(response => setProducts(response.data.produtos))
+    getProducts(data.id, params.page)
+      .then((response) => {
+        setProducts(response.data.produtos);
+        setMaxPage(response.data.totalPages);
+      })
       .finally(() => setLoading(false));
   };
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    setLoading(true);
     getStoreInfo(storeId)
       .then((response) => {
         setStore(response.data);
@@ -46,8 +55,7 @@ const App = () => {
       })
       .catch(() => setFound(false))
       .finally(() => setLoading(false));
-  }, [storeId]);
-
+  }, [params]);
 
   const onChangeView = view => setViewMode(view);
 
@@ -125,12 +133,16 @@ const App = () => {
                   categoryFilter={categoryFilter}
                   onFilterCategory={category => onFilterCategory(category)}
                 />
+                <Pagination
+                  setPage={setParams}
+                  currentPage={params.page}
+                  maxPage={maxPage}
+                />
               </div>
             </div>
             <Footer storeInfo={store} />
           </>
         ) : (notFoundHandle())}
-
     </>
   );
 };
