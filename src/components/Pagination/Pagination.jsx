@@ -15,8 +15,13 @@ const Button = styled.button`
     color: #f38a00;
     cursor: pointer;
     ${props => props.current && (
-    `   background-color: #f38a00;
-        color: white;`
+    ` background-color: #f38a00;
+      color: white;`
+  )}
+    ${props => props.flexGrowUnset && (
+    ` flex-grow: unset;
+      background-color: #f38a00;
+      color: white;`
   )}
   }
 `;
@@ -44,8 +49,8 @@ const Pagination = (props) => {
   return (
     <Container className="column is-half is-offset-one-quarter">
       <nav className="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
-        {Number(currentPage) > 1 && (<Button type="Button" onClick={() => previusPage()} className="pagination-previous"> 🡐  </Button>)}
-        {Number(currentPage) < Number(maxPage) && (<Button type="Button" onClick={() => nextPage()} className="pagination-next"> 🡒  </Button>)}
+        {Number(currentPage) > 1 && (<Button type="Button" onClick={() => previusPage()} flexGrowUnset className="pagination-previous"> 🡐  </Button>)}
+        {Number(currentPage) < Number(maxPage) && (<Button type="Button" onClick={() => nextPage()} flexGrowUnset className="pagination-next"> 🡒  </Button>)}
         <ul className="pagination-list">
           <li>
             {Number(currentPage) > 2 && (
