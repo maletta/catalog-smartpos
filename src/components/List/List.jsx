@@ -7,10 +7,12 @@ const Container = styled.div`
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
   background-color: #ffff;
   width: 100%;
-  height: 300px;
-  padding: 5px;
   margin-bottom: 10px;
+`;
+
+const ListContainer = styled.ul`
   overflow-y: auto;
+  height: 300px;
 
   ::-webkit-scrollbar {
     width: 5px;
@@ -29,14 +31,12 @@ const Container = styled.div`
   }
 `;
 
-const Title = styled.span`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+const Title = styled.div` 
   font-size: 15px;
   font-weight: bold;
   padding: 10px;
+  margin-left: 10px;
+  background: #fff;
 `;
 
 const List = (props) => {
@@ -46,9 +46,9 @@ const List = (props) => {
       <Title>
         {title}
       </Title>
-      <ul className="menu-list">
+      <ListContainer className="menu-list">
         {children}
-      </ul>
+      </ListContainer>
     </Container>
   );
 };

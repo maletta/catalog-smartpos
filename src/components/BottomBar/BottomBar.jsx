@@ -31,14 +31,16 @@ const BottomBar = (props) => {
     onChangeOrder,
     viewMode,
     onChangeView,
+    categories,
   } = props;
 
   return (
-    <Nav className="navbar is-fixed-bottom has-shadow is-hidden-desktop">
+    <Nav>
       <Category>
         <CategoryFilterListBottom
           categoryFilter={categoryFilter}
           onFilterCategory={onFilterCategory}
+          categories={categories}
         />
         <Options>
           <OrderFilterBottom
@@ -62,6 +64,7 @@ BottomBar.propTypes = {
   onChangeOrder: PropTypes.func.isRequired,
   categoryFilter: PropTypes.number,
   onFilterCategory: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
 BottomBar.defaultProps = {

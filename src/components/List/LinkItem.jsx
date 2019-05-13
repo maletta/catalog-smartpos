@@ -17,6 +17,9 @@ const Button = styled.a`
   cursor: pointer;
 `;
 
+const Li = styled.li`
+  padding: 10px 14px;
+`;
 
 const LinkItem = (props) => {
   const {
@@ -35,12 +38,12 @@ const LinkItem = (props) => {
     </Icon>
   ) : <Icon />;
   return (
-    <li>
+    <Li>
       <Button color={selected ? '#F38A00' : '#929292'} onClick={onClick}>
         {icon}
         {text}
       </Button>
-    </li>
+    </Li>
   );
 };
 
