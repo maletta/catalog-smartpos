@@ -4,21 +4,21 @@ import NavBar from '../navbar/NavBar';
 import Logo from '../logo/Logo';
 
 const Header = (props) => {
-  const { logo } = props;
+  const { storeInfo: { codigo, fantasia } } = props;
   return (
     <NavBar>
-      <Logo logo={logo} />
+      <Logo codigo={codigo} fantasia={fantasia} />
     </NavBar>
   );
 };
 
 
 Header.propTypes = {
-  logo: PropTypes.string,
+  storeInfo: PropTypes.object.isRequired,
 };
 
 Header.defaultProps = {
-  logo: '',
+
 };
 
 export default Header;
