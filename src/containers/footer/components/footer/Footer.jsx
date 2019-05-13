@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 
 const FullWidthFooter = styled.div`
@@ -71,57 +72,66 @@ const FooterCopyright = styled.span`
 
 const Footer = ({ storeInfo }) => (
   <>
-  <FullWidthFooter className="section">
-  <div className="container">
-    <Columns className="columns is-centered">
-      <Column className="column is-4-desktop is-12-mobile">
-        <div>{storeInfo.tipoLogradouro} {storeInfo.endereco}</div>
-        <div>114 Ap 33 Bl 01 </div>
-        <div>{storeInfo.cidade}/{storeInfo.uf} - {storeInfo.cep}</div>
-      </Column>
-      <Column className="column is-4-desktop">
-        <ul>
-          <Li>
-            <Icon>
-              <FontAwesomeIcon icon={['fab', 'whatsapp']} color="white" size="sm" />
-            </Icon>
-            <span>{storeInfo.whatsapp}</span>
-          </Li>
-          <Li>
-            <Icon>
-              <FontAwesomeIcon icon="envelope" color="white" size="sm" />
-            </Icon>
-            <span>{storeInfo.email}</span>
-          </Li>
-        </ul>
-      </Column>
-      <Column className="column is-4-desktop is-12-mobile  is-flex jus">
-        <ul>
-          <Li>
-            <Sociais href={`https://www.facebook.com/${storeInfo.facebook}`} rel="noopener noreferrer nofollow" target="_blank">
-              <Icon>
-                <FontAwesomeIcon icon={['fab', 'facebook-f']} color="white" size="sm" />
-              </Icon>
-              <span>/facebook</span>
-            </Sociais>
-          </Li>
-          <Li>
-            <Sociais href={`https://www.instagram.com/${storeInfo.instagram}`} rel="noopener noreferrer nofollow" target="_blank">
-            <Icon>
-              <FontAwesomeIcon icon={['fab', 'instagram']} color="white" size="sm" />
-            </Icon>
-            <span>/instagram</span>
-            </Sociais>
-          </Li>
-        </ul>
-      </Column>
-    </Columns>
-  </div>
-  </FullWidthFooter>
+    <FullWidthFooter className="section">
+      <div className="container">
+        <Columns className="columns is-centered">
+          <Column className="column is-12-mobile is-6-tablet is-4-desktop ">
+            <div>
+              {`${storeInfo.tipoLogradouro} ${storeInfo.endereco}`}
+            </div>
+            <div>
+              {`Numero, ${storeInfo.numero} ${(storeInfo.complemento) && (`- ${storeInfo.complemento}`)}`}
+            </div>
+            <div>
+              {`${storeInfo.cidade}/${storeInfo.uf} - ${storeInfo.cep}`}
+            </div>
+          </Column>
+          <Column className="column is-4-desktop">
+            <ul>
+              <Li>
+                <Icon>
+                  <FontAwesomeIcon icon={['fab', 'whatsapp']} color="white" size="sm" />
+                </Icon>
+                <span>{storeInfo.whatsapp}</span>
+              </Li>
+              <Li>
+                <Icon>
+                  <FontAwesomeIcon icon="envelope" color="white" size="sm" />
+                </Icon>
+                <span>{storeInfo.email}</span>
+              </Li>
+            </ul>
+          </Column>
+          <Column className="column is-12-mobile is-4-desktop">
+            <ul>
+              <Li>
+                <Sociais href={`https://www.facebook.com/${storeInfo.facebook}`} rel="noopener noreferrer nofollow" target="_blank">
+                  <Icon>
+                    <FontAwesomeIcon icon={['fab', 'facebook-f']} color="white" size="sm" />
+                  </Icon>
+                  <span>/facebook</span>
+                </Sociais>
+              </Li>
+              <Li>
+                <Sociais href={`https://www.instagram.com/${storeInfo.instagram}`} rel="noopener noreferrer nofollow" target="_blank">
+                  <Icon>
+                    <FontAwesomeIcon icon={['fab', 'instagram']} color="white" size="sm" />
+                  </Icon>
+                  <span>/instagram</span>
+                </Sociais>
+              </Li>
+            </ul>
+          </Column>
+        </Columns>
+      </div>
+    </FullWidthFooter>
     <FullWidthCopyright className="section">
       <FooterCopyrightDiv className="columns is-centered">
         <div className="column is-3 is-12-mobile has-text-centered">
-          <FooterCopyright>built with love by SmartPOS <FontAwesomeIcon icon={['far', 'heart']} color="red" size="sm" /></FooterCopyright>
+          <FooterCopyright>
+            built with love by SmartPOS
+            <FontAwesomeIcon icon={['far', 'heart']} color="red" size="sm" />
+          </FooterCopyright>
         </div>
       </FooterCopyrightDiv>
     </FullWidthCopyright>
@@ -129,16 +139,17 @@ const Footer = ({ storeInfo }) => (
       <FixedButton>
         <a href={`https://api.whatsapp.com/send?phone=55${storeInfo.whatsapp}`} rel="noopener noreferrer" target="_blank">
           <ButtonWhatsApp>
-            <FontAwesomeIcon icon={['fab', 'whatsapp']}  />
+            <FontAwesomeIcon icon={['fab', 'whatsapp']} />
           </ButtonWhatsApp>
         </a>
       </FixedButton>
     )}
-    </>
+  </>
 );
 
 
 Footer.propTypes = {
+  storeInfo: PropTypes.object.isRequired,
 };
 
 Footer.defaultProps = {

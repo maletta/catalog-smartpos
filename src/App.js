@@ -98,26 +98,34 @@ const App = () => {
         ? (
           <>
             <div className="section">
-            <div className="container">
-              <Header logo="https://lh3.googleusercontent.com/YPwFZ4FHxrKgvgvCgeZPCmfRSPsSwvBsB_9DvXtxcuaYax2cRemjR3mrZbqB4Qq41j4" />
-              <div className="columns">
-                <div className="column is-3-desktop">
-                  <SideBar
-                    viewMode={viewMode}
-                    onChangeView={view => onChangeView(view)}
-                    order={order}
-                    onChangeOrder={orderField => onChangeOrder(orderField)}
-                    categoryFilter={categoryFilter}
-                    onFilterCategory={category => onFilterCategory(category)}
-                    storeInfo={store}
-                    loading={loading}
-                  />
-                </div>
-                <div className="column is-9-desktop">
-                  {loading ? <Spinner /> : grid()}
-                </div>
+              <div className="container">
+                <Header logo="https://lh3.googleusercontent.com/YPwFZ4FHxrKgvgvCgeZPCmfRSPsSwvBsB_9DvXtxcuaYax2cRemjR3mrZbqB4Qq41j4" />
+                <MainContainer>
+                  <div className="column is-hidden-touch is-3-desktop">
+                    <SideBar
+                      viewMode={viewMode}
+                      onChangeView={view => onChangeView(view)}
+                      order={order}
+                      onChangeOrder={orderField => onChangeOrder(orderField)}
+                      categoryFilter={categoryFilter}
+                      onFilterCategory={category => onFilterCategory(category)}
+                      storeInfo={store}
+                      loading={loading}
+                    />
+                  </div>
+                  <div className="column is-12-tablet is-9-desktop">
+                    {loading ? <Spinner /> : grid()}
+                  </div>
+                </MainContainer>
+                <BottomBar
+                  viewMode={viewMode}
+                  onChangeView={view => onChangeView(view)}
+                  order={order}
+                  onChangeOrder={orderField => onChangeOrder(orderField)}
+                  categoryFilter={categoryFilter}
+                  onFilterCategory={category => onFilterCategory(category)}
+                />
               </div>
-            </div>
             </div>
             <Footer storeInfo={store} />
           </>

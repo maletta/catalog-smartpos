@@ -2,24 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-const Main = styled.section`
+const Main = styled.div`
+  margin-top: 90px !important;
   @media (max-width: 768px) {
-    margin-top: 57px !important;
-  }
-
-  @media (min-width: 769px) and (max-width: 1088px) {
-    margin-top: 126px !important;
-  }
-
-  @media (min-width: 1088px) {
-    margin-top: 126px !important;
+    margin-top: 10px !important;
   }
 `;
 
 const MainContainerView = (props) => {
   const { children } = props;
   return (
-    <Main className="main-content columns is-fullheight">
+    <Main className="columns">
       {children}
     </Main>
   );
