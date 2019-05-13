@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
-import ExibithionModeBottom from 'components/ExibithionModeBottom';
 import OrderFilterBottom from 'components/OrderFilterBottom';
 import CategoryFilterListBottom from 'components/CategoryFilterListBottom';
 
@@ -23,31 +22,27 @@ const Options = styled.div`
   bottom: 0;
 `;
 
-const BottomBar = (props) => {
+const CategoryTopMobile = (props) => {
   const {
     categoryFilter,
     onFilterCategory,
     order,
     onChangeOrder,
-    viewMode,
-    onChangeView,
+    categories,
   } = props;
 
   return (
-    <Nav className="navbar is-fixed-bottom has-shadow is-hidden-desktop">
+    <Nav className="is-hidden-desktop">
       <Category>
         <CategoryFilterListBottom
           categoryFilter={categoryFilter}
           onFilterCategory={onFilterCategory}
+          categories={categories}
         />
         <Options>
           <OrderFilterBottom
             order={order}
             onChangeOrder={onChangeOrder}
-          />
-          <ExibithionModeBottom
-            viewMode={viewMode}
-            onChangeView={onChangeView}
           />
         </Options>
       </Category>
@@ -55,20 +50,18 @@ const BottomBar = (props) => {
   );
 };
 
-BottomBar.propTypes = {
-  viewMode: PropTypes.string,
-  onChangeView: PropTypes.func.isRequired,
+CategoryTopMobile.propTypes = {
   order: PropTypes.string,
   onChangeOrder: PropTypes.func.isRequired,
   categoryFilter: PropTypes.number,
   onFilterCategory: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
-BottomBar.defaultProps = {
-  viewMode: 'GRID',
+CategoryTopMobile.defaultProps = {
   order: 'AZ',
   categoryFilter: -1,
 };
 
 
-export default BottomBar;
+export default CategoryTopMobile;
