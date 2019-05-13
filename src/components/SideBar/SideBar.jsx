@@ -29,7 +29,7 @@ const SideBar = (props) => {
   }, [storeInfo.id]);
 
   return (
-    <aside className="column is-one-fifth is-narrow-mobile is-fullheight section is-hidden-touch">
+    <aside>
       <CategoryFilterList
         categoryFilter={categoryFilter}
         onFilterCategory={onFilterCategory}

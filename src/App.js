@@ -15,11 +15,12 @@ import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faSort,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
 import { getStoreInfo, getProducts } from 'requests';
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF,
-  faWhatsapp, faInstagram, faSort);
+  faWhatsapp, faInstagram, faSort, faHeart);
 
 const App = () => {
   const [storeId] = useState(getStoreName());
@@ -104,39 +105,44 @@ const App = () => {
       {found
         ? (
           <>
-            <div className="container">
-              <Header logo="https://lh3.googleusercontent.com/YPwFZ4FHxrKgvgvCgeZPCmfRSPsSwvBsB_9DvXtxcuaYax2cRemjR3mrZbqB4Qq41j4" />
-              <MainContainer>
-                <SideBar
+            <div className="section">
+              <div className="container">
+                <Header logo="https://lh3.googleusercontent.com/YPwFZ4FHxrKgvgvCgeZPCmfRSPsSwvBsB_9DvXtxcuaYax2cRemjR3mrZbqB4Qq41j4" />
+                <MainContainer>
+                  <div className="column is-hidden-touch is-3-desktop">
+                    <SideBar
+                      viewMode={viewMode}
+                      onChangeView={view => onChangeView(view)}
+                      order={order}
+                      onChangeOrder={orderField => onChangeOrder(orderField)}
+                      categoryFilter={categoryFilter}
+                      onFilterCategory={category => onFilterCategory(category)}
+                      storeInfo={store}
+                      loading={loading}
+                    />
+                  </div>
+                  <div className="column is-12-tablet is-9-desktop">
+                    {loading ? <Spinner /> : grid()}
+                    <Pagination
+                      setPage={setParams}
+                      currentPage={params.page}
+                      maxPage={maxPage}
+                    />
+                  </div>
+                </MainContainer>
+                <BottomBar
                   viewMode={viewMode}
                   onChangeView={view => onChangeView(view)}
                   order={order}
                   onChangeOrder={orderField => onChangeOrder(orderField)}
                   categoryFilter={categoryFilter}
                   onFilterCategory={category => onFilterCategory(category)}
-                  storeInfo={store}
-                  loading={loading}
                 />
-                {loading ? <Spinner /> : grid()}
-              </MainContainer>
-              <BottomBar
-                viewMode={viewMode}
-                onChangeView={view => onChangeView(view)}
-                order={order}
-                onChangeOrder={orderField => onChangeOrder(orderField)}
-                categoryFilter={categoryFilter}
-                onFilterCategory={category => onFilterCategory(category)}
-              />
-              <Pagination
-                setPage={setParams}
-                currentPage={params.page}
-                maxPage={maxPage}
-              />
+              </div>
             </div>
             <Footer storeInfo={store} />
           </>
         ) : (notFoundHandle())}
-
     </>
   );
 };

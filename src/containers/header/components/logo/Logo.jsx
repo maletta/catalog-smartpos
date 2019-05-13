@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 const NavLogo = styled.a`
   line-height: 0;
-  position: absolute;
   left: 0;
   right: 0;
   margin: 0 auto;
