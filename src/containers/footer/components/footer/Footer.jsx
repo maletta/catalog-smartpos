@@ -9,22 +9,21 @@ const FullWidthFooter = styled.div`
   width: 100%;
 `;
 
-const Columns = styled.div`  
+const Columns = styled.div`
   background-color: #0c458e;
   color: white;
 `;
 
-const Column = styled.div` 
+const Column = styled.div`
   height: auto;
   color: white;
 `;
 
-const Li = styled.li`
-`;
 
 const Sociais = styled.a`
   color: #fff;
-  :hover{
+
+  :hover {
     color: #fff;
   }
 `;
@@ -35,23 +34,23 @@ const Icon = styled.span`
 `;
 
 const FixedButton = styled.div`
-    position: fixed;
-    bottom: 15px;
-    right: 20px; 
+  position: fixed;
+  bottom: 15px;
+  right: 20px;
 `;
 
 const ButtonWhatsApp = styled.div`
-    color: #f38a00;
-    padding: 10px;
-    border-radius: 50%;
-    background: #FFF;
-    height: 60px;
-    width: 60px;
-    border: solid 1px #f38a00;
-    font-size: 45px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  color: #f38a00;
+  padding: 10px;
+  border-radius: 50%;
+  background: #fff;
+  height: 60px;
+  width: 60px;
+  border: solid 1px #f38a00;
+  font-size: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const FullWidthCopyright = styled.div`
@@ -88,38 +87,38 @@ const Footer = ({ storeInfo }) => (
           </Column>
           <Column className="column is-4-desktop">
             <ul>
-              <Li>
+              <li>
                 <Icon>
                   <FontAwesomeIcon icon={['fab', 'whatsapp']} color="white" size="sm" />
                 </Icon>
                 <span>{storeInfo.whatsapp}</span>
-              </Li>
-              <Li>
+              </li>
+              <li>
                 <Icon>
                   <FontAwesomeIcon icon="envelope" color="white" size="sm" />
                 </Icon>
                 <span>{storeInfo.email}</span>
-              </Li>
+              </li>
             </ul>
           </Column>
           <Column className="column is-12-mobile is-4-desktop">
             <ul>
-              <Li>
+              <li>
                 <Sociais href={`https://www.facebook.com/${storeInfo.facebook}`} rel="noopener noreferrer nofollow" target="_blank">
                   <Icon>
                     <FontAwesomeIcon icon={['fab', 'facebook-f']} color="white" size="sm" />
                   </Icon>
                   <span>/facebook</span>
                 </Sociais>
-              </Li>
-              <Li>
+              </li>
+              <li>
                 <Sociais href={`https://www.instagram.com/${storeInfo.instagram}`} rel="noopener noreferrer nofollow" target="_blank">
                   <Icon>
                     <FontAwesomeIcon icon={['fab', 'instagram']} color="white" size="sm" />
                   </Icon>
                   <span>/instagram</span>
                 </Sociais>
-              </Li>
+              </li>
             </ul>
           </Column>
         </Columns>
