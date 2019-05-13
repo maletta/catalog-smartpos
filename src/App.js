@@ -123,6 +123,11 @@ const App = () => {
                   </div>
                   <div className="column is-12-tablet is-9-desktop">
                     {loading ? <Spinner /> : grid()}
+                    <Pagination
+                      setPage={setParams}
+                      currentPage={params.page}
+                      maxPage={maxPage}
+                    />
                   </div>
                 </MainContainer>
                 <BottomBar
@@ -132,11 +137,6 @@ const App = () => {
                   onChangeOrder={orderField => onChangeOrder(orderField)}
                   categoryFilter={categoryFilter}
                   onFilterCategory={category => onFilterCategory(category)}
-                />
-                <Pagination
-                  setPage={setParams}
-                  currentPage={params.page}
-                  maxPage={maxPage}
                 />
               </div>
             </div>
