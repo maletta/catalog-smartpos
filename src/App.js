@@ -62,6 +62,7 @@ const App = () => {
         getItems(response.data);
         getCategorys(response.data);
         setFound(true);
+        document.title = response.data.fantasia;
       })
       .catch(() => setFound(false))
       .finally(() => setLoading(false));
@@ -113,7 +114,7 @@ const App = () => {
           <>
             <div className="section">
               <div className="container">
-                <Header logo="https://lh3.googleusercontent.com/YPwFZ4FHxrKgvgvCgeZPCmfRSPsSwvBsB_9DvXtxcuaYax2cRemjR3mrZbqB4Qq41j4" />
+                <Header storeInfo={store} />
                 <MainContainer>
                   <div className="column is-hidden-touch is-3-desktop">
                     <SideBar

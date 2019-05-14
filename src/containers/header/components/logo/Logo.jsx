@@ -24,16 +24,18 @@ const LogoImage = styled.img`
 `;
 
 const Logo = (props) => {
-  const { logo } = props;
+  const { codigo, fantasia } = props;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
   return (
     <NavLogo>
-      <LogoImage src={logo} />
+      <LogoImage src={imageBaseUrl} title={fantasia} />
     </NavLogo>
   );
 };
 
 Logo.propTypes = {
-  logo: PropTypes.string.isRequired,
+  fantasia: PropTypes.string.isRequired,
+  codigo: PropTypes.number.isRequired,
 };
 
 Logo.defaultProps = {
