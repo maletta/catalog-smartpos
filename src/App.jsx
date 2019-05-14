@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import Header from 'containers/header';
 import GridList from 'components/GridList';
@@ -23,6 +23,8 @@ import {
   getCategories,
 } from 'requests';
 
+import FilterContext from 'contexts/FilterContext';
+
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF,
   faWhatsapp, faInstagram, faSort, faHeart);
 const Container = styled.div`
@@ -39,8 +41,8 @@ const App = () => {
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
   const [maxPage, setMaxPage] = useState(1);
-  const [params, setParams] = useState({ page: 1 });
 
+  const { filter } = useContext(FilterContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
@@ -49,7 +51,7 @@ const App = () => {
   ) : !loading && (<NotFound />));
 
   const getProductList = (data) => {
-    getProducts(data.id, params.page)
+    getProducts(data.id, filter)
       .then((response) => {
         setProducts(response.data.produtos);
         setMaxPage(response.data.totalPages);
@@ -66,9 +68,9 @@ const App = () => {
   const getStore = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
+        setStore({ ...response.data, found: true });
         getProductList(response.data);
         getCategoryList(response.data);
-        setStore({ ...response.data, found: true });
       })
       .catch(() => setStore({ found: false }))
       .finally(() => setLoading(false));
@@ -78,15 +80,12 @@ const App = () => {
   const prodArray = Object.keys(products).map(i => products[i]);
 
   useEffect(() => {
-    if (!store.found) {
-      getStore();
-    }
     window.scrollTo(0, 0);
-  }, []);
+    getStore();
+  }, [filter]);
 
   return (
     <>
-
       {store.found ? (
         <div>
           <div className="section">
@@ -106,8 +105,7 @@ const App = () => {
                   />
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
                   <Pagination
-                    setPage={setParams}
-                    currentPage={params.page}
+                    currentPage={filter.page}
                     maxPage={maxPage}
                   />
                 </div>

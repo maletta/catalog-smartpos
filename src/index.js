@@ -5,13 +5,16 @@ import IntlProvider from 'intl/intlProvider';
 import defaultTheme from 'styles/DefaultTheme';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
+import { FilterProvider } from './contexts/FilterContext';
 
 import 'styles/index.scss';
 
 ReactDOM.render((
   <IntlProvider language={{ locale: 'pt', messages: {} }}>
     <ThemeProvider theme={defaultTheme}>
-      <App />
+      <FilterProvider>
+        <App />
+      </FilterProvider>
     </ThemeProvider>
   </IntlProvider>), document.getElementById('root'));
 

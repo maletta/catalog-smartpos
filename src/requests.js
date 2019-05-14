@@ -4,7 +4,12 @@ const getStoreInfo = id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/
 
 const getCategories = id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/categorias/${id}`);
 
-const getProducts = (id, page) => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/produtos/${id}?page=${page}`);
+const getProducts = (id, filter) => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/produtos/${id}`, {
+  params: {
+    ...filter,
+    limit: 9,
+  },
+});
 
 export {
   getStoreInfo,

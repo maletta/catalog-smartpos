@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import FilterContext from 'contexts/FilterContext';
 
 
 const Container = styled.div`
@@ -27,21 +28,22 @@ const Button = styled.button`
 `;
 
 const Pagination = (props) => {
-  const { setPage, currentPage, maxPage } = props;
+  const { currentPage, maxPage } = props;
+  const { updateFilter } = useContext(FilterContext);
 
   const nextPage = () => {
-    setPage({ page: Number(currentPage) + 1 });
+    updateFilter({ page: Number(currentPage) + 1 });
     window.history.pushState('', '', `?page=${Number(currentPage) + 1}`);
   };
   const previusPage = () => {
     if (currentPage > 1) {
-      setPage({ page: Number(currentPage) - 1 });
+      updateFilter({ page: Number(currentPage) - 1 });
       window.history.pushState('', '', `?page=${Number(currentPage) - 1}`);
     }
   };
   const gotoPage = (page) => {
     if (page >= 1) {
-      setPage({ page });
+      updateFilter({ page });
       window.history.pushState('', '', `?page=${page}`);
     }
   };
@@ -113,7 +115,6 @@ const Pagination = (props) => {
 };
 
 Pagination.propTypes = {
-  setPage: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   maxPage: PropTypes.number.isRequired,
 };
