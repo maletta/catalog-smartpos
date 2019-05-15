@@ -4,9 +4,9 @@ import queryString from 'query-string';
 
 const FilterContext = createContext();
 
-
 export const FilterProvider = ({ children }) => {
   const parsed = queryString.parse(window.location.search);
+
   const [filter, setFilter] = useState({
     page: parsed.page || (1),
     categoria: parsed.categoria || (0),
@@ -17,7 +17,7 @@ export const FilterProvider = ({ children }) => {
   useEffect(() => {
     const stringified = queryString.stringify({ ...parsed, ...filter });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-    window.history.pushState({}, '', `${baseUrl}#?${stringified}`);
+    window.history.pushState({}, '', `${baseUrl}?${stringified}`);
   }, [filter]);
 
   const updateFilter = (newFilter) => {
