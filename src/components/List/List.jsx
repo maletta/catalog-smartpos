@@ -12,6 +12,7 @@ const Container = styled.div`
 const ListContainer = styled.ul`
   overflow-y: auto;
   height: 300px;
+  ${props => props.isFullHeight && ('height: 100%')};
 
   ::-webkit-scrollbar {
     width: 5px;
@@ -39,13 +40,13 @@ const Title = styled.div`
 `;
 
 const List = (props) => {
-  const { children, title } = props;
+  const { children, title, isFullHeight } = props;
   return (
     <Container>
       <Title>
         {title}
       </Title>
-      <ListContainer className="menu-list">
+      <ListContainer className="menu-list" isFullHeight={isFullHeight}>
         {children}
       </ListContainer>
     </Container>
@@ -54,6 +55,7 @@ const List = (props) => {
 
 List.propTypes = {
   title: PropTypes.string,
+  isFullHeight: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
@@ -62,6 +64,7 @@ List.propTypes = {
 
 List.defaultProps = {
   title: undefined,
+  isFullHeight: false,
 };
 
 

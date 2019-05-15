@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import FilterContext from 'contexts/FilterContext';
 import { LinkItem } from 'components/List';
 
 const Button = styled.button`
@@ -32,35 +33,19 @@ const List = styled.ul`
 `;
 
 const CategoryFilterListBottom = (props) => {
-  const { onFilterCategory, categoryFilter, categories } = props;
+  const { categories } = props;
+  const { updateFilter } = useContext(FilterContext);
   const [isOpen, setIsOpen] = useState(false);
 
   const openCategories = () => {
     setIsOpen(!isOpen);
   };
 
-  const selectCategory = (item) => {
-    onFilterCategory(item);
-    setIsOpen(false);
-  };
-
-  const isSelected = (item) => {
-    if (!item && !categoryFilter) {
-      return true;
-    }
-    if ((item && !categoryFilter) || (!item && categoryFilter)) {
-      return false;
-    }
-    return (item === categoryFilter);
-  };
-
   const items = categories.map(item => (
     <LinkItem
       key={item.id}
       text={item.descricao}
-      iconName={isSelected(item.id) ? 'check' : ''}
-      selected={isSelected(item.id)}
-      onClick={() => selectCategory(item.id)}
+      onClick={() => updateFilter({ categoria: item.id })}
     />
   ));
 
@@ -71,9 +56,7 @@ const CategoryFilterListBottom = (props) => {
           <List>
             <LinkItem
               text="Tudo"
-              iconName={isSelected(-1) ? 'check' : ''}
-              selected={isSelected(-1)}
-              onClick={() => selectCategory(-1)}
+              onClick={() => updateFilter({ categoria: 0 })}
             />
             { items }
           </List>
@@ -86,13 +69,7 @@ const CategoryFilterListBottom = (props) => {
 };
 
 CategoryFilterListBottom.propTypes = {
-  categoryFilter: PropTypes.number,
-  onFilterCategory: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
-};
-
-CategoryFilterListBottom.defaultProps = {
-  categoryFilter: -1,
 };
 
 export default CategoryFilterListBottom;

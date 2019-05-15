@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import FilterContext from 'contexts/FilterContext';
 
 
 const Container = styled.div`
@@ -8,7 +10,7 @@ const Container = styled.div`
     padding-top: 50px;
   }
 `;
-const Button = styled.button`
+const Button = styled.a`
   &&& {
     border-color: #f38a00;
     background-color: white;
@@ -27,93 +29,115 @@ const Button = styled.button`
 `;
 
 const Pagination = (props) => {
-  const { setPage, currentPage, maxPage } = props;
-
+  const { currentPage, maxPage } = props;
+  const { updateFilter } = useContext(FilterContext);
   const nextPage = () => {
-    setPage({ page: Number(currentPage) + 1 });
+    updateFilter({ page: Number(currentPage) + 1 });
     window.history.pushState('', '', `?page=${Number(currentPage) + 1}`);
   };
   const previusPage = () => {
     if (currentPage > 1) {
-      setPage({ page: Number(currentPage) - 1 });
+      updateFilter({ page: Number(currentPage) - 1 });
       window.history.pushState('', '', `?page=${Number(currentPage) - 1}`);
     }
   };
   const gotoPage = (page) => {
     if (page >= 1) {
-      setPage({ page });
+      updateFilter({ page });
       window.history.pushState('', '', `?page=${page}`);
     }
   };
 
   return (
-    <Container className="column is-half is-offset-one-quarter">
-      <nav className="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
-        {Number(currentPage) > 1 && (<Button type="Button" onClick={() => previusPage()} flexGrowUnset className="pagination-previous"> 🡐  </Button>)}
-        {Number(currentPage) < Number(maxPage) && (<Button type="Button" onClick={() => nextPage()} flexGrowUnset className="pagination-next"> 🡒  </Button>)}
-        <ul className="pagination-list">
-          <li>
-            {Number(currentPage) > 2 && (
-            <Button
-              type="Button"
-              onClick={() => gotoPage(Number(currentPage) - 2)}
-              className="pagination-link"
-            >
-              {`${Number(currentPage) - 2}`}
-            </Button>
-            )}
-          </li>
-          <li>
-            {Number(currentPage) > 1 && (
+    <>
+      {maxPage > 0 && (
+      <Container className="column is-half is-offset-one-quarter">
+        <nav className="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
+          {Number(currentPage) > 1 && (
+          <Button
+            type="button"
+            onClick={() => previusPage()}
+            flexGrowUnset
+            className="pagination-previous"
+          >
+            <FontAwesomeIcon icon={['fas', 'arrow-left']} color="white" size="sm" />
+          </Button>
+          )}
+          {Number(currentPage) < Number(maxPage) && (
+          <Button
+            type="button"
+            onClick={() => nextPage()}
+            flexGrowUnset
+            className="pagination-next"
+          >
+            <FontAwesomeIcon icon={['fas', 'arrow-right']} color="white" size="sm" />
+          </Button>
+          )}
+          <ul className="pagination-list">
+            <li>
+              {Number(currentPage) > 2 && (
               <Button
-                type="Button"
+                type="button"
+                onClick={() => gotoPage(Number(currentPage) - 2)}
+                className="pagination-link"
+              >
+                {`${Number(currentPage) - 2}`}
+              </Button>
+              )}
+            </li>
+            <li>
+              {Number(currentPage) > 1 && (
+              <Button
+                type="button"
                 onClick={() => gotoPage(Number(currentPage) - 1)}
                 className="pagination-link"
               >
                 {`${Number(currentPage) - 1}`}
               </Button>
-            )}
-          </li>
-          <li>
-            <Button
-              type="Button"
-              className="pagination-link is-current"
-              current
-              aria-current="page"
-            >
-              {currentPage}
-            </Button>
-          </li>
-          <li>
-            {Number(currentPage) < Number(maxPage) && (
+              )}
+            </li>
+            <li>
               <Button
-                type="Button"
+                type="button"
+                className="pagination-link is-current"
+                current
+                aria-current="page"
+              >
+                {currentPage}
+              </Button>
+            </li>
+            <li>
+              {Number(currentPage) < Number(maxPage) && (
+              <Button
+                type="button"
                 onClick={() => gotoPage(Number(currentPage) + 1)}
                 className="pagination-link"
               >
                 {`${Number(currentPage) + 1}`}
               </Button>
-            )}
-          </li>
-          <li>
-            {Number(currentPage + 1) < Number(maxPage) && (
+              )}
+            </li>
+            <li>
+              {Number(currentPage + 1) < Number(maxPage) && (
               <Button
-                type="Button"
+                type="button"
                 onClick={() => gotoPage(Number(currentPage) + 2)}
                 className="pagination-link"
               >
                 {`${Number(currentPage) + 2}`}
               </Button>
-            )}
-          </li>
-        </ul>
-      </nav>
-    </Container>
+              )}
+            </li>
+          </ul>
+        </nav>
+      </Container>
+      )}
+
+    </>
   );
 };
 
 Pagination.propTypes = {
-  setPage: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   maxPage: PropTypes.number.isRequired,
 };

@@ -7,7 +7,6 @@ import { List, LinkItem } from 'components/List';
 const CategoryFilterList = (props) => {
   const {
     categoryFilter,
-    onFilterCategory,
     categoriesList,
     loading,
   } = props;
@@ -27,7 +26,7 @@ const CategoryFilterList = (props) => {
       text={item.descricao}
       iconName={isSelected(item.id) ? 'check' : ''}
       selected={isSelected(item.id)}
-      onClick={() => onFilterCategory(item.id)}
+      onClick={() => ''}
     />
   ));
 
@@ -37,7 +36,7 @@ const CategoryFilterList = (props) => {
         text="Tudo"
         iconName={isSelected(-1, props.categoryFilter) ? 'check' : ''}
         selected={isSelected(-1, props.categoryFilter)}
-        onClick={() => onFilterCategory(-1)}
+        onClick={() => ''}
       />
       {loading ? <Spinner /> : items}
     </List>
@@ -46,7 +45,6 @@ const CategoryFilterList = (props) => {
 
 CategoryFilterList.propTypes = {
   categoryFilter: PropTypes.number,
-  onFilterCategory: PropTypes.func.isRequired,
   categoriesList: PropTypes.array.isRequired,
   loading: PropTypes.bool.isRequired,
 };

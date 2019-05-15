@@ -74,12 +74,15 @@ const Footer = ({ storeInfo }) => (
     <FullWidthFooter className="section">
       <div className="container">
         <Columns className="columns is-centered">
-          <Column className="column is-12-mobile is-6-tablet is-4-desktop ">
+          <Column className="column is-12-mobile is-6-tablet is-4-desktop">
+            <div>
+              {storeInfo.fantasia}
+            </div>
             <div>
               {`${storeInfo.tipoLogradouro} ${storeInfo.endereco}`}
             </div>
             <div>
-              {`Numero, ${storeInfo.numero} ${(storeInfo.complemento) && (`- ${storeInfo.complemento}`)}`}
+              {`Número, ${storeInfo.numero} ${(storeInfo.complemento) && (`- ${storeInfo.complemento}`)}`}
             </div>
             <div>
               {`${storeInfo.cidade}/${storeInfo.uf} - ${storeInfo.cep}`}
@@ -94,10 +97,12 @@ const Footer = ({ storeInfo }) => (
                 <span>{storeInfo.whatsapp}</span>
               </li>
               <li>
-                <Icon>
-                  <FontAwesomeIcon icon="envelope" color="white" size="sm" />
-                </Icon>
-                <span>{storeInfo.email}</span>
+                <Sociais href={`mailto:${storeInfo.email}`}>
+                  <Icon>
+                    <FontAwesomeIcon icon="envelope" color="white" size="sm" />
+                  </Icon>
+                  <span>{storeInfo.email}</span>
+                </Sociais>
               </li>
             </ul>
           </Column>
