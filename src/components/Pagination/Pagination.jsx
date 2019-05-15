@@ -9,7 +9,7 @@ const Container = styled.div`
     padding-top: 50px;
   }
 `;
-const Button = styled.button`
+const Button = styled.a`
   &&& {
     border-color: #f38a00;
     background-color: white;
@@ -51,13 +51,31 @@ const Pagination = (props) => {
   return (
     <Container className="column is-half is-offset-one-quarter">
       <nav className="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
-        {Number(currentPage) > 1 && (<Button type="Button" onClick={() => previusPage()} flexGrowUnset className="pagination-previous"> 🡐  </Button>)}
-        {Number(currentPage) < Number(maxPage) && (<Button type="Button" onClick={() => nextPage()} flexGrowUnset className="pagination-next"> 🡒  </Button>)}
+        {Number(currentPage) > 1 && (
+          <Button
+            type="button"
+            onClick={() => previusPage()}
+            flexGrowUnset
+            className="pagination-previous"
+          >
+            {'🡐'}
+          </Button>
+        )}
+        {Number(currentPage) < Number(maxPage) && (
+          <Button
+            type="button"
+            onClick={() => nextPage()}
+            flexGrowUnset
+            className="pagination-next"
+          >
+            {'🡒'}
+          </Button>
+        )}
         <ul className="pagination-list">
           <li>
             {Number(currentPage) > 2 && (
             <Button
-              type="Button"
+              type="button"
               onClick={() => gotoPage(Number(currentPage) - 2)}
               className="pagination-link"
             >
@@ -68,7 +86,7 @@ const Pagination = (props) => {
           <li>
             {Number(currentPage) > 1 && (
               <Button
-                type="Button"
+                type="button"
                 onClick={() => gotoPage(Number(currentPage) - 1)}
                 className="pagination-link"
               >
@@ -78,7 +96,7 @@ const Pagination = (props) => {
           </li>
           <li>
             <Button
-              type="Button"
+              type="button"
               className="pagination-link is-current"
               current
               aria-current="page"
@@ -89,7 +107,7 @@ const Pagination = (props) => {
           <li>
             {Number(currentPage) < Number(maxPage) && (
               <Button
-                type="Button"
+                type="button"
                 onClick={() => gotoPage(Number(currentPage) + 1)}
                 className="pagination-link"
               >
@@ -100,7 +118,7 @@ const Pagination = (props) => {
           <li>
             {Number(currentPage + 1) < Number(maxPage) && (
               <Button
-                type="Button"
+                type="button"
                 onClick={() => gotoPage(Number(currentPage) + 2)}
                 className="pagination-link"
               >

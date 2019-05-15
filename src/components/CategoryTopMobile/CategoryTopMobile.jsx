@@ -25,9 +25,7 @@ const Options = styled.div`
 const CategoryTopMobile = (props) => {
   const {
     categoryFilter,
-    onFilterCategory,
     order,
-    onChangeOrder,
     categories,
   } = props;
 
@@ -36,13 +34,11 @@ const CategoryTopMobile = (props) => {
       <Category>
         <CategoryFilterListBottom
           categoryFilter={categoryFilter}
-          onFilterCategory={onFilterCategory}
           categories={categories}
         />
         <Options>
           <OrderFilterBottom
             order={order}
-            onChangeOrder={onChangeOrder}
           />
         </Options>
       </Category>
@@ -52,9 +48,7 @@ const CategoryTopMobile = (props) => {
 
 CategoryTopMobile.propTypes = {
   order: PropTypes.string,
-  onChangeOrder: PropTypes.func.isRequired,
   categoryFilter: PropTypes.number,
-  onFilterCategory: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
 };
 
