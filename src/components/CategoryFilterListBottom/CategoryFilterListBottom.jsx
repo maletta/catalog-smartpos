@@ -59,7 +59,7 @@ const CategoryFilterListBottom = (props) => {
     <LinkItem
       key={item.id}
       text={item.descricao}
-      onClick={() => updateFilter({ categoria: item.id })}
+      onClick={() => updateFilter({ categoria: item.id, page: 1 })}
     />
   ));
 
