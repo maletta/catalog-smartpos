@@ -12,7 +12,8 @@ import Footer from 'containers/footer';
 import getStoreName from 'getStoreName';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
-  faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faSort, faArrowRight, faArrowLeft,
+  faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faArrowRight, faArrowLeft,
+  faCaretDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
@@ -26,7 +27,7 @@ import {
 import FilterContext from 'contexts/FilterContext';
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF,
-  faWhatsapp, faInstagram, faSort, faHeart, faArrowRight, faArrowLeft);
+  faWhatsapp, faInstagram, faHeart, faArrowRight, faArrowLeft, faCaretDown);
 const Container = styled.div`
   width: 100%;
   height: 100%;
