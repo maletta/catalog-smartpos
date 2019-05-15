@@ -8,10 +8,10 @@ const FilterContext = createContext();
 export const FilterProvider = ({ children }) => {
   const parsed = queryString.parse(window.location.search);
   const [filter, setFilter] = useState({
-    page: 1,
-    categoria: 0,
-    orderBy: 'desc',
-    sortBy: 'valorVenda',
+    page: parsed.page || (1),
+    categoria: parsed.categoria || (0),
+    orderBy: parsed.orderBy || ('desc'),
+    sortBy: parsed.sortBy || ('valorVenda'),
   });
 
   useEffect(() => {

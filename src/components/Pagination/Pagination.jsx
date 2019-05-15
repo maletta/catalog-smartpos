@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FilterContext from 'contexts/FilterContext';
 
 
@@ -58,7 +59,7 @@ const Pagination = (props) => {
             flexGrowUnset
             className="pagination-previous"
           >
-            {'🡐'}
+            <FontAwesomeIcon icon={['fas', 'arrow-left']} color="white" size="sm" />
           </Button>
         )}
         {Number(currentPage) < Number(maxPage) && (
@@ -68,7 +69,7 @@ const Pagination = (props) => {
             flexGrowUnset
             className="pagination-next"
           >
-            {'🡒'}
+            <FontAwesomeIcon icon={['fas', 'arrow-right']} color="white" size="sm" />
           </Button>
         )}
         <ul className="pagination-list">
