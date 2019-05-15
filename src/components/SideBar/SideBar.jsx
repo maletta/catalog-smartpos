@@ -31,7 +31,7 @@ const SideBar = (props) => {
         />
         {loading ? <Spinner /> : items}
       </List>
-      <List title="Ordernar por">
+      <List title="Ordernar por" isFullHeight>
         <LinkItem
           text="ASC"
           onClick={() => updateFilter({ orderBy: 'asc' })}
