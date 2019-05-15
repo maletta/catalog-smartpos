@@ -56,6 +56,10 @@ const App = () => {
         setProducts(response.data.produtos);
         setMaxPage(response.data.totalPages);
       })
+      .catch(() => {
+        setProducts({});
+        setMaxPage(-1);
+      })
       .finally(() => setLoading(false));
   };
 
@@ -68,6 +72,7 @@ const App = () => {
   const getStore = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
+        document.title = response.data.fantasia;
         setStore({ ...response.data, found: true });
         getProductList(response.data);
         getCategoryList(response.data);

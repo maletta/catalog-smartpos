@@ -31,7 +31,6 @@ const Button = styled.a`
 const Pagination = (props) => {
   const { currentPage, maxPage } = props;
   const { updateFilter } = useContext(FilterContext);
-
   const nextPage = () => {
     updateFilter({ page: Number(currentPage) + 1 });
     window.history.pushState('', '', `?page=${Number(currentPage) + 1}`);
@@ -50,9 +49,11 @@ const Pagination = (props) => {
   };
 
   return (
-    <Container className="column is-half is-offset-one-quarter">
-      <nav className="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
-        {Number(currentPage) > 1 && (
+    <>
+      {maxPage > 0 && (
+      <Container className="column is-half is-offset-one-quarter">
+        <nav className="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
+          {Number(currentPage) > 1 && (
           <Button
             type="button"
             onClick={() => previusPage()}
@@ -61,8 +62,8 @@ const Pagination = (props) => {
           >
             <FontAwesomeIcon icon={['fas', 'arrow-left']} color="white" size="sm" />
           </Button>
-        )}
-        {Number(currentPage) < Number(maxPage) && (
+          )}
+          {Number(currentPage) < Number(maxPage) && (
           <Button
             type="button"
             onClick={() => nextPage()}
@@ -71,21 +72,21 @@ const Pagination = (props) => {
           >
             <FontAwesomeIcon icon={['fas', 'arrow-right']} color="white" size="sm" />
           </Button>
-        )}
-        <ul className="pagination-list">
-          <li>
-            {Number(currentPage) > 2 && (
-            <Button
-              type="button"
-              onClick={() => gotoPage(Number(currentPage) - 2)}
-              className="pagination-link"
-            >
-              {`${Number(currentPage) - 2}`}
-            </Button>
-            )}
-          </li>
-          <li>
-            {Number(currentPage) > 1 && (
+          )}
+          <ul className="pagination-list">
+            <li>
+              {Number(currentPage) > 2 && (
+              <Button
+                type="button"
+                onClick={() => gotoPage(Number(currentPage) - 2)}
+                className="pagination-link"
+              >
+                {`${Number(currentPage) - 2}`}
+              </Button>
+              )}
+            </li>
+            <li>
+              {Number(currentPage) > 1 && (
               <Button
                 type="button"
                 onClick={() => gotoPage(Number(currentPage) - 1)}
@@ -93,20 +94,20 @@ const Pagination = (props) => {
               >
                 {`${Number(currentPage) - 1}`}
               </Button>
-            )}
-          </li>
-          <li>
-            <Button
-              type="button"
-              className="pagination-link is-current"
-              current
-              aria-current="page"
-            >
-              {currentPage}
-            </Button>
-          </li>
-          <li>
-            {Number(currentPage) < Number(maxPage) && (
+              )}
+            </li>
+            <li>
+              <Button
+                type="button"
+                className="pagination-link is-current"
+                current
+                aria-current="page"
+              >
+                {currentPage}
+              </Button>
+            </li>
+            <li>
+              {Number(currentPage) < Number(maxPage) && (
               <Button
                 type="button"
                 onClick={() => gotoPage(Number(currentPage) + 1)}
@@ -114,10 +115,10 @@ const Pagination = (props) => {
               >
                 {`${Number(currentPage) + 1}`}
               </Button>
-            )}
-          </li>
-          <li>
-            {Number(currentPage + 1) < Number(maxPage) && (
+              )}
+            </li>
+            <li>
+              {Number(currentPage + 1) < Number(maxPage) && (
               <Button
                 type="button"
                 onClick={() => gotoPage(Number(currentPage) + 2)}
@@ -125,11 +126,14 @@ const Pagination = (props) => {
               >
                 {`${Number(currentPage) + 2}`}
               </Button>
-            )}
-          </li>
-        </ul>
-      </nav>
-    </Container>
+              )}
+            </li>
+          </ul>
+        </nav>
+      </Container>
+      )}
+
+    </>
   );
 };
 

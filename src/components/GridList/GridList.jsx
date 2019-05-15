@@ -8,7 +8,7 @@ const GridList = (props) => {
   return (
     <div className="column is-fluid">
       <div className="columns is-mobile is-multiline">
-        {items}
+        {items.length > 0 ? (items) : (<p>Nenhum produto encontrado</p>)}
       </div>
     </div>
   );

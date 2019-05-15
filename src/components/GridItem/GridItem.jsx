@@ -55,25 +55,28 @@ const GridItem = (props) => {
   };
 
   return (
-    <Item className="column is-12-mobile is-4-tablet is-4-desktop">
-      <Container className="card-image">
-        <div className="card-image">
-          <figure className="image is-160x160">
-            {load ? (<Spinner />) : (<img src={image} alt="product" />)}
-          </figure>
-        </div>
-        <div className="card-content">
-          <div className="title is-5">
-            <Price>
-              {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
-            </Price>
+    <>
+      <Item className="column is-12-mobile is-4-tablet is-4-desktop">
+        <Container className="card-image">
+          <div className="card-image">
+            <figure className="image is-160x160">
+              {load ? (<Spinner />) : (<img src={image} alt="product" />)}
+            </figure>
           </div>
-          <Descricao className="content">
-            <p>{item.descricao}</p>
-          </Descricao>
-        </div>
-      </Container>
-    </Item>
+          <div className="card-content">
+            <div className="title is-5">
+              <Price>
+                {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
+              </Price>
+            </div>
+            <Descricao className="content">
+              <p>{item.descricao}</p>
+            </Descricao>
+          </div>
+        </Container>
+      </Item>
+    </>
+
   );
 };
 
