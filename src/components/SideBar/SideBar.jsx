@@ -19,7 +19,7 @@ const SideBar = (props) => {
     <LinkItem
       key={item.id}
       text={item.descricao}
-      onClick={() => updateFilter({ categoria: item.id })}
+      onClick={() => updateFilter({ categoria: item.id, page: 1 })}
     />
   ));
   return (
@@ -33,12 +33,20 @@ const SideBar = (props) => {
       </List>
       <List title="Ordernar por" isFullHeight>
         <LinkItem
-          text="ASC"
-          onClick={() => updateFilter({ orderBy: 'asc' })}
+          text="A-Z"
+          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'descricao' })}
         />
         <LinkItem
-          text="DESC"
-          onClick={() => updateFilter({ orderBy: 'desc' })}
+          text="Z-A"
+          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'descricao' })}
+        />
+        <LinkItem
+          text="Menor preço"
+          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'valorVenda' })}
+        />
+        <LinkItem
+          text="Maior preço"
+          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'valorVenda' })}
         />
       </List>
     </Aside>
