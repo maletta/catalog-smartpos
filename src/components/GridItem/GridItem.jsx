@@ -15,7 +15,6 @@ const Container = styled.div`
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
   width: 100%;
   background-color: #ffff;
-  cursor: pointer;
 
   :hover {
     /* box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
