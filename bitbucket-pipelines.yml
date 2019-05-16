@@ -16,10 +16,3 @@ pipelines:
         script:
           - yarn install
           - yarn lint
-    - step:
-        caches:
-          - node
-        name: ✔️ Test
-        script:
-          - yarn install
-          - yarn test
