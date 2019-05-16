@@ -14,7 +14,6 @@ const Button = styled.a`
   width: 100%;
   text-align: left;
   color: ${props => props.color || props.theme.secondary} !important;
-  cursor: pointer;
 `;
 
 const Li = styled.li`

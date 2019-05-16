@@ -67,6 +67,7 @@ const App = () => {
   const getCategoryList = (data) => {
     getCategories(data.id)
       .then(response => setCategories(response.data))
+      .catch(() => setCategories())
       .finally(() => setLoading(false));
   };
 
