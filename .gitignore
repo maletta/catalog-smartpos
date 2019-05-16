@@ -2,7 +2,6 @@
 
 .idea/
 jsconfig.json
-.env
 
 # dependencies
 /node_modules
