@@ -138,7 +138,7 @@ const Pagination = (props) => {
 };
 
 Pagination.propTypes = {
-  currentPage: PropTypes.number.isRequired,
+  currentPage: PropTypes.any.isRequired,
   maxPage: PropTypes.number.isRequired,
 };
 

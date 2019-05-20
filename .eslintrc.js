@@ -7,6 +7,7 @@ module.exports = {
     window: false,
     localStorage: false,
     Image: true,
+    AbortController: true,
   },
   rules: {
     'react/prefer-stateless-function': 'off',

@@ -133,7 +133,7 @@ const Footer = ({ storeInfo }) => (
       <FooterCopyrightDiv className="columns is-centered">
         <div className="column is-3 is-12-mobile has-text-centered">
           <FooterCopyright>
-            <>built with love by SmartPOS </>
+            <span> built with love by SmartPOS </span>
             <FontAwesomeIcon icon={['far', 'heart']} color="red" size="sm" />
           </FooterCopyright>
         </div>
