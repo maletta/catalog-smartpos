@@ -63,42 +63,37 @@ const CategoryFilterListBottom = (props) => {
     />
   ));
 
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('click', collapse);
-    } else {
-      document.removeEventListener('click', collapse);
-    }
+  useEffect(
+    () => {
+      if (isOpen) {
+        document.addEventListener('click', collapse);
+      } else {
+        document.removeEventListener('click', collapse);
+      }
 
-    return () => {
-      document.removeEventListener('click', collapse);
-    };
-  }, [isOpen]);
+      return () => {
+        document.removeEventListener('click', collapse);
+      };
+    },
+    [isOpen],
+  );
 
   return (
     <>
       {isOpen && (
         <Dropdown>
           <List>
-            <LinkItem
-              text="Tudo"
-              onClick={() => updateFilter({ categoria: 0 })}
-            />
-            { items }
+            <LinkItem text="Tudo" onClick={() => updateFilter({ categoria: 0 })} />
+            {items}
           </List>
         </Dropdown>
       )}
 
       <Button onClick={() => setIsOpen(true)} type="button">
         <DivSelect>
-          <div>
-            Categorias
-          </div>
+          <div>Categorias</div>
           <Icon>
-            <FontAwesomeIcon
-              icon="caret-down"
-              size="lg"
-            />
+            <FontAwesomeIcon icon="caret-down" size="lg" />
           </Icon>
         </DivSelect>
       </Button>
