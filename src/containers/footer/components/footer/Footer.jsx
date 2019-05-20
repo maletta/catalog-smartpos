@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-
 const FullWidthFooter = styled.div`
   background-color: #0c458e;
   width: 100%;
@@ -18,7 +17,6 @@ const Column = styled.div`
   height: auto;
   color: white;
 `;
-
 
 const Sociais = styled.a`
   color: #fff;
@@ -68,25 +66,19 @@ const FooterCopyright = styled.span`
   font-size: 0.8rem;
 `;
 
-
 const Footer = ({ storeInfo }) => (
   <>
     <FullWidthFooter className="section">
       <div className="container">
         <Columns className="columns is-centered">
           <Column className="column is-12-mobile is-6-tablet is-4-desktop">
+            <div>{storeInfo.fantasia || ''}</div>
+            <div>{`${storeInfo.tipoLogradouro || ''} ${storeInfo.endereco || ''}`}</div>
             <div>
-              {storeInfo.fantasia}
+              {`Número, ${storeInfo.numero || ''} ${(storeInfo.complemento || '')
+                && `- ${storeInfo.complemento || ''}`}`}
             </div>
-            <div>
-              {`${storeInfo.tipoLogradouro} ${storeInfo.endereco}`}
-            </div>
-            <div>
-              {`Número, ${storeInfo.numero} ${(storeInfo.complemento) && (`- ${storeInfo.complemento}`)}`}
-            </div>
-            <div>
-              {`${storeInfo.cidade}/${storeInfo.uf} - ${storeInfo.cep}`}
-            </div>
+            <div>{`${storeInfo.cidade || ''}/${storeInfo.uf || ''} - ${storeInfo.cep || ''}`}</div>
           </Column>
           <Column className="column is-4-desktop">
             <ul>
@@ -94,36 +86,48 @@ const Footer = ({ storeInfo }) => (
                 <Icon>
                   <FontAwesomeIcon icon={['fab', 'whatsapp']} color="white" size="sm" />
                 </Icon>
-                <span>{storeInfo.whatsapp}</span>
+                <span>{storeInfo.whatsapp || ''}</span>
               </li>
               <li>
-                <Sociais href={`mailto:${storeInfo.email}`}>
+                <Sociais href={`mailto:${storeInfo.email || ''}`}>
                   <Icon>
                     <FontAwesomeIcon icon="envelope" color="white" size="sm" />
                   </Icon>
-                  <span>{storeInfo.email}</span>
+                  <span>{storeInfo.email || ''}</span>
                 </Sociais>
               </li>
             </ul>
           </Column>
           <Column className="column is-12-mobile is-4-desktop">
             <ul>
-              <li>
-                <Sociais href={`https://www.facebook.com/${storeInfo.facebook}`} rel="noopener noreferrer nofollow" target="_blank">
-                  <Icon>
-                    <FontAwesomeIcon icon={['fab', 'facebook-f']} color="white" size="sm" />
-                  </Icon>
-                  <span>/facebook</span>
-                </Sociais>
-              </li>
-              <li>
-                <Sociais href={`https://www.instagram.com/${storeInfo.instagram}`} rel="noopener noreferrer nofollow" target="_blank">
-                  <Icon>
-                    <FontAwesomeIcon icon={['fab', 'instagram']} color="white" size="sm" />
-                  </Icon>
-                  <span>/instagram</span>
-                </Sociais>
-              </li>
+              {storeInfo.facebook && (
+                <li>
+                  <Sociais
+                    href={`https://www.facebook.com/${storeInfo.facebook}`}
+                    rel="noopener noreferrer nofollow"
+                    target="_blank"
+                  >
+                    <Icon>
+                      <FontAwesomeIcon icon={['fab', 'facebook-f']} color="white" size="sm" />
+                    </Icon>
+                    <span>/facebook</span>
+                  </Sociais>
+                </li>
+              )}
+              {storeInfo.instagram && (
+                <li>
+                  <Sociais
+                    href={`https://www.instagram.com/${storeInfo.instagram}`}
+                    rel="noopener noreferrer nofollow"
+                    target="_blank"
+                  >
+                    <Icon>
+                      <FontAwesomeIcon icon={['fab', 'instagram']} color="white" size="sm" />
+                    </Icon>
+                    <span>/instagram</span>
+                  </Sociais>
+                </li>
+              )}
             </ul>
           </Column>
         </Columns>
@@ -141,7 +145,11 @@ const Footer = ({ storeInfo }) => (
     </FullWidthCopyright>
     {storeInfo.whatsapp && (
       <FixedButton>
-        <a href={`https://api.whatsapp.com/send?phone=55${storeInfo.whatsapp}`} rel="noopener noreferrer" target="_blank">
+        <a
+          href={`https://api.whatsapp.com/send?phone=55${storeInfo.whatsapp}`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
           <ButtonWhatsApp>
             <FontAwesomeIcon icon={['fab', 'whatsapp']} />
           </ButtonWhatsApp>
@@ -151,12 +159,10 @@ const Footer = ({ storeInfo }) => (
   </>
 );
 
-
 Footer.propTypes = {
   storeInfo: PropTypes.object.isRequired,
 };
 
-Footer.defaultProps = {
-};
+Footer.defaultProps = {};
 
 export default Footer;
