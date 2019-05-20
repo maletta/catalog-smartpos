@@ -75,7 +75,7 @@ const App = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
         document.title = response.data.fantasia;
-        setStore({ ...response.data, found: true });
+        setStore({ ...response.data, found: true, store: getStoreName() });
         getProductList(response.data);
         getCategoryList(response.data);
       })
