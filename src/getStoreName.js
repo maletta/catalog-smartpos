@@ -1,5 +1,5 @@
 const getStoreName = () => {
-  if (process.env.REACT_APP_ENV === 'production') {
+  if (process.env.REACT_APP_GET_NAME_DOMAIN) {
     const parts = window.location.hostname.split('.');
     const subdomain = parts.shift();
     return subdomain;
