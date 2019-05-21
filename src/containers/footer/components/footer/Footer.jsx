@@ -75,19 +75,21 @@ const Footer = ({ storeInfo }) => (
             <div>{storeInfo.fantasia || ''}</div>
             <div>{`${storeInfo.tipoLogradouro || ''} ${storeInfo.endereco || ''}`}</div>
             <div>
-              {`Número, ${storeInfo.numero || ''} ${(storeInfo.complemento || '')
-                && `- ${storeInfo.complemento || ''}`}`}
+              {storeInfo.numero && (`Número ${storeInfo.numero}`)}
+              {(storeInfo.complemento || '') && `- ${storeInfo.complemento || ''}`}
             </div>
-            <div>{`${storeInfo.cidade || ''}/${storeInfo.uf || ''} - ${storeInfo.cep || ''}`}</div>
+            <div>{storeInfo.numero && (storeInfo.numero || '' / storeInfo.uf || '' - storeInfo.cep || '')}</div>
           </Column>
           <Column className="column is-4-desktop">
             <ul>
+              {storeInfo.whatsapp && (
               <li>
                 <Icon>
                   <FontAwesomeIcon icon={['fab', 'whatsapp']} color="white" size="sm" />
                 </Icon>
                 <span>{storeInfo.whatsapp || ''}</span>
               </li>
+              )}
               <li>
                 <Sociais href={`mailto:${storeInfo.email || ''}`}>
                   <Icon>
