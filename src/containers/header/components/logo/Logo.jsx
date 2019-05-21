@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import { Link } from 'react-router-dom';
+import FilterContext from 'contexts/FilterContext';
 
 const NavLogo = styled.a`
   line-height: 0;
-  position: absolute;
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -25,19 +24,27 @@ const LogoImage = styled.img`
 `;
 
 const Logo = (props) => {
-  const { logo } = props;
+  const { codigo, fantasia } = props;
+  const { updateFilter } = useContext(FilterContext);
+
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
+
+  const home = () => {
+    updateFilter({ page: 1, categoria: 0 });
+  };
+
   return (
     <NavLogo>
-      <LogoImage src={logo} />
+      <LogoImage src={imageBaseUrl} title={fantasia} onClick={() => home()} />
     </NavLogo>
   );
 };
 
 Logo.propTypes = {
-  logo: PropTypes.string.isRequired,
+  fantasia: PropTypes.string.isRequired,
+  codigo: PropTypes.number.isRequired,
 };
 
-Logo.defaultProps = {
-};
+Logo.defaultProps = {};
 
 export default Logo;

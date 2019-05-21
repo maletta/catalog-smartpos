@@ -1,19 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import GridItem from 'components/GridItem';
 
-class GridList extends Component {
-  render() {
-    const itens = this.props.itens.map(item => <GridItem key={item.id} item={item} />);
-    return (
-      <div className="column section is-fluid">
-        <div className="columns is-mobile is-multiline">
-          {itens}
-        </div>
+const GridList = (props) => {
+  const { itens } = props;
+  const items = itens.map(item => <GridItem key={item.id} item={item} />);
+  return (
+    <div className="column is-fluid">
+      <div className="columns is-mobile is-multiline">
+        {items.length > 0 ? (items) : (<p>Nenhum produto encontrado</p>)}
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 GridList.propTypes = {
   itens: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -21,6 +20,5 @@ GridList.propTypes = {
 
 GridList.defaultProps = {
 };
-
 
 export default GridList;

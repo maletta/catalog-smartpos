@@ -15,7 +15,7 @@ export default [
     id: 5, category: { id: 2, name: 'Doces' }, name: 'Brigadeiro', price: 2.5, img: 'http://guia-miami.com/wp-content/uploads/2015/07/traditional-milk-500x500.png',
   },
   {
-    id: 6, category: { id: 2, name: 'Doces' }, name: 'Torta de limão', price: 7.5, img: 'http://www.doceriateatime.com.br/conteudo/produtos/101115_143451.png',
+    id: 6, category: { id: 2, name: 'Doces' }, name: 'Torta de limão', price: 7.5, img: '',
   },
   {
     id: 7, category: { id: 2, name: 'Doces' }, name: 'Torta holandesa', price: 7.5, img: 'https://www.andaluza.com.br/wp-content/uploads/2015/11/15308_torta_holandesa-360x360.png',

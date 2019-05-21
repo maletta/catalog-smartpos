@@ -1,98 +1,108 @@
-import React, { Component } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import categories from 'categorias';
-import { LinkItem } from 'components/List';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import FilterContext from 'contexts/FilterContext';
+import { LinkItem } from 'components/List';
 
 const Button = styled.button`
-  border: none;
-  background: none;
   width: 100%;
   height: 48px;
+  border: 1px solid #eee;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
+  background: #fff;
+  border-radius: 5px;
   font-size: 1rem;
+  color: #929292;
+`;
+
+const Dropdown = styled.div`
+  position: absolute;
+  top: 55px;
+  background: #fff;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
+  width: 100%;
+  border-radius: 5px;
+  border: 1px solid #eee;
+  z-index: 9;
 `;
 
 const List = styled.ul`
-  border-bottom: 1px whitesmoke solid;
   padding: 10px 0;
+  overflow-y: auto;
+  height: 300px;
 `;
 
-class CategoryFilterListBottom extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { isOpen: false };
+const Icon = styled.div`
+  font-size: 18px;
+  display: inline-block;
+  padding: 8px;
+`;
+
+const DivSelect = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
+const CategoryFilterListBottom = (props) => {
+  const { categories } = props;
+  const { updateFilter } = useContext(FilterContext);
+  const [isOpen, setIsOpen] = useState(false);
+
+  function collapse() {
+    setIsOpen(false);
   }
 
-  openCategories() {
-    const { isOpen } = this.state;
-    this.setState({ isOpen: !isOpen });
-  }
+  const items = categories.map(item => (
+    <LinkItem
+      key={item.id}
+      text={item.descricao}
+      onClick={() => updateFilter({ categoria: item.id, page: 1 })}
+    />
+  ));
 
-  selectCategory(item) {
-    this.props.onFilterCategory(item);
-    this.setState({ isOpen: false });
-  }
+  useEffect(
+    () => {
+      if (isOpen) {
+        document.addEventListener('click', collapse);
+      } else {
+        document.removeEventListener('click', collapse);
+      }
 
-  isSelected(item) {
-    const { categoryFilter } = this.props;
-    if (!item && !categoryFilter) {
-      return true;
-    }
-    if ((item && !categoryFilter) || (!item && categoryFilter)) {
-      return false;
-    }
-    return (item === categoryFilter);
-  }
+      return () => {
+        document.removeEventListener('click', collapse);
+      };
+    },
+    [isOpen],
+  );
 
-  renderTitle() {
-    const { selected } = this.state;
-    return (
-      <Button onClick={() => this.openCategories()} type="button">{selected ? selected.title : 'Categorias' }</Button>
-    );
-  }
-
-  renderList() {
-    const items = categories.map(item => (
-      <LinkItem
-        key={item.id}
-        text={item.title}
-        iconName={this.isSelected(item.id) ? 'check' : ''}
-        selected={this.isSelected(item.id)}
-        onClick={() => this.selectCategory(item.id)}
-      />
-    ));
-    return (
-      <>
-        <div>
+  return (
+    <>
+      {isOpen && (
+        <Dropdown>
           <List>
-            <LinkItem
-              text="Tudo"
-              iconName={this.isSelected(-1) ? 'check' : ''}
-              selected={this.isSelected(-1)}
-              onClick={() => this.selectCategory(-1)}
-            />
-            { items }
+            <LinkItem text="Tudo" onClick={() => updateFilter({ categoria: 0 })} />
+            {items}
           </List>
-        </div>
-        { this.renderTitle() }
-      </>
-    );
-  }
+        </Dropdown>
+      )}
 
-  render() {
-    const { isOpen } = this.state;
-    return isOpen ? this.renderList() : this.renderTitle();
-  }
-}
+      <Button onClick={() => setIsOpen(true)} type="button">
+        <DivSelect>
+          <div> Categorias </div>
+          <Icon>
+            <FontAwesomeIcon icon="caret-down" size="lg" />
+          </Icon>
+        </DivSelect>
+      </Button>
+    </>
+  );
+};
 
 CategoryFilterListBottom.propTypes = {
-  categoryFilter: PropTypes.number,
-  onFilterCategory: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
 };
-
-CategoryFilterListBottom.defaultProps = {
-  categoryFilter: -1,
-};
-
 
 export default CategoryFilterListBottom;

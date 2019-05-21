@@ -6,12 +6,15 @@ module.exports = {
     document: false,
     window: false,
     localStorage: false,
+    Image: true,
+    AbortController: true,
   },
   rules: {
     'react/prefer-stateless-function': 'off',
     'linebreak-style': 'off',
     'react/jsx-filename-extension': 'off',
     "react/destructuring-assignment": 'off',
+    "react/forbid-prop-types": "off",
   },
   env: {
     jest: true,

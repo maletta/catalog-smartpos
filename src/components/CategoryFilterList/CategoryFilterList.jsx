@@ -1,12 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import categories from 'categorias';
+import Spinner from 'components/Spinner';
+
 import { List, LinkItem } from 'components/List';
 
-class CategoryFilterList extends Component {
-  isSelected(item) {
-    const { categoryFilter } = this.props;
-
+const CategoryFilterList = (props) => {
+  const {
+    categoryFilter,
+    categoriesList,
+    loading,
+  } = props;
+  const isSelected = (item) => {
     if (!item && !categoryFilter) {
       return true;
     }
@@ -14,40 +18,39 @@ class CategoryFilterList extends Component {
       return false;
     }
     return (item === categoryFilter);
-  }
+  };
 
-  render() {
-    const items = categories.map(item => (
+  const items = categoriesList.map(item => (
+    <LinkItem
+      key={item.id}
+      text={item.descricao}
+      iconName={isSelected(item.id) ? 'check' : ''}
+      selected={isSelected(item.id)}
+      onClick={() => ''}
+    />
+  ));
+
+  return (
+    <List title="Categorias">
       <LinkItem
-        key={item.id}
-        text={item.title}
-        iconName={this.isSelected(item.id) ? 'check' : ''}
-        selected={this.isSelected(item.id)}
-        onClick={() => this.props.onFilterCategory(item.id)}
+        text="Tudo"
+        iconName={isSelected(-1, props.categoryFilter) ? 'check' : ''}
+        selected={isSelected(-1, props.categoryFilter)}
+        onClick={() => ''}
       />
-    ));
-    return (
-      <List title="Categorias">
-        <LinkItem
-          text="Tudo"
-          iconName={this.isSelected(-1) ? 'check' : ''}
-          selected={this.isSelected(-1)}
-          onClick={() => this.props.onFilterCategory(-1)}
-        />
-        {items}
-      </List>
-    );
-  }
-}
+      {loading ? <Spinner /> : items}
+    </List>
+  );
+};
 
 CategoryFilterList.propTypes = {
   categoryFilter: PropTypes.number,
-  onFilterCategory: PropTypes.func.isRequired,
+  categoriesList: PropTypes.array.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 CategoryFilterList.defaultProps = {
   categoryFilter: -1,
 };
-
 
 export default CategoryFilterList;

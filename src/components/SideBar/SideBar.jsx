@@ -1,45 +1,62 @@
-import React, { Component } from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import CategoryFilterList from 'components/CategoryFilterList';
-import OrderOption from 'components/OrderOption';
-import ExibithionModeList from 'components/ExibithionModeList';
-import SideBarFooter from 'components/SideBarFooter';
+import styled from 'styled-components';
+import Spinner from 'components/Spinner';
+import { List, LinkItem } from 'components/List';
+import FilterContext from 'contexts/FilterContext';
 
-class SideBar extends Component {
-  render() {
-    return (
-      <aside className="column is-one-fifth is-narrow-mobile is-fullheight section is-hidden-touch">
-        <CategoryFilterList
-          categoryFilter={this.props.categoryFilter}
-          onFilterCategory={this.props.onFilterCategory}
+const Aside = styled.aside`
+  margin-top: 0.75rem;
+`;
+const SideBar = (props) => {
+  const {
+    loading,
+    categories,
+  } = props;
+  const { updateFilter } = useContext(FilterContext);
+
+  const items = categories.map(item => (
+    <LinkItem
+      key={item.id}
+      text={item.descricao}
+      onClick={() => updateFilter({ categoria: item.id, page: 1 })}
+    />
+  ));
+  return (
+    <Aside>
+      <List title="Categorias">
+        <LinkItem
+          text="Tudo"
+          onClick={() => updateFilter({ categoria: 0 })}
         />
-        <OrderOption
-          order={this.props.order}
-          onChangeOrder={this.props.onChangeOrder}
+        {loading ? <Spinner /> : items}
+      </List>
+      <List title="Ordernar por" isFullHeight>
+        <LinkItem
+          text="A-Z"
+          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'descricao' })}
         />
-        <ExibithionModeList
-          viewMode={this.props.viewMode}
-          onChangeView={this.props.onChangeView}
+        <LinkItem
+          text="Z-A"
+          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'descricao' })}
         />
-        <SideBarFooter />
-      </aside>
-    );
-  }
-}
+        <LinkItem
+          text="Menor preço"
+          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'valorVenda' })}
+        />
+        <LinkItem
+          text="Maior preço"
+          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'valorVenda' })}
+        />
+      </List>
+    </Aside>
+  );
+};
 
 SideBar.propTypes = {
-  viewMode: PropTypes.string,
-  onChangeView: PropTypes.func.isRequired,
-  order: PropTypes.string,
-  onChangeOrder: PropTypes.func.isRequired,
-  categoryFilter: PropTypes.number,
-  onFilterCategory: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
-SideBar.defaultProps = {
-  viewMode: 'GRID',
-  order: 'AZ',
-  categoryFilter: -1,
-};
 
 export default SideBar;

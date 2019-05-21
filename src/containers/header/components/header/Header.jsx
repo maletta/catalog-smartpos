@@ -1,26 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import NavBar from '../navbar/NavBar';
 import Logo from '../logo/Logo';
 
-class Header extends Component {
-  render() {
-    const { logo } = this.props;
-    return (
-      <NavBar>
-        <Logo logo={logo} />
-      </NavBar>
-    );
-  }
-}
+const Header = (props) => {
+  const { storeInfo: { codigo, fantasia } } = props;
+  return (
+    <NavBar>
+      <Logo codigo={codigo} fantasia={fantasia} />
+    </NavBar>
+  );
+};
 
 
 Header.propTypes = {
-  logo: PropTypes.string,
+  storeInfo: PropTypes.object.isRequired,
 };
 
 Header.defaultProps = {
-  logo: '',
+
 };
 
 export default Header;

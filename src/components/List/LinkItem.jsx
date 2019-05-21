@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +8,7 @@ const Icon = styled.span`
   display: inline-block;
 `;
 
-const Button = styled.button`
+const Button = styled.a`
   background: none;
   border: none;
   width: 100%;
@@ -16,31 +16,35 @@ const Button = styled.button`
   color: ${props => props.color || props.theme.secondary} !important;
 `;
 
+const Li = styled.li`
+  padding: 10px 14px;
+`;
 
-class LinkItem extends Component {
-  render() {
-    const {
-      text, iconName, onClick, selected,
-    } = this.props;
-    const icon = iconName ? (
-      <Icon>
-        <FontAwesomeIcon
-          icon={iconName}
-          color={selected ? '#F38A00' : '#929292'}
-          size="sm"
-        />
-      </Icon>
-    ) : <Icon />;
-    return (
-      <li>
-        <Button color={selected ? '#F38A00' : '#929292'} onClick={onClick}>
-          {icon}
-          {text}
-        </Button>
-      </li>
-    );
-  }
-}
+const LinkItem = (props) => {
+  const {
+    text,
+    iconName,
+    onClick,
+    selected,
+  } = props;
+  const icon = iconName ? (
+    <Icon>
+      <FontAwesomeIcon
+        icon={iconName}
+        color={selected ? '#F38A00' : '#929292'}
+        size="sm"
+      />
+    </Icon>
+  ) : <Icon />;
+  return (
+    <Li>
+      <Button color={selected ? '#F38A00' : '#929292'} onClick={onClick}>
+        {icon}
+        {text}
+      </Button>
+    </Li>
+  );
+};
 
 LinkItem.propTypes = {
   text: PropTypes.string.isRequired,
