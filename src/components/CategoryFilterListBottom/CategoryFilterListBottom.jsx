@@ -91,7 +91,7 @@ const CategoryFilterListBottom = (props) => {
 
       <Button onClick={() => setIsOpen(true)} type="button">
         <DivSelect>
-          <div>Categorias</div>
+          <div> Categorias </div>
           <Icon>
             <FontAwesomeIcon icon="caret-down" size="lg" />
           </Icon>
