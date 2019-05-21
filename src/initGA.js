@@ -1,7 +1,7 @@
 import ReactGA from 'react-ga';
 
 const initGA = () => {
-  if (window.location.hostname !== 'localhost') {
+  if (process.env.REACT_APP_ENV === 'production') {
     ReactGA.initialize(process.env.REACT_APP_GA);
     ReactGA.set({ page: window.location.hostname });
     ReactGA.pageview(`${window.location.hostname}${window.location.search}`);
