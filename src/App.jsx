@@ -25,6 +25,7 @@ import {
 } from 'requests';
 
 import FilterContext from 'contexts/FilterContext';
+import initGA from './initGA';
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF,
   faWhatsapp, faInstagram, faHeart, faArrowRight, faArrowLeft, faCaretDown);
@@ -89,6 +90,7 @@ const App = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     getStore();
+    initGA();
   }, [filter]);
 
   return (
