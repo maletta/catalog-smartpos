@@ -36,3 +36,14 @@ pipelines:
               - yarn build
               - aws s3 sync --delete build s3://$S3_BUCKET
               - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
+      master:
+        - step:
+            caches:
+              - node
+            name: 🚀 Deploy production environment
+            deployment: production
+            script:
+              - yarn install
+              - yarn build
+              - aws s3 sync --delete build s3://$S3_BUCKET
+              - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
