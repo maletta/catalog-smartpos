@@ -8,8 +8,7 @@ const Button = styled.a`
   width: 100%;
   text-align: left;
   font-size: 14px;
-  color: #666;
-  font-weight: 400;
+  color: ${props => (props.selected ? '#f38a00' : '#666')};
 `;
 
 const Li = styled.li`
@@ -24,7 +23,7 @@ const LinkItem = (props) => {
   } = props;
   return (
     <Li>
-      <Button title={text} color={selected ? '#F38A00' : '#929292'} onClick={onClick}>
+      <Button title={text} selected={selected} onClick={onClick}>
         {text}
       </Button>
     </Li>
