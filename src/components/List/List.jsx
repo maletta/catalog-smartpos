@@ -3,15 +3,11 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Container = styled.div`
-  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
-  background-color: #ffff;
   width: 100%;
   margin-bottom: 10px;
 `;
 
 const ListContainer = styled.ul`
-  overflow-y: auto;
-  height: 300px;
   ${props => props.isFullHeight && ('height: 100%')};
 
   ::-webkit-scrollbar {
@@ -34,9 +30,9 @@ const ListContainer = styled.ul`
 const Title = styled.div` 
   font-size: 15px;
   font-weight: bold;
-  padding: 10px;
-  margin-left: 10px;
-  background: #fff;
+  padding: 0;
+  margin-left: 0;
+  color: #363636;
 `;
 
 const List = (props) => {
@@ -46,7 +42,7 @@ const List = (props) => {
       <Title>
         {title}
       </Title>
-      <ListContainer className="menu-list" isFullHeight={isFullHeight}>
+      <ListContainer isFullHeight={isFullHeight}>
         {children}
       </ListContainer>
     </Container>
