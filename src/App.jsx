@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import Header from 'containers/header';
 import GridList from 'components/GridList';
-import CategoryTopMobile from 'components/CategoryTopMobile';
 import MainContainer from 'containers/mainContainer';
 import SideBar from 'components/SideBar';
 import NotFound from 'NotFound';
@@ -10,10 +9,11 @@ import Spinner from 'components/Spinner';
 import Pagination from 'components/Pagination';
 import Footer from 'containers/footer';
 import getStoreName from 'getStoreName';
+import FiltersMobile from 'components/FiltersMobile';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faArrowRight, faArrowLeft,
-  faCaretDown,
+  faCaretDown, faSlidersH, faSort, faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import { faFacebookF, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
@@ -27,8 +27,9 @@ import {
 import FilterContext from 'contexts/FilterContext';
 import initGA from './initGA';
 
-library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF,
-  faWhatsapp, faInstagram, faHeart, faArrowRight, faArrowLeft, faCaretDown);
+library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF, faTimes,
+  faWhatsapp, faInstagram, faHeart, faArrowRight, faArrowLeft, faCaretDown, faSlidersH, faSort);
+
 const Container = styled.div`
   width: 100%;
   height: 100%;
@@ -109,7 +110,7 @@ const App = () => {
                   />
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
-                  <CategoryTopMobile
+                  <FiltersMobile
                     categories={categories}
                   />
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}

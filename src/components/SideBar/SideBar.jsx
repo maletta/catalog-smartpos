@@ -13,12 +13,13 @@ const SideBar = (props) => {
     loading,
     categories,
   } = props;
-  const { updateFilter } = useContext(FilterContext);
+  const { filter, updateFilter } = useContext(FilterContext);
 
   const items = categories.map(item => (
     <LinkItem
       key={item.id}
       text={item.descricao}
+      selected={item.id === filter.categoria}
       onClick={() => updateFilter({ categoria: item.id, page: 1 })}
     />
   ));
@@ -33,20 +34,24 @@ const SideBar = (props) => {
       </List>
       <List title="Ordernar por" isFullHeight>
         <LinkItem
-          text="A-Z"
-          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'descricao' })}
-        />
-        <LinkItem
-          text="Z-A"
-          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'descricao' })}
+          text="Maior preço"
+          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'valorVenda' })}
+          selected={(filter.orderBy === 'desc' && filter.sortBy === 'valorVenda')}
         />
         <LinkItem
           text="Menor preço"
           onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'valorVenda' })}
+          selected={(filter.orderBy === 'asc' && filter.sortBy === 'valorVenda')}
         />
         <LinkItem
-          text="Maior preço"
-          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'valorVenda' })}
+          text="A-Z"
+          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'descricao' })}
+          selected={(filter.orderBy === 'asc' && filter.sortBy === 'descricao')}
+        />
+        <LinkItem
+          text="Z-A"
+          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'descricao' })}
+          selected={(filter.orderBy === 'desc' && filter.sortBy === 'descricao')}
         />
       </List>
     </Aside>
