@@ -7,15 +7,19 @@ import FilterContext from 'contexts/FilterContext';
 
 const Div = styled.div`
   display: flex;
+  flex-grow: 0;
   justify-content: space-between;
   background: #fff;
-  padding: 10px 15px 10px 15px;
   margin: -13px -24px 10px -24px;
   border-bottom: 2px solid #eee;
 `;
 
 const Label = styled.div`
+  padding: 10px 15px 10px 15px;
   color: #3483fa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Icon = styled.span`
