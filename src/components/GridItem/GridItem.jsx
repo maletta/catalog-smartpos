@@ -15,11 +15,11 @@ const Container = styled.div`
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
   width: 100%;
   background-color: #ffff;
-  border-radius: 10px;
+  border-radius: 5px;
 `;
 
 const Img = styled.img`
-  border-radius: 10px 10px 0 0;
+  border-radius: 5px 5px 0 0;
 `;
 
 const Descricao = styled.div`
