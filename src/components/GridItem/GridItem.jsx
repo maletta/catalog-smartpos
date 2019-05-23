@@ -26,6 +26,7 @@ const Descricao = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
+  text-align: left;
 `;
 
 const Price = styled.p`

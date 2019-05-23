@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-// import Header from 'containers/header';
 import GridList from 'components/GridList';
 import MainContainer from 'containers/mainContainer';
 import SideBar from 'components/SideBar';
@@ -8,7 +7,7 @@ import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Pagination from 'components/Pagination';
 import Footer from 'containers/footer';
-import Header from 'containers/Header2';
+import Header from 'containers/Header';
 import getStoreName from 'getStoreName';
 import FiltersMobile from 'components/FiltersMobile';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -100,6 +99,9 @@ const App = () => {
       {store.found ? (
         <div>
           <Header codigo={store.codigo} />
+          <FiltersMobile
+            categories={categories}
+          />
           <div className="section">
             <div className="container">
               <MainContainer>
@@ -111,9 +113,6 @@ const App = () => {
                   />
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
-                  <FiltersMobile
-                    categories={categories}
-                  />
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
                   <Pagination
                     currentPage={filter.page}

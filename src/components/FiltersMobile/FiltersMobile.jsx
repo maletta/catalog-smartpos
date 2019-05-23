@@ -10,12 +10,7 @@ const Div = styled.div`
   flex-grow: 0;
   justify-content: space-between;
   background: #fff;
-  margin: -15px -24px 10px -24px;
   border-bottom: 2px solid #eee;
-
-  @media (max-width: 360px) {
-    margin-top: -50px;
-  }
 `;
 
 const Label = styled.div`
@@ -159,7 +154,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Menor preço');
                 }}
               >
-                Menor preço
+              Menor preço
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {

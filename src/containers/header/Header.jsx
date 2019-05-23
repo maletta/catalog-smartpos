@@ -6,7 +6,6 @@ import FilterContext from 'contexts/FilterContext';
 const Container = styled.nav` 
   padding-top: 5px;
   padding-bottom: 8px;
-  margin-bottom: -25px;
 
   &&& {
     background: #00529b;
@@ -19,11 +18,11 @@ const Field = styled.div`
   width: 450px;
 
   @media (max-width: 800px) {
-    width: 350px;
-    margin-left: 50px;
+    width: 300px;
+    margin-left: 40px;
   }
 
-  @media (max-width: 360px) {
+  @media (max-width: 375px) {
     margin-left: 0;
     width: 200px;
   }
@@ -40,7 +39,6 @@ const Input = styled.input`
   border: none;
   position: relative;
   box-sizing: border-box;
-  z-index: 915;
 `;
 
 const Logo = styled.div`
@@ -96,7 +94,6 @@ const Header = (props) => {
               </Field>
             </div>
           </Colums>
-
         </div>
       </Container>
 
