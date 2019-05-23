@@ -32,7 +32,7 @@ const AreaSelect = styled.div`
   right: 0;
   left: 0;
   height: 100%;
-  z-index: 20;
+  z-index: 31;
   background: #fff;
   overflow: auto;
 `;
