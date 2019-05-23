@@ -8,6 +8,7 @@ import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Pagination from 'components/Pagination';
 import Footer from 'containers/footer';
+import FooterNew from 'components/Footer';
 import getStoreName from 'getStoreName';
 import FiltersMobile from 'components/FiltersMobile';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -15,7 +16,9 @@ import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faArrowRight, faArrowLeft,
   faCaretDown, faSlidersH, faSort, faTimes,
 } from '@fortawesome/free-solid-svg-icons';
-import { faFacebookF, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import {
+  faFacebookF, faWhatsapp, faInstagram, faGooglePlay,
+} from '@fortawesome/free-brands-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
 import {
@@ -27,7 +30,7 @@ import {
 import FilterContext from 'contexts/FilterContext';
 import initGA from './initGA';
 
-library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF, faTimes,
+library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF, faTimes, faGooglePlay,
   faWhatsapp, faInstagram, faHeart, faArrowRight, faArrowLeft, faCaretDown, faSlidersH, faSort);
 
 const Container = styled.div`
@@ -122,6 +125,7 @@ const App = () => {
               </MainContainer>
             </div>
           </div>
+          <FooterNew storeInfo={store} />
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
