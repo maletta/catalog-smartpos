@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 const Main = styled.div`
-  margin-top: 90px !important;
 
   @media (max-width: 768px) {
     margin-top: 10px !important;

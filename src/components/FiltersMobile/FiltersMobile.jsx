@@ -10,8 +10,12 @@ const Div = styled.div`
   flex-grow: 0;
   justify-content: space-between;
   background: #fff;
-  margin: -13px -24px 10px -24px;
+  margin: -15px -24px 10px -24px;
   border-bottom: 2px solid #eee;
+
+  @media (max-width: 360px) {
+    margin-top: -50px;
+  }
 `;
 
 const Label = styled.div`
@@ -146,7 +150,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Maior preço');
                 }}
               >
-                Maior preço
+              Maior preço
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -155,6 +159,8 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Menor preço');
                 }}
               >
+
+
                 Menor preço
               </DropdownContenItem>
               <DropdownContenItem
@@ -164,6 +170,8 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('A-Z');
                 }}
               >
+
+
                 A-Z
               </DropdownContenItem>
               <DropdownContenItem
@@ -173,6 +181,8 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Z-A');
                 }}
               >
+
+
                 Z-A
               </DropdownContenItem>
             </DropdownContent>
@@ -204,6 +214,8 @@ const FiltersMobile = ({ categories }) => {
                 setCategorySelected(null);
               }}
             >
+
+
               Todas as Categorias
             </SelectItem>
             {renderCategories}
