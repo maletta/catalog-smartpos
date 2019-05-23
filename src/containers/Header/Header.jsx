@@ -6,8 +6,8 @@ import FilterContext from 'contexts/FilterContext';
 const Container = styled.nav` 
   padding-top: 5px;
   padding-bottom: 8px;
-  box-shadow: 0 2px 5px 0 rgba(0 ,0 ,0, .2);
-  
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+
   &&& {
     background: #00529b;
   }
