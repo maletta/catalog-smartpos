@@ -15,22 +15,25 @@ const Container = styled.div`
   box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
   width: 100%;
   background-color: #ffff;
+  border-radius: 5px;
+`;
 
-  :hover {
-    /* box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
-    font-weight: bold; */
-  }
+const Img = styled.img`
+  border-radius: 5px 5px 0 0;
 `;
 
 const Descricao = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
 `;
 
 const Price = styled.p`
-  color: #f38a00;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: black;
 `;
 
 
@@ -56,15 +59,15 @@ const GridItem = (props) => {
 
   return (
     <>
-      <Item className="column is-12-mobile is-4-tablet is-4-desktop">
+      <Item className="column is-6-mobile is-4-tablet is-4-desktop">
         <Container className="card-image">
           <div className="card-image">
             <figure className="image is-160x160">
-              {load ? (<Spinner />) : (<img src={image} alt="product" />)}
+              {load ? (<Spinner />) : (<Img src={image} alt="product" />)}
             </figure>
           </div>
           <div className="card-content">
-            <div className="title is-5">
+            <div>
               <Price>
                 {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
               </Price>

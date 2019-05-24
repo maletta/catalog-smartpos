@@ -10,7 +10,6 @@ const Div = styled.div`
   flex-grow: 0;
   justify-content: space-between;
   background: #fff;
-  margin: -13px -24px 10px -24px;
   border-bottom: 2px solid #eee;
 `;
 
@@ -33,7 +32,7 @@ const AreaSelect = styled.div`
   right: 0;
   left: 0;
   height: 100%;
-  z-index: 20;
+  z-index: 31;
   background: #fff;
   overflow: auto;
 `;
@@ -146,7 +145,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Maior preço');
                 }}
               >
-                Maior preço
+              Maior preço
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -155,7 +154,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Menor preço');
                 }}
               >
-                Menor preço
+              Menor preço
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
