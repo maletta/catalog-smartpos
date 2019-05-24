@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
-import Header from 'containers/header';
 import GridList from 'components/GridList';
 import MainContainer from 'containers/mainContainer';
 import SideBar from 'components/SideBar';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Pagination from 'components/Pagination';
-import Footer from 'containers/footer';
-import FooterNew from 'components/Footer';
+import Footer from 'components/Footer';
+import Header from 'containers/Header';
+
 import getStoreName from 'getStoreName';
 import FiltersMobile from 'components/FiltersMobile';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -30,8 +30,9 @@ import {
 import FilterContext from 'contexts/FilterContext';
 import initGA from './initGA';
 
-library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF, faTimes, faGooglePlay,
-  faWhatsapp, faInstagram, faHeart, faArrowRight, faArrowLeft, faCaretDown, faSlidersH, faSort);
+library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
+  faFacebookF, faTimes, faGooglePlay, faWhatsapp, faInstagram, faHeart,
+  faArrowRight, faArrowLeft, faCaretDown, faSlidersH, faSort);
 
 const Container = styled.div`
   width: 100%;
@@ -101,9 +102,12 @@ const App = () => {
     <>
       {store.found ? (
         <div>
+          <Header codigo={store.codigo} />
+          <FiltersMobile
+            categories={categories}
+          />
           <div className="section">
             <div className="container">
-              <Header storeInfo={store} />
               <MainContainer>
                 <div className="column is-hidden-touch is-3-desktop">
                   <SideBar
@@ -113,9 +117,6 @@ const App = () => {
                   />
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
-                  <FiltersMobile
-                    categories={categories}
-                  />
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
                   <Pagination
                     currentPage={filter.page}
@@ -125,7 +126,6 @@ const App = () => {
               </MainContainer>
             </div>
           </div>
-          <FooterNew storeInfo={store} />
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
