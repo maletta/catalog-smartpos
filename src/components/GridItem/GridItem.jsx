@@ -27,13 +27,16 @@ const Descricao = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   text-align: left;
+  font-size: 1rem;
 `;
 
 const Price = styled.p`
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  color: black;
+  color: #333;
+  font-weight: bold;
+  font-size: 1.3rem;
 `;
 
 
@@ -73,7 +76,7 @@ const GridItem = (props) => {
               </Price>
             </div>
             <Descricao className="content">
-              <p>{item.descricao}</p>
+              <span>{item.descricao}</span>
             </Descricao>
           </div>
         </Container>
