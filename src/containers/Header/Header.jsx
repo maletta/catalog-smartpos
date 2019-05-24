@@ -19,13 +19,12 @@ const Field = styled.div`
   width: 450px;
 
   @media (max-width: 800px) {
-    width: 300px;
-    margin-left: 40px;
+    width: 100%;
+    margin-left: 20px;
   }
 
   @media (max-width: 375px) {
     margin-left: 0;
-    width: 200px;
   }
 `;
 
@@ -81,13 +80,13 @@ const Header = (props) => {
       <Container className="navbar">
         <div className="container">
           <Colums className="columns is-mobile">
-            <div className="column is-3">
+            <div className="column is-2 is-3-desktop">
               <Logo onClick={() => home()}>
                 <LogoImage src={imageBaseUrl} alt="Logo" />
               </Logo>
             </div>
 
-            <div className="column">
+            <div className="column is-9">
               <Field>
                 <div className="navbar-item">
                   <Input placeholder="Buscar produtos, marcas e muito mais…" />
