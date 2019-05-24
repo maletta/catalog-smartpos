@@ -24,7 +24,6 @@ const FullWidthFooterInfo = styled.div`
   width: 100%;
   color: #3a3a3a;
   border-bottom: solid 1px #b1b1b1;
-  padding-top: 25px;
 `;
 
 const FooterInfoTitle = styled.h5`
