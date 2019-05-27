@@ -9,7 +9,7 @@ const Item = styled.div`
   display: flex !important;
   text-align: center;
   justify-content: center;
-  
+
   @media (max-width: 768px) {
     padding: 0.35rem !important;
   }
@@ -29,7 +29,7 @@ const Img = styled.img`
 const Cardcontent = styled.div`
   background-color: transparent;
   padding: 1.2rem;
-  
+
   @media (max-width: 768px) {
     padding: 0.75rem;
   }

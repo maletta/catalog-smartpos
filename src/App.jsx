@@ -104,7 +104,6 @@ const App = () => {
 
   return (
     <>
-      {console.log(maxPage)}
       {store.found ? (
         <div>
           <Header codigo={store.codigo} />
