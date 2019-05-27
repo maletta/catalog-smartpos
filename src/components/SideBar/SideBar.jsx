@@ -20,18 +20,13 @@ const SideBar = (props) => {
       key={item.id}
       text={item.descricao}
       selected={item.id === filter.categoria}
-      onClick={() => updateFilter({ categoria: item.id, page: 1 })}
+      onClick={() => updateFilter({
+        categoria: item.id, label: item.descricao, search: undefined, page: 1,
+      })}
     />
   ));
   return (
     <Aside>
-      <List title="Categorias">
-        <LinkItem
-          text="Tudo"
-          onClick={() => updateFilter({ categoria: 0 })}
-        />
-        {loading ? <Spinner /> : items}
-      </List>
       <List title="Ordernar por" isFullHeight>
         <LinkItem
           text="Maior preço"
@@ -53,6 +48,15 @@ const SideBar = (props) => {
           onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'descricao' })}
           selected={(filter.orderBy === 'desc' && filter.sortBy === 'descricao')}
         />
+      </List>
+      <List title="Categorias">
+        <LinkItem
+          text="Todas as categorias"
+          onClick={() => updateFilter({
+            categoria: 0, label: 'Todas as categorias', search: undefined, page: 1,
+          })}
+        />
+        {loading ? <Spinner /> : items}
       </List>
     </Aside>
   );

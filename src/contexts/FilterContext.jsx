@@ -9,16 +9,18 @@ export const FilterProvider = ({ children }) => {
   const parsed = queryString.parse(window.location.search);
 
   const [filter, setFilter] = useState({
-    page: parsed.page || (1),
-    categoria: parsed.categoria || (0),
-    orderBy: parsed.orderBy || ('desc'),
-    sortBy: parsed.sortBy || ('valorVenda'),
+    label: parsed.item || 'Todas as categorias',
+    page: parsed.page,
+    categoria: parsed.categoria,
+    orderBy: parsed.orderBy,
+    sortBy: parsed.sortBy,
+    search: parsed.search,
   });
 
   useEffect(() => {
     const stringified = queryString.stringify({ ...parsed, ...filter });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-    window.history.pushState({}, '', `${baseUrl}?${stringified}`);
+    if (filter.categoria) { window.history.pushState({}, '', `${baseUrl}?${stringified}`); }
     abortController.abort();
   }, [filter]);
 
