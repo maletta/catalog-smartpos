@@ -25,6 +25,7 @@ import {
   getStoreInfo,
   getProducts,
   getCategories,
+  getSearch,
 } from 'requests';
 
 import FilterContext from 'contexts/FilterContext';
@@ -42,6 +43,12 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const Section = styled.section`
+  &&& {
+    padding-top: 25px;
+  }
+`;
+
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState({});
@@ -49,7 +56,7 @@ const App = () => {
   const [store, setStore] = useState({});
   const [maxPage, setMaxPage] = useState(1);
 
-  const { filter } = useContext(FilterContext);
+  const { filter, updateFilter } = useContext(FilterContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
@@ -58,7 +65,19 @@ const App = () => {
   ) : !loading && (<NotFound />));
 
   const getProductList = (data) => {
-    getProducts(data.id, filter)
+    if (filter.search) {
+      return getSearch(data.id, filter)
+        .then((response) => {
+          setProducts(response.data.produtos);
+          setMaxPage(response.data.totalPages);
+        })
+        .catch(() => {
+          setProducts({});
+          setMaxPage(-1);
+        })
+        .finally(() => setLoading(false));
+    }
+    return getProducts(data.id, filter)
       .then((response) => {
         setProducts(response.data.produtos);
         setMaxPage(response.data.totalPages);
@@ -81,14 +100,13 @@ const App = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
         document.title = response.data.fantasia;
-        setStore({ ...response.data, found: true, store: getStoreName() });
+        setStore({ ...response.data, found: true, storeName: getStoreName() });
         getProductList(response.data);
         getCategoryList(response.data);
       })
       .catch(() => setStore({ found: false }))
       .finally(() => setLoading(false));
   };
-
 
   const prodArray = Object.keys(products).map(i => products[i]);
 
@@ -98,16 +116,32 @@ const App = () => {
     initGA();
   }, [filter]);
 
+
+  const home = (e) => {
+    if (e) { e.preventDefault(); }
+    updateFilter({
+      categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+    });
+    const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
+    window.history.pushState({}, '', `${baseUrl}`);
+  };
+
   return (
     <>
       {store.found ? (
         <div>
-          <Header codigo={store.codigo} />
+          <Header codigo={store.codigo} goHome={() => home()} />
           <FiltersMobile
             categories={categories}
           />
-          <div className="section">
+          <Section className="section">
             <div className="container">
+              <nav className="breadcrumb" aria-label="breadcrumbs">
+                <ul>
+                  <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
+                  <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
+                </ul>
+              </nav>
               <MainContainer>
                 <div className="column is-hidden-touch is-3-desktop">
                   <SideBar
@@ -125,7 +159,7 @@ const App = () => {
                 </div>
               </MainContainer>
             </div>
-          </div>
+          </Section>
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
