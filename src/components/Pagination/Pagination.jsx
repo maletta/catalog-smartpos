@@ -33,18 +33,15 @@ const Pagination = (props) => {
   const { updateFilter } = useContext(FilterContext);
   const nextPage = () => {
     updateFilter({ page: Number(currentPage) + 1 });
-    window.history.pushState('', '', `?page=${Number(currentPage) + 1}`);
   };
   const previusPage = () => {
     if (currentPage > 1) {
       updateFilter({ page: Number(currentPage) - 1 });
-      window.history.pushState('', '', `?page=${Number(currentPage) - 1}`);
     }
   };
   const gotoPage = (page) => {
     if (page >= 1) {
       updateFilter({ page });
-      window.history.pushState('', '', `?page=${page}`);
     }
   };
 
@@ -138,8 +135,13 @@ const Pagination = (props) => {
 };
 
 Pagination.propTypes = {
-  currentPage: PropTypes.any.isRequired,
+  currentPage: PropTypes.number,
   maxPage: PropTypes.number.isRequired,
 };
+
+Pagination.defaultProps = {
+  currentPage: 1,
+};
+
 
 export default Pagination;

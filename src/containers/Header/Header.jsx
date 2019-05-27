@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import FilterContext from 'contexts/FilterContext';
@@ -65,14 +65,19 @@ const Colums = styled.div`
 
 
 const Header = (props) => {
-  const { codigo } = props;
   const { updateFilter } = useContext(FilterContext);
-
-  const home = () => {
-    updateFilter({ page: 1, categoria: 0 });
-  };
-
+  const { codigo, goHome } = props;
+  const [search, setSearch] = useState('');
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
+  const submit = (e) => {
+    e.preventDefault();
+    updateFilter({
+      search, page: 1, categoria: 0, label: '',
+    });
+    setSearch('');
+    const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
+    window.history.pushState({}, '', `${baseUrl}?search=${search}`);
+  };
 
   return (
 
@@ -81,16 +86,22 @@ const Header = (props) => {
         <div className="container">
           <Colums className="columns is-mobile">
             <div className="column is-2 is-3-desktop">
-              <Logo onClick={() => home()}>
+              <Logo onClick={() => goHome()}>
                 <LogoImage src={imageBaseUrl} alt="Logo" />
               </Logo>
             </div>
 
             <div className="column is-9">
               <Field>
-                <div className="navbar-item">
-                  <Input placeholder="Buscar produtos, marcas e muito mais…" />
-                </div>
+                <form className="navbar-item" onSubmit={e => submit(e)}>
+                  <Input
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder="Buscar produtos, marcas e muito mais…"
+                    type="text"
+                    name="search"
+                  />
+                </form>
               </Field>
             </div>
           </Colums>
@@ -103,6 +114,7 @@ const Header = (props) => {
 
 Header.propTypes = {
   codigo: PropTypes.number.isRequired,
+  goHome: PropTypes.func.isRequired,
 };
 
 export default Header;

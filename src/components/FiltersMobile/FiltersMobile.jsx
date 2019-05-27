@@ -203,7 +203,7 @@ const FiltersMobile = ({ categories }) => {
                 setCategorySelected(null);
               }}
             >
-              Todas as Categorias
+              Todas as categorias
             </SelectItem>
             {renderCategories}
           </Select>
