@@ -145,7 +145,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Maior preço');
                 }}
               >
-              Maior preço
+                Maior preço
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -154,7 +154,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Menor preço');
                 }}
               >
-              Menor preço
+                Menor preço
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -203,7 +203,8 @@ const FiltersMobile = ({ categories }) => {
                 setCategorySelected(null);
               }}
             >
-              Todas as categorias
+
+              Todas as Categorias
             </SelectItem>
             {renderCategories}
           </Select>
