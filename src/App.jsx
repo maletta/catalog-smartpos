@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
 import GridList from 'components/GridList';
 import MainContainer from 'containers/mainContainer';
@@ -49,13 +50,17 @@ const App = () => {
   const [store, setStore] = useState({});
   const [maxPage, setMaxPage] = useState(1);
 
-  const { filter } = useContext(FilterContext);
+  const { filter, updateFilter } = useContext(FilterContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
       <Spinner />
     </Container>
   ) : !loading && (<NotFound />));
+
+  const handlePagination = (data) => {
+    updateFilter({ page: data.selected + 1 });
+  };
 
   const getProductList = (data) => {
     getProducts(data.id, filter)
@@ -100,6 +105,7 @@ const App = () => {
 
   return (
     <>
+      {console.log(maxPage)}
       {store.found ? (
         <div>
           <Header codigo={store.codigo} />
@@ -118,6 +124,19 @@ const App = () => {
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
+                  <ReactPaginate
+                    previousLabel={'Anterior'}
+                    nextLabel={'Próxima'}
+                    breakLabel={'...'}
+                    breakClassName={'break-me'}
+                    pageCount={maxPage}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePagination}
+                    containerClassName={'pagination'}
+                    subContainerClassName={'pages pagination'}
+                    activeClassName={'active'}
+                  />
                   <Pagination
                     currentPage={filter.page}
                     maxPage={maxPage}

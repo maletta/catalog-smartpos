@@ -51,7 +51,7 @@ const Pagination = (props) => {
   return (
     <>
       {maxPage > 0 && (
-      <Container className="column is-half is-offset-one-quarter">
+      <Container className="column">
         <nav className="pagination is-rounded is-centered" role="navigation" aria-label="pagination">
           {Number(currentPage) > 1 && (
           <Button
