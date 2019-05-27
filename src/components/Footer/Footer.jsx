@@ -89,6 +89,10 @@ const ButtonWhatsApp = styled.div`
   justify-content: center;
 `;
 
+const SocialIcon = styled.span`
+  min-width: 20px;
+  display: inline-block;
+`;
 
 const Footer = ({ storeInfo }) => (
   <>
@@ -125,7 +129,10 @@ const Footer = ({ storeInfo }) => (
                   rel="noopener noreferrer nofollow"
                   target="_blank"
                 >
-                  Facebook
+                  <SocialIcon>
+                    <FontAwesomeIcon icon={['fab', 'facebook-f']} color="#3a3a3a" size="1x" />
+                  </SocialIcon>
+                  {storeInfo.facebook}
                 </LinkSocial>
               </li>
               )}
@@ -136,7 +143,10 @@ const Footer = ({ storeInfo }) => (
                     rel="noopener noreferrer nofollow"
                     target="_blank"
                   >
-                    Instagram
+                    <SocialIcon>
+                      <FontAwesomeIcon icon={['fab', 'instagram']} color="#3a3a3a" size="1x" />
+                    </SocialIcon>
+                    {storeInfo.instagram}
                   </LinkSocial>
                 </li>
               )}
