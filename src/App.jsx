@@ -115,7 +115,9 @@ const App = () => {
 
   const home = (e) => {
     if (e) { e.preventDefault(); }
-    updateFilter({ categoria: 0, label: 'Todas as categorias', page: 1 });
+    updateFilter({
+      categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+    });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
     window.history.pushState({}, '', `${baseUrl}`);
   };
