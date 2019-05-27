@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import FilterContext from 'contexts/FilterContext';
 
-const Container = styled.nav` 
+const Container = styled.nav`
   padding-top: 5px;
   padding-bottom: 8px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
@@ -27,20 +27,6 @@ const Field = styled.div`
     margin-left: 0;
   }
 `;
-
-const Input = styled.input`
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  padding: 6px 6px 6px 35px;
-  border-radius: 2px;
-  width: 100%;
-  color: #333;
-  font-size: 16px;
-  outline: 0;
-  border: none;
-  position: relative;
-  box-sizing: border-box;
-`;
-
 const Logo = styled.div`
   margin: 0;
   width: 70px;
@@ -63,6 +49,36 @@ const Colums = styled.div`
   }
 `;
 
+const Search = styled.div`
+  width: 100%;
+  position: relative;
+  display: flex;
+`;
+
+const SearchInput = styled.input`
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  width: 100%;
+  height: 36px;
+  border: 2px solid white;
+  border-right: none;
+  padding: 5px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: black;
+`;
+
+const SearchButton = styled.button`
+  width: 40px;
+  height: 36px;
+  border: 2px solid white;
+  background: white;
+  text-align: center;
+  color: black;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+`;
+
 
 const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
@@ -71,9 +87,11 @@ const Header = (props) => {
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
   const submit = (e) => {
     e.preventDefault();
-    updateFilter({
-      search, page: 1, categoria: 0, label: '',
-    });
+    if (search) {
+      updateFilter({
+        search, page: 1, categoria: 0, label: '',
+      });
+    }
     setSearch('');
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
     window.history.pushState({}, '', `${baseUrl}?search=${search}`);
@@ -94,13 +112,16 @@ const Header = (props) => {
             <div className="column is-9">
               <Field>
                 <form className="navbar-item" onSubmit={e => submit(e)}>
-                  <Input
-                    value={search}
-                    onChange={e => setSearch(e.target.value)}
-                    placeholder="Buscar produtos, marcas e muito mais…"
-                    type="text"
-                    name="search"
-                  />
+                  <Search>
+                    <SearchInput
+                      value={search}
+                      onChange={e => setSearch(e.target.value)}
+                      placeholder="Buscar produtos, marcas e muito mais…"
+                      type="text"
+                      name="search"
+                    />
+                    <SearchButton type="submit"><i className="fa fa-search" /></SearchButton>
+                  </Search>
                 </form>
               </Field>
             </div>

@@ -5,7 +5,6 @@ const getSearch = (id, filter) => {
   if (!filter) {
     param = {
       page: 1,
-      categoria: 0,
       orderBy: 'desc',
       sortBy: 'valorVenda',
     };
