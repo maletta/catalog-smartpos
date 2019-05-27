@@ -6,7 +6,6 @@ import MainContainer from 'containers/mainContainer';
 import SideBar from 'components/SideBar';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
-import Pagination from 'components/Pagination';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
 
@@ -125,21 +124,17 @@ const App = () => {
                 <div className="column is-12-tablet is-9-desktop">
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
                   <ReactPaginate
-                    previousLabel={'Anterior'}
-                    nextLabel={'Próxima'}
-                    breakLabel={'...'}
-                    breakClassName={'break-me'}
+                    previousLabel="Anterior"
+                    nextLabel="Próxima"
+                    breakLabel="..."
+                    breakClassName="break-me"
                     pageCount={maxPage}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     onPageChange={handlePagination}
-                    containerClassName={'pagination'}
-                    subContainerClassName={'pages pagination'}
-                    activeClassName={'active'}
-                  />
-                  <Pagination
-                    currentPage={filter.page}
-                    maxPage={maxPage}
+                    containerClassName="pagination"
+                    subContainerClassName="pages pagination"
+                    activeClassName="active"
                   />
                 </div>
               </MainContainer>
