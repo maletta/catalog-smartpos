@@ -112,7 +112,8 @@ const Footer = ({ storeInfo }) => (
               {storeInfo.numero && (`Número ${storeInfo.numero}`)}
               {(storeInfo.complemento || '') && ` - ${storeInfo.complemento || ''}`}
             </AddressInfo>
-            <AddressInfo>{storeInfo.numero && (storeInfo.numero || '' / storeInfo.uf || '' - storeInfo.cep || '')}</AddressInfo>
+            <AddressInfo>{`${storeInfo.cidade || ''} ${storeInfo.uf && ` - ${storeInfo.uf}`}`}</AddressInfo>
+            <AddressInfo>{storeInfo.cep && `CEP: ${storeInfo.cep}`}</AddressInfo>
           </div>
           <div className="column is-2">
             <FooterInfoTitle>Redes sociais</FooterInfoTitle>
