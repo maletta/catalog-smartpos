@@ -64,7 +64,7 @@ const FooterContact = ({ storeInfo }) => (
             ReactGA.event({
               category: 'FOOTER',
               action: 'CLICK_FONE',
-              label: storeInfo.fantasia,
+              label: storeInfo.usuario,
             });
           }}
         >
@@ -85,7 +85,7 @@ const FooterContact = ({ storeInfo }) => (
             ReactGA.event({
               category: 'FOOTER',
               action: 'CLICK_EMAIL',
-              label: storeInfo.fantasia,
+              label: storeInfo.usuario,
             });
           }}
         >
@@ -108,7 +108,7 @@ const FooterContact = ({ storeInfo }) => (
             ReactGA.event({
               category: 'FOOTER',
               action: 'CLICK_WHATS',
-              label: storeInfo.fantasia,
+              label: storeInfo.usuario,
             });
           }}
         >
