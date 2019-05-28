@@ -14,7 +14,6 @@ const getSearch = (id, filter) => {
   return axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/${id}/produtos/busca?q=${filter.search}`, {
     params: {
       ...param,
-      limit: 9,
     },
   });
 };
@@ -38,7 +37,6 @@ const getProducts = (id, filter) => {
   return axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/produtos/${id}`, {
     params: {
       ...param,
-      limit: 9,
     },
   });
 };

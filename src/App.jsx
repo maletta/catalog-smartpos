@@ -59,7 +59,6 @@ const App = () => {
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
   const [maxPage, setMaxPage] = useState(1);
-
   const { filter, updateFilter } = useContext(FilterContext);
 
   const notFoundHandle = () => (loading ? (
@@ -69,13 +68,16 @@ const App = () => {
   ) : !loading && (<NotFound />));
 
   const handlePagination = (data) => {
+    setLoading(true);
     updateFilter({ page: data.selected + 1 });
+    setLoading(false);
   };
 
   const getProductList = (data) => {
     if (filter.search) {
       return getSearch(data.id, filter)
         .then((response) => {
+          setLoading(true);
           setProducts(response.data.produtos);
           setMaxPage(response.data.totalPages);
         })
@@ -87,6 +89,7 @@ const App = () => {
     }
     return getProducts(data.id, filter)
       .then((response) => {
+        setLoading(true);
         setProducts(response.data.produtos);
         setMaxPage(response.data.totalPages);
       })
@@ -99,7 +102,10 @@ const App = () => {
 
   const getCategoryList = (data) => {
     getCategories(data.id)
-      .then(response => setCategories(response.data))
+      .then((response) => {
+        setLoading(true);
+        setCategories(response.data);
+      })
       .catch(() => setCategories())
       .finally(() => setLoading(false));
   };
@@ -160,20 +166,24 @@ const App = () => {
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
-                  <ReactPaginate
-                    previousLabel="Anterior"
-                    nextLabel="Próxima"
-                    breakLabel="..."
-                    breakClassName="break-me"
-                    pageCount={maxPage}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={handlePagination}
-                    containerClassName="pagination"
-                    subContainerClassName="pages pagination"
-                    activeClassName="active"
-                    forcePage={(filter.page ? filter.page - 1 : 0)}
-                  />
+                  {(prodArray.length) && (
+                    maxPage > 1 && (
+                      <ReactPaginate
+                        previousLabel="Anterior"
+                        nextLabel="Próxima"
+                        breakLabel="..."
+                        breakClassName="break-me"
+                        pageCount={maxPage}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePagination}
+                        containerClassName="pagination"
+                        subContainerClassName="pages pagination"
+                        activeClassName="active"
+                        forcePage={(filter.page ? filter.page - 1 : 0)}
+                      />
+                    )
+                  )}
                 </div>
               </MainContainer>
             </div>
