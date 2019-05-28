@@ -166,7 +166,7 @@ const App = () => {
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
-                  {(prodArray.length) && (
+                  {prodArray.length ? (
                     maxPage > 1 && (
                       <ReactPaginate
                         previousLabel="Anterior"
@@ -182,8 +182,8 @@ const App = () => {
                         activeClassName="active"
                         forcePage={(filter.page ? filter.page - 1 : 0)}
                       />
-                    )
-                  )}
+                    )) : ('')
+                  }
                 </div>
               </MainContainer>
             </div>
