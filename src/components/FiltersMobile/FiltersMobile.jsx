@@ -85,6 +85,7 @@ const DropdownContenItem = styled.li`
   text-decoration: none;
   display: block;
   border-bottom: 1px solid #ddd;
+  cursor: pointer;
 `;
 
 const FiltersMobile = ({ categories }) => {
@@ -98,7 +99,7 @@ const FiltersMobile = ({ categories }) => {
       key={item.id}
       title={item.descricao}
       onClick={() => {
-        updateFilter({ categoria: item.id, page: 1 });
+        updateFilter({ categoria: item.id, page: 1, search: undefined });
         setSelectCategoryOpen(false);
         setCategorySelected(item.descricao);
       }}
@@ -198,7 +199,9 @@ const FiltersMobile = ({ categories }) => {
             <SelectItem
               title="Todas as categorias"
               onClick={() => {
-                updateFilter({ categoria: 0 });
+                updateFilter({
+                  categoria: 0, label: 'Todas as categorias', search: undefined, page: 1,
+                });
                 setSelectCategoryOpen(false);
                 setCategorySelected(null);
               }}
