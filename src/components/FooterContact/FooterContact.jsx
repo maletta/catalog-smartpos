@@ -53,7 +53,7 @@ const AreaButton = styled.div`
 
 const FooterContact = ({ storeInfo }) => (
   <div>
-    <p>Esta com dúvidas? entre em contato com o vendedor!</p>
+    <p>Está com dúvidas? Entre em contato com o vendedor!</p>
     <AreaContent>
       <AreaButton>
         <Button
