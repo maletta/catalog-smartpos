@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
+import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
-import Header from 'containers/header';
 import GridList from 'components/GridList';
 import MainContainer from 'containers/mainContainer';
 import SideBar from 'components/SideBar';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
-import Pagination from 'components/Pagination';
-import Footer from 'containers/footer';
+import Footer from 'components/Footer';
+import Header from 'containers/Header';
+
 import getStoreName from 'getStoreName';
 import FiltersMobile from 'components/FiltersMobile';
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -15,20 +16,24 @@ import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faArrowRight, faArrowLeft,
   faCaretDown, faSlidersH, faSort, faTimes,
 } from '@fortawesome/free-solid-svg-icons';
-import { faFacebookF, faWhatsapp, faInstagram } from '@fortawesome/free-brands-svg-icons';
+import {
+  faFacebookF, faWhatsapp, faInstagram, faGooglePlay,
+} from '@fortawesome/free-brands-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
 import {
   getStoreInfo,
   getProducts,
   getCategories,
+  getSearch,
 } from 'requests';
 
 import FilterContext from 'contexts/FilterContext';
 import initGA from './initGA';
 
-library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faFacebookF, faTimes,
-  faWhatsapp, faInstagram, faHeart, faArrowRight, faArrowLeft, faCaretDown, faSlidersH, faSort);
+library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
+  faFacebookF, faTimes, faGooglePlay, faWhatsapp, faInstagram, faHeart,
+  faArrowRight, faArrowLeft, faCaretDown, faSlidersH, faSort);
 
 const Container = styled.div`
   width: 100%;
@@ -38,14 +43,23 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const Section = styled.section`
+  &&& {
+    padding-top: 20px;
+
+    @media (max-width: 768px) {
+      padding-top: 12px;
+    }
+  }
+`;
+
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState({});
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
   const [maxPage, setMaxPage] = useState(1);
-
-  const { filter } = useContext(FilterContext);
+  const { filter, updateFilter } = useContext(FilterContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
@@ -53,9 +67,29 @@ const App = () => {
     </Container>
   ) : !loading && (<NotFound />));
 
+  const handlePagination = (data) => {
+    setLoading(true);
+    updateFilter({ page: data.selected + 1 });
+    setLoading(false);
+  };
+
   const getProductList = (data) => {
-    getProducts(data.id, filter)
+    if (filter.search) {
+      return getSearch(data.id, filter)
+        .then((response) => {
+          setLoading(true);
+          setProducts(response.data.produtos);
+          setMaxPage(response.data.totalPages);
+        })
+        .catch(() => {
+          setProducts({});
+          setMaxPage(-1);
+        })
+        .finally(() => setLoading(false));
+    }
+    return getProducts(data.id, filter)
       .then((response) => {
+        setLoading(true);
         setProducts(response.data.produtos);
         setMaxPage(response.data.totalPages);
       })
@@ -68,7 +102,10 @@ const App = () => {
 
   const getCategoryList = (data) => {
     getCategories(data.id)
-      .then(response => setCategories(response.data))
+      .then((response) => {
+        setLoading(true);
+        setCategories(response.data);
+      })
       .catch(() => setCategories())
       .finally(() => setLoading(false));
   };
@@ -77,14 +114,13 @@ const App = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
         document.title = response.data.fantasia;
-        setStore({ ...response.data, found: true, store: getStoreName() });
+        setStore({ ...response.data, found: true, storeName: getStoreName() });
         getProductList(response.data);
         getCategoryList(response.data);
       })
       .catch(() => setStore({ found: false }))
       .finally(() => setLoading(false));
   };
-
 
   const prodArray = Object.keys(products).map(i => products[i]);
 
@@ -94,13 +130,32 @@ const App = () => {
     initGA();
   }, [filter]);
 
+
+  const home = (e) => {
+    if (e) { e.preventDefault(); }
+    updateFilter({
+      categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+    });
+    const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
+    window.history.pushState({}, '', `${baseUrl}`);
+  };
+
   return (
     <>
       {store.found ? (
         <div>
-          <div className="section">
+          <Header codigo={store.codigo} goHome={() => home()} />
+          <FiltersMobile
+            categories={categories}
+          />
+          <Section className="section">
             <div className="container">
-              <Header storeInfo={store} />
+              <nav className="breadcrumb" aria-label="breadcrumbs">
+                <ul>
+                  <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
+                  <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
+                </ul>
+              </nav>
               <MainContainer>
                 <div className="column is-hidden-touch is-3-desktop">
                   <SideBar
@@ -110,18 +165,29 @@ const App = () => {
                   />
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
-                  <FiltersMobile
-                    categories={categories}
-                  />
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
-                  <Pagination
-                    currentPage={filter.page}
-                    maxPage={maxPage}
-                  />
+                  {(prodArray.length) && (
+                    maxPage > 1 && (
+                      <ReactPaginate
+                        previousLabel="Anterior"
+                        nextLabel="Próxima"
+                        breakLabel="..."
+                        breakClassName="break-me"
+                        pageCount={maxPage}
+                        marginPagesDisplayed={2}
+                        pageRangeDisplayed={5}
+                        onPageChange={handlePagination}
+                        containerClassName="pagination"
+                        subContainerClassName="pages pagination"
+                        activeClassName="active"
+                        forcePage={(filter.page ? filter.page - 1 : 0)}
+                      />
+                    )
+                  )}
                 </div>
               </MainContainer>
             </div>
-          </div>
+          </Section>
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}

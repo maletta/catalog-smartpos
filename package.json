@@ -27,6 +27,7 @@
     "react-dom": "^16.7.0",
     "react-ga": "^2.5.7",
     "react-intl": "^2.7.2",
+    "react-paginate": "^6.3.0",
     "react-router-dom": "5.0.0",
     "react-scripts": "2.1.2",
     "styled-components": "^4.1.3"

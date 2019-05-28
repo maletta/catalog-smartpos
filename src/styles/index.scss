@@ -24,6 +24,54 @@ $input-shadow: none;
 
 @import "~bulma/bulma.sass";
 
-body {
+
+html, body {
   background: #EBEBEB;
+}
+
+/* STYLE PAGINATION */
+.pagination {
+  margin-top: 25px;
+  justify-content: center;
+}
+
+.pagination li {
+  margin: 25px 10px 0 10px;
+}
+
+.pagination li a {
+  color: #022751;
+  padding: 7px;
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+.pagination li a:hover {
+  background: #e0dede;
+}
+
+.pagination .active a, .pagination .active a:hover {
+  color: #fff;
+  font-weight: bold;
+  background: #f38a00;
+}
+
+.breadcrumb {
+  font-size: 0.8rem;
+}
+
+.breadcrumb:not(:last-child) {
+  margin-bottom: 1.3rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 0.6rem;
+  }
+}
+
+.breadcrumb a, .breadcrumb a:hover {
+  color: #f37c05;
+}
+
+.breadcrumb li.is-active a {
+  color: #666;
 }

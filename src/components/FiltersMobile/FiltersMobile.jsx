@@ -10,7 +10,6 @@ const Div = styled.div`
   flex-grow: 0;
   justify-content: space-between;
   background: #fff;
-  margin: -13px -24px 10px -24px;
   border-bottom: 2px solid #eee;
 `;
 
@@ -33,7 +32,7 @@ const AreaSelect = styled.div`
   right: 0;
   left: 0;
   height: 100%;
-  z-index: 20;
+  z-index: 31;
   background: #fff;
   overflow: auto;
 `;
@@ -86,6 +85,7 @@ const DropdownContenItem = styled.li`
   text-decoration: none;
   display: block;
   border-bottom: 1px solid #ddd;
+  cursor: pointer;
 `;
 
 const FiltersMobile = ({ categories }) => {
@@ -99,7 +99,7 @@ const FiltersMobile = ({ categories }) => {
       key={item.id}
       title={item.descricao}
       onClick={() => {
-        updateFilter({ categoria: item.id, page: 1 });
+        updateFilter({ categoria: item.id, page: 1, search: undefined });
         setSelectCategoryOpen(false);
         setCategorySelected(item.descricao);
       }}
@@ -199,11 +199,14 @@ const FiltersMobile = ({ categories }) => {
             <SelectItem
               title="Todas as categorias"
               onClick={() => {
-                updateFilter({ categoria: 0 });
+                updateFilter({
+                  categoria: 0, label: 'Todas as categorias', search: undefined, page: 1,
+                });
                 setSelectCategoryOpen(false);
                 setCategorySelected(null);
               }}
             >
+
               Todas as Categorias
             </SelectItem>
             {renderCategories}
