@@ -133,7 +133,7 @@ const Footer = ({ storeInfo }) => (
                     ReactGA.event({
                       category: 'FOOTER',
                       action: 'CLICK_FACEBOOK',
-                      label: storeInfo.fantasia,
+                      label: storeInfo.usuario,
                     });
                   }}
                 >
@@ -154,7 +154,7 @@ const Footer = ({ storeInfo }) => (
                       ReactGA.event({
                         category: 'FOOTER',
                         action: 'CLICK_INSTAGRAM',
-                        label: storeInfo.fantasia,
+                        label: storeInfo.usuario,
                       });
                     }}
                   >
@@ -175,7 +175,7 @@ const Footer = ({ storeInfo }) => (
         <div className="columns is-vcentered">
           <div className="column is-9-desktop is-8-tablet">
             <strong>Baixe o SmartPOS App! </strong>
-              Automação comercial inteligente
+            Automação comercial inteligente
           </div>
           <div className="column is-3">
             <ButtonDownload
@@ -187,7 +187,7 @@ const Footer = ({ storeInfo }) => (
                 ReactGA.event({
                   category: 'FOOTER',
                   action: 'CLICK_SMARTPOS_PLAYSTORE',
-                  label: storeInfo.fantasia,
+                  label: storeInfo.usuario,
                 });
               }}
             >
@@ -221,7 +221,7 @@ const Footer = ({ storeInfo }) => (
             ReactGA.event({
               category: 'FOOTER',
               action: 'CLICK_FLOAT_WHATS',
-              label: storeInfo.fantasia,
+              label: storeInfo.usuario,
             });
           }}
         >
