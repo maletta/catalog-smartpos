@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
+import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
 import GridList from 'components/GridList';
 import MainContainer from 'containers/mainContainer';
 import SideBar from 'components/SideBar';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
-import Pagination from 'components/Pagination';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
 
@@ -45,7 +45,11 @@ const Container = styled.div`
 
 const Section = styled.section`
   &&& {
-    padding-top: 25px;
+    padding-top: 20px;
+
+    @media (max-width: 768px) {
+      padding-top: 12px;
+    }
   }
 `;
 
@@ -63,6 +67,10 @@ const App = () => {
       <Spinner />
     </Container>
   ) : !loading && (<NotFound />));
+
+  const handlePagination = (data) => {
+    updateFilter({ page: data.selected + 1 });
+  };
 
   const getProductList = (data) => {
     if (filter.search) {
@@ -152,9 +160,19 @@ const App = () => {
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
-                  <Pagination
-                    currentPage={filter.page}
-                    maxPage={maxPage}
+                  <ReactPaginate
+                    previousLabel="Anterior"
+                    nextLabel="Próxima"
+                    breakLabel="..."
+                    breakClassName="break-me"
+                    pageCount={maxPage}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePagination}
+                    containerClassName="pagination"
+                    subContainerClassName="pages pagination"
+                    activeClassName="active"
+                    forcePage={(filter.page ? filter.page - 1 : 0)}
                   />
                 </div>
               </MainContainer>

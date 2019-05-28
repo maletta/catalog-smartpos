@@ -19,9 +19,8 @@ const GridList = (props) => {
   const items = itens.map(item => <GridItem key={item.id} item={item} />);
   return (
     <>
-
       {items.length > 0 ? (
-        <div className="column is-fluid">
+        <div className="column is-fluid is-paddingless">
           <div className="columns is-mobile is-multiline">
             {items}
           </div>

@@ -9,6 +9,10 @@ const Item = styled.div`
   display: flex !important;
   text-align: center;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    padding: 0.35rem !important;
+  }
 `;
 
 const Container = styled.div`
@@ -20,6 +24,15 @@ const Container = styled.div`
 
 const Img = styled.img`
   border-radius: 5px 5px 0 0;
+`;
+
+const Cardcontent = styled.div`
+  background-color: transparent;
+  padding: 1.2rem;
+
+  @media (max-width: 768px) {
+    padding: 0.75rem;
+  }
 `;
 
 const Descricao = styled.div`
@@ -69,7 +82,7 @@ const GridItem = (props) => {
               {load ? (<Spinner />) : (<Img src={image} alt="product" />)}
             </figure>
           </div>
-          <div className="card-content">
+          <Cardcontent>
             <div>
               <Price>
                 {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
@@ -78,7 +91,7 @@ const GridItem = (props) => {
             <Descricao className="content">
               <span>{item.descricao}</span>
             </Descricao>
-          </div>
+          </Cardcontent>
         </Container>
       </Item>
     </>
