@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactGA from 'react-ga';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -59,6 +60,13 @@ const FooterContact = ({ storeInfo }) => (
         <Button
           href={`tel:${storeInfo.whatsapp}`}
           rel="noopener noreferrer nofollow"
+          onClick={() => {
+            ReactGA.event({
+              category: 'FOOTER',
+              action: 'CLICK_FONE',
+              label: storeInfo.fantasia,
+            });
+          }}
         >
           <Icon>
             <FontAwesomeIcon icon={['fas', 'phone']} />
@@ -73,6 +81,13 @@ const FooterContact = ({ storeInfo }) => (
         <Button
           href={`mailto:${storeInfo.email || ''}`}
           rel="noopener noreferrer nofollow"
+          onClick={() => {
+            ReactGA.event({
+              category: 'FOOTER',
+              action: 'CLICK_EMAIL',
+              label: storeInfo.fantasia,
+            });
+          }}
         >
           <Icon>
             <FontAwesomeIcon icon={['fas', 'envelope']} />
@@ -89,6 +104,13 @@ const FooterContact = ({ storeInfo }) => (
           href={`https://api.whatsapp.com/send?phone=55${storeInfo.whatsapp}`}
           rel="noopener noreferrer nofollow"
           target="_blank"
+          onClick={() => {
+            ReactGA.event({
+              category: 'FOOTER',
+              action: 'CLICK_WHATS',
+              label: storeInfo.fantasia,
+            });
+          }}
         >
           <Icon>
             <FontAwesomeIcon icon={['fab', 'whatsapp']} />
