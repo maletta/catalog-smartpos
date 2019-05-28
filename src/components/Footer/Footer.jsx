@@ -175,7 +175,7 @@ const Footer = ({ storeInfo }) => (
         <div className="columns is-vcentered">
           <div className="column is-9-desktop is-8-tablet">
             <strong>Baixe o SmartPOS App! </strong>
-            Automação comercial inteligente
+            <span>Automação comercial inteligente</span>
           </div>
           <div className="column is-3">
             <ButtonDownload

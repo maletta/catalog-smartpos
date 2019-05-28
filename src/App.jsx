@@ -166,23 +166,22 @@ const App = () => {
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
                   {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
-                  {prodArray.length ? (
-                    maxPage > 1 && (
-                      <ReactPaginate
-                        previousLabel="Anterior"
-                        nextLabel="Próxima"
-                        breakLabel="..."
-                        breakClassName="break-me"
-                        pageCount={maxPage}
-                        marginPagesDisplayed={2}
-                        pageRangeDisplayed={5}
-                        onPageChange={handlePagination}
-                        containerClassName="pagination"
-                        subContainerClassName="pages pagination"
-                        activeClassName="active"
-                        forcePage={(filter.page ? filter.page - 1 : 0)}
-                      />
-                    )) : ('')
+                  {(prodArray.length > 1 && maxPage > 1) && (
+                    <ReactPaginate
+                      previousLabel="Anterior"
+                      nextLabel="Próxima"
+                      breakLabel="..."
+                      breakClassName="break-me"
+                      pageCount={maxPage}
+                      marginPagesDisplayed={2}
+                      pageRangeDisplayed={5}
+                      onPageChange={handlePagination}
+                      containerClassName="pagination"
+                      subContainerClassName="pages pagination"
+                      activeClassName="active"
+                      forcePage={(filter.page ? filter.page - 1 : 0)}
+                    />
+                  )
                   }
                 </div>
               </MainContainer>
