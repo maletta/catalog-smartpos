@@ -55,3 +55,23 @@ html, body {
   font-weight: bold;
   background: #f38a00;
 }
+
+.breadcrumb {
+  font-size: 0.8rem;
+}
+
+.breadcrumb:not(:last-child) {
+  margin-bottom: 1.3rem;
+
+  @media (max-width: 768px) {
+    margin-bottom: 0.6rem;
+  }
+}
+
+.breadcrumb a, .breadcrumb a:hover {
+  color: #f37c05;
+}
+
+.breadcrumb li.is-active a {
+  color: #666;
+}

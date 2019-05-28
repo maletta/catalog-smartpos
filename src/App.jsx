@@ -45,7 +45,11 @@ const Container = styled.div`
 
 const Section = styled.section`
   &&& {
-    padding-top: 25px;
+    padding-top: 20px;
+
+    @media (max-width: 768px) {
+      padding-top: 12px;
+    }
   }
 `;
 

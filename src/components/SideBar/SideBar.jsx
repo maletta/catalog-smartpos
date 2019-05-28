@@ -1,13 +1,10 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import Spinner from 'components/Spinner';
 import { List, LinkItem } from 'components/List';
 import FilterContext from 'contexts/FilterContext';
 
-const Aside = styled.aside`
-  margin-top: 0.75rem;
-`;
+
 const SideBar = (props) => {
   const {
     loading,
@@ -26,7 +23,7 @@ const SideBar = (props) => {
     />
   ));
   return (
-    <Aside>
+    <aside>
       <List title="Ordernar por" isFullHeight>
         <LinkItem
           text="Maior preço"
@@ -58,7 +55,7 @@ const SideBar = (props) => {
         />
         {loading ? <Spinner /> : items}
       </List>
-    </Aside>
+    </aside>
   );
 };
 
