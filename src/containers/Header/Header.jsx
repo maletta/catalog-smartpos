@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import ReactGA from 'react-ga';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import FilterContext from 'contexts/FilterContext';
@@ -88,6 +89,11 @@ const Header = (props) => {
   const submit = (e) => {
     e.preventDefault();
     if (search) {
+      ReactGA.event({
+        category: 'HEADER',
+        action: 'SEARCH',
+        label: search,
+      });
       updateFilter({
         search, page: 1, categoria: 0, label: '',
       });

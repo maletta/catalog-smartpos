@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import FooterContact from 'components/FooterContact';
 import PropTypes from 'prop-types';
+import ReactGA from 'react-ga';
 
 const FullWidthFooter = styled.div`
   position: relative;
@@ -128,6 +129,13 @@ const Footer = ({ storeInfo }) => (
                   href={`https://www.facebook.com/${storeInfo.facebook}`}
                   rel="noopener noreferrer nofollow"
                   target="_blank"
+                  onClick={() => {
+                    ReactGA.event({
+                      category: 'FOOTER',
+                      action: 'CLICK_FACEBOOK',
+                      label: storeInfo.fantasia,
+                    });
+                  }}
                 >
                   <SocialIcon>
                     <FontAwesomeIcon icon={['fab', 'facebook-f']} color="#3a3a3a" size="1x" />
@@ -142,6 +150,13 @@ const Footer = ({ storeInfo }) => (
                     href={`https://www.instagram.com/${storeInfo.instagram}`}
                     rel="noopener noreferrer nofollow"
                     target="_blank"
+                    onClick={() => {
+                      ReactGA.event({
+                        category: 'FOOTER',
+                        action: 'CLICK_INSTAGRAM',
+                        label: storeInfo.fantasia,
+                      });
+                    }}
                   >
                     <SocialIcon>
                       <FontAwesomeIcon icon={['fab', 'instagram']} color="#3a3a3a" size="1x" />
@@ -168,6 +183,13 @@ const Footer = ({ storeInfo }) => (
               rel="noopener noreferrer"
               target="_blank"
               className="button is-outlined"
+              onClick={() => {
+                ReactGA.event({
+                  category: 'FOOTER',
+                  action: 'CLICK_SMARTPOS_PLAYSTORE',
+                  label: storeInfo.fantasia,
+                });
+              }}
             >
               <Icon>
                 <FontAwesomeIcon icon={['fab', 'google-play']} color="#022751" size="1x" />
@@ -195,6 +217,13 @@ const Footer = ({ storeInfo }) => (
           rel="noopener noreferrer"
           target="_blank"
           title="Iniciar conversa pelo WhatsApp"
+          onClick={() => {
+            ReactGA.event({
+              category: 'FOOTER',
+              action: 'CLICK_FLOAT_WHATS',
+              label: storeInfo.fantasia,
+            });
+          }}
         >
           <ButtonWhatsApp>
             <FontAwesomeIcon icon={['fab', 'whatsapp']} />
