@@ -68,7 +68,6 @@ const App = () => {
   ) : !loading && (<NotFound />));
 
   const handlePagination = (data) => {
-    setLoading(true);
     updateFilter({ page: data.selected + 1 });
     setLoading(false);
   };
@@ -77,7 +76,6 @@ const App = () => {
     if (filter.search) {
       return getSearch(data.id, filter)
         .then((response) => {
-          setLoading(true);
           setProducts(response.data.produtos);
           setMaxPage(response.data.totalPages);
         })
@@ -103,7 +101,6 @@ const App = () => {
   const getCategoryList = (data) => {
     getCategories(data.id)
       .then((response) => {
-        setLoading(true);
         setCategories(response.data);
       })
       .catch(() => setCategories())
@@ -118,8 +115,7 @@ const App = () => {
         getProductList(response.data);
         getCategoryList(response.data);
       })
-      .catch(() => setStore({ found: false }))
-      .finally(() => setLoading(false));
+      .catch(() => setStore({ found: false }));
   };
 
   const prodArray = Object.keys(products).map(i => products[i]);
