@@ -28,9 +28,8 @@
 
 ## Ambientes
 
-- Produção: [...]
-- Staging: [...]
-- Development: [...]
+- Produção: [https://exemplo.smartpos.app]
+- Development: [https://smartposbr.qa.smartpos.net.br]
 
 Usamos o *staging* para compartilhar com outras pessoas na empresa para testar.
 Ele usa o banco de dados de produção.
