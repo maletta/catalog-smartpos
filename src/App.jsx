@@ -179,8 +179,7 @@ const App = () => {
                       activeClassName="active"
                       forcePage={(filter.page ? filter.page - 1 : 0)}
                     />
-                  )
-                  }
+                  )}
                 </div>
               </MainContainer>
             </div>
