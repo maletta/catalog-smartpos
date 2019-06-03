@@ -1,3 +1,5 @@
+import 'babel-polyfill';
+import 'url-search-params-polyfill';
 import React, { useState, useEffect, useContext } from 'react';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
