@@ -56,6 +56,18 @@ const SpinnerCointainer = styled.div`
   padding-top: 50px;
   width: 100%;
   height: 223px;
+
+  @media (max-width: 768px) {
+    padding-top: 80px;
+    width: 100%;
+    height: 223px;
+  }
+
+  @media (max-width: 375px) {
+    padding-top: 30px;
+    width: 100%;
+    height: 170px;
+  }
 `;
 
 
