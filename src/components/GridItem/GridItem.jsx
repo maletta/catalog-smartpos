@@ -52,6 +52,24 @@ const Price = styled.p`
   font-size: 1.3rem;
 `;
 
+const SpinnerCointainer = styled.div`
+  padding-top: 50px;
+  width: 100%;
+  height: 223px;
+
+  @media (max-width: 768px) {
+    padding-top: 80px;
+    width: 100%;
+    height: 223px;
+  }
+
+  @media (max-width: 375px) {
+    padding-top: 30px;
+    width: 100%;
+    height: 170px;
+  }
+`;
+
 
 const GridItem = (props) => {
   const { item, intl } = props;
@@ -79,7 +97,7 @@ const GridItem = (props) => {
         <Container className="card-image">
           <div className="card-image">
             <figure className="image is-160x160">
-              {load ? (<Spinner />) : (<Img src={image} alt="product" />)}
+              {load ? (<SpinnerCointainer><Spinner /></SpinnerCointainer>) : (<Img src={image} alt="product" />)}
             </figure>
           </div>
           <Cardcontent>
