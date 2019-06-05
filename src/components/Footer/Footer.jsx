@@ -77,13 +77,13 @@ const FixedButton = styled.div`
 `;
 
 const ButtonWhatsApp = styled.div`
-  color: #022751;
+  color: #019444;
   padding: 10px;
   border-radius: 50%;
-  background: transparent;
+  background: #fff;
   height: 50px;
   width: 50px;
-  border: solid 1px #022751;
+  border: solid 1px #019444;
   font-size: 40px;
   display: flex;
   align-items: center;

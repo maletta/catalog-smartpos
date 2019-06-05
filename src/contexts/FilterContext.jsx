@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 
 const FilterContext = createContext();
-const abortController = new AbortController();
 
 export const FilterProvider = ({ children }) => {
   const parsed = queryString.parse(window.location.search);
@@ -21,7 +20,6 @@ export const FilterProvider = ({ children }) => {
     const stringified = queryString.stringify({ ...parsed, ...filter });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
     if (filter.categoria) { window.history.pushState({}, '', `${baseUrl}?${stringified}`); }
-    abortController.abort();
   }, [filter]);
 
   const updateFilter = (newFilter) => {
