@@ -75,6 +75,7 @@ const App = () => {
   };
 
   const getProductList = (data) => {
+    setLoading(true);
     if (filter.search) {
       return getSearch(data.id, filter)
         .then((response) => {
@@ -89,7 +90,6 @@ const App = () => {
     }
     return getProducts(data.id, filter)
       .then((response) => {
-        setLoading(true);
         setProducts(response.data.produtos);
         setMaxPage(response.data.totalPages);
       })
@@ -117,7 +117,8 @@ const App = () => {
         getProductList(response.data);
         getCategoryList(response.data);
       })
-      .catch(() => setStore({ found: false }));
+      .catch(() => setStore({ found: false }))
+      .finally(() => setLoading(false));
   };
 
   const prodArray = Object.keys(products).map(i => products[i]);
