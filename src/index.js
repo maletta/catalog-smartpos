@@ -5,9 +5,11 @@ import ReactDOM from 'react-dom';
 import { ThemeProvider } from 'styled-components';
 import IntlProvider from 'intl/intlProvider';
 import defaultTheme from 'styles/DefaultTheme';
+import dynamicManifest from 'dynamicManifest';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 import { FilterProvider } from './contexts/FilterContext';
+
 
 import 'styles/index.scss';
 
@@ -15,6 +17,7 @@ ReactDOM.render((
   <IntlProvider language={{ locale: 'pt', messages: {} }}>
     <ThemeProvider theme={defaultTheme}>
       <FilterProvider>
+        {dynamicManifest()}
         <App />
       </FilterProvider>
     </ThemeProvider>
