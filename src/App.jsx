@@ -88,7 +88,7 @@ const App = () => {
         })
         .finally(() => setLoading(false));
     }
-    return getProducts(data.id, filter)
+    return getProducts(data, filter)
       .then((response) => {
         setProducts(response.data.produtos);
         setMaxPage(response.data.totalPages);
