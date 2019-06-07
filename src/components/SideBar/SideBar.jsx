@@ -1,13 +1,11 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import Spinner from 'components/Spinner';
 import { List, LinkItem } from 'components/List';
 import FilterContext from 'contexts/FilterContext';
 
 
 const SideBar = (props) => {
   const {
-    loading,
     categories,
   } = props;
   const { filter, updateFilter } = useContext(FilterContext);
@@ -53,14 +51,13 @@ const SideBar = (props) => {
             categoria: 0, label: 'Todas as categorias', search: undefined, page: 1,
           })}
         />
-        {loading ? <Spinner /> : items}
+        {items}
       </List>
     </aside>
   );
 };
 
 SideBar.propTypes = {
-  loading: PropTypes.bool.isRequired,
   categories: PropTypes.array.isRequired,
 };
 
