@@ -117,8 +117,10 @@ const App = () => {
         getProductList(response.data);
         getCategoryList(response.data);
       })
-      .catch(() => setStore({ found: false }))
-      .finally(() => setLoading(false));
+      .catch(() => {
+        setStore({ found: false });
+        setLoading(false);
+      });
   };
 
   const prodArray = Object.keys(products).map(i => products[i]);
@@ -160,11 +162,14 @@ const App = () => {
                   <SideBar
                     categories={categories}
                     storeInfo={store}
-                    loading={loading}
                   />
                 </div>
                 <div className="column is-12-tablet is-9-desktop">
-                  {loading ? <Spinner /> : (<GridList itens={prodArray} loading={loading} />)}
+                  {loading ? (
+                    <Container>
+                      <Spinner />
+                    </Container>
+                  ) : (<GridList itens={prodArray} loading={loading} />)}
                   {(prodArray.length > 1 && maxPage > 1) && (
                     <ReactPaginate
                       previousLabel="Anterior"

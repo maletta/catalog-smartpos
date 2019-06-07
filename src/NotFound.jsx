@@ -14,6 +14,10 @@ const Text = styled.span`
   justify-content: center;
   font-size: 2.75rem;
   padding-bottom: 150px;
+
+  @media (max-width: 720px) {
+    font-size: 1.75rem;
+  }
 `;
 
 const NotFound = () => (
