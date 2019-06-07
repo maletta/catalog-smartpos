@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import store from 'assets/online-store.png';
 
 const Image = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const NotFound = () => (
   <>
     <div className="">
       <Image>
-        <img src="https://img.icons8.com/cotton/420/online-store.png" alt="store" width="300px" />
+        <img src={store} alt="store" width="300px" />
       </Image>
       <Text>
         <span> Loja não encontrada.</span>
