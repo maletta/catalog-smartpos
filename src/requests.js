@@ -22,7 +22,7 @@ const getStoreInfo = id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/
 
 const getCategories = id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/categorias/${id}`);
 
-const getProducts = (id, filter) => {
+const getProducts = (store, filter) => {
   let param;
   if (!filter) {
     param = {
@@ -30,11 +30,12 @@ const getProducts = (id, filter) => {
       categoria: 0,
       orderBy: 'desc',
       sortBy: 'valorVenda',
+      stock: store.stock,
     };
   } else {
-    param = { ...filter };
+    param = { ...filter, stock: store.stock };
   }
-  return axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/produtos/${id}`, {
+  return axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/produtos/${store.id}`, {
     params: {
       ...param,
     },
