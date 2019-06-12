@@ -52,6 +52,14 @@ const Price = styled.p`
   font-size: 1.3rem;
 `;
 
+const Unavailable = styled.p`
+  color: gray;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding-bottom: -10px;
+`;
+
 const SpinnerCointainer = styled.div`
   padding-top: 50px;
   width: 100%;
@@ -109,6 +117,7 @@ const GridItem = (props) => {
             <Descricao className="content">
               <span>{item.descricao}</span>
             </Descricao>
+            {item.stock < 0 && (<Unavailable> Produto indisponível  </Unavailable>)}
           </Cardcontent>
         </Container>
       </Item>
