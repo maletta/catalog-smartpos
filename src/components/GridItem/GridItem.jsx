@@ -119,7 +119,8 @@ const GridItem = (props) => {
             <Descricao>
               <span>{item.descricao}</span>
             </Descricao>
-            {(item.not_control_stock === 0 && item.stock <= 0) && (<Unavailable> Produto indisponível  </Unavailable>)}
+            {(item.not_control_stock === 0 && item.stock <= 0)
+              && (<Unavailable> Produto indisponível  </Unavailable>)}
           </Cardcontent>
         </Container>
       </Item>
