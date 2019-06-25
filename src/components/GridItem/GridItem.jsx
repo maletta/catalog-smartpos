@@ -23,7 +23,12 @@ const Container = styled.div`
 `;
 
 const Img = styled.img`
+  height: 223px;
   border-radius: 5px 5px 0 0;
+
+  @media (max-width: 375px) {
+    height: 170px;
+  }
 `;
 
 const Cardcontent = styled.div`
@@ -54,12 +59,10 @@ const Price = styled.p`
 
 const Unavailable = styled.p`
   color: #333;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
   padding-bottom: -10px;
   font-size: 0.9rem;
   font-weight: bold;
+  text-align: left;
 `;
 
 const SpinnerCointainer = styled.div`
@@ -106,7 +109,7 @@ const GridItem = (props) => {
       <Item className="column is-6-mobile is-4-tablet is-4-desktop">
         <Container className="card-image">
           <div className="card-image">
-            <figure className="image is-160x160">
+            <figure className="is-160x160">
               {load ? (<SpinnerCointainer><Spinner /></SpinnerCointainer>) : (<Img src={image} alt="product" />)}
             </figure>
           </div>
@@ -120,7 +123,7 @@ const GridItem = (props) => {
               <span>{item.descricao}</span>
             </Descricao>
             {(item.not_control_stock === 0 && item.stock <= 0)
-              && (<Unavailable> Produto indisponível  </Unavailable>)}
+              && (<Unavailable>Produto indisponível</Unavailable>)}
           </Cardcontent>
         </Container>
       </Item>
