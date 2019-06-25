@@ -53,11 +53,13 @@ const Price = styled.p`
 `;
 
 const Unavailable = styled.p`
-  color: gray;
+  color: #333;
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   padding-bottom: -10px;
+  font-size: 0.9rem;
+  font-weight: bold;
 `;
 
 const SpinnerCointainer = styled.div`
@@ -114,10 +116,10 @@ const GridItem = (props) => {
                 {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
               </Price>
             </div>
-            <Descricao className="content">
+            <Descricao>
               <span>{item.descricao}</span>
             </Descricao>
-            {item.stock < 0 && (<Unavailable> Produto indisponível  </Unavailable>)}
+            {(item.not_control_stock === 0 && item.stock <= 0) && (<Unavailable> Produto indisponível  </Unavailable>)}
           </Cardcontent>
         </Container>
       </Item>
