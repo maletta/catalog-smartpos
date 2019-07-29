@@ -9,17 +9,21 @@ const SideBar = (props) => {
     categories,
   } = props;
   const { filter, updateFilter } = useContext(FilterContext);
-
-  const items = categories.map(item => (
-    <LinkItem
-      key={item.id}
-      text={item.descricao}
-      selected={item.id === filter.categoria}
-      onClick={() => updateFilter({
-        categoria: item.id, label: item.descricao, search: undefined, page: 1,
-      })}
-    />
-  ));
+  const items = () => {
+    if (categories) {
+      return categories.map(item => (
+        <LinkItem
+          key={item.id}
+          text={item.descricao}
+          selected={item.id === filter.categoria}
+          onClick={() => updateFilter({
+            categoria: item.id, label: item.descricao, search: undefined, page: 1,
+          })}
+        />
+      ));
+    }
+    return null;
+  };
   return (
     <aside>
       <List title="Ordernar por" isFullHeight>
@@ -51,15 +55,18 @@ const SideBar = (props) => {
             categoria: 0, label: 'Todas as categorias', search: undefined, page: 1,
           })}
         />
-        {items}
+        {items()}
       </List>
     </aside>
   );
 };
 
 SideBar.propTypes = {
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.array,
 };
 
+SideBar.defaultProps = {
+  categories: null,
+};
 
 export default SideBar;
