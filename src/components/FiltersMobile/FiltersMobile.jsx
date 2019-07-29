@@ -94,19 +94,25 @@ const FiltersMobile = ({ categories }) => {
   const [categorySelected, setCategorySelected] = useState(null);
   const [dropdownSelected, setDropdownSelected] = useState(null);
   const { updateFilter } = useContext(FilterContext);
-  const renderCategories = categories.map(item => (
-    <SelectItem
-      key={item.id}
-      title={item.descricao}
-      onClick={() => {
-        updateFilter({ categoria: item.id, page: 1, search: undefined });
-        setSelectCategoryOpen(false);
-        setCategorySelected(item.descricao);
-      }}
-    >
-      {item.descricao}
-    </SelectItem>
-  ));
+  const renderCategories = () => {
+    if (categories) {
+      return categories.map(item => (
+        <SelectItem
+          key={item.id}
+          title={item.descricao}
+          onClick={() => {
+            updateFilter({ categoria: item.id, page: 1, search: undefined });
+            setSelectCategoryOpen(false);
+            setCategorySelected(item.descricao);
+          }}
+        >
+          {item.descricao}
+        </SelectItem>
+      ));
+    }
+    return null;
+  };
+
 
   function collapse() {
     setDropdownOpen(false);
@@ -209,7 +215,7 @@ const FiltersMobile = ({ categories }) => {
 
               Todas as Categorias
             </SelectItem>
-            {renderCategories}
+            {renderCategories()}
           </Select>
         </AreaSelect>
       )}
@@ -218,7 +224,11 @@ const FiltersMobile = ({ categories }) => {
 };
 
 FiltersMobile.propTypes = {
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.array,
+};
+
+FiltersMobile.defaultProps = {
+  categories: null,
 };
 
 export default FiltersMobile;
