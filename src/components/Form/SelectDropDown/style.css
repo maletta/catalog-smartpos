@@ -1,0 +1,71 @@
+
+.react-select__control.react-select__control {
+  border: 1px solid #d7d7d7;
+  color: #212121;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  border-radius: 0;
+  padding: 2px;
+  margin: 5px 0 0 0;
+  box-shadow: none;
+}
+
+.react-select-container-error > .react-select__control {
+  border: 1px solid #dc3545;
+}
+
+.react-select__control--is-focused.react-select__control--is-focused:hover,
+.react-select__control--is-focused.react-select__control--is-focused {
+  border-color: var(--color-primary);
+  border-radius: 0;
+}
+
+.react-select__menu.react-select__menu {
+  margin-top: 3px;
+  border-radius: 0 0 3px 3px;
+  border: 1px solid var(--color-gray-light-1);
+}
+
+.react-select__menu-list.react-select__menu-list {
+  padding: 0;
+}
+
+.react-select__option--is-selected.react-select__option--is-selected {
+  font-weight: bold;
+}
+
+.react-select--is-disabled > .react-select__control {
+  font-size: 0.8rem;
+  padding-top: 10px;  
+  padding-left: 10px;
+  background-color: var(--color-gray-light);
+  color: var(--color-gray-light-2);
+}
+
+.react-select--is-disabled .react-select__value-container {
+  padding: 0;
+}
+
+.react-select--is-disabled .react-select__single-value {
+  color: inherit;
+  font-size: 14px;
+  user-select: text;
+  position: relative;
+  top: 5px;
+  cursor: text;
+}
+
+.react-select--is-disabled .react-select__indicators {
+  display: none;
+}
+
+.react-select__multi-value__label.react-select__multi-value__label{
+  font-size: inherit;
+}
+.react-select__multi-value__remove.react-select__multi-value__remove{
+  cursor: pointer;
+}
+.react-select-menu--static > .react-select__menu {
+  position: static;
+}
+
