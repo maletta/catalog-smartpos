@@ -86,7 +86,7 @@ const ModalOrderItem = (props) => {
           borderRadius: '5px',
         },
         closeIcon: {
-          fill: '#FFF',
+          fill: '#fff',
           marginTop: '-8px',
           cursor: 'pointer',
         },
