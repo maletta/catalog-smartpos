@@ -48,13 +48,17 @@ const Descricao = styled.div`
   font-size: 1rem;
 `;
 
-const Price = styled.p`
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+const PriceFrom = styled.p`
+  font-size: 0.9rem;
+  text-align: left;
+  margin-bottom: -8px;
+  color: #333;
+`;
+const Price = styled.p` 
   color: #333;
   font-weight: bold;
   font-size: 1.3rem;
+  text-align: left;
 `;
 
 const Unavailable = styled.p`
@@ -85,7 +89,7 @@ const SpinnerCointainer = styled.div`
 
 
 const GridItem = (props) => {
-  const { item, intl } = props;
+  const { item, intl, openModal } = props;
   const [load, setload] = useState(true);
   const [image, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}`;
@@ -106,7 +110,10 @@ const GridItem = (props) => {
 
   return (
     <>
-      <Item className="column is-6-mobile is-4-tablet is-4-desktop">
+      <Item
+        className="column is-6-mobile is-4-tablet is-4-desktop"
+        onClick={() => openModal(item)}
+      >
         <Container className="card-image">
           <div className="card-image">
             <figure className="is-160x160">
@@ -115,6 +122,7 @@ const GridItem = (props) => {
           </div>
           <Cardcontent>
             <div>
+              {(item.hasVariant === 1) && (<PriceFrom>a partir de </PriceFrom>)}
               <Price>
                 {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
               </Price>
@@ -133,6 +141,7 @@ const GridItem = (props) => {
 };
 
 GridItem.propTypes = {
+  openModal: PropTypes.func.isRequired,
   item: PropTypes.shape({
     id: PropTypes.number.isRequired,
     descricao: PropTypes.string.isRequired,

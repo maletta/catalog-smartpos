@@ -24,7 +24,16 @@ $input-shadow: none;
 
 @import "~bulma/bulma.sass";
 
-
+:root {
+ --color-primary: #F38A00;
+ --color-primary-light: #ffc67c;
+  --color-gray-light-1: #d7d7d7;
+  --color-gray-light: #efefef;
+  --color-gray-light-1: #d7d7d7;
+  --color-gray-light-2: #918f8f;
+  --color-white: #FFF;
+  --button-primary: #F38A00;
+}
 html, body {
   background: #EBEBEB;
 }
@@ -74,4 +83,9 @@ html, body {
 
 .breadcrumb li.is-active a {
   color: #666;
+}
+
+
+.is-mb-paddingless {
+  padding-bottom: 0 !important;
 }

@@ -3,6 +3,8 @@ import 'url-search-params-polyfill';
 import React, { useState, useEffect, useContext } from 'react';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
+import * as yup from 'yup';
+
 import GridList from 'components/GridList';
 import MainContainer from 'containers/mainContainer';
 import SideBar from 'components/SideBar';
@@ -10,9 +12,11 @@ import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
+import ModalOrderItem from 'components/ModalOrderItem';
 
 import getStoreName from 'getStoreName';
 import FiltersMobile from 'components/FiltersMobile';
+import formatFormErrors from 'utils/formatFormErrors';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faArrowRight, faArrowLeft,
@@ -61,6 +65,8 @@ const App = () => {
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
   const [maxPage, setMaxPage] = useState(1);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [productOnModal, setProductOnModal] = useState({});
   const { filter, updateFilter } = useContext(FilterContext);
 
   const notFoundHandle = () => (loading ? (
@@ -126,6 +132,7 @@ const App = () => {
   const prodArray = Object.keys(products).map(i => products[i]);
 
   useEffect(() => {
+    yup.setLocale(formatFormErrors());
     window.scrollTo(0, 0);
     getStore();
     initGA();
@@ -139,6 +146,11 @@ const App = () => {
     });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
     window.history.pushState({}, '', `${baseUrl}`);
+  };
+
+  const handleOpenModal = (item) => {
+    setProductOnModal(item);
+    setModalOpen(true);
   };
 
   return (
@@ -169,7 +181,13 @@ const App = () => {
                     <Container>
                       <Spinner />
                     </Container>
-                  ) : (<GridList itens={prodArray} loading={loading} />)}
+                  ) : (
+                    <GridList
+                      itens={prodArray}
+                      loading={loading}
+                      openModal={handleOpenModal}
+                    />
+                  )}
                   {(prodArray.length > 1 && maxPage > 1) && (
                     <ReactPaginate
                       previousLabel="Anterior"
@@ -193,10 +211,15 @@ const App = () => {
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
-
+      <ModalOrderItem
+        productOnModal={productOnModal}
+        setProductOnModal={setProductOnModal}
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        storeId={store.id}
+      />
     </>
   );
 };
-
 
 export default App;

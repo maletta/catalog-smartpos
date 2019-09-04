@@ -15,8 +15,8 @@ const Text = styled.div`
 `;
 
 const GridList = (props) => {
-  const { itens } = props;
-  const items = itens.map(item => <GridItem key={item.id} item={item} />);
+  const { itens, openModal } = props;
+  const items = itens.map(item => <GridItem key={item.id} item={item} openModal={openModal} />);
   return (
     <>
       {items.length > 0 ? (
@@ -43,6 +43,7 @@ const GridList = (props) => {
 
 GridList.propTypes = {
   itens: PropTypes.arrayOf(PropTypes.object).isRequired,
+  openModal: PropTypes.func.isRequired,
 };
 
 GridList.defaultProps = {
