@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 const orderValidation = variants => yup.object().shape({
-  observacao: yup.string()
+  note: yup.string()
     .max(150),
   variant: yup.object()
     .test('valid_variant', 'Selecione uma variante do produto', (value) => {
@@ -10,6 +10,8 @@ const orderValidation = variants => yup.object().shape({
       }
       return true;
     }),
+  amount: yup.number()
+    .positive(),
 });
 
 export default orderValidation;

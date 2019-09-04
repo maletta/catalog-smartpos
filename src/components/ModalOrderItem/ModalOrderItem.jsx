@@ -10,6 +10,7 @@ import {
 import SelectDropDown from 'components/Form/SelectDropDown';
 import Button from 'components/Form/Button';
 import TextArea from 'components/Form/TextArea';
+import Input from 'components/Form/Input';
 import getVariantsOfProduct from 'api/variantsRequests';
 
 import orderValidation from './orderSchema';
@@ -56,6 +57,14 @@ const LabelVariant = styled.div`
   justify-content: space-between !important;
 `;
 
+const AreaButtonFlex = styled.div`
+  align-items: center;
+  justify-content: flex-end;
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+`;
+
 const ModalOrderItem = (props) => {
   const {
     intl, productOnModal, setProductOnModal, modalOpen, setModalOpen, storeId,
@@ -65,7 +74,8 @@ const ModalOrderItem = (props) => {
 
   const initialValues = {
     variant: {},
-    observacao: '',
+    note: '',
+    amount: 1,
   };
 
   useEffect(() => {
@@ -139,9 +149,9 @@ const ModalOrderItem = (props) => {
                   </div>
                 )}
                 <div className="columns is-paddingless">
-                  <div className="column is-12 is-mb-paddingless">
+                  <div className="column is-mb-paddingless is-12 is-mb-paddingless">
                     <Field
-                      name="observacao"
+                      name="note"
                       inputId="observacao"
                       component={TextArea}
                       label="Observação"
@@ -149,13 +159,24 @@ const ModalOrderItem = (props) => {
                     />
                   </div>
                 </div>
-                <div className="columns is-paddingless">
-                  <div className="column is-12">
-                    <Button
-                      value="Adicionar"
-                      type="submit"
+                <div className="columns is-paddingless ">
+                  <div className="column is-12-mobile is-6-desktop  ">
+                    <Field
+                      name="amount"
+                      label="Quantidade"
+                      type="number"
+                      min="1"
+                      component={Input}
                     />
                   </div>
+                  <AreaButtonFlex className="column is-6 is-flex is-fixed-bottom">
+                    <div>
+                      <Button
+                        value="Adicionar"
+                        type="submit"
+                      />
+                    </div>
+                  </AreaButtonFlex>
                 </div>
               </div>
             </Form>
