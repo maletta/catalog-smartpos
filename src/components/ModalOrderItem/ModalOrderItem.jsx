@@ -60,6 +60,7 @@ const LabelVariant = styled.div`
 const AreaButtonFlex = styled.div`
   align-items: center;
   justify-content: flex-end;
+
   @media (max-width: 768px) {
     justify-content: center;
   }

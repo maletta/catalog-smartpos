@@ -32,7 +32,7 @@ const OptionalLabel = styled.label`
 `;
 
 const StyledInput = styled.input`
-  background: #fff; 
+  background: #fff;
   border: 1px solid ${props => (props.hasError ? '#dc3545' : '#d7d7d7')};
   border-radius: 0.1rem;
   box-shadow: none;
