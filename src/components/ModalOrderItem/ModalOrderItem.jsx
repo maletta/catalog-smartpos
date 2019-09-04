@@ -23,7 +23,7 @@ const AreaTitle = styled.div`
 
 const Title = styled.h3`
   font-size: 1.3rem;
-  color: #FFF;
+  color: #fff;
 `;
 
 const Content = styled.div`
