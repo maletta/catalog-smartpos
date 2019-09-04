@@ -36,7 +36,7 @@
 
 .react-select--is-disabled > .react-select__control {
   font-size: 0.8rem;
-  padding-top: 10px;  
+  padding-top: 10px;
   padding-left: 10px;
   background-color: var(--color-gray-light);
   color: var(--color-gray-light-2);
@@ -54,7 +54,9 @@
   top: 5px;
   cursor: text;
 }
-
+.react-select__single-value {
+  width: calc(100% - 15px);
+}
 .react-select--is-disabled .react-select__indicators {
   display: none;
 }

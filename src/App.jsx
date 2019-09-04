@@ -3,9 +3,6 @@ import 'url-search-params-polyfill';
 import React, { useState, useEffect, useContext } from 'react';
 import ReactPaginate from 'react-paginate';
 import styled from 'styled-components';
-import Modal from 'react-responsive-modal';
-import { injectIntl, intlShape } from 'react-intl';
-import { Formik, Form, Field } from 'formik';
 import * as yup from 'yup';
 
 import GridList from 'components/GridList';
@@ -15,9 +12,7 @@ import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
-import TextArea from 'components/Form/TextArea';
-import SelectDropDown from 'components/Form/SelectDropDown';
-import Button from 'components/Form/Button';
+import ModalOrderItem from 'components/ModalOrderItem';
 
 import getStoreName from 'getStoreName';
 import FiltersMobile from 'components/FiltersMobile';
@@ -39,12 +34,8 @@ import {
   getSearch,
 } from 'requests';
 
-import getVariantsOfProduct from 'api/variantsRequests';
 import FilterContext from 'contexts/FilterContext';
-import orderValidation from './orderSchema';
-
 import initGA from './initGA';
-
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
   faFacebookF, faTimes, faGooglePlay, faWhatsapp, faInstagram, faHeart,
@@ -68,44 +59,7 @@ const Section = styled.section`
   }
 `;
 
-const AreaTitle = styled.div`
-  background: #00529b;
-  padding: 5px 20px 5px 20px;
-  margin: -20px -19px 0 -20px;
-  border-radius: 5px 5px 0 0;
-`;
-
-const Title = styled.h3`
-  font-size: 1.3rem;
-  color: #FFF;
-`;
-
-const Content = styled.div`
-  padding-top: 10px;
-  width: 500px;
-  
-  @media (max-width: 992px) {
-    width: 400px;
-  }
-  
-  @media (max-width: 768px) {
-    width: 300px;
-  }
-  
-`;
-
-const Description = styled.p`
-  font-size: 1rem;
-  margin-bottom: 5px;
-`;
-
-const Price = styled.h3`
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 15px;
-`;
-
-const App = ({ intl }) => {
+const App = () => {
   const [loading, setLoading] = useState(true);
   const [products, setProducts] = useState({});
   const [categories, setCategories] = useState([]);
@@ -113,13 +67,7 @@ const App = ({ intl }) => {
   const [maxPage, setMaxPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [productOnModal, setProductOnModal] = useState({});
-  const [variants, setVariants] = useState([]);
   const { filter, updateFilter } = useContext(FilterContext);
-
-  const initialValues = {
-    variant: {},
-    observacao: '',
-  };
 
   const notFoundHandle = () => (loading ? (
     <Container>
@@ -203,12 +151,7 @@ const App = ({ intl }) => {
   const handleOpenModal = (item) => {
     setProductOnModal(item);
     setModalOpen(true);
-    getVariantsOfProduct(store.id, item.id).then((response) => {
-      setVariants(response.data);
-    });
   };
-
-  const submitOrderItem = values => values;
 
   return (
     <>
@@ -268,84 +211,15 @@ const App = ({ intl }) => {
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
-      <Modal
-        open={modalOpen}
-        styles={{
-          modal: {
-            borderRadius: '5px',
-          },
-          closeIcon: {
-            fill: '#FFF',
-            marginTop: '-8px',
-            cursor: 'pointer',
-          },
-        }}
-        onClose={() => setModalOpen(false)}
-        center
-      >
-        <AreaTitle>
-          <Title>{productOnModal.descricao}</Title>
-        </AreaTitle>
-        <Content>
-          <Description>{productOnModal.observacao}</Description>
-          <Price>{intl.formatNumber(productOnModal.valorVenda, { style: 'currency', currency: 'BRL' })}</Price>
-          <Formik
-            onSubmit={submitOrderItem}
-            initialValues={initialValues}
-            validationSchema={orderValidation(variants)}
-            enableReinitialize
-            render={propsForm => (
-              <Form>
-                <div className="">
-                  {(variants.length > 0) && (
-                  <div className="columns is-paddingless">
-                    <div className="column is-12 is-mb-paddingless">
-                      <SelectDropDown
-                        id="variants"
-                        label="Variações"
-                        options={variants}
-                        getOptionLabel={label => label.name}
-                        getOptionValue={option => option.id}
-                        onChange={value => propsForm.setFieldValue('variant', value)}
-                        isInvalid={propsForm.errors.variant}
-                        touched={propsForm.touched.variant}
-                        isRequired
-                      />
-                    </div>
-                  </div>
-                  )}
-                  <div className="columns is-paddingless">
-                    <div className="column is-12">
-                      <Field
-                        name="observacao"
-                        inputId="observacao"
-                        component={TextArea}
-                        label="Observação"
-                        rows={3}
-                      />
-                    </div>
-                  </div>
-                  <div className="columns is-paddingless">
-                    <div className="column is-12">
-                      <Button
-                        value="Adicionar"
-                        type="submit"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </Form>
-            )}
-          />
-        </Content>
-      </Modal>
+      <ModalOrderItem
+        productOnModal={productOnModal}
+        setProductOnModal={setProductOnModal}
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        storeId={store.id}
+      />
     </>
   );
 };
 
-
-App.propTypes = {
-  intl: intlShape.isRequired,
-};
-
-export default injectIntl(App);
+export default App;

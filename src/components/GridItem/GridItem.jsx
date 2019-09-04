@@ -48,13 +48,17 @@ const Descricao = styled.div`
   font-size: 1rem;
 `;
 
-const Price = styled.p`
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+const PriceFrom = styled.p`
+  font-size: 0.9rem;
+  text-align: left;
+  margin-bottom: -8px;
+  color: #333;
+`;
+const Price = styled.p` 
   color: #333;
   font-weight: bold;
   font-size: 1.3rem;
+  text-align: left;
 `;
 
 const Unavailable = styled.p`
@@ -118,6 +122,7 @@ const GridItem = (props) => {
           </div>
           <Cardcontent>
             <div>
+              {(item.hasVariant === 1) && (<PriceFrom>a partir de </PriceFrom>)}
               <Price>
                 {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
               </Price>
