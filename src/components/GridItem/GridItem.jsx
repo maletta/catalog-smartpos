@@ -9,7 +9,7 @@ const Item = styled.div`
   display: flex !important;
   text-align: center;
   justify-content: center;
-  cursor: ${props => (props.clicable ? 'pointer' : 'auto')};
+  cursor: ${props => (props.clicable === 'true' ? 'pointer' : 'auto')};
 
   @media (max-width: 768px) {
     padding: 0.35rem !important;
@@ -114,7 +114,7 @@ const GridItem = (props) => {
       <Item
         className="column is-6-mobile is-4-tablet is-4-desktop"
         onClick={() => {
-          if (process.env.REACT_APP_SELL_ONLINE) {
+          if (process.env.REACT_APP_SELL_ONLINE === 'true') {
             openModal(item);
           }
         }}
