@@ -9,6 +9,7 @@ const Item = styled.div`
   display: flex !important;
   text-align: center;
   justify-content: center;
+  cursor: ${props => (props.clicable ? 'pointer' : 'auto')};
 
   @media (max-width: 768px) {
     padding: 0.35rem !important;
@@ -112,7 +113,12 @@ const GridItem = (props) => {
     <>
       <Item
         className="column is-6-mobile is-4-tablet is-4-desktop"
-        onClick={() => openModal(item)}
+        onClick={() => {
+          if (process.env.REACT_APP_SELL_ONLINE) {
+            openModal(item);
+          }
+        }}
+        clicable={process.env.REACT_APP_SELL_ONLINE}
       >
         <Container className="card-image">
           <div className="card-image">

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import { Formik, Form, Field } from 'formik';
 import { injectIntl, intlShape, FormattedPlural } from 'react-intl';
+import lodash from 'lodash';
 import {
   shape, func, bool, string,
 } from 'prop-types';
@@ -155,6 +156,7 @@ const ModalOrderItem = (props) => {
     variant: {},
     note: '',
     amount: 1,
+    id: productOnModal.id,
   };
 
   useEffect(() => {
@@ -176,7 +178,45 @@ const ModalOrderItem = (props) => {
     }
   }, [productOnModal.id]);
 
-  const submitOrderItem = values => values;
+  const onClose = () => {
+    setModalOpen(false);
+    setVariantSelected({ name: '' });
+    setModifiersErrors(true);
+    setModifiers([]);
+    setModifierSelected([]);
+    setProductOnModal({});
+  };
+
+  const submitOrderItem = (values) => {
+    const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+    const newItem = {
+      ...values,
+      modifiers: modifierSelected,
+    };
+
+    let newCart = [];
+    let indexToUpdate = null;
+    const repeat = prevCart.filter((item, index) => {
+      indexToUpdate = index;
+      return (lodash.isEqual(
+        lodash.omit(item, ['amount']),
+        lodash.omit(newItem, ['amount']),
+      ));
+    });
+
+    if (repeat.length) {
+      prevCart[indexToUpdate].amount += values.amount;
+      newCart = prevCart;
+    } else {
+      newCart = [
+        ...prevCart,
+        newItem,
+      ];
+    }
+    localStorage.setItem('cart', JSON.stringify(newCart));
+    onClose();
+  };
+
 
   const renderItem = (modifier, hasError, propsForm, index) => modifier.itens.map((item) => {
     const isChecked = modifierSelected[index].includes(item);
@@ -240,14 +280,7 @@ const ModalOrderItem = (props) => {
           cursor: 'pointer',
         },
       }}
-      onClose={() => {
-        setModalOpen(false);
-        setVariantSelected({ name: '' });
-        setModifiersErrors(true);
-        setModifiers([]);
-        setModifierSelected([]);
-        setProductOnModal({});
-      }}
+      onClose={onClose}
       center
       closeOnOverlayClick={false}
     >
