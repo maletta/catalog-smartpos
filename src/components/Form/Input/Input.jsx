@@ -188,7 +188,8 @@ Input.propTypes = {
   invalid: bool,
   errorMessage: string,
   isErrorHide: bool,
-  value: PropTypes.any.isRequired,
+  // eslint-disable-next-line react/require-default-props
+  value: PropTypes.any,
 };
 
 Input.defaultProps = {
