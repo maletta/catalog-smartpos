@@ -139,7 +139,7 @@ const App = () => {
                     history={createHistory}
                   >
                     <Switch>
-                      <Route path="/" component={GridProducts} />
+                      <Route path="/" exact component={GridProducts} />
                     </Switch>
                   </Router>
                 </div>
