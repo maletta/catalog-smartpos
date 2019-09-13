@@ -11,7 +11,8 @@ import App from './App';
 import { FilterProvider } from './contexts/FilterContext';
 import { ShopProvider } from './contexts/ShopContext';
 
-
+import 'styles/index-bulma.scss';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'styles/index.scss';
 
 ReactDOM.render((

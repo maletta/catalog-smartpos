@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import { Formik, Form, Field } from 'formik';
 import { injectIntl, intlShape, FormattedPlural } from 'react-intl';
 import lodash from 'lodash';
+import uuidv1 from 'uuid/v1';
 import {
   shape, func, bool, string,
 } from 'prop-types';
@@ -16,6 +17,8 @@ import Counter from 'components/Form/Counter';
 
 import getVariantsOfProduct from 'api/variantsRequests';
 import getModifiersOfProduct from 'api/modifiersRequests';
+
+import ShopContext from 'contexts/ShopContext';
 
 import orderValidation from './orderSchema';
 
@@ -147,17 +150,12 @@ const ModalOrderItem = (props) => {
   const [isModLoaded, setIsModLoaded] = useState(false);
   const [modifierSelected, setModifierSelected] = useState([]);
   const [modifiersErrors, setModifiersErrors] = useState(true);
+  const { updateShop } = useContext(ShopContext);
   const [productPricing, setProductPricing] = useState({
     product: 0,
     modifiers: 0,
   });
-
-  const initialValues = {
-    variant: {},
-    note: '',
-    amount: 1,
-    id: productOnModal.id,
-  };
+  const [initialValues, setInitialValues] = useState({});
 
   useEffect(() => {
     if (productOnModal.id) {
@@ -166,11 +164,23 @@ const ModalOrderItem = (props) => {
         modifiers: 0,
       });
 
+      setInitialValues({
+        variant: {},
+        note: '',
+        amount: 1,
+        id: productOnModal.id,
+        descricao: productOnModal.descricao,
+        categoria: productOnModal.categoria,
+        pricing: productPricing,
+        uuid: uuidv1(),
+      });
+
       setIsModLoaded(false);
       getVariantsOfProduct(storeId, productOnModal.id).then((response) => {
         setVariants(response.data);
       });
       getModifiersOfProduct(storeId, productOnModal.id).then((response) => {
+        setModifiersErrors(!(response.data.length === 0));
         setModifiers(response.data);
         response.data.map(() => setModifierSelected(prevState => ([...prevState, []])));
         setIsModLoaded(true);
@@ -191,6 +201,7 @@ const ModalOrderItem = (props) => {
     const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
     const newItem = {
       ...values,
+      pricing: productPricing,
       modifiers: modifierSelected,
     };
 
@@ -213,6 +224,10 @@ const ModalOrderItem = (props) => {
         newItem,
       ];
     }
+    const basketCount = newCart.reduce((count, val) => (count + val.amount), 0);
+    updateShop({
+      basketCount,
+    });
     localStorage.setItem('cart', JSON.stringify(newCart));
     onClose();
   };

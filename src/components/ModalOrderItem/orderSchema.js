@@ -5,7 +5,7 @@ const orderValidation = variants => yup.object().shape({
     .max(150),
   variant: yup.object()
     .test('valid_variant', 'Selecione uma variante do produto', (value) => {
-      if (variants.length > 1) {
+      if (variants.length > 0) {
         return value.id;
       }
       return true;

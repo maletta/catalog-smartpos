@@ -7,11 +7,14 @@ import * as yup from 'yup';
 
 import GridProducts from 'containers/GridProducts';
 import MainContainer from 'containers/mainContainer';
-import SideBar from 'components/SideBar';
+import Cart from 'containers/Cart';
+import Row from 'components/Row';
+import Grid from 'components/Grid';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
+import history from 'utils/history';
 
 import getStoreName from 'getStoreName';
 import FiltersMobile from 'components/FiltersMobile';
@@ -33,7 +36,6 @@ import {
 
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
-import createHistory from 'utils/history';
 import initGA from './initGA';
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
@@ -102,8 +104,8 @@ const App = () => {
   }, [filter]);
 
 
-  const home = (e) => {
-    if (e) { e.preventDefault(); }
+  const home = () => {
+    history.push('/');
     updateFilter({
       categoria: 0, label: 'Todas as categorias', page: 1, search: '',
     });
@@ -121,28 +123,25 @@ const App = () => {
           />
           <Section className="section">
             <div className="container">
-              <nav className="breadcrumb" aria-label="breadcrumbs">
-                <ul>
-                  <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
-                  <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
-                </ul>
-              </nav>
+              <Row>
+                <Grid cols="12">
+                  <nav className="breadcrumb" aria-label="breadcrumbs">
+                    <ul>
+                      <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
+                      <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
+                    </ul>
+                  </nav>
+                </Grid>
+              </Row>
               <MainContainer>
-                <div className="column is-hidden-touch is-3-desktop">
-                  <SideBar
-                    categories={categories}
-                    storeInfo={store}
-                  />
-                </div>
-                <div className="column is-12-tablet is-9-desktop">
-                  <Router
-                    history={createHistory}
-                  >
-                    <Switch>
-                      <Route path="/" exact component={GridProducts} />
-                    </Switch>
-                  </Router>
-                </div>
+                <Router
+                  history={history}
+                >
+                  <Switch>
+                    <Route path="/" exact component={GridProducts} />
+                    <Route path="/cart" exact component={Cart} />
+                  </Switch>
+                </Router>
               </MainContainer>
             </div>
           </Section>

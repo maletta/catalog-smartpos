@@ -128,8 +128,8 @@ const FiltersMobile = ({ categories }) => {
   );
 
   return (
-    <>
-      <Div className="is-hidden-desktop">
+    <div className="d-md-none">
+      <Div>
         <Dropdown>
           <Label onClick={() => setDropdownOpen(!isDropdownOpen)}>
             <Icon>
@@ -214,7 +214,7 @@ const FiltersMobile = ({ categories }) => {
           </Select>
         </AreaSelect>
       )}
-    </>
+    </div>
   );
 };
 

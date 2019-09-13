@@ -6,10 +6,13 @@ import * as yup from 'yup';
 import GridList from 'components/GridList';
 import Spinner from 'components/Spinner';
 import ModalOrderItem from 'components/ModalOrderItem';
+import Row from 'components/Row';
+import Grid from 'components/Grid';
+import SideBar from 'components/SideBar';
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 
-import { getProducts, getSearch } from 'requests';
+import { getCategories, getProducts, getSearch } from 'requests';
 
 import formatFormErrors from 'utils/formatFormErrors';
 import initGA from 'initGA';
@@ -28,10 +31,21 @@ const GridProducts = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [productOnModal, setProductOnModal] = useState({});
   const [maxPage, setMaxPage] = useState(1);
+  const [categories, setCategories] = useState([]);
+  const [store] = useState({});
   const { filter, updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
 
   const prodArray = Object.keys(products).map(i => products[i]);
+
+  const getCategoryList = (data) => {
+    getCategories(data.id)
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch(() => setCategories([]))
+      .finally(() => setLoading(false));
+  };
 
   const getProductList = (data) => {
     setLoading(true);
@@ -70,6 +84,7 @@ const GridProducts = () => {
   };
 
   useEffect(() => {
+    getCategoryList(shop);
     yup.setLocale(formatFormErrors());
     getProductList(shop);
     window.scrollTo(0, 0);
@@ -83,11 +98,24 @@ const GridProducts = () => {
           <Spinner />
         </Container>
       ) : (
-        <GridList
-          itens={prodArray}
-          loading={loading}
-          openModal={handleOpenModal}
-        />
+        <Row>
+          <Grid
+            className="d-none d-md-block"
+            cols="12 3 3 3 3"
+          >
+            <SideBar
+              categories={categories}
+              storeInfo={store}
+            />
+          </Grid>
+          <Grid cols="12 9 9 9 9">
+            <GridList
+              itens={prodArray}
+              loading={loading}
+              openModal={handleOpenModal}
+            />
+          </Grid>
+        </Row>
       )}
       {(prodArray.length > 1 && maxPage > 1) && (
         <ReactPaginate
