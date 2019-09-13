@@ -74,7 +74,7 @@ const Cart = ({ intl }) => {
     localStorage.setItem('cart', JSON.stringify(newCart));
   };
 
-  const upadatAmount = (value, prodIndex) => {
+  const updateAmount = (value, prodIndex) => {
     const updateAmountCar = stateCart;
     updateAmountCar[prodIndex].amount = value;
     setStateCar(updateAmountCar);
@@ -112,7 +112,7 @@ const Cart = ({ intl }) => {
                       min={1}
                       value={product.amount}
                       counter={(amount) => {
-                        upadatAmount(amount, prodIndex);
+                        updateAmount(amount, prodIndex);
                       }}
                     />
                     <div>
