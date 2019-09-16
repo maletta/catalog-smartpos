@@ -18,7 +18,7 @@ import Counter from 'components/Form/Counter';
 import getVariantsOfProduct from 'api/variantsRequests';
 import getModifiersOfProduct from 'api/modifiersRequests';
 
-import ShopContext from 'contexts/ShopContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 import orderValidation from './orderSchema';
 
@@ -150,7 +150,7 @@ const ModalOrderItem = (props) => {
   const [isModLoaded, setIsModLoaded] = useState(false);
   const [modifierSelected, setModifierSelected] = useState([]);
   const [modifiersErrors, setModifiersErrors] = useState(false);
-  const { updateShop } = useContext(ShopContext);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
   const [productPricing, setProductPricing] = useState({
     product: 0,
     modifiers: 0,
@@ -230,7 +230,7 @@ const ModalOrderItem = (props) => {
       ];
     }
     const basketCount = newCart.reduce((count, val) => (count + val.amount), 0);
-    updateShop({
+    updateShoppingCart({
       basketCount,
     });
     localStorage.setItem('cart', JSON.stringify(newCart));

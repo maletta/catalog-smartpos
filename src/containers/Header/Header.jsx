@@ -3,7 +3,7 @@ import ReactGA from 'react-ga';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import FilterContext from 'contexts/FilterContext';
-import ShopContext from 'contexts/ShopContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
 
 const Container = styled.nav`
@@ -126,7 +126,7 @@ const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
   const { codigo, goHome } = props;
   const [search, setSearch] = useState('');
-  const { shop } = useContext(ShopContext);
+  const { shoppingCart } = useContext(ShoppingCartContext);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
   const submit = (e) => {
     e.preventDefault();
@@ -185,10 +185,9 @@ const Header = (props) => {
                   className="fa fa-shopping-cart"
                 >
                   <CartCounter
-                    test={5}
-                    count={shop.basketCount}
+                    count={shoppingCart.basketCount}
                   >
-                    {shop.basketCount}
+                    {shoppingCart.basketCount}
                   </CartCounter>
                 </CartIcon>
               </CartArea>

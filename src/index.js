@@ -10,6 +10,7 @@ import * as serviceWorker from './serviceWorker';
 import App from './App';
 import { FilterProvider } from './contexts/FilterContext';
 import { ShopProvider } from './contexts/ShopContext';
+import { ShoppingCartProvider } from './contexts/ShoppingCartContext';
 
 import 'styles/index-bulma.scss';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -20,8 +21,10 @@ ReactDOM.render((
     <ThemeProvider theme={defaultTheme}>
       <ShopProvider>
         <FilterProvider>
-          {dynamicManifest()}
-          <App />
+          <ShoppingCartProvider>
+            {dynamicManifest()}
+            <App />
+          </ShoppingCartProvider>
         </FilterProvider>
       </ShopProvider>
     </ThemeProvider>
