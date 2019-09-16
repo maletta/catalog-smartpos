@@ -15,6 +15,7 @@ const ValueNumber = styled.span`
   line-height: 1.25em;
   font-weight: 600;
   color: #3f3e3e;
+  min-width: 21px;
 `;
 
 const Counter = (props) => {

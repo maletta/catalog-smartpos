@@ -50,13 +50,10 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Section = styled.section`
+const Breadcrumb = styled.nav`
   &&& {
-    padding-top: 20px;
-
-    @media (max-width: 768px) {
-      padding-top: 12px;
-    }
+    background: transparent;
+    margin-bottom: 0;
   }
 `;
 
@@ -121,30 +118,28 @@ const App = () => {
           <FiltersMobile
             categories={categories}
           />
-          <Section className="section">
-            <div className="container">
-              <Row>
-                <Grid cols="12">
-                  <nav className="breadcrumb" aria-label="breadcrumbs">
-                    <ul>
-                      <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
-                      <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
-                    </ul>
-                  </nav>
-                </Grid>
-              </Row>
-              <MainContainer>
-                <Router
-                  history={history}
-                >
-                  <Switch>
-                    <Route path="/" exact component={GridProducts} />
-                    <Route path="/cart" exact component={Cart} />
-                  </Switch>
-                </Router>
-              </MainContainer>
-            </div>
-          </Section>
+          <div className="container mb-5">
+            <Row>
+              <Grid cols="12">
+                <Breadcrumb className="breadcrumb">
+                  <ul className="m-0">
+                    <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
+                    <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
+                  </ul>
+                </Breadcrumb>
+              </Grid>
+            </Row>
+            <MainContainer>
+              <Router
+                history={history}
+              >
+                <Switch>
+                  <Route path="/" exact component={GridProducts} />
+                  <Route path="/cart" exact component={Cart} />
+                </Switch>
+              </Router>
+            </MainContainer>
+          </div>
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}

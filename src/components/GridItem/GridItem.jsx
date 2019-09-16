@@ -24,12 +24,8 @@ const Container = styled.div`
 `;
 
 const Img = styled.img`
-  height: 223px;
+  height: 251px;
   border-radius: 5px 5px 0 0;
-
-  @media (max-width: 375px) {
-    height: 170px;
-  }
 `;
 
 const Cardcontent = styled.div`
@@ -55,7 +51,7 @@ const PriceFrom = styled.p`
   margin-bottom: -8px;
   color: #333;
 `;
-const Price = styled.p` 
+const Price = styled.p`
   color: #333;
   font-weight: bold;
   font-size: 1.3rem;

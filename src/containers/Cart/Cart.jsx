@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
 
-import Counter from 'components/Form/Counter';
 import Button from 'components/Form/Button';
-
+import CartItem from 'components/CartItem';
 import Grid from 'components/Grid';
 import history from 'utils/history';
 
@@ -14,48 +13,6 @@ const Container = styled.div`
   padding-bottom: 15px;
 `;
 
-const ListItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  border-bottom: 1px solid #eee;
-`;
-
-const TitleItem = styled.h2`
-  font-weight: 600;
-  color: #363636;
-`;
-
-const ItemDescription = styled.span`
-  color: #333;
-  font-size: 0.9rem;
-`;
-
-const ItemPricing = styled.span`
-  color: #333;
-  font-size: 1.9rem;
-`;
-
-const AreaControl = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
-const ControlAmount = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 15px 25px 0 0;
-`;
-
-const ControlExclude = styled.button`
-  color: #00529b;
-  background: #fff;
-  border: 0;
-`;
-
 const TitleEmptyCar = styled.h2`
   font-size: 2rem;
   text-align: center;
@@ -63,10 +20,15 @@ const TitleEmptyCar = styled.h2`
   margin: 80px 80px;
 `;
 
+const Total = styled.span`
+  font-size: 2rem;
+`;
+
 const Cart = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
   const [stateCart, setStateCar] = useState(cart);
   const [forceUpdate, setForceUpdate] = useState(0);
+  const [totalCar, setTotalCar] = useState(0);
 
   const deleteItem = (item) => {
     const newCart = cart.filter(del => (del.uuid !== item.uuid));
@@ -84,6 +46,10 @@ const Cart = ({ intl }) => {
 
 
   useEffect(() => {
+    const total = stateCart.reduce(
+      (count, val) => (count + (val.amount * (val.pricing.modifiers + val.pricing.product))), 0,
+    );
+    setTotalCar(total);
   }, [stateCart.length, forceUpdate]);
 
 
@@ -91,44 +57,16 @@ const Cart = ({ intl }) => {
     <Container className="row">
       <Grid
         cols="12 12 12 12 12"
-        className="mb-3"
       >
         <ul>
           {stateCart.map((product, prodIndex) => (
-            <ListItem key={product.uuid}>
-              <>
-                <div>
-                  <TitleItem>{`${product.descricao} ${(product.variant.name) ? `- ${product.variant.name}` : ''}`}</TitleItem>
-                  <ItemDescription>
-                    {product.modifiers.map((modifier, modIndex) => (
-                      modifier.map((item, index) => ((modIndex || index) ? `${item.name} ` : `${item.name} | `))
-                    ))}
-                  </ItemDescription>
-                </div>
-                <AreaControl>
-                  <ControlAmount>
-                    <Counter
-                      limit={100}
-                      min={1}
-                      value={product.amount}
-                      counter={(amount) => {
-                        updateAmount(amount, prodIndex);
-                      }}
-                    />
-                    <div>
-                      <ControlExclude
-                        onClick={() => deleteItem(product)}
-                      >
-                        Excluir
-                      </ControlExclude>
-                    </div>
-                  </ControlAmount>
-                  <ItemPricing>
-                    {intl.formatNumber((product.pricing.product + product.pricing.modifiers) * product.amount, { style: 'currency', currency: 'BRL' })}
-                  </ItemPricing>
-                </AreaControl>
-              </>
-            </ListItem>
+            <CartItem
+              key={product.uuid}
+              product={product}
+              prodIndex={prodIndex}
+              deleteItem={deleteItem}
+              updateAmount={updateAmount}
+            />
           ))}
         </ul>
         {(stateCart.length < 1) && (
@@ -156,6 +94,20 @@ const Cart = ({ intl }) => {
       </Grid>
       {(stateCart.length > 0) && (
         <>
+          <Grid
+            cols="12 12 12 12 12"
+            className="d-flex justify-content-end align-items-center"
+          >
+            <div
+              className="mt-0 mb-3"
+            >
+              <Total>
+                Total:
+                {intl.formatNumber(totalCar, { style: 'currency', currency: 'BRL' })}
+              </Total>
+            </div>
+            <hr />
+          </Grid>
           <Grid
             cols="12 7 8 9 9"
             className="d-flex justify-content-end"

@@ -149,7 +149,7 @@ const ModalOrderItem = (props) => {
   const [modifiers, setModifiers] = useState([]);
   const [isModLoaded, setIsModLoaded] = useState(false);
   const [modifierSelected, setModifierSelected] = useState([]);
-  const [modifiersErrors, setModifiersErrors] = useState(true);
+  const [modifiersErrors, setModifiersErrors] = useState(false);
   const { updateShop } = useContext(ShopContext);
   const [productPricing, setProductPricing] = useState({
     product: 0,
@@ -180,9 +180,14 @@ const ModalOrderItem = (props) => {
         setVariants(response.data);
       });
       getModifiersOfProduct(storeId, productOnModal.id).then((response) => {
-        setModifiersErrors(!(response.data.length === 0));
         setModifiers(response.data);
-        response.data.map(() => setModifierSelected(prevState => ([...prevState, []])));
+        // eslint-disable-next-line array-callback-return
+        response.data.map((mod) => {
+          if (mod.required) {
+            setModifiersErrors(true);
+          }
+          return setModifierSelected(prevState => ([...prevState, []]));
+        });
         setIsModLoaded(true);
       });
     }
