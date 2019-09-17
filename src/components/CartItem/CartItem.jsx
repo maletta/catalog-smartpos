@@ -106,11 +106,14 @@ const CartItem = (props) => {
   const [imageProduct, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}`;
 
-  const img = new Image();
-  img.src = imageBaseUrl;
-  img.onload = () => {
-    setImage(imageBaseUrl);
-  };
+  let img;
+  if (product.viewMode === 'IMAGE') {
+    img = new Image();
+    img.src = imageBaseUrl;
+    img.onload = () => {
+      setImage(imageBaseUrl);
+    };
+  }
 
   return (
     <ListItem>

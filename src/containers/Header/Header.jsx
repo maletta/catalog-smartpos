@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
+import ShopContext from 'contexts/ShopContext';
 
 const Container = styled.nav`
   padding-top: 5px;
@@ -127,6 +128,7 @@ const Header = (props) => {
   const { codigo, goHome } = props;
   const [search, setSearch] = useState('');
   const { shoppingCart } = useContext(ShoppingCartContext);
+  const { shop } = useContext(ShopContext);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
   const submit = (e) => {
     e.preventDefault();
@@ -136,6 +138,7 @@ const Header = (props) => {
         action: 'SEARCH',
         label: search,
       });
+      history.push('/');
       updateFilter({
         search, page: 1, categoria: 0, label: '',
       });
@@ -177,20 +180,22 @@ const Header = (props) => {
               </Field>
             </div>
             <div className="column is-2-mobile is-2-tablet is-1-desktop is-1-fullhd">
-              <CartArea>
-                <CartIcon
-                  onClick={() => {
-                    history.push('/cart');
-                  }}
-                  className="fa fa-shopping-cart"
-                >
-                  <CartCounter
-                    count={shoppingCart.basketCount}
+              {(shop.is_enableOrder === 1) && (
+                <CartArea>
+                  <CartIcon
+                    onClick={() => {
+                      history.push('/cart');
+                    }}
+                    className="fa fa-shopping-cart"
                   >
-                    {shoppingCart.basketCount}
-                  </CartCounter>
-                </CartIcon>
-              </CartArea>
+                    <CartCounter
+                      count={shoppingCart.basketCount}
+                    >
+                      {shoppingCart.basketCount}
+                    </CartCounter>
+                  </CartIcon>
+                </CartArea>
+              )}
             </div>
           </Colums>
         </div>

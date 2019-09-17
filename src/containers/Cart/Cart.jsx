@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
 
@@ -6,6 +6,7 @@ import Button from 'components/Form/Button';
 import CartItem from 'components/CartItem';
 import Grid from 'components/Grid';
 import history from 'utils/history';
+import FilterContext from 'contexts/FilterContext';
 
 const Container = styled.div`
   background: #fff;
@@ -26,6 +27,7 @@ const Total = styled.span`
 
 const Cart = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+  const { updateFilter } = useContext(FilterContext);
   const [stateCart, setStateCar] = useState(cart);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [totalCar, setTotalCar] = useState(0);
@@ -49,6 +51,9 @@ const Cart = ({ intl }) => {
     const total = stateCart.reduce(
       (count, val) => (count + (val.amount * (val.pricing.modifiers + val.pricing.product))), 0,
     );
+    updateFilter({
+      label: 'Carrinho',
+    });
     setTotalCar(total);
   }, [stateCart.length, forceUpdate]);
 

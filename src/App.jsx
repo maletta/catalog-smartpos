@@ -57,6 +57,15 @@ const Breadcrumb = styled.nav`
   }
 `;
 
+const BreadcrumbButton = styled.span`
+  align-items: center;
+  color: #f37c05;
+  display: flex;
+  justify-content: center;
+  padding: 0 0.75em;
+  cursor: pointer;
+`;
+
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -83,8 +92,8 @@ const App = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
         document.title = response.data.fantasia;
-        setStore({ ...response.data, found: true, storeName: getStoreName() });
         updateShop(response.data);
+        setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
       })
       .catch(() => {
@@ -123,7 +132,7 @@ const App = () => {
               <Grid cols="12">
                 <Breadcrumb className="breadcrumb">
                   <ul className="m-0">
-                    <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
+                    <li><BreadcrumbButton onClick={e => home(e)} href="#">{ store.storeName }</BreadcrumbButton></li>
                     <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
                   </ul>
                 </Breadcrumb>

@@ -15,11 +15,13 @@ const Text = styled.div`
 `;
 
 const GridList = (props) => {
-  const { itens, openModal } = props;
-  const items = itens.map(item => <GridItem key={item.id} item={item} openModal={openModal} />);
+  const { itens, openModal, enableOrder } = props;
+  const items = itens.map(item => (
+    <GridItem key={item.id} item={item} openModal={openModal} enableOrder={enableOrder} />
+  ));
   return (
     <>
-      {items.length > 0 ? (
+      {itens.length > 0 ? (
         <div className="column is-fluid is-paddingless">
           <div className="columns is-mobile is-multiline">
             {items}
@@ -44,6 +46,7 @@ const GridList = (props) => {
 GridList.propTypes = {
   itens: PropTypes.arrayOf(PropTypes.object).isRequired,
   openModal: PropTypes.func.isRequired,
+  enableOrder: PropTypes.number.isRequired,
 };
 
 GridList.defaultProps = {

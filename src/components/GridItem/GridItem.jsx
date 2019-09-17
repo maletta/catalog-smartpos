@@ -9,7 +9,7 @@ const Item = styled.div`
   display: flex !important;
   text-align: center;
   justify-content: center;
-  cursor: ${props => (props.clicable === 'true' ? 'pointer' : 'auto')};
+  cursor: ${props => (props.clicable ? 'pointer' : 'auto')};
 
   @media (max-width: 768px) {
     padding: 0.35rem !important;
@@ -86,41 +86,53 @@ const SpinnerCointainer = styled.div`
 
 
 const GridItem = (props) => {
-  const { item, intl, openModal } = props;
+  const {
+    item,
+    intl,
+    openModal,
+    enableOrder,
+  } = props;
   const [load, setload] = useState(true);
   const [image, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}`;
 
-  const img = new Image();
-  img.src = imageBaseUrl;
-  img.onerror = () => {
-    img.src = NoImage;
+  let img;
+  if (item.viewMode === 'IMAGE') {
+    img = new Image();
+    img.src = imageBaseUrl;
+    img.onerror = () => {
+      img.src = NoImage;
+      img.onload = () => {
+        setload(false);
+      };
+    };
+
     img.onload = () => {
       setload(false);
+      setImage(imageBaseUrl);
     };
-  };
-
-  img.onload = () => {
-    setload(false);
-    setImage(imageBaseUrl);
-  };
+  }
 
   return (
     <>
       <Item
         className="column is-6-mobile is-4-tablet is-4-desktop"
         onClick={() => {
-          if (process.env.REACT_APP_SELL_ONLINE === 'true') {
+          if (enableOrder) {
             openModal(item);
           }
         }}
-        clicable={process.env.REACT_APP_SELL_ONLINE}
+        clicable={(enableOrder === 1)}
       >
         <Container className="card-image">
           <div className="card-image">
-            <figure className="is-160x160">
-              {load ? (<SpinnerCointainer><Spinner /></SpinnerCointainer>) : (<Img src={image} alt="product" />)}
-            </figure>
+            {(item.viewMode === 'IMAGE') ? (
+              <figure className="is-160x160">
+                {load ? (<SpinnerCointainer><Spinner /></SpinnerCointainer>) : (<Img src={image} alt="product" />)}
+              </figure>
+            ) : (
+              <Img src={image} alt="product" />
+            )}
           </div>
           <Cardcontent>
             <div>
@@ -150,6 +162,7 @@ GridItem.propTypes = {
     valorVenda: PropTypes.number.isRequired,
   }).isRequired,
   intl: intlShape.isRequired,
+  enableOrder: PropTypes.number.isRequired,
 };
 
 
