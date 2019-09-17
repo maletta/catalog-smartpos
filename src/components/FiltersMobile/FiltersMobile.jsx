@@ -128,8 +128,8 @@ const FiltersMobile = ({ categories }) => {
   );
 
   return (
-    <>
-      <Div className="is-hidden-desktop">
+    <div className="d-md-none">
+      <Div>
         <Dropdown>
           <Label onClick={() => setDropdownOpen(!isDropdownOpen)}>
             <Icon>
@@ -146,7 +146,6 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Maior preço');
                 }}
               >
-
                 Maior preço
               </DropdownContenItem>
               <DropdownContenItem
@@ -156,7 +155,6 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Menor preço');
                 }}
               >
-
                 Menor preço
               </DropdownContenItem>
               <DropdownContenItem
@@ -166,7 +164,6 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('A-Z');
                 }}
               >
-
                 A-Z
               </DropdownContenItem>
               <DropdownContenItem
@@ -176,7 +173,6 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Z-A');
                 }}
               >
-
                 Z-A
               </DropdownContenItem>
             </DropdownContent>
@@ -218,7 +214,7 @@ const FiltersMobile = ({ categories }) => {
           </Select>
         </AreaSelect>
       )}
-    </>
+    </div>
   );
 };
 

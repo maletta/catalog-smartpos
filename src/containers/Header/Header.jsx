@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react';
 import ReactGA from 'react-ga';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 import FilterContext from 'contexts/FilterContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import history from 'utils/history';
 
 const Container = styled.nav`
   padding-top: 5px;
@@ -15,33 +17,29 @@ const Container = styled.nav`
 `;
 
 const Field = styled.div`
-  padding-top: 8px;
-  margin-left: 120px;
-  width: 450px;
+  justify-content: center;
+  padding-top: 15px;
+  width: 70%;
 
   @media (max-width: 800px) {
     width: 100%;
-    margin-left: 20px;
-  }
-
-  @media (max-width: 375px) {
-    margin-left: 0;
   }
 `;
 const Logo = styled.div`
   margin: 0;
   width: 70px;
-  padding-left: 15px;
-  padding-top: 8px;
+  padding-top: 10px;
   cursor: pointer;
+
+  @media (max-width: 376px) {
+    margin-left: 8px;
+  }
 `;
 
 const LogoImage = styled.img`
-  width: 100%;
-
-  @media (max-width: 360px) {
-    width: 45px;
-  }
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 `;
 
 const Colums = styled.div`
@@ -80,11 +78,55 @@ const SearchButton = styled.button`
   font-size: 20px;
 `;
 
+const CartArea = styled.div`
+  padding-top: 23px;
+`;
+
+const CartIcon = styled.i`
+  cursor: pointer;
+  position: relative;
+  color: #fff;
+  font-size: 1.5rem;
+`;
+
+const CartCounter = styled.div`
+  position: relative;
+  width: 20px;
+  height: 20px;
+  top: -30px;
+  right: -25px;
+  color: #fff;
+  background: #dc0300;
+  border-radius: 50%;
+  padding: 4px;
+  line-height: 13px;
+  font-size: 11px;
+  text-align: center;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  transform: scale(0);
+  animation-delay: 3s;
+  ${props => (props.count > 0) && css`
+    animation-name: scale;
+    animation-duration: 2s;
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+  `}
+  @keyframes scale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.6); }
+    100% { transform: scale(1); }
+  }
+`;
+
 
 const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
   const { codigo, goHome } = props;
   const [search, setSearch] = useState('');
+  const { shoppingCart } = useContext(ShoppingCartContext);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
   const submit = (e) => {
     e.preventDefault();
@@ -104,20 +146,23 @@ const Header = (props) => {
   };
 
   return (
-
     <>
-      <Container className="navbar">
+      <Container className="navb9ar">
         <div className="container">
-          <Colums className="columns is-mobile">
-            <div className="column is-2 is-3-desktop">
-              <Logo onClick={() => goHome()}>
-                <LogoImage src={imageBaseUrl} alt="Logo" />
+          <Colums className="columns is-mobile is-paddingless">
+            <div className="column is-3-mobile is-2-tablet is-3-desktop is-3-fullhd is-flex justify-content-center">
+              <Logo
+                className=""
+                onClick={() => goHome()}
+              >
+                <div>
+                  <LogoImage src={imageBaseUrl} alt="Logo" />
+                </div>
               </Logo>
             </div>
-
-            <div className="column is-9">
-              <Field>
-                <form className="navbar-item" onSubmit={e => submit(e)}>
+            <div className="column is-7-mobile is-8-tablet is-8-desktop is-8-fullhd is-flex justify-content-center">
+              <Field className="">
+                <form onSubmit={e => submit(e)}>
                   <Search>
                     <SearchInput
                       value={search}
@@ -130,6 +175,22 @@ const Header = (props) => {
                   </Search>
                 </form>
               </Field>
+            </div>
+            <div className="column is-2-mobile is-2-tablet is-1-desktop is-1-fullhd">
+              <CartArea>
+                <CartIcon
+                  onClick={() => {
+                    history.push('/cart');
+                  }}
+                  className="fa fa-shopping-cart"
+                >
+                  <CartCounter
+                    count={shoppingCart.basketCount}
+                  >
+                    {shoppingCart.basketCount}
+                  </CartCounter>
+                </CartIcon>
+              </CartArea>
             </div>
           </Colums>
         </div>

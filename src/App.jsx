@@ -1,18 +1,20 @@
 import 'babel-polyfill';
 import 'url-search-params-polyfill';
 import React, { useState, useEffect, useContext } from 'react';
-import ReactPaginate from 'react-paginate';
+import { Router, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
 
-import GridList from 'components/GridList';
+import GridProducts from 'containers/GridProducts';
 import MainContainer from 'containers/mainContainer';
-import SideBar from 'components/SideBar';
+import Cart from 'containers/Cart';
+import Row from 'components/Row';
+import Grid from 'components/Grid';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
-import ModalOrderItem from 'components/ModalOrderItem';
+import history from 'utils/history';
 
 import getStoreName from 'getStoreName';
 import FiltersMobile from 'components/FiltersMobile';
@@ -29,12 +31,11 @@ import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
 import {
   getStoreInfo,
-  getProducts,
   getCategories,
-  getSearch,
 } from 'requests';
 
 import FilterContext from 'contexts/FilterContext';
+import ShopContext from 'contexts/ShopContext';
 import initGA from './initGA';
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
@@ -49,62 +50,25 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Section = styled.section`
+const Breadcrumb = styled.nav`
   &&& {
-    padding-top: 20px;
-
-    @media (max-width: 768px) {
-      padding-top: 12px;
-    }
+    background: transparent;
+    margin-bottom: 0;
   }
 `;
 
 const App = () => {
   const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState({});
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
-  const [maxPage, setMaxPage] = useState(1);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [productOnModal, setProductOnModal] = useState({});
   const { filter, updateFilter } = useContext(FilterContext);
+  const { updateShop } = useContext(ShopContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
       <Spinner />
     </Container>
   ) : !loading && (<NotFound />));
-
-  const handlePagination = (data) => {
-    updateFilter({ page: data.selected + 1 });
-    setLoading(false);
-  };
-
-  const getProductList = (data) => {
-    setLoading(true);
-    if (filter.search) {
-      return getSearch(data.id, filter)
-        .then((response) => {
-          setProducts(response.data.produtos);
-          setMaxPage(response.data.totalPages);
-        })
-        .catch(() => {
-          setProducts({});
-          setMaxPage(-1);
-        })
-        .finally(() => setLoading(false));
-    }
-    return getProducts(data, filter)
-      .then((response) => {
-        setProducts(response.data.produtos);
-        setMaxPage(response.data.totalPages);
-      })
-      .catch(() => {
-        setProducts({});
-        setMaxPage(-1);
-      })
-      .finally(() => setLoading(false));
-  };
 
   const getCategoryList = (data) => {
     getCategories(data.id)
@@ -120,7 +84,7 @@ const App = () => {
       .then((response) => {
         document.title = response.data.fantasia;
         setStore({ ...response.data, found: true, storeName: getStoreName() });
-        getProductList(response.data);
+        updateShop(response.data);
         getCategoryList(response.data);
       })
       .catch(() => {
@@ -128,8 +92,6 @@ const App = () => {
         setLoading(false);
       });
   };
-
-  const prodArray = Object.keys(products).map(i => products[i]);
 
   useEffect(() => {
     yup.setLocale(formatFormErrors());
@@ -139,18 +101,13 @@ const App = () => {
   }, [filter]);
 
 
-  const home = (e) => {
-    if (e) { e.preventDefault(); }
+  const home = () => {
+    history.push('/');
     updateFilter({
       categoria: 0, label: 'Todas as categorias', page: 1, search: '',
     });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
     window.history.pushState({}, '', `${baseUrl}`);
-  };
-
-  const handleOpenModal = (item) => {
-    setProductOnModal(item);
-    setModalOpen(true);
   };
 
   return (
@@ -161,63 +118,31 @@ const App = () => {
           <FiltersMobile
             categories={categories}
           />
-          <Section className="section">
-            <div className="container">
-              <nav className="breadcrumb" aria-label="breadcrumbs">
-                <ul>
-                  <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
-                  <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
-                </ul>
-              </nav>
-              <MainContainer>
-                <div className="column is-hidden-touch is-3-desktop">
-                  <SideBar
-                    categories={categories}
-                    storeInfo={store}
-                  />
-                </div>
-                <div className="column is-12-tablet is-9-desktop">
-                  {loading ? (
-                    <Container>
-                      <Spinner />
-                    </Container>
-                  ) : (
-                    <GridList
-                      itens={prodArray}
-                      loading={loading}
-                      openModal={handleOpenModal}
-                    />
-                  )}
-                  {(prodArray.length > 1 && maxPage > 1) && (
-                    <ReactPaginate
-                      previousLabel="Anterior"
-                      nextLabel="Próxima"
-                      breakLabel="..."
-                      breakClassName="break-me"
-                      pageCount={maxPage}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={5}
-                      onPageChange={handlePagination}
-                      containerClassName="pagination"
-                      subContainerClassName="pages pagination"
-                      activeClassName="active"
-                      forcePage={(filter.page ? filter.page - 1 : 0)}
-                    />
-                  )}
-                </div>
-              </MainContainer>
-            </div>
-          </Section>
+          <div className="container mb-5">
+            <Row>
+              <Grid cols="12">
+                <Breadcrumb className="breadcrumb">
+                  <ul className="m-0">
+                    <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
+                    <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
+                  </ul>
+                </Breadcrumb>
+              </Grid>
+            </Row>
+            <MainContainer>
+              <Router
+                history={history}
+              >
+                <Switch>
+                  <Route path="/" exact component={GridProducts} />
+                  <Route path="/cart" exact component={Cart} />
+                </Switch>
+              </Router>
+            </MainContainer>
+          </div>
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
-      <ModalOrderItem
-        productOnModal={productOnModal}
-        setProductOnModal={setProductOnModal}
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        storeId={store.id}
-      />
     </>
   );
 };
