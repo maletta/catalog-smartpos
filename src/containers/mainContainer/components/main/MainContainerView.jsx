@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 const MainContainerView = (props) => {
   const { children } = props;
   return (
-    <div className="container">
+    <>
       {children}
-    </div>
+    </>
   );
 };
 

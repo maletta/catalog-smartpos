@@ -10,11 +10,10 @@ const Div = styled.div`
   flex-grow: 0;
   justify-content: space-between;
   background: #fff;
-  border-bottom: 2px solid #eee;
 `;
 
 const Label = styled.div`
-  padding: 10px 15px 10px 15px;
+  padding: 5px 15px 5px 15px;
   color: #3483fa;
   white-space: nowrap;
   overflow: hidden;
@@ -32,7 +31,7 @@ const AreaSelect = styled.div`
   right: 0;
   left: 0;
   height: 100%;
-  z-index: 31;
+  z-index: 9999;
   background: #fff;
   overflow: auto;
 `;

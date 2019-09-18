@@ -40,7 +40,7 @@ const Counter = (props) => {
   };
 
   return (
-    <div className="is-pulled-right">
+    <div>
       <Button
         className="fa fa-minus"
         onClick={remove}

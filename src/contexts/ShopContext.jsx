@@ -5,7 +5,8 @@ const ShopContext = createContext();
 
 export const ShopProvider = ({ children }) => {
   const [shop, setShop] = useState({
-    id: '0',
+    is_enableOrder: 0,
+    id: null,
   });
 
   const updateShop = (newShop) => {

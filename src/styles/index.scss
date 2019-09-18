@@ -36,9 +36,12 @@ html, body {
   background: #EBEBEB;
 }
 
+.fixed-top {
+  z-index: 998;
+}
+
 /* STYLE PAGINATION */
 .pagination {
-  margin-top: 25px;
   justify-content: center;
 }
 
@@ -51,6 +54,8 @@ html, body {
   padding: 7px;
   border-radius: 5px;
   font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .pagination li a:hover {
@@ -76,14 +81,23 @@ html, body {
 }
 
 .breadcrumb a, .breadcrumb a:hover {
-  color: #f37c05;
+  color: #6c757d;
 }
 
 .breadcrumb li.is-active a {
-  color: #666;
+  color: #eee;
 }
 
 
 .is-mb-paddingless {
   padding-bottom: 0 !important;
+}
+
+ul {
+  list-style: none !important;
+  padding-left: 0;
+}
+
+.cursor-pointer{
+  cursor: pointer;
 }

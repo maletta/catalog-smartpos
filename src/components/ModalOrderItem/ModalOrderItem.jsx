@@ -14,6 +14,8 @@ import Button from 'components/Form/Button';
 import TextArea from 'components/Form/TextArea';
 import Checkbox from 'components/Form/RenderCheckbox';
 import Counter from 'components/Form/Counter';
+import Row from 'components/Row';
+import Grid from 'components/Grid';
 
 import getVariantsOfProduct from 'api/variantsRequests';
 import getModifiersOfProduct from 'api/modifiersRequests';
@@ -131,15 +133,6 @@ const ModifierItemSellValue = styled.span`
   font-weight: 600;
 `;
 
-const AreaButtonFlex = styled.div`
-  align-items: center;
-  justify-content: flex-end;
-
-  @media (max-width: 768px) {
-    justify-content: center;
-  }
-`;
-
 const ModalOrderItem = (props) => {
   const {
     intl, productOnModal, setProductOnModal, modalOpen, setModalOpen, storeId,
@@ -172,6 +165,7 @@ const ModalOrderItem = (props) => {
         descricao: productOnModal.descricao,
         categoria: productOnModal.categoria,
         pricing: productPricing,
+        viewMode: productOnModal.viewMode,
         uuid: uuidv1(),
       });
 
@@ -403,8 +397,11 @@ const ModalOrderItem = (props) => {
                     />
                   </div>
                 </div>
-                <div className="columns is-paddingless ">
-                  <div className="column is-12-mobile is-7-desktop">
+                <Row>
+                  <Grid
+                    cols="12 6 6 6 6"
+                    className="d-flex align-items-center justify-content-center"
+                  >
                     <Counter
                       limit={100}
                       min={1}
@@ -413,8 +410,11 @@ const ModalOrderItem = (props) => {
                         propsForm.setFieldValue('amount', value);
                       }}
                     />
-                  </div>
-                  <AreaButtonFlex className="column is-5 is-flex is-fixed-bottom">
+                  </Grid>
+                  <Grid
+                    cols="12 6 6 6 6"
+                    className="d-flex align-items-center justify-content-end"
+                  >
                     <div>
                       <Button
                         value="Adicionar"
@@ -422,8 +422,8 @@ const ModalOrderItem = (props) => {
                         disabled={modifiersErrors}
                       />
                     </div>
-                  </AreaButtonFlex>
-                </div>
+                  </Grid>
+                </Row>
               </div>
             </Form>
           )}

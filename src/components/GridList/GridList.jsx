@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
+import Row from 'components/Row';
 import GridItem from 'components/GridItem';
 import notFound from 'assets/no_result_found.png';
-import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
@@ -15,16 +17,18 @@ const Text = styled.div`
 `;
 
 const GridList = (props) => {
-  const { itens, openModal } = props;
-  const items = itens.map(item => <GridItem key={item.id} item={item} openModal={openModal} />);
+  const { itens, openModal, enableOrder } = props;
+  const items = itens.map(item => (
+    <GridItem key={item.id} item={item} openModal={openModal} enableOrder={enableOrder} />
+  ));
   return (
     <>
-      {items.length > 0 ? (
-        <div className="column is-fluid is-paddingless">
-          <div className="columns is-mobile is-multiline">
-            {items}
-          </div>
-        </div>
+      {itens.length > 0 ? (
+        <Row
+          className="d-flex"
+        >
+          {items}
+        </Row>
       ) : (
         <>
           <Container className="container is-fluid">
@@ -44,6 +48,7 @@ const GridList = (props) => {
 GridList.propTypes = {
   itens: PropTypes.arrayOf(PropTypes.object).isRequired,
   openModal: PropTypes.func.isRequired,
+  enableOrder: PropTypes.number.isRequired,
 };
 
 GridList.defaultProps = {

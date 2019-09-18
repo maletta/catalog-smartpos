@@ -1,5 +1,4 @@
 import React, { useState, useContext, useEffect } from 'react';
-import styled from 'styled-components';
 import ReactPaginate from 'react-paginate';
 import * as yup from 'yup';
 
@@ -16,14 +15,6 @@ import { getCategories, getProducts, getSearch } from 'requests';
 
 import formatFormErrors from 'utils/formatFormErrors';
 import initGA from 'initGA';
-
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 const GridProducts = () => {
   const [loading, setLoading] = useState(true);
@@ -84,6 +75,7 @@ const GridProducts = () => {
   };
 
   useEffect(() => {
+    setProducts([]);
     getCategoryList(shop);
     yup.setLocale(formatFormErrors());
     getProductList(shop);
@@ -93,46 +85,55 @@ const GridProducts = () => {
 
   return (
     <>
-      {loading ? (
-        <Container>
-          <Spinner />
-        </Container>
-      ) : (
-        <Row>
+      <Row>
+        <Grid
+          className="d-none d-md-block"
+          cols="12 3 3 3 3"
+        >
+          <SideBar
+            categories={categories}
+            storeInfo={store}
+          />
+        </Grid>
+        {loading ? (
           <Grid
-            className="d-none d-md-block"
-            cols="12 3 3 3 3"
+            cols="12 9 9 9 9"
+            className="d-flex align-items-center justify-content-center"
           >
-            <SideBar
-              categories={categories}
-              storeInfo={store}
-            />
+            <Spinner />
           </Grid>
-          <Grid cols="12 9 9 9 9">
+        ) : (
+          <Grid cols="12 12 9 9 9">
             <GridList
               itens={prodArray}
               loading={loading}
+              enableOrder={shop.is_enableOrder}
               openModal={handleOpenModal}
             />
+            {(prodArray.length > 1 && maxPage > 1) && (
+              <Row className="d-flex align-items-center justify-content-center">
+                <div>
+                  <ReactPaginate
+                    previousLabel="Anterior"
+                    nextLabel="Próxima"
+                    breakLabel="..."
+                    breakClassName="break-me"
+                    pageCount={maxPage}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePagination}
+                    containerClassName="pagination"
+                    subContainerClassName="pages pagination"
+                    activeClassName="active"
+                    forcePage={(filter.page ? filter.page - 1 : 0)}
+                  />
+                </div>
+              </Row>
+            )}
           </Grid>
-        </Row>
-      )}
-      {(prodArray.length > 1 && maxPage > 1) && (
-        <ReactPaginate
-          previousLabel="Anterior"
-          nextLabel="Próxima"
-          breakLabel="..."
-          breakClassName="break-me"
-          pageCount={maxPage}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePagination}
-          containerClassName="pagination"
-          subContainerClassName="pages pagination"
-          activeClassName="active"
-          forcePage={(filter.page ? filter.page - 1 : 0)}
-        />
-      )}
+        )}
+      </Row>
+
       <ModalOrderItem
         productOnModal={productOnModal}
         setProductOnModal={setProductOnModal}

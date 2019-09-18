@@ -2,14 +2,24 @@ import React, { useContext, useState } from 'react';
 import ReactGA from 'react-ga';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
+
+import Row from 'components/Row';
+import Grid from 'components/Grid';
+import FiltersMobile from 'components/FiltersMobile';
+
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
+import ShopContext from 'contexts/ShopContext';
 
 const Container = styled.nav`
   padding-top: 5px;
   padding-bottom: 8px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    padding-bottom: 0;
+  }
 
   &&& {
     background: #00529b;
@@ -40,12 +50,6 @@ const LogoImage = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-`;
-
-const Colums = styled.div`
-  &&& {
-    margin-right: 0;
-  }
 `;
 
 const Search = styled.div`
@@ -124,9 +128,10 @@ const CartCounter = styled.div`
 
 const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
-  const { codigo, goHome } = props;
+  const { codigo, goHome, categories } = props;
   const [search, setSearch] = useState('');
   const { shoppingCart } = useContext(ShoppingCartContext);
+  const { shop } = useContext(ShopContext);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
   const submit = (e) => {
     e.preventDefault();
@@ -136,6 +141,7 @@ const Header = (props) => {
         action: 'SEARCH',
         label: search,
       });
+      history.push('/');
       updateFilter({
         search, page: 1, categoria: 0, label: '',
       });
@@ -146,37 +152,40 @@ const Header = (props) => {
   };
 
   return (
-    <>
-      <Container className="navb9ar">
-        <div className="container">
-          <Colums className="columns is-mobile is-paddingless">
-            <div className="column is-3-mobile is-2-tablet is-3-desktop is-3-fullhd is-flex justify-content-center">
-              <Logo
-                className=""
-                onClick={() => goHome()}
-              >
-                <div>
-                  <LogoImage src={imageBaseUrl} alt="Logo" />
-                </div>
-              </Logo>
-            </div>
-            <div className="column is-7-mobile is-8-tablet is-8-desktop is-8-fullhd is-flex justify-content-center">
-              <Field className="">
-                <form onSubmit={e => submit(e)}>
-                  <Search>
-                    <SearchInput
-                      value={search}
-                      onChange={e => setSearch(e.target.value)}
-                      placeholder="Buscar produtos, marcas e muito mais…"
-                      type="text"
-                      name="search"
-                    />
-                    <SearchButton type="submit"><i className="fa fa-search" /></SearchButton>
-                  </Search>
-                </form>
-              </Field>
-            </div>
-            <div className="column is-2-mobile is-2-tablet is-1-desktop is-1-fullhd">
+    <Container className="fixed-top">
+      <div className="container">
+        <Row>
+          <Grid
+            cols="3 3 3 3 3"
+            className="d-flex align-content-center justify-content-center"
+          >
+            <Logo
+              className=""
+              onClick={() => goHome()}
+            >
+              <div>
+                <LogoImage src={imageBaseUrl} alt="Logo" />
+              </div>
+            </Logo>
+          </Grid>
+          <Grid cols="7 7 7 7 8">
+            <Field>
+              <form onSubmit={e => submit(e)}>
+                <Search>
+                  <SearchInput
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder="Buscar produtos, marcas e muito mais…"
+                    type="text"
+                    name="search"
+                  />
+                  <SearchButton type="submit"><i className="fa fa-search" /></SearchButton>
+                </Search>
+              </form>
+            </Field>
+          </Grid>
+          <Grid cols="2 2 2 2 1">
+            {(shop.is_enableOrder === 1) && (
               <CartArea>
                 <CartIcon
                   onClick={() => {
@@ -191,18 +200,21 @@ const Header = (props) => {
                   </CartCounter>
                 </CartIcon>
               </CartArea>
-            </div>
-          </Colums>
-        </div>
-      </Container>
-
-    </>
+            )}
+          </Grid>
+        </Row>
+      </div>
+      <FiltersMobile
+        categories={categories}
+      />
+    </Container>
   );
 };
 
 Header.propTypes = {
   codigo: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
 export default Header;

@@ -1,36 +1,27 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Spinner from 'components/Spinner';
 import { injectIntl, intlShape } from 'react-intl';
+import Grid from 'components/Grid';
+
 import NoImage from '../../assets/no-image.png';
 
-const Item = styled.div`
-  display: flex !important;
-  text-align: center;
-  justify-content: center;
-  cursor: ${props => (props.clicable === 'true' ? 'pointer' : 'auto')};
-
-  @media (max-width: 768px) {
-    padding: 0.35rem !important;
-  }
-`;
-
 const Container = styled.div`
-  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
+  height: 100%;
   width: 100%;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.03);
   background-color: #ffff;
   border-radius: 5px;
 `;
 
 const Img = styled.img`
-  height: 251px;
+  width: 100%;
   border-radius: 5px 5px 0 0;
 `;
 
 const Cardcontent = styled.div`
   background-color: transparent;
-  padding: 1.2rem;
+  padding: 0.4rem 1rem 1rem 1rem;
 
   @media (max-width: 768px) {
     padding: 0.75rem;
@@ -42,7 +33,7 @@ const Descricao = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   text-align: left;
-  font-size: 1rem;
+  font-size: 1.2rem;
 `;
 
 const PriceFrom = styled.p`
@@ -56,71 +47,56 @@ const Price = styled.p`
   font-weight: bold;
   font-size: 1.3rem;
   text-align: left;
+  margin-bottom: 0;
 `;
 
 const Unavailable = styled.p`
   color: #333;
-  padding-bottom: -10px;
-  font-size: 0.9rem;
-  font-weight: bold;
+  font-size: 0.8rem;
   text-align: left;
+  margin: 0;
 `;
-
-const SpinnerCointainer = styled.div`
-  padding-top: 50px;
-  width: 100%;
-  height: 223px;
-
-  @media (max-width: 768px) {
-    padding-top: 80px;
-    width: 100%;
-    height: 223px;
-  }
-
-  @media (max-width: 375px) {
-    padding-top: 30px;
-    width: 100%;
-    height: 170px;
-  }
-`;
-
 
 const GridItem = (props) => {
-  const { item, intl, openModal } = props;
-  const [load, setload] = useState(true);
+  const {
+    item,
+    intl,
+    openModal,
+    enableOrder,
+  } = props;
   const [image, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}`;
 
-  const img = new Image();
-  img.src = imageBaseUrl;
-  img.onerror = () => {
-    img.src = NoImage;
-    img.onload = () => {
-      setload(false);
-    };
-  };
+  let img;
+  if (item.viewMode === 'IMAGE') {
+    img = new Image();
+    img.src = imageBaseUrl;
 
-  img.onload = () => {
-    setload(false);
-    setImage(imageBaseUrl);
-  };
+    img.onload = () => {
+      setImage(imageBaseUrl);
+    };
+  }
 
   return (
     <>
-      <Item
-        className="column is-6-mobile is-4-tablet is-4-desktop"
-        onClick={() => {
-          if (process.env.REACT_APP_SELL_ONLINE === 'true') {
-            openModal(item);
-          }
-        }}
-        clicable={process.env.REACT_APP_SELL_ONLINE}
+      <Grid
+        cols="6 4 4 4 4"
+        className="mb-3"
       >
-        <Container className="card-image">
+        <Container
+          onClick={() => {
+            if (enableOrder) {
+              openModal(item);
+            }
+          }}
+          className={`${(enableOrder === 1) && 'cursor-pointer'}`}
+        >
           <div className="card-image">
-            <figure className="is-160x160">
-              {load ? (<SpinnerCointainer><Spinner /></SpinnerCointainer>) : (<Img src={image} alt="product" />)}
-            </figure>
+            {(item.viewMode === 'IMAGE') ? (
+              <Img src={image} alt="product" />
+            ) : (
+              <Img src={image} alt="product" />
+            )}
           </div>
           <Cardcontent>
             <div>
@@ -136,9 +112,8 @@ const GridItem = (props) => {
               && (<Unavailable>Produto indisponível</Unavailable>)}
           </Cardcontent>
         </Container>
-      </Item>
+      </Grid>
     </>
-
   );
 };
 
@@ -150,6 +125,7 @@ GridItem.propTypes = {
     valorVenda: PropTypes.number.isRequired,
   }).isRequired,
   intl: intlShape.isRequired,
+  enableOrder: PropTypes.number.isRequired,
 };
 
 

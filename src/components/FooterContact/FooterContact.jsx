@@ -19,6 +19,13 @@ const Button = styled.a`
   height: auto;
   width: 100%;
   justify-content: flex-start;
+  cursor: pointer;
+  text-decoration: none;
+
+  :hover {
+    color: #3a3a3a;
+    text-decoration: none;
+  }
 `;
 
 const Icon = styled.span`
@@ -53,8 +60,8 @@ const AreaButton = styled.div`
 `;
 
 const FooterContact = ({ storeInfo }) => (
-  <div>
-    <p>Está com dúvidas? Entre em contato com o vendedor!</p>
+  <div style={{ width: '100%' }}>
+    <p className="mt-2 mb-2">Está com dúvidas? Entre em contato com o vendedor!</p>
     <AreaContent>
       <AreaButton>
         <Button

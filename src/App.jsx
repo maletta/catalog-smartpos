@@ -17,7 +17,6 @@ import Header from 'containers/Header';
 import history from 'utils/history';
 
 import getStoreName from 'getStoreName';
-import FiltersMobile from 'components/FiltersMobile';
 import formatFormErrors from 'utils/formatFormErrors';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -50,11 +49,29 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const Content = styled.div`
+  position: relative;
+  top: 80px;
+  padding-bottom: 80px;
+
+  @media (max-width: 768px) {
+    top: 105px;
+  }
+`;
+
 const Breadcrumb = styled.nav`
   &&& {
     background: transparent;
-    margin-bottom: 0;
   }
+`;
+
+const BreadcrumbButton = styled.span`
+  align-items: center;
+  color: #f37c05;
+  display: flex;
+  justify-content: center;
+  padding: 0 0.75em;
+  cursor: pointer;
 `;
 
 const App = () => {
@@ -83,8 +100,8 @@ const App = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
         document.title = response.data.fantasia;
-        setStore({ ...response.data, found: true, storeName: getStoreName() });
         updateShop(response.data);
+        setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
       })
       .catch(() => {
@@ -114,18 +131,15 @@ const App = () => {
     <>
       {store.found ? (
         <div>
-          <Header codigo={store.codigo} goHome={() => home()} />
-          <FiltersMobile
-            categories={categories}
-          />
-          <div className="container mb-5">
+          <Header categories={categories} codigo={store.codigo} goHome={() => home()} />
+          <Content className="container mb-5">
             <Row>
               <Grid cols="12">
-                <Breadcrumb className="breadcrumb">
-                  <ul className="m-0">
-                    <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
-                    <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
-                  </ul>
+                <Breadcrumb>
+                  <ol className="breadcrumb pl-0 mb-0">
+                    <li className="breadcrumb-item"><BreadcrumbButton onClick={e => home(e)} href="#">{ store.storeName }</BreadcrumbButton></li>
+                    <li className="breadcrumb-item active">{filter.search ? `resultados para: ${filter.search}` : filter.label}</li>
+                  </ol>
                 </Breadcrumb>
               </Grid>
             </Row>
@@ -139,7 +153,7 @@ const App = () => {
                 </Switch>
               </Router>
             </MainContainer>
-          </div>
+          </Content>
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
