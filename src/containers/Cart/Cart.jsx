@@ -78,10 +78,11 @@ const Cart = ({ intl }) => {
           <Grid
             cols="12"
             className="d-flex flex-column align-items-center"
+            style={{ minHeight: '40vh' }}
           >
             <div>
               <TitleEmptyCar>
-                O seu carrinho está vazio
+               O seu carrinho está vazio
               </TitleEmptyCar>
             </div>
             <div>
@@ -104,14 +105,13 @@ const Cart = ({ intl }) => {
             className="d-flex justify-content-end align-items-center"
           >
             <div
-              className="mt-0 mb-3"
+              className="mb-2 mt-2"
             >
               <Total>
                 Total:
                 {intl.formatNumber(totalCar, { style: 'currency', currency: 'BRL' })}
               </Total>
             </div>
-            <hr />
           </Grid>
           <Grid
             cols="12 7 8 9 9"

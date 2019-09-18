@@ -54,6 +54,7 @@ const Unavailable = styled.p`
   color: #333;
   font-size: 0.8rem;
   text-align: left;
+  margin: 0;
 `;
 
 const GridItem = (props) => {
@@ -79,16 +80,17 @@ const GridItem = (props) => {
   return (
     <>
       <Grid
-        cols="6 4 4 3 3"
+        cols="6 4 4 4 4"
         className="mb-3"
-        onClick={() => {
-          if (enableOrder) {
-            openModal(item);
-          }
-        }}
-        clicable={(enableOrder === 1)}
       >
-        <Container>
+        <Container
+          onClick={() => {
+            if (enableOrder) {
+              openModal(item);
+            }
+          }}
+          className={`${(enableOrder === 1) && 'cursor-pointer'}`}
+        >
           <div className="card-image">
             {(item.viewMode === 'IMAGE') ? (
               <Img src={image} alt="product" />

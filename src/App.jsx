@@ -17,7 +17,6 @@ import Header from 'containers/Header';
 import history from 'utils/history';
 
 import getStoreName from 'getStoreName';
-import FiltersMobile from 'components/FiltersMobile';
 import formatFormErrors from 'utils/formatFormErrors';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
@@ -53,6 +52,11 @@ const Container = styled.div`
 const Content = styled.div`
   position: relative;
   top: 80px;
+  padding-bottom: 80px;
+
+  @media (max-width: 768px) {
+    top: 105px;
+  }
 `;
 
 const Breadcrumb = styled.nav`
@@ -127,15 +131,12 @@ const App = () => {
     <>
       {store.found ? (
         <div>
-          <Header codigo={store.codigo} goHome={() => home()} />
-          <FiltersMobile
-            categories={categories}
-          />
+          <Header categories={categories} codigo={store.codigo} goHome={() => home()} />
           <Content className="container mb-5">
             <Row>
               <Grid cols="12">
                 <Breadcrumb>
-                  <ol className="breadcrumb mb-0">
+                  <ol className="breadcrumb pl-0 mb-0">
                     <li className="breadcrumb-item"><BreadcrumbButton onClick={e => home(e)} href="#">{ store.storeName }</BreadcrumbButton></li>
                     <li className="breadcrumb-item active">{filter.search ? `resultados para: ${filter.search}` : filter.label}</li>
                   </ol>

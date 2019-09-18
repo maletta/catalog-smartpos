@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 
 import Row from 'components/Row';
 import Grid from 'components/Grid';
+import FiltersMobile from 'components/FiltersMobile';
+
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
@@ -14,6 +16,10 @@ const Container = styled.nav`
   padding-top: 5px;
   padding-bottom: 8px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    padding-bottom: 0;
+  }
 
   &&& {
     background: #00529b;
@@ -122,7 +128,7 @@ const CartCounter = styled.div`
 
 const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
-  const { codigo, goHome } = props;
+  const { codigo, goHome, categories } = props;
   const [search, setSearch] = useState('');
   const { shoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
@@ -198,6 +204,9 @@ const Header = (props) => {
           </Grid>
         </Row>
       </div>
+      <FiltersMobile
+        categories={categories}
+      />
     </Container>
   );
 };
@@ -205,6 +214,7 @@ const Header = (props) => {
 Header.propTypes = {
   codigo: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
 export default Header;

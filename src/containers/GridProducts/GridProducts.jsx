@@ -110,25 +110,30 @@ const GridProducts = () => {
               enableOrder={shop.is_enableOrder}
               openModal={handleOpenModal}
             />
+            {(prodArray.length > 1 && maxPage > 1) && (
+              <Row className="d-flex align-items-center justify-content-center">
+                <div>
+                  <ReactPaginate
+                    previousLabel="Anterior"
+                    nextLabel="Próxima"
+                    breakLabel="..."
+                    breakClassName="break-me"
+                    pageCount={maxPage}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={5}
+                    onPageChange={handlePagination}
+                    containerClassName="pagination"
+                    subContainerClassName="pages pagination"
+                    activeClassName="active"
+                    forcePage={(filter.page ? filter.page - 1 : 0)}
+                  />
+                </div>
+              </Row>
+            )}
           </Grid>
         )}
       </Row>
-      {(prodArray.length > 1 && maxPage > 1) && (
-        <ReactPaginate
-          previousLabel="Anterior"
-          nextLabel="Próxima"
-          breakLabel="..."
-          breakClassName="break-me"
-          pageCount={maxPage}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={handlePagination}
-          containerClassName="pagination"
-          subContainerClassName="pages pagination"
-          activeClassName="active"
-          forcePage={(filter.page ? filter.page - 1 : 0)}
-        />
-      )}
+
       <ModalOrderItem
         productOnModal={productOnModal}
         setProductOnModal={setProductOnModal}

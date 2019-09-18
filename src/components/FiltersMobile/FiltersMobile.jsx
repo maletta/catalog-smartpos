@@ -10,13 +10,10 @@ const Div = styled.div`
   flex-grow: 0;
   justify-content: space-between;
   background: #fff;
-  border-bottom: 2px solid #eee;
-  position: relative;
-  top: 80px;
 `;
 
 const Label = styled.div`
-  padding: 10px 15px 10px 15px;
+  padding: 5px 15px 5px 15px;
   color: #3483fa;
   white-space: nowrap;
   overflow: hidden;

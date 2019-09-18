@@ -149,7 +149,7 @@ const CartItem = (props) => {
               <ControlExclude
                 onClick={() => deleteItem(product)}
               >
-                Excluir
+                { 'Excluir' }
               </ControlExclude>
             </div>
           </ControlAmount>
