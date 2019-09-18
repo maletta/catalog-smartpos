@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
+
+import Row from 'components/Row';
 import GridItem from 'components/GridItem';
 import notFound from 'assets/no_result_found.png';
-import styled from 'styled-components';
 
 const Container = styled.div`
   display: flex;
@@ -22,11 +24,11 @@ const GridList = (props) => {
   return (
     <>
       {itens.length > 0 ? (
-        <div className="column is-fluid is-paddingless">
-          <div className="columns is-mobile is-multiline">
-            {items}
-          </div>
-        </div>
+        <Row
+          className="d-flex"
+        >
+          {items}
+        </Row>
       ) : (
         <>
           <Container className="container is-fluid">

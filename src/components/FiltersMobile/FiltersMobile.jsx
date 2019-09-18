@@ -11,6 +11,8 @@ const Div = styled.div`
   justify-content: space-between;
   background: #fff;
   border-bottom: 2px solid #eee;
+  position: relative;
+  top: 80px;
 `;
 
 const Label = styled.div`
@@ -32,7 +34,7 @@ const AreaSelect = styled.div`
   right: 0;
   left: 0;
   height: 100%;
-  z-index: 31;
+  z-index: 9999;
   background: #fff;
   overflow: auto;
 `;

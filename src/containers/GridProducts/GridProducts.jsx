@@ -103,7 +103,7 @@ const GridProducts = () => {
             <Spinner />
           </Grid>
         ) : (
-          <Grid cols="12 9 9 9 9">
+          <Grid cols="12 12 9 9 9">
             <GridList
               itens={prodArray}
               loading={loading}

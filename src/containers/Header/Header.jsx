@@ -2,6 +2,9 @@ import React, { useContext, useState } from 'react';
 import ReactGA from 'react-ga';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
+
+import Row from 'components/Row';
+import Grid from 'components/Grid';
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
@@ -41,12 +44,6 @@ const LogoImage = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-`;
-
-const Colums = styled.div`
-  &&& {
-    margin-right: 0;
-  }
 `;
 
 const Search = styled.div`
@@ -149,59 +146,59 @@ const Header = (props) => {
   };
 
   return (
-    <>
-      <Container className="navb9ar">
-        <div className="container">
-          <Colums className="columns is-mobile is-paddingless">
-            <div className="column is-3-mobile is-2-tablet is-3-desktop is-3-fullhd is-flex justify-content-center">
-              <Logo
-                className=""
-                onClick={() => goHome()}
-              >
-                <div>
-                  <LogoImage src={imageBaseUrl} alt="Logo" />
-                </div>
-              </Logo>
-            </div>
-            <div className="column is-7-mobile is-8-tablet is-8-desktop is-8-fullhd is-flex justify-content-center">
-              <Field className="">
-                <form onSubmit={e => submit(e)}>
-                  <Search>
-                    <SearchInput
-                      value={search}
-                      onChange={e => setSearch(e.target.value)}
-                      placeholder="Buscar produtos, marcas e muito mais…"
-                      type="text"
-                      name="search"
-                    />
-                    <SearchButton type="submit"><i className="fa fa-search" /></SearchButton>
-                  </Search>
-                </form>
-              </Field>
-            </div>
-            <div className="column is-2-mobile is-2-tablet is-1-desktop is-1-fullhd">
-              {(shop.is_enableOrder === 1) && (
-                <CartArea>
-                  <CartIcon
-                    onClick={() => {
-                      history.push('/cart');
-                    }}
-                    className="fa fa-shopping-cart"
+    <Container className="fixed-top">
+      <div className="container">
+        <Row>
+          <Grid
+            cols="3 3 3 3 3"
+            className="d-flex align-content-center justify-content-center"
+          >
+            <Logo
+              className=""
+              onClick={() => goHome()}
+            >
+              <div>
+                <LogoImage src={imageBaseUrl} alt="Logo" />
+              </div>
+            </Logo>
+          </Grid>
+          <Grid cols="7 7 7 7 8">
+            <Field>
+              <form onSubmit={e => submit(e)}>
+                <Search>
+                  <SearchInput
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder="Buscar produtos, marcas e muito mais…"
+                    type="text"
+                    name="search"
+                  />
+                  <SearchButton type="submit"><i className="fa fa-search" /></SearchButton>
+                </Search>
+              </form>
+            </Field>
+          </Grid>
+          <Grid cols="2 2 2 2 1">
+            {(shop.is_enableOrder === 1) && (
+              <CartArea>
+                <CartIcon
+                  onClick={() => {
+                    history.push('/cart');
+                  }}
+                  className="fa fa-shopping-cart"
+                >
+                  <CartCounter
+                    count={shoppingCart.basketCount}
                   >
-                    <CartCounter
-                      count={shoppingCart.basketCount}
-                    >
-                      {shoppingCart.basketCount}
-                    </CartCounter>
-                  </CartIcon>
-                </CartArea>
-              )}
-            </div>
-          </Colums>
-        </div>
-      </Container>
-
-    </>
+                    {shoppingCart.basketCount}
+                  </CartCounter>
+                </CartIcon>
+              </CartArea>
+            )}
+          </Grid>
+        </Row>
+      </div>
+    </Container>
   );
 };
 

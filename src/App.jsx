@@ -50,10 +50,14 @@ const Container = styled.div`
   align-items: center;
 `;
 
+const Content = styled.div`
+  position: relative;
+  top: 80px;
+`;
+
 const Breadcrumb = styled.nav`
   &&& {
     background: transparent;
-    margin-bottom: 0;
   }
 `;
 
@@ -127,14 +131,14 @@ const App = () => {
           <FiltersMobile
             categories={categories}
           />
-          <div className="container mb-5">
+          <Content className="container mb-5">
             <Row>
               <Grid cols="12">
-                <Breadcrumb className="breadcrumb">
-                  <ul className="m-0">
-                    <li><BreadcrumbButton onClick={e => home(e)} href="#">{ store.storeName }</BreadcrumbButton></li>
-                    <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
-                  </ul>
+                <Breadcrumb>
+                  <ol className="breadcrumb mb-0">
+                    <li className="breadcrumb-item"><BreadcrumbButton onClick={e => home(e)} href="#">{ store.storeName }</BreadcrumbButton></li>
+                    <li className="breadcrumb-item active">{filter.search ? `resultados para: ${filter.search}` : filter.label}</li>
+                  </ol>
                 </Breadcrumb>
               </Grid>
             </Row>
@@ -148,7 +152,7 @@ const App = () => {
                 </Switch>
               </Router>
             </MainContainer>
-          </div>
+          </Content>
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
