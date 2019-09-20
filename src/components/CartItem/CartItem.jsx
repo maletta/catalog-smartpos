@@ -18,11 +18,12 @@ const ListItem = styled.li`
     flex-direction: column;
     align-items: start;
     padding: 15px;
+    border-bottom: 3px solid #eee;
   }
 `;
 
 const TitleItem = styled.h2`
-  font-weight: 600;
+  font-weight: 400;
   color: #363636;
   margin: 0;
 
@@ -31,7 +32,8 @@ const TitleItem = styled.h2`
   }
 
   @media (max-width: 768px) {
-    font-size: 1.1rem;
+    font-weight: 600;
+    font-size: 1.2rem;
   }
 `;
 
@@ -53,19 +55,26 @@ const AreaControl = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: space-around;
+  }
 `;
 
 const ControlAmount = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 15px 25px 0 0;
+  width: 110px;
 `;
 
 const ControlExclude = styled.button`
   color: #00529b;
   background: #fff;
   border: 0;
+  padding: 0;
+  margin: 0;
 `;
 
 const ItemPricing = styled.div`
@@ -90,8 +99,8 @@ const Img = styled.img`
   }
 
   @media (max-width: 768px) {
-    height: 50px;
-    min-width: 50px;
+    height: 55px;
+    min-width: 55px;
   }
 `;
 
@@ -122,7 +131,7 @@ const CartItem = (props) => {
           className="d-flex justify-content-start"
         >
           <div
-            className="mr-2"
+            className="mr-3"
           >
             <Img src={imageProduct} alt="product" />
           </div>
@@ -130,7 +139,7 @@ const CartItem = (props) => {
             <TitleItem>{`${product.descricao} ${(product.variant.name) ? `- ${product.variant.name}` : ''}`}</TitleItem>
             <ItemDescription>
               {product.modifiers.map((modifier, modIndex) => (
-                modifier.map((item, index) => ((modIndex || index) ? `${item.name} ` : `${item.name} | `))
+                modifier.map((item, index) => ((modIndex || index) ? ` | ${item.name} ` : item.name))
               ))}
             </ItemDescription>
           </div>
@@ -145,7 +154,7 @@ const CartItem = (props) => {
                 updateAmount(amount, prodIndex);
               }}
             />
-            <div>
+            <div style={{ marginTop: '-10px' }}>
               <ControlExclude
                 onClick={() => deleteItem(product)}
               >

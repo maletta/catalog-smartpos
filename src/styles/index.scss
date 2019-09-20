@@ -40,9 +40,21 @@ html, body {
   z-index: 998;
 }
 
+ul {
+  list-style: none !important;
+  padding-left: 0;
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
 /* STYLE PAGINATION */
 .pagination {
   justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .pagination li {
@@ -91,13 +103,4 @@ html, body {
 
 .is-mb-paddingless {
   padding-bottom: 0 !important;
-}
-
-ul {
-  list-style: none !important;
-  padding-left: 0;
-}
-
-.cursor-pointer{
-  cursor: pointer;
 }

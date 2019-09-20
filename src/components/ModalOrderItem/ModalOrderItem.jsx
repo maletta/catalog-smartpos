@@ -190,7 +190,7 @@ const ModalOrderItem = (props) => {
   const onClose = () => {
     setModalOpen(false);
     setVariantSelected({ name: '' });
-    setModifiersErrors(true);
+    setModifiersErrors(false);
     setModifiers([]);
     setModifierSelected([]);
     setProductOnModal({});

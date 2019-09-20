@@ -18,6 +18,7 @@ import initGA from 'initGA';
 
 const GridProducts = () => {
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [products, setProducts] = useState({});
   const [modalOpen, setModalOpen] = useState(false);
   const [productOnModal, setProductOnModal] = useState({});
@@ -58,6 +59,7 @@ const GridProducts = () => {
         setMaxPage(response.data.totalPages);
       })
       .catch(() => {
+        setNotFound(true);
         setProducts({});
         setMaxPage(-1);
       })
@@ -76,6 +78,7 @@ const GridProducts = () => {
 
   useEffect(() => {
     setProducts([]);
+    setNotFound(false);
     getCategoryList(shop);
     yup.setLocale(formatFormErrors());
     getProductList(shop);
@@ -106,28 +109,26 @@ const GridProducts = () => {
           <Grid cols="12 12 9 9 9">
             <GridList
               itens={prodArray}
-              loading={loading}
+              notFound={notFound}
               enableOrder={shop.is_enableOrder}
               openModal={handleOpenModal}
             />
             {(prodArray.length > 1 && maxPage > 1) && (
               <Row className="d-flex align-items-center justify-content-center">
-                <div>
-                  <ReactPaginate
-                    previousLabel="Anterior"
-                    nextLabel="Próxima"
-                    breakLabel="..."
-                    breakClassName="break-me"
-                    pageCount={maxPage}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={5}
-                    onPageChange={handlePagination}
-                    containerClassName="pagination"
-                    subContainerClassName="pages pagination"
-                    activeClassName="active"
-                    forcePage={(filter.page ? filter.page - 1 : 0)}
-                  />
-                </div>
+                <ReactPaginate
+                  previousLabel="Anterior"
+                  nextLabel="Próxima"
+                  breakLabel="..."
+                  breakClassName="break-me"
+                  pageCount={maxPage}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePagination}
+                  containerClassName="pagination"
+                  subContainerClassName="pages pagination"
+                  activeClassName="active"
+                  forcePage={(filter.page ? filter.page - 1 : 0)}
+                />
               </Row>
             )}
           </Grid>
