@@ -7,7 +7,7 @@ import {
 const Button = styled.span`
   color: var(--color-primary);
   cursor: pointer;
-  padding: 15px;
+  padding: 15px 12px 15px 13px;
 `;
 
 const ValueNumber = styled.span`
@@ -44,6 +44,7 @@ const Counter = (props) => {
       <Button
         className="fa fa-minus"
         onClick={remove}
+        autofocus
       />
       <ValueNumber>{value}</ValueNumber>
       <Button

@@ -42,7 +42,7 @@ const Btn = styled.button`
   vertical-align: middle;
   white-space: nowrap;
   outline: initial;
-  padding: 0.5rem 2.6rem 0.5rem;
+  padding: 0.5rem 15px 0.5rem;
   position: relative;
   text-align: center;
 

@@ -77,6 +77,7 @@ const TextArea = (props) => {
             rows={rows}
             invalid={invalid}
             hasError={hasError}
+            autoFocus={false}
             {...field}
             {...props}
           >
