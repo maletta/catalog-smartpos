@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, {
+  useState, useEffect, useContext,
+} from 'react';
 import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import { Formik, Form, Field } from 'formik';
@@ -26,8 +28,8 @@ import orderValidation from './orderSchema';
 
 const AreaTitle = styled.div`
   background: #00529b;
-  padding: 5px 20px 5px 20px;
-  margin: -20px -19px 0 -20px;
+  padding: 5px 0 5px 20px;
+  margin: -20px 0 0 -20px;
   border-radius: 5px 5px 0 0;
 `;
 
@@ -39,14 +41,13 @@ const Title = styled.h3`
 const Content = styled.div`
   padding-top: 10px;
   width: 500px;
-  transition: width 1s, height 4s;
 
   @media (max-width: 992px) {
     width: 400px;
   }
 
   @media (max-width: 768px) {
-    width: 300px;
+    width: 100%;
   }
 `;
 
@@ -77,15 +78,15 @@ const ModifierHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   background: #f2f2f2;
-  margin: 0 -19px 0 -19px;
+  margin: 0 0 0 0;
   ${props => (props.hasError ? `
     border-width: 0 0 0 1px;
     border-style: solid;
     border-color: #ff2323;
-    padding: 10px 20px 10px 19px;
+    padding: 10px 0 10px 9px;
     ` : `
     border-width: 0;
-    padding: 10px 20px 10px 20px;
+    padding: 10px 0 10px 10px;
   `)}
 `;
 
@@ -142,7 +143,8 @@ const ModalOrderItem = (props) => {
   const [modifiers, setModifiers] = useState([]);
   const [isModLoaded, setIsModLoaded] = useState(false);
   const [modifierSelected, setModifierSelected] = useState([]);
-  const [modifiersErrors, setModifiersErrors] = useState(false);
+  const [modifiersErrors, setModifiersErrors] = useState(true);
+  const [showTextarea, setShowTextarea] = useState(false);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const [productPricing, setProductPricing] = useState({
     product: 0,
@@ -156,6 +158,8 @@ const ModalOrderItem = (props) => {
         product: productOnModal.valorVenda,
         modifiers: 0,
       });
+
+      setTimeout(() => setShowTextarea(true), 1);
 
       setInitialValues({
         variant: {},
@@ -281,12 +285,15 @@ const ModalOrderItem = (props) => {
     );
   });
 
+  const sumProductPricing = (productPricing.product + productPricing.modifiers);
+
   return (
     <Modal
       open={modalOpen}
       styles={{
         modal: {
           borderRadius: '5px',
+          padding: '1.2rem 0 1.2rem 1.2rem',
         },
         closeIcon: {
           fill: '#fff',
@@ -303,7 +310,7 @@ const ModalOrderItem = (props) => {
       </AreaTitle>
       <Content>
         <Description>{productOnModal.observacao}</Description>
-        <Price>{intl.formatNumber((productPricing.product + productPricing.modifiers), { style: 'currency', currency: 'BRL' })}</Price>
+        <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
         <Formik
           onSubmit={submitOrderItem}
           initialValues={initialValues}
@@ -311,36 +318,32 @@ const ModalOrderItem = (props) => {
           enableReinitialize
           render={propsForm => (
             <Form>
-              <div className="">
+              <div className="scrollAreaOrder">
                 {(variants.length > 0) && (
-                  <div className="columns is-paddingless">
-                    <div className="column is-12 is-mb-paddingless">
-                      <SelectDropDown
-                        id="variants"
-                        label="Variações"
-                        options={variants}
-                        getOptionLabel={label => (
-                          <LabelVariant>
-                            <div>{label.name}</div>
-                            {(label.sellValue) && (<div>{intl.formatNumber(label.sellValue, { style: 'currency', currency: 'BRL' })}</div>)}
-                          </LabelVariant>
-                        )}
-                        getOptionValue={option => option.id}
-                        value={variantSelected}
-                        onChange={(value) => {
-                          propsForm.setFieldValue('variant', value);
-                          setVariantSelected({ name: value.name });
-                          setProductPricing(prevState => ({
-                            ...prevState,
-                            product: value.sellValue,
-                          }));
-                        }}
-                        isInvalid={propsForm.errors.variant}
-                        touched={propsForm.touched.variant}
-                        isRequired
-                      />
-                    </div>
-                  </div>
+                  <SelectDropDown
+                    id="variants"
+                    label="Variações"
+                    options={variants}
+                    getOptionLabel={label => (
+                      <LabelVariant>
+                        <div>{label.name}</div>
+                        {(label.sellValue) && (<div>{intl.formatNumber(label.sellValue, { style: 'currency', currency: 'BRL' })}</div>)}
+                      </LabelVariant>
+                    )}
+                    getOptionValue={option => option.id}
+                    value={variantSelected}
+                    onChange={(value) => {
+                      propsForm.setFieldValue('variant', value);
+                      setVariantSelected({ name: value.name });
+                      setProductPricing(prevState => ({
+                        ...prevState,
+                        product: value.sellValue,
+                      }));
+                    }}
+                    isInvalid={propsForm.errors.variant}
+                    touched={propsForm.touched.variant}
+                    isRequired
+                  />
                 )}
                 {(isModLoaded) && (
                   <ModifiersArea>
@@ -386,45 +389,50 @@ const ModalOrderItem = (props) => {
                     })}
                   </ModifiersArea>
                 )}
-                <div className="columns is-paddingless">
-                  <div className="column is-mb-paddingless is-12 is-mb-paddingless">
-                    <Field
-                      name="note"
-                      inputId="observacao"
-                      component={TextArea}
-                      label="Observação"
-                      rows={3}
-                    />
-                  </div>
-                </div>
-                <Row>
-                  <Grid
-                    cols="12 6 6 6 6"
-                    className="d-flex align-items-center justify-content-center"
-                  >
-                    <Counter
-                      limit={100}
-                      min={1}
-                      value={1}
-                      counter={(value) => {
-                        propsForm.setFieldValue('amount', value);
-                      }}
-                    />
-                  </Grid>
-                  <Grid
-                    cols="12 6 6 6 6"
-                    className="d-flex align-items-center justify-content-end"
-                  >
-                    <div>
-                      <Button
-                        value="Adicionar"
-                        type="submit"
-                        disabled={modifiersErrors}
+                {(showTextarea) && (
+                  <div className="columns is-paddingless">
+                    <div className="column is-mb-paddingless is-12 is-mb-paddingless">
+                      <Field
+                        name="note"
+                        inputId="observacao"
+                        component={TextArea}
+                        label="Observação"
+                        autoFocus={false}
+                        rows={3}
                       />
                     </div>
-                  </Grid>
-                </Row>
+                  </div>
+                )}
               </div>
+              <Row
+                className="pt-3 mr-2"
+              >
+                <Grid
+                  cols="5 6 6 6 6"
+                  className="d-flex align-items-center justify-content-center"
+                >
+                  <Counter
+                    limit={100}
+                    min={1}
+                    value={1}
+                    counter={(value) => {
+                      propsForm.setFieldValue('amount', value);
+                    }}
+                  />
+                </Grid>
+                <Grid
+                  cols="7 6 6 6 6"
+                  className="d-flex align-items-center justify-content-end"
+                >
+                  <div>
+                    <Button
+                      value={`Adicionar ${intl.formatNumber((propsForm.values.amount * sumProductPricing), { style: 'currency', currency: 'BRL' })}`}
+                      type="submit"
+                      disabled={modifiersErrors}
+                    />
+                  </div>
+                </Grid>
+              </Row>
             </Form>
           )}
         />

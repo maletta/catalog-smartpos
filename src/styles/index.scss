@@ -100,7 +100,15 @@ ul {
   color: #eee;
 }
 
-
 .is-mb-paddingless {
   padding-bottom: 0 !important;
+}
+
+.scrollAreaOrder {
+  overflow: auto;
+  max-height: 65vh;
+
+  @media (max-width: 768px) {
+    margin-right: 1.2rem;
+  }
 }
