@@ -114,30 +114,27 @@ const Cart = ({ intl }) => {
             </div>
           </Grid>
           <Grid
-            cols="12 7 8 9 9"
+            cols="7 7 8 9 9"
             className="d-flex justify-content-end"
           >
-            <div>
-              <Button
-                value="Adicionar mais itens"
-                type="submit"
-                styleType="secondary"
-                onClick={() => {
-                  history.push('/');
-                }}
-              />
-            </div>
+            <Button
+              className="d-none d-md-block"
+              value="Adicionar mais itens"
+              type="submit"
+              styleType="secondary"
+              onClick={() => {
+                history.push('/');
+              }}
+            />
           </Grid>
           <Grid
-            cols="12 5 4 3 3"
-            className="d-flex justify-content-end mt-2 mt-sm-0"
+            cols="5 5 4 3 3"
+            className="d-flex justify-content-end"
           >
-            <div>
-              <Button
-                value="Finalizar pedido"
-                type="submit"
-              />
-            </div>
+            <Button
+              value="Finalizar pedido"
+              type="submit"
+            />
           </Grid>
         </>
       )}
