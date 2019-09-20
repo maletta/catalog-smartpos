@@ -29,15 +29,15 @@ const Container = styled.nav`
 const Field = styled.div`
   justify-content: center;
   padding-top: 15px;
-  width: 70%;
+  width: 80%;
 
   @media (max-width: 800px) {
     width: 100%;
   }
 `;
+
 const Logo = styled.div`
   margin: 0;
-  width: 70px;
   padding-top: 10px;
   cursor: pointer;
 

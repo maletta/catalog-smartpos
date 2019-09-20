@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import Row from 'components/Row';
 import GridItem from 'components/GridItem';
-import notFound from 'assets/no_result_found.png';
+import ImgnotFound from 'assets/no_result_found.png';
 
 const Container = styled.div`
   display: flex;
@@ -17,22 +17,21 @@ const Text = styled.div`
 `;
 
 const GridList = (props) => {
-  const { itens, openModal, enableOrder } = props;
+  const {
+    itens,
+    openModal,
+    enableOrder,
+    notFound,
+  } = props;
   const items = itens.map(item => (
     <GridItem key={item.id} item={item} openModal={openModal} enableOrder={enableOrder} />
   ));
   return (
     <>
-      {itens.length > 0 ? (
-        <Row
-          className="d-flex"
-        >
-          {items}
-        </Row>
-      ) : (
+      {(notFound) ? (
         <>
           <Container className="container is-fluid">
-            <img src={notFound} alt="nenhum resultado" />
+            <img src={ImgnotFound} alt="nenhum resultado" />
           </Container>
           <Container className="container is-fluid">
             <Text>
@@ -40,12 +39,19 @@ const GridList = (props) => {
             </Text>
           </Container>
         </>
-      )}
+      ) : (
+        <Row
+          className="d-flex"
+        >
+          {items}
+        </Row>
+      ) }
     </>
   );
 };
 
 GridList.propTypes = {
+  notFound: PropTypes.bool.isRequired,
   itens: PropTypes.arrayOf(PropTypes.object).isRequired,
   openModal: PropTypes.func.isRequired,
   enableOrder: PropTypes.number.isRequired,
