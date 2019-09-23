@@ -44,7 +44,6 @@ const Counter = (props) => {
       <Button
         className="fa fa-minus"
         onClick={remove}
-        autofocus
       />
       <ValueNumber>{value}</ValueNumber>
       <Button
