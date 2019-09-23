@@ -104,6 +104,22 @@ const Img = styled.img`
   }
 `;
 
+const NoteButton = styled.span`
+  cursor: pointer;
+  font-size: 1.2rem;
+`;
+
+const NoteContent = styled.div`
+  position: absolute;
+  color: #fff;
+  background: #434343;
+  padding: 8px 15px;
+  margin-right: 10px;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  z-index: 9999;
+`;
+
 const CartItem = (props) => {
   const {
     product,
@@ -113,6 +129,7 @@ const CartItem = (props) => {
     prodIndex,
   } = props;
   const [imageProduct, setImage] = useState(NoImage);
+  const [showNote, setShowNote] = useState(false);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}`;
 
   let img;
@@ -145,6 +162,26 @@ const CartItem = (props) => {
           </div>
         </div>
         <AreaControl>
+          {(product.note.length > 0) && (
+            <div>
+              <NoteButton
+                className="far fa-comment"
+                onFocus={() => {}}
+                onBlur={() => {}}
+                onMouseOver={() => {
+                  setShowNote(true);
+                }}
+                onMouseOut={() => {
+                  setShowNote(false);
+                }}
+              />
+              {(product.note.length > 0 && showNote) && (
+                <NoteContent>
+                  {`Observação: ${product.note}`}
+                </NoteContent>
+              )}
+            </div>
+          )}
           <ControlAmount>
             <Counter
               limit={100}

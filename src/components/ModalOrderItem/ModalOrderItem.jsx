@@ -36,6 +36,7 @@ const AreaTitle = styled.div`
 const Title = styled.h3`
   font-size: 1.3rem;
   color: #fff;
+  margin-bottom: 0;
 `;
 
 const Content = styled.div`
@@ -232,6 +233,7 @@ const ModalOrderItem = (props) => {
       basketCount,
     });
     localStorage.setItem('cart', JSON.stringify(newCart));
+    localStorage.setItem('cartInit', new Date().getTime());
     onClose();
   };
 
@@ -390,17 +392,15 @@ const ModalOrderItem = (props) => {
                   </ModifiersArea>
                 )}
                 {(showTextarea) && (
-                  <div className="columns is-paddingless">
-                    <div className="column is-mb-paddingless is-12 is-mb-paddingless">
-                      <Field
-                        name="note"
-                        inputId="observacao"
-                        component={TextArea}
-                        label="Observação"
-                        autoFocus={false}
-                        rows={3}
-                      />
-                    </div>
+                  <div className="column is-mb-paddingless is-12 is-mb-paddingless">
+                    <Field
+                      name="note"
+                      inputId="observacao"
+                      component={TextArea}
+                      label="Observação"
+                      autoFocus={false}
+                      rows={3}
+                    />
                   </div>
                 )}
               </div>

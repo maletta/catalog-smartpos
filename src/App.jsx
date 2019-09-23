@@ -110,11 +110,22 @@ const App = () => {
       });
   };
 
+  const cleanCart = () => {
+    const date1 = localStorage.getItem('cartInit');
+    const date2 = new Date().getTime();
+    const hourDiff = Math.abs(date1 - date2) / 36e5;
+    if (hourDiff > 1) {
+      localStorage.removeItem('cartInit');
+      localStorage.removeItem('cart');
+    }
+  };
+
   useEffect(() => {
     yup.setLocale(formatFormErrors());
     window.scrollTo(0, 0);
     getStore();
     initGA();
+    cleanCart();
   }, [filter]);
 
 

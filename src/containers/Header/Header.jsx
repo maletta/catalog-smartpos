@@ -38,8 +38,8 @@ const Field = styled.div`
 
 const Logo = styled.div`
   margin: 0;
-  padding-top: 10px;
   cursor: pointer;
+  height: 50px;
 
   @media (max-width: 376px) {
     margin-left: 8px;
@@ -156,19 +156,16 @@ const Header = (props) => {
       <div className="container">
         <Row>
           <Grid
-            cols="3 3 3 3 3"
-            className="d-flex align-content-center justify-content-center"
+            cols="2 3 3 3 3"
+            className="d-flex align-items-center justify-content-center"
           >
             <Logo
-              className=""
               onClick={() => goHome()}
             >
-              <div>
-                <LogoImage src={imageBaseUrl} alt="Logo" />
-              </div>
+              <LogoImage src={imageBaseUrl} alt="Logo" />
             </Logo>
           </Grid>
-          <Grid cols="7 7 7 7 8">
+          <Grid cols="8 7 7 7 8">
             <Field>
               <form onSubmit={e => submit(e)}>
                 <Search>
