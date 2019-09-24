@@ -28,10 +28,10 @@ const NotFound = () => (
         <img src={store} alt="store" width="300px" />
       </Image>
       <Text>
-        <span> Loja não encontrada.</span>
+        <span>Loja não encontrada.</span>
       </Text>
       <footer>
-        <div className="content has-text-centered">
+        <div className="d-flex align-items-center justify-content-center">
           <p>
             <strong>SmartPOS</strong>
           </p>
