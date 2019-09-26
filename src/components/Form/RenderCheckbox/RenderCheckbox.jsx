@@ -43,7 +43,7 @@ const Label = styled.label`
     position: absolute;
     left: 0;
     border-radius: 4px;
-    top: 2px;
+    top: 7px;
     width: 16px;
     height: 16px;
     ${props => (props.isChecked ? `

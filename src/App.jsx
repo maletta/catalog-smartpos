@@ -8,6 +8,7 @@ import * as yup from 'yup';
 import GridProducts from 'containers/GridProducts';
 import MainContainer from 'containers/mainContainer';
 import Cart from 'containers/Cart';
+import Checkout from 'containers/Checkout';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import NotFound from 'NotFound';
@@ -35,6 +36,7 @@ import {
 
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import initGA from './initGA';
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
@@ -80,6 +82,7 @@ const App = () => {
   const [store, setStore] = useState({});
   const { filter, updateFilter } = useContext(FilterContext);
   const { updateShop } = useContext(ShopContext);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
@@ -117,6 +120,9 @@ const App = () => {
     if (hourDiff > 1) {
       localStorage.removeItem('cartInit');
       localStorage.removeItem('cart');
+      updateShoppingCart({
+        basketCount: 0,
+      });
     }
   };
 
@@ -161,6 +167,7 @@ const App = () => {
                 <Switch>
                   <Route path="/" exact component={GridProducts} />
                   <Route path="/cart" exact component={Cart} />
+                  <Route path="/checkout" exact component={Checkout} />
                 </Switch>
               </Router>
             </MainContainer>

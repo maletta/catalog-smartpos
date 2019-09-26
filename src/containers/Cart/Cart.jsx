@@ -7,6 +7,7 @@ import CartItem from 'components/CartItem';
 import Grid from 'components/Grid';
 import history from 'utils/history';
 import FilterContext from 'contexts/FilterContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 const Container = styled.div`
   background: #fff;
@@ -31,6 +32,7 @@ const Cart = ({ intl }) => {
   const [stateCart, setStateCar] = useState(cart);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [totalCar, setTotalCar] = useState(0);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const deleteItem = (item) => {
     const newCart = cart.filter(del => (del.uuid !== item.uuid));
@@ -51,8 +53,12 @@ const Cart = ({ intl }) => {
     const total = stateCart.reduce(
       (count, val) => (count + (val.amount * (val.pricing.modifiers + val.pricing.product))), 0,
     );
+    const basketCount = stateCart.reduce((count, val) => (count + val.amount), 0);
     updateFilter({
       label: 'Carrinho',
+    });
+    updateShoppingCart({
+      basketCount,
     });
     setTotalCar(total);
   }, [stateCart.length, forceUpdate]);
@@ -114,7 +120,7 @@ const Cart = ({ intl }) => {
             </div>
           </Grid>
           <Grid
-            cols="7 7 8 9 9"
+            cols="7 7 8 9 10"
             className="d-flex justify-content-end"
           >
             <Button
@@ -128,12 +134,14 @@ const Cart = ({ intl }) => {
             />
           </Grid>
           <Grid
-            cols="5 5 4 3 3"
+            cols="5 5 4 3 2"
             className="d-flex justify-content-end"
           >
             <Button
               value="Finalizar pedido"
-              type="submit"
+              onClick={() => {
+                history.push('/checkout');
+              }}
             />
           </Grid>
         </>
