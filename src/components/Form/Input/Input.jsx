@@ -6,11 +6,12 @@ import get from 'lodash/get';
 import media from 'styles/media';
 
 const DivInvalid = styled.div`
+  font-size: 0.9rem;
   ${props => props.isErrorHide && (`
     display: none;
   `)}
   color: #dc3545;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   width: 100%;
 `;
 
@@ -22,7 +23,7 @@ const HelpText = styled.div`
 
 const StyledLabel = styled.label`
   width: 100%;
-  margin-bottom: 4px;
+  margin-bottom: 0;
 `;
 
 const OptionalLabel = styled.label`
@@ -69,6 +70,7 @@ const Value = styled.div`
 `;
 
 const Label = styled.span`
+  font-size: 0.9rem;
   ${props => props.isLabelFloat && (`
     position: relative;
     left: 12px;

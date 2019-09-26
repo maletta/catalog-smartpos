@@ -20,6 +20,7 @@ import './style.css';
 const Label = styled.label`
   width: 100%;
   margin-bottom: 4px;
+  font-size: 0.9rem;
 `;
 
 const Text = styled.span`
@@ -31,10 +32,11 @@ const Text = styled.span`
 `;
 
 const DivInvalid = styled.div`
-  color: #dc3545;
-  margin-bottom: 8px;
   width: 100%;
   height: 19px;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  color: #dc3545;
 `;
 
 const ExclamationIcon = styled.span`
