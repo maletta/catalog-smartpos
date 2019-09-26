@@ -6,13 +6,9 @@ import { Formik, Form, Field } from 'formik';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
 import Button from 'components/Form/Button';
-import TextArea from 'components/Form/TextArea';
-import Checkbox from 'components/Form/RenderCheckbox';
 import Input from 'components/Form/Input';
-import SubTitle from 'components/SubTitle';
 import SectionTitle from 'components/SectionTitle';
 import Alert from 'components/Alert';
-import DataSlideNav from 'components/DataSlideNav';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import ShopContext from 'contexts/ShopContext';
@@ -21,15 +17,10 @@ import history from 'utils/history';
 
 import checkoutSchema from './checkoutSchema';
 
-
 const ContainerCheckout = styled.div`
   background: #fff;
   padding: 1rem;
   border-radius: 4px;
-`;
-
-const LabelDelivery = styled.span`
-  
 `;
 
 const ValueDelivery = styled.h6`
@@ -37,10 +28,8 @@ const ValueDelivery = styled.h6`
 `;
 
 const ResumeItem = styled.div`
- margin: 10px 0;
+  margin: 10px 0;
 `;
-
-
 
 const paymentMethods = [
   {
@@ -69,14 +58,12 @@ const Checkout = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
   const { shop } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
-  const [stateCart, setStateCar] = useState(cart);
+  const [stateCart] = useState(cart);
   const [totalCar, setTotalCar] = useState(0);
   const [coastDelivery, setCoastDelivery] = useState(0);
   const [withdraw, setWithdraw] = useState(false);
 
-  const submitCheckout = (values, { setSubmitting }) => {
-    console.log(values);
-  };
+  const submitCheckout = values => values;
 
   const initialValues = {
     name: '',
@@ -218,13 +205,13 @@ const Checkout = ({ intl }) => {
                       <Grid cols="12">
                         {(shop.deliveryMode === 'DELIVERY' || shop.deliveryMode === 'BOTH') && (
                           <>
-                            <LabelDelivery>Taxa de entrega</LabelDelivery>
+                            <span>Taxa de entrega</span>
                             <ValueDelivery>{intl.formatNumber(shop.deliveryFee, { style: 'currency', currency: 'BRL' })}</ValueDelivery>
                           </>
                         )}
                         {(shop.deliveryMode === 'PICKUP') && (
                           <>
-                            <LabelDelivery>Entrega</LabelDelivery>
+                            <span>Entrega</span>
                             <ValueDelivery>
                               Você iré retirar o pedido no estabelecimento do vendedor
                             </ValueDelivery>
@@ -277,7 +264,7 @@ const Checkout = ({ intl }) => {
                         </ResumeItem>
                         <ResumeItem>
                           <span>Total: </span>
-                          <strong>{intl.formatNumber(withdraw ? totalCar :  (coastDelivery + totalCar), { style: 'currency', currency: 'BRL' })}</strong>
+                          <strong>{intl.formatNumber(withdraw ? totalCar : (coastDelivery + totalCar), { style: 'currency', currency: 'BRL' })}</strong>
                         </ResumeItem>
                       </Grid>
                     </Row>
