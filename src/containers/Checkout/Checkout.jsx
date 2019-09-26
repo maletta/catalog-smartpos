@@ -302,6 +302,7 @@ const Checkout = ({ intl }) => {
                       <Button
                         value="Enviar pedido"
                         type="submit"
+                        disabled={!reCaptchaToken}
                       />
                     </div>
                   </Grid>
