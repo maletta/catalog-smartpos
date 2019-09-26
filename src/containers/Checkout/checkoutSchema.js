@@ -13,8 +13,8 @@ const checkoutSchema = () => yup.object().shape({
     .test('cpf-valid', 'CPF inválido', value => validateCpf(value)),
   cep: yup.string()
     .required()
-    .min(8, 'CEP inválido')
-    .max(8, 'CEP inválido'),
+    .min(9, 'CEP inválido')
+    .max(9, 'CEP inválido'),
   telefone: yup.string()
     .required()
     .max(20),
@@ -29,9 +29,9 @@ const checkoutSchema = () => yup.object().shape({
   bairro: yup.string()
     .required()
     .max(100),
-  cidade: yup.number()
+  cidade: yup.string()
     .required(),
-  estado: yup.number()
+  estado: yup.string()
     .min(2)
     .max(50)
     .required(),

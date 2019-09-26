@@ -1,7 +1,10 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, {
+  useEffect, useState, useContext, useRef,
+} from 'react';
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
+import ReCAPTCHA from 'react-google-recaptcha';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
@@ -62,8 +65,12 @@ const Checkout = ({ intl }) => {
   const [totalCar, setTotalCar] = useState(0);
   const [coastDelivery, setCoastDelivery] = useState(0);
   const [withdraw, setWithdraw] = useState(false);
+  const [reCaptchaToken, setReCaptchaToken] = useState();
+  const recaptchaRef = useRef();
 
-  const submitCheckout = values => values;
+  const submitCheckout = (values) => {
+    console.log(reCaptchaToken, values);
+  };
 
   const initialValues = {
     name: '',
@@ -83,6 +90,10 @@ const Checkout = ({ intl }) => {
     loja: shop.codigo,
   };
 
+  const verifyRecaptcha = (value) => {
+    setReCaptchaToken(value);
+  };
+
   useEffect(() => {
     const total = stateCart.reduce(
       (count, val) => (count + (val.amount * (val.pricing.modifiers + val.pricing.product))), 0,
@@ -95,7 +106,7 @@ const Checkout = ({ intl }) => {
     if (cart.length < 1) {
       history.push('/');
     }
-  }, [withdraw, coastDelivery]);
+  }, [coastDelivery]);
 
 
   return (
@@ -224,7 +235,8 @@ const Checkout = ({ intl }) => {
                                 label="Retirar no estabelecimento"
                                 name="withdraw"
                                 component={RenderCheckbox}
-                                onClick={() => {
+                                onChange={(event) => {
+                                  event.preventDefault();
                                   propsForm.setFieldValue('withdraw', !propsForm.values.withdraw);
                                   setWithdraw(!propsForm.values.withdraw);
                                 }}
@@ -272,6 +284,17 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12">
                     <Alert
                       text="Atenção: você irá realizar o pagamento diretamente com o vendedor!"
+                    />
+                  </Grid>
+                  <Grid
+                    cols="12"
+                    className="d-flex justify-content-end mb-3"
+                  >
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
+                      hl="pt-BR"
+                      onChange={verifyRecaptcha}
                     />
                   </Grid>
                   <Grid cols="12" className="d-flex justify-content-end">
