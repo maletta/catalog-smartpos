@@ -28,7 +28,6 @@ const Container = styled.nav`
 
 const Field = styled.div`
   justify-content: center;
-  padding-top: 15px;
   width: 80%;
 
   @media (max-width: 800px) {
@@ -165,7 +164,10 @@ const Header = (props) => {
               <LogoImage src={imageBaseUrl} alt="Logo" />
             </Logo>
           </Grid>
-          <Grid cols="8 7 7 7 8">
+          <Grid
+            cols="8 7 7 7 8"
+            className="d-flex justify-content-center align-items-center"
+          >
             <Field>
               <form onSubmit={e => submit(e)}>
                 <Search>
