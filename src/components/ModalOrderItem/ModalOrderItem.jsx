@@ -144,7 +144,7 @@ const ModalOrderItem = (props) => {
   const [modifiers, setModifiers] = useState([]);
   const [isModLoaded, setIsModLoaded] = useState(false);
   const [modifierSelected, setModifierSelected] = useState([]);
-  const [modifiersErrors, setModifiersErrors] = useState(true);
+  const [modifiersErrors, setModifiersErrors] = useState(false);
   const [showTextarea, setShowTextarea] = useState(false);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const [productPricing, setProductPricing] = useState({
