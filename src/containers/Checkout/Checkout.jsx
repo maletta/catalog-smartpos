@@ -10,6 +10,7 @@ import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
 import Button from 'components/Form/Button';
 import Input from 'components/Form/Input';
+import TextArea from 'components/Form/TextArea';
 import SectionTitle from 'components/SectionTitle';
 import Alert from 'components/Alert';
 import Row from 'components/Row';
@@ -19,6 +20,7 @@ import FilterContext from 'contexts/FilterContext';
 import history from 'utils/history';
 
 import checkoutSchema from './checkoutSchema';
+import createOrder from './requestCheckout';
 
 const ContainerCheckout = styled.div`
   background: #fff;
@@ -68,16 +70,21 @@ const Checkout = ({ intl }) => {
   const [reCaptchaToken, setReCaptchaToken] = useState();
   const recaptchaRef = useRef();
 
-  const submitCheckout = (values) => {
-    console.log(reCaptchaToken, values);
+  const submitCheckout = (formValues) => {
+    const values = {
+      ...formValues,
+      captcha: reCaptchaToken,
+      orderProducts: stateCart,
+    };
+    createOrder(values);
   };
 
   const initialValues = {
     name: '',
     email: '',
-    telefone: '',
+    fone: '',
     cep: '',
-    cpf: '',
+    documento: '',
     endereco: '',
     complemento: '',
     numero: '',
@@ -144,14 +151,14 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12 6 6 6 6">
                     <Field
                       label="CPF"
-                      name="cpf"
+                      name="documento"
                       component={Input}
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 6">
                     <Field
                       label="Telefone"
-                      name="telefone"
+                      name="fone"
                       type="tel"
                       component={Input}
                     />
@@ -280,6 +287,15 @@ const Checkout = ({ intl }) => {
                         </ResumeItem>
                       </Grid>
                     </Row>
+                  </Grid>
+                  <Grid cols="12">
+                    <Field
+                      inputId="observacao"
+                      label="Observação"
+                      name="observacao"
+                      component={TextArea}
+                      rows={3}
+                    />
                   </Grid>
                   <Grid cols="12">
                     <Alert

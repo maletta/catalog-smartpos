@@ -9,13 +9,13 @@ const checkoutSchema = () => yup.object().shape({
   email: yup.string()
     .required()
     .email(),
-  cpf: yup.string()
+  documento: yup.string()
     .test('cpf-valid', 'CPF inválido', value => validateCpf(value)),
   cep: yup.string()
     .required()
     .min(9, 'CEP inválido')
     .max(9, 'CEP inválido'),
-  telefone: yup.string()
+  fone: yup.string()
     .required()
     .max(20),
   endereco: yup.string()
