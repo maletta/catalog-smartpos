@@ -4,6 +4,7 @@ import React, {
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
+import Swal from 'sweetalert2';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
@@ -83,13 +84,22 @@ const Checkout = ({ intl }) => {
   const [reCaptchaToken, setReCaptchaToken] = useState();
   const recaptchaRef = useRef();
 
-  const submitCheckout = (formValues) => {
+  const submitCheckout = (formValues, { setSubmitting }) => {
     const values = {
       ...formValues,
       captcha: reCaptchaToken,
       orderProducts: stateCart,
     };
-    createOrder(values);
+    createOrder(values).then(() => {
+      Swal.fire({
+        type: 'success',
+        title: 'Pedido enviado com sucesso',
+        showConfirmButton: false,
+        onClose: () => history.push('/'),
+      });
+    }).finally(() => {
+      setSubmitting(false);
+    });
   };
 
   const initialValues = {
@@ -140,7 +150,6 @@ const Checkout = ({ intl }) => {
           <Formik
             onSubmit={submitCheckout}
             initialValues={initialValues}
-
             validationSchema={checkoutSchema(isNaturalPerson)}
             render={propsForm => (
               <Form>
@@ -417,7 +426,7 @@ const Checkout = ({ intl }) => {
                         value="Enviar pedido"
                         type="submit"
                         isLoading={propsForm.isSubmitting}
-                        disabled={!reCaptchaToken}
+                        // disabled={!reCaptchaToken}
                       />
                     </div>
                   </Grid>
