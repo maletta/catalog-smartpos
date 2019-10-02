@@ -42,18 +42,18 @@ const Cart = ({ intl }) => {
 
   const updateAmount = (value, prodIndex) => {
     const updateAmountCar = stateCart;
-    updateAmountCar[prodIndex].amount = value;
+    updateAmountCar[prodIndex].quantity = value;
     setStateCar(updateAmountCar);
-    setForceUpdate(updateAmountCar[prodIndex].amount);
+    setForceUpdate(updateAmountCar[prodIndex].quantity);
     localStorage.setItem('cart', JSON.stringify(updateAmountCar));
   };
 
 
   useEffect(() => {
     const total = stateCart.reduce(
-      (count, val) => (count + (val.amount * (val.pricing.modifiers + val.pricing.product))), 0,
+      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
     );
-    const basketCount = stateCart.reduce((count, val) => (count + val.amount), 0);
+    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
     updateFilter({
       label: 'Carrinho',
     });

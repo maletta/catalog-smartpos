@@ -145,7 +145,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Maior preço');
                 }}
               >
-                Maior preço
+                {'Maior preço'}
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -154,7 +154,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Menor preço');
                 }}
               >
-                Menor preço
+                {'Menor preço'}
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -163,7 +163,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('A-Z');
                 }}
               >
-                A-Z
+                {'A-Z'}
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -172,7 +172,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Z-A');
                 }}
               >
-                Z-A
+                {'Z-A'}
               </DropdownContenItem>
             </DropdownContent>
           )}
@@ -205,9 +205,7 @@ const FiltersMobile = ({ categories }) => {
                 setCategorySelected(null);
               }}
             >
-
-
-              Todas as Categorias
+              {'Todas as Categorias'}
             </SelectItem>
             {renderCategories}
           </Select>

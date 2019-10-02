@@ -6,7 +6,8 @@ const ShoppingCartContext = createContext();
 export const ShoppingCartProvider = ({ children }) => {
   const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
 
-  const basketCount = prevCart.reduce((count, val) => (count + val.amount), 0);
+  const basketCount = prevCart.reduce((count, val) => (count + val.quantity), 0);
+
   const [shoppingCart, setShoppingCart] = useState({
     basketCount,
   });

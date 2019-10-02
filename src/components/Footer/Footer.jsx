@@ -230,14 +230,14 @@ const Footer = ({ storeInfo }) => (
           <Grid cols="12">
             <FooterCopyright>
               <span>
-                Todos os direitos reservados - Built with love by
+                {'Todos os direitos reservados - Built with love by'}
                 <LinkNetPOS
                   href="https://www.smartpos.net.br"
                   rel="noopener noreferrer"
                   target="_blank"
                   title="SmartPOS"
                 >
-                  SmartPOS
+                  {'SmartPOS'}
                 </LinkNetPOS>
               </span>
               <FontAwesomeIcon icon={['far', 'heart']} color="red" size="sm" />

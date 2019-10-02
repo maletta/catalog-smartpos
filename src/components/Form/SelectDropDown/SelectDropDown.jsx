@@ -19,7 +19,7 @@ import './style.css';
 
 const Label = styled.label`
   width: 100%;
-  margin-bottom: 4px;
+  margin-bottom: 0;
   font-size: 0.9rem;
 `;
 
