@@ -129,6 +129,9 @@ const Cart = ({ intl }) => {
               type="submit"
               styleType="secondary"
               onClick={() => {
+                updateFilter({
+                  categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+                });
                 history.push('/');
               }}
             />

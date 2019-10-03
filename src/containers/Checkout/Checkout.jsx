@@ -138,6 +138,9 @@ const Checkout = ({ intl }) => {
       label: 'Finalizar o pedido',
     });
     if (cart.length < 1) {
+      updateFilter({
+        categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+      });
       history.push('/');
     }
   }, [coastDelivery]);
