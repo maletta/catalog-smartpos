@@ -4,12 +4,15 @@ import React, {
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
+import Swal from 'sweetalert2';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
 import Button from 'components/Form/Button';
 import Input from 'components/Form/Input';
+import MaskedNumberInput from 'components/Form/MaskedNumberInput';
+import TextArea from 'components/Form/TextArea';
 import SectionTitle from 'components/SectionTitle';
 import Alert from 'components/Alert';
 import Row from 'components/Row';
@@ -19,6 +22,7 @@ import FilterContext from 'contexts/FilterContext';
 import history from 'utils/history';
 
 import checkoutSchema from './checkoutSchema';
+import createOrder from './requestCheckout';
 
 const ContainerCheckout = styled.div`
   background: #fff;
@@ -53,12 +57,24 @@ const paymentMethods = [
   },
   {
     label: 'Vale refeição',
-    value: 'meal_ticket',
+    value: 'food_ticket',
+  },
+];
+
+const personType = [
+  {
+    label: 'Pessoa física',
+    value: 'FISICA',
+  },
+  {
+    label: 'Pessoa jurídica',
+    value: 'JURIDICA',
   },
 ];
 
 const Checkout = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+  const [isNaturalPerson, setNaturalPerson] = useState(true);
   const { shop } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const [stateCart] = useState(cart);
@@ -68,23 +84,41 @@ const Checkout = ({ intl }) => {
   const [reCaptchaToken, setReCaptchaToken] = useState();
   const recaptchaRef = useRef();
 
-  const submitCheckout = (values) => {
-    console.log(reCaptchaToken, values);
+  const submitCheckout = (formValues, { setSubmitting }) => {
+    const values = {
+      ...formValues,
+      'g-recaptcha-response': reCaptchaToken,
+      orderProducts: stateCart,
+    };
+    createOrder(values).then(() => {
+      Swal.fire({
+        type: 'success',
+        title: 'Pedido enviado com sucesso',
+        showConfirmButton: false,
+        onClose: () => history.push('/'),
+      });
+    }).finally(() => {
+      setSubmitting(false);
+    });
   };
 
   const initialValues = {
     name: '',
     email: '',
-    telefone: '',
+    fone: '',
     cep: '',
-    cpf: '',
+    documento: '',
     endereco: '',
+    tipoLogradouro: '',
     complemento: '',
     numero: '',
     bairro: '',
     cidade: '',
     estado: '',
     formaPagamento: '',
+    tipoPessoa: '',
+    fantasia: '',
+    razaoSocial: '',
     withdraw: false,
     catalog_id: shop.id,
     loja: shop.codigo,
@@ -96,7 +130,7 @@ const Checkout = ({ intl }) => {
 
   useEffect(() => {
     const total = stateCart.reduce(
-      (count, val) => (count + (val.amount * (val.pricing.modifiers + val.pricing.product))), 0,
+      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
     );
     setCoastDelivery(shop.deliveryFee);
     setTotalCar(total);
@@ -104,6 +138,9 @@ const Checkout = ({ intl }) => {
       label: 'Finalizar o pedido',
     });
     if (cart.length < 1) {
+      updateFilter({
+        categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+      });
       history.push('/');
     }
   }, [coastDelivery]);
@@ -112,65 +149,140 @@ const Checkout = ({ intl }) => {
   return (
     <ContainerCheckout>
       <Row className="d-flex">
-        <Grid cols="12 12 10 9">
+        <Grid cols="12 12 12 9">
           <Formik
             onSubmit={submitCheckout}
             initialValues={initialValues}
-            enableReinitialize
-            validationSchema={checkoutSchema()}
+            validationSchema={checkoutSchema(isNaturalPerson)}
             render={propsForm => (
               <Form>
                 <Row>
                   <Grid cols="12">
-                    <SectionTitle>Dados pessoais</SectionTitle>
+                    <SectionTitle>Dados cadastrais</SectionTitle>
                   </Grid>
+                  <Grid cols="12 6 6 6 6">
+                    <SelectDropDown
+                      id="tipoPessoa"
+                      label="Tipo de cadastro"
+                      cacheOptions
+                      options={personType}
+                      getOptionLabel={label => label.label}
+                      getOptionValue={option => option.value}
+                      onChange={(event) => {
+                        propsForm.setFieldValue('tipoPessoa', event.value);
+                        if (event.value === 'FISICA') {
+                          setNaturalPerson(true);
+                        } else {
+                          setNaturalPerson(false);
+                        }
+                      }}
+                      isInvalid={propsForm.errors.tipoPessoa}
+                      touched={propsForm.touched.tipoPessoa}
+                      isRequired
+                    />
+                  </Grid>
+                  {(isNaturalPerson) && (
                   <Grid cols="12 6 6 6 6">
                     <Field
                       label="Nome"
                       name="name"
                       component={Input}
+                      isRequired
                     />
                   </Grid>
+                  )}
+                  {(!isNaturalPerson) && (
+                    <>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Razão social"
+                          name="razaoSocial"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Nome fantasia"
+                          name="fantasia"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                    </>
+                  )}
                   <Grid cols="12 6 6 6 6">
                     <Field
                       label="E-mail"
                       name="email"
                       type="email"
                       component={Input}
+                      isRequired
+                    />
+                  </Grid>
+                  {(isNaturalPerson) ? (
+                    <Grid cols="12 6 6 6 6">
+                      <Field
+                        label="CPF"
+                        name="documento"
+                        format="###.###.###-##"
+                        component={MaskedNumberInput}
+                        isRequired
+                      />
+                    </Grid>
+                  ) : (
+                    <Grid cols="12 6 6 6 6">
+                      <Field
+                        label="CNPJ"
+                        name="documento"
+                        format="##.###.###/####-##"
+                        component={MaskedNumberInput}
+                        isRequired
+                      />
+                    </Grid>
+                  )}
+                  <Grid cols="12 6 6 6 6">
+                    <Field
+                      label="Telefone"
+                      name="fone"
+                      type="tel"
+                      component={Input}
+                      isRequired
                     />
                   </Grid>
                 </Row>
                 <Row>
-                  <Grid cols="12 6 6 6 6">
-                    <Field
-                      label="CPF"
-                      name="cpf"
-                      component={Input}
-                    />
-                  </Grid>
-                  <Grid cols="12 6 6 6 6">
-                    <Field
-                      label="Telefone"
-                      name="telefone"
-                      type="tel"
-                      component={Input}
-                    />
-                  </Grid>
                   <Grid cols="12">
                     <SectionTitle>Endereço</SectionTitle>
                   </Grid>
-                  <Grid cols="12 6 6 6 6">
+                  <Grid cols="12 6 6 3 3">
                     <Field
                       label="CEP"
                       name="cep"
-                      component={Input}
+                      type="tel"
+                      format="#####-###"
+                      component={MaskedNumberInput}
+                      onValueChange={({ formattedValue }) => {
+                        propsForm.setFieldValue('cep', formattedValue);
+                      }}
+                      isRequired
                     />
                   </Grid>
-                  <Grid cols="12 6 6 6 6">
+                  <Grid cols="12 6 6 3 3">
+                    <Field
+                      label="Tipo logradouro"
+                      name="tipoLogradouro"
+                      placeholder="Exemplo: Rua"
+                      component={Input}
+                      isRequired
+                    />
+                  </Grid>
+                  <Grid cols="12 12 6 6 6">
                     <Field
                       label="Endereço"
                       name="endereco"
                       component={Input}
+                      isRequired
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 4">
@@ -178,6 +290,7 @@ const Checkout = ({ intl }) => {
                       label="Número"
                       name="numero"
                       component={Input}
+                      isRequired
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 8">
@@ -192,6 +305,7 @@ const Checkout = ({ intl }) => {
                       label="Bairro"
                       name="bairro"
                       component={Input}
+                      isRequired
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 6">
@@ -199,6 +313,7 @@ const Checkout = ({ intl }) => {
                       label="Cidade"
                       name="cidade"
                       component={Input}
+                      isRequired
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 6">
@@ -206,6 +321,7 @@ const Checkout = ({ intl }) => {
                       label="Estado"
                       name="estado"
                       component={Input}
+                      isRequired
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 6">
@@ -256,6 +372,7 @@ const Checkout = ({ intl }) => {
                           onChange={event => propsForm.setFieldValue('formaPagamento', event.value)}
                           isInvalid={propsForm.errors.formaPagamento}
                           touched={propsForm.touched.formaPagamento}
+                          isRequired
                         />
                       </Grid>
                     </Row>
@@ -282,6 +399,15 @@ const Checkout = ({ intl }) => {
                     </Row>
                   </Grid>
                   <Grid cols="12">
+                    <Field
+                      inputId="observacao"
+                      label="Observação"
+                      name="observacao"
+                      component={TextArea}
+                      rows={3}
+                    />
+                  </Grid>
+                  <Grid cols="12">
                     <Alert
                       text="Atenção: você irá realizar o pagamento diretamente com o vendedor!"
                     />
@@ -302,6 +428,7 @@ const Checkout = ({ intl }) => {
                       <Button
                         value="Enviar pedido"
                         type="submit"
+                        isLoading={propsForm.isSubmitting}
                         disabled={!reCaptchaToken}
                       />
                     </div>

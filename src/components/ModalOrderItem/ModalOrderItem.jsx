@@ -165,7 +165,7 @@ const ModalOrderItem = (props) => {
       setInitialValues({
         variant: {},
         note: '',
-        amount: 1,
+        quantity: 1,
         id: productOnModal.id,
         descricao: productOnModal.descricao,
         categoria: productOnModal.categoria,
@@ -214,13 +214,13 @@ const ModalOrderItem = (props) => {
     const repeat = prevCart.filter((item, index) => {
       indexToUpdate = index;
       return (lodash.isEqual(
-        lodash.omit(item, ['amount']),
-        lodash.omit(newItem, ['amount']),
+        lodash.omit(item, ['quantity']),
+        lodash.omit(newItem, ['quantity']),
       ));
     });
 
     if (repeat.length) {
-      prevCart[indexToUpdate].amount += values.amount;
+      prevCart[indexToUpdate].quantity += values.quantity;
       newCart = prevCart;
     } else {
       newCart = [
@@ -228,7 +228,7 @@ const ModalOrderItem = (props) => {
         newItem,
       ];
     }
-    const basketCount = newCart.reduce((count, val) => (count + val.amount), 0);
+    const basketCount = newCart.reduce((count, val) => (count + val.quantity), 0);
     updateShoppingCart({
       basketCount,
     });
@@ -416,7 +416,7 @@ const ModalOrderItem = (props) => {
                     min={1}
                     value={1}
                     counter={(value) => {
-                      propsForm.setFieldValue('amount', value);
+                      propsForm.setFieldValue('quantity', value);
                     }}
                   />
                 </Grid>
@@ -426,7 +426,7 @@ const ModalOrderItem = (props) => {
                 >
                   <div>
                     <Button
-                      value={`Adicionar ${intl.formatNumber((propsForm.values.amount * sumProductPricing), { style: 'currency', currency: 'BRL' })}`}
+                      value={`Adicionar ${intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}`}
                       type="submit"
                       disabled={modifiersErrors}
                     />

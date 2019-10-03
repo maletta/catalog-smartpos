@@ -186,7 +186,7 @@ const CartItem = (props) => {
             <Counter
               limit={100}
               min={1}
-              value={product.amount}
+              value={product.quantity}
               counter={(amount) => {
                 updateAmount(amount, prodIndex);
               }}
@@ -201,7 +201,7 @@ const CartItem = (props) => {
           </ControlAmount>
           <div className="d-flex">
             <ItemPricing>
-              {intl.formatNumber((product.pricing.product + product.pricing.modifiers) * product.amount, { style: 'currency', currency: 'BRL' })}
+              {intl.formatNumber((product.pricing.product + product.pricing.modifiers) * product.quantity, { style: 'currency', currency: 'BRL' })}
             </ItemPricing>
           </div>
         </AreaControl>

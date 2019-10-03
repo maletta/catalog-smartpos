@@ -44,7 +44,7 @@ const StyledInput = styled.input`
   padding: 0.7rem 0.75rem 0.65rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   width: 100%;
-  margin-top: 5px;
+  margin-top: 1px;
   display: block;
 
   :focus {
