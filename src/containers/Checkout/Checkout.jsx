@@ -87,7 +87,7 @@ const Checkout = ({ intl }) => {
   const submitCheckout = (formValues, { setSubmitting }) => {
     const values = {
       ...formValues,
-      captcha: reCaptchaToken,
+      'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
     };
     createOrder(values).then(() => {
