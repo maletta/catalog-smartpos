@@ -57,7 +57,7 @@ const paymentMethods = [
   },
   {
     label: 'Vale refeição',
-    value: 'meal_ticket',
+    value: 'food_ticket',
   },
 ];
 
@@ -426,7 +426,7 @@ const Checkout = ({ intl }) => {
                         value="Enviar pedido"
                         type="submit"
                         isLoading={propsForm.isSubmitting}
-                        // disabled={!reCaptchaToken}
+                        disabled={!reCaptchaToken}
                       />
                     </div>
                   </Grid>
