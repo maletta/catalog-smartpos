@@ -157,7 +157,6 @@ const daysOfWeek = [
 const Footer = ({ storeInfo }) => {
   const openHours = storeInfo.openHours.map(day => ({
     ...day,
-    closed: false,
     ...daysOfWeek[lodash.findKey(daysOfWeek, { name: day.dayOfWeek })],
   }));
 
@@ -206,7 +205,7 @@ const Footer = ({ storeInfo }) => {
                       {day.dayOfWeek}
                     </div>
                     <div>
-                      {`${day.openHour} - ${day.closeHour}`}
+                      {(day.closed ? 'Fechado' : `${day.openHour} - ${day.closeHour}`)}
                     </div>
                   </OpenHourItem>
                 ))}
