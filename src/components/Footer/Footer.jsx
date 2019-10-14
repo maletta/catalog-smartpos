@@ -140,17 +140,17 @@ const daysOfWeek = [
   {
     dayOfWeek: 'Quinta-feira',
     name: 'THURSDAY',
-    position: 5,
+    position: 4,
   },
   {
     dayOfWeek: 'Sexta-feira',
     name: 'FRIDAY',
-    position: 6,
+    position: 5,
   },
   {
     dayOfWeek: 'Sábado',
     name: 'SATURDAY',
-    position: 7,
+    position: 6,
   },
 ];
 
