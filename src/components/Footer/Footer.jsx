@@ -155,7 +155,8 @@ const daysOfWeek = [
 ];
 
 const Footer = ({ storeInfo }) => {
-  const openHours = storeInfo.openHours.map(day => ({
+  let openHours = (storeInfo.openHours || []);
+  openHours = openHours.map(day => ({
     ...day,
     ...daysOfWeek[lodash.findKey(daysOfWeek, { name: day.dayOfWeek })],
   }));
@@ -194,29 +195,35 @@ const Footer = ({ storeInfo }) => {
               cols="6 8 4 3 3"
               className="pb-5"
             >
-              <FooterInfoTitle>Horário de funcionamento</FooterInfoTitle>
-              <div>
-                {openHours.map(day => (
-                  <OpenHourItem
-                    currentDay={getIntOfDay === day.position}
-                    key={day.name}
-                  >
-                    <div>
-                      {day.dayOfWeek}
-                    </div>
-                    <div>
-                      {(day.closed ? 'Fechado' : `${day.openHour} - ${day.closeHour}`)}
-                    </div>
-                  </OpenHourItem>
-                ))}
-              </div>
+              {(openHours.length > 0) && (
+                <>
+                  <FooterInfoTitle>Horário de funcionamento</FooterInfoTitle>
+                  <div>
+                    {openHours.map(day => (
+                      <OpenHourItem
+                        currentDay={getIntOfDay === day.position}
+                        key={day.name}
+                      >
+                        <div>
+                          {day.dayOfWeek}
+                        </div>
+                        <div>
+                          {(day.closed ? 'Fechado' : `${day.openHour} - ${day.closeHour}`)}
+                        </div>
+                      </OpenHourItem>
+                    ))}
+                  </div>
+                </>
+              )}
             </Grid>
             <Grid
               cols="12 12 4 5 5"
               className="d-flex justify-content-md-end pb-5"
             >
               <div>
-                <FooterInfoTitle>Redes sociais</FooterInfoTitle>
+                {(storeInfo.facebook || storeInfo.instagram) && (
+                  <FooterInfoTitle>Redes sociais</FooterInfoTitle>
+                )}
                 <ul>
                   {storeInfo.facebook && (
                   <li>
