@@ -55,7 +55,7 @@ const Cart = ({ intl }) => {
     );
     const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
     updateFilter({
-      label: 'Carrinho',
+      categoria: 0, label: 'Carrinho', page: 1, search: '',
     });
     updateShoppingCart({
       basketCount,

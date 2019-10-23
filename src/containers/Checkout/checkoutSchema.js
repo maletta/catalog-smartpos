@@ -6,7 +6,7 @@ import validateCpf from 'utils/validation/validateCpf';
 const checkoutSchema = (isNaturalPerson) => {
   if (isNaturalPerson) {
     return yup.object().shape({
-      tipoPessoa: yup.string()
+      tipoPessoa: yup.object()
         .required(),
       name: yup.string()
         .required()
@@ -39,6 +39,8 @@ const checkoutSchema = (isNaturalPerson) => {
         .max(100),
       cidade: yup.string()
         .required(),
+      tipoEndereco: yup.object()
+        .required(),
       estado: yup.string()
         .min(2)
         .max(50)
@@ -49,7 +51,7 @@ const checkoutSchema = (isNaturalPerson) => {
   }
 
   return yup.object().shape({
-    tipoPessoa: yup.string()
+    tipoPessoa: yup.object()
       .required(),
     fantasia: yup.string()
       .required()
@@ -84,6 +86,8 @@ const checkoutSchema = (isNaturalPerson) => {
       .required()
       .max(100),
     cidade: yup.string()
+      .required(),
+    tipoEndereco: yup.object()
       .required(),
     estado: yup.string()
       .min(2)
