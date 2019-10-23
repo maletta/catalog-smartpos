@@ -18,11 +18,13 @@ import Alert from 'components/Alert';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import ShopContext from 'contexts/ShopContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import FilterContext from 'contexts/FilterContext';
 import history from 'utils/history';
 
 import checkoutSchema from './checkoutSchema';
 import createOrder from './requestCheckout';
+import getCep from './getCep';
 
 const ContainerCheckout = styled.div`
   background: #fff;
@@ -72,30 +74,67 @@ const personType = [
   },
 ];
 
+const addressType = [
+  {
+    label: 'Residencial',
+    value: 'RESIDENCIAL',
+  },
+  {
+    label: 'Comercial',
+    value: 'COMERCIAL',
+  },
+];
+
 const Checkout = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-  const [isNaturalPerson, setNaturalPerson] = useState(true);
+  const dataUser = localStorage.getItem('dataUser') ? JSON.parse(localStorage.getItem('dataUser')) : {};
+  const [isNaturalPerson, setNaturalPerson] = useState((dataUser.tipoPessoa && dataUser.tipoPessoa.value === 'FISICA'));
   const { shop } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const [stateCart] = useState(cart);
   const [totalCar, setTotalCar] = useState(0);
   const [coastDelivery, setCoastDelivery] = useState(0);
   const [withdraw, setWithdraw] = useState(false);
-  const [reCaptchaToken, setReCaptchaToken] = useState();
+  const [reCaptchaToken, setReCaptchaToken] = useState(false);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
   const recaptchaRef = useRef();
 
   const submitCheckout = (formValues, { setSubmitting }) => {
+    const valuesForStorage = {
+      ...formValues,
+      pickup: false,
+      observacao: '',
+      formaPagamento: '',
+    };
+    localStorage.setItem('dataUser', JSON.stringify(valuesForStorage));
+
     const values = {
       ...formValues,
+      tipoPessoa: formValues.tipoPessoa.value,
+      tipoEndereco: formValues.tipoEndereco.value,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
     };
+
     createOrder(values).then(() => {
       Swal.fire({
         type: 'success',
         title: 'Pedido enviado com sucesso',
         showConfirmButton: false,
-        onClose: () => history.push('/'),
+        onClose: () => {
+          history.push('/');
+          updateShoppingCart({
+            basketCount: 0,
+          });
+          localStorage.removeItem('cartInit');
+          localStorage.removeItem('cart');
+        },
+      });
+    }).catch(() => {
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Erro ao enviar o pedido',
       });
     }).finally(() => {
       setSubmitting(false);
@@ -110,16 +149,18 @@ const Checkout = ({ intl }) => {
     documento: '',
     endereco: '',
     tipoLogradouro: '',
+    tipoEndereco: '',
     complemento: '',
     numero: '',
     bairro: '',
     cidade: '',
+    codcidade: '',
     estado: '',
     formaPagamento: '',
     tipoPessoa: '',
     fantasia: '',
     razaoSocial: '',
-    withdraw: false,
+    pickup: false,
     catalog_id: shop.id,
     loja: shop.codigo,
   };
@@ -132,7 +173,9 @@ const Checkout = ({ intl }) => {
     const total = stateCart.reduce(
       (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
     );
-    setCoastDelivery(shop.deliveryFee);
+
+    setCoastDelivery((shop.deliveryMode !== 'PICKUP' ? shop.deliveryFee : 0));
+
     setTotalCar(total);
     updateFilter({
       label: 'Finalizar o pedido',
@@ -152,7 +195,7 @@ const Checkout = ({ intl }) => {
         <Grid cols="12 12 12 9">
           <Formik
             onSubmit={submitCheckout}
-            initialValues={initialValues}
+            initialValues={(dataUser.catalog_id ? dataUser : initialValues)}
             validationSchema={checkoutSchema(isNaturalPerson)}
             render={propsForm => (
               <Form>
@@ -160,16 +203,25 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12">
                     <SectionTitle>Dados cadastrais</SectionTitle>
                   </Grid>
+                  {(dataUser.catalog_id) && (
+                    <Grid cols="12">
+                      <Alert
+                        text="Para ajudar você a finalizar o pedido mais rapidamente, já preenchemos o formulário com os dados do seu último pedido!"
+                        typeAlert="warning"
+                      />
+                    </Grid>
+                  )}
                   <Grid cols="12 6 6 6 6">
                     <SelectDropDown
                       id="tipoPessoa"
                       label="Tipo de cadastro"
                       cacheOptions
                       options={personType}
+                      defaultValue={propsForm.values.tipoPessoa}
                       getOptionLabel={label => label.label}
                       getOptionValue={option => option.value}
                       onChange={(event) => {
-                        propsForm.setFieldValue('tipoPessoa', event.value);
+                        propsForm.setFieldValue('tipoPessoa', event);
                         if (event.value === 'FISICA') {
                           setNaturalPerson(true);
                         } else {
@@ -262,8 +314,21 @@ const Checkout = ({ intl }) => {
                       type="tel"
                       format="#####-###"
                       component={MaskedNumberInput}
-                      onValueChange={({ formattedValue }) => {
-                        propsForm.setFieldValue('cep', formattedValue);
+                      onValueChange={(values) => {
+                        propsForm.setFieldValue('cep', values.formattedValue);
+                        if (values.value.length < 8) {
+                          return;
+                        }
+                        getCep(values.value).then((address) => {
+                          const tipoLogradouro = address.data.logradouro.substring(0, address.data.logradouro.indexOf(' ') + 1);
+                          const endereco = address.data.logradouro.substring(address.data.logradouro.indexOf(' ') + 1);
+                          propsForm.setFieldValue('bairro', address.data.bairro);
+                          propsForm.setFieldValue('estado', address.data.uf);
+                          propsForm.setFieldValue('codcidade', address.data.ibge);
+                          propsForm.setFieldValue('cidade', address.data.localidade);
+                          propsForm.setFieldValue('endereco', endereco);
+                          propsForm.setFieldValue('tipoLogradouro', tipoLogradouro);
+                        });
                       }}
                       isRequired
                     />
@@ -300,11 +365,28 @@ const Checkout = ({ intl }) => {
                       component={Input}
                     />
                   </Grid>
-                  <Grid cols="12 12 12 12 12">
+                  <Grid cols="12 12 8 8 8">
                     <Field
                       label="Bairro"
                       name="bairro"
                       component={Input}
+                      isRequired
+                    />
+                  </Grid>
+                  <Grid cols="12 12 4 4 4">
+                    <SelectDropDown
+                      id="tipoEndereco"
+                      label="Tipo de endereço"
+                      cacheOptions
+                      options={addressType}
+                      defaultValue={propsForm.values.tipoEndereco}
+                      getOptionLabel={label => label.label}
+                      getOptionValue={option => option.value}
+                      onChange={(event) => {
+                        propsForm.setFieldValue('tipoEndereco', event);
+                      }}
+                      isInvalid={propsForm.errors.tipoEndereco}
+                      touched={propsForm.touched.tipoEndereco}
                       isRequired
                     />
                   </Grid>
@@ -314,6 +396,7 @@ const Checkout = ({ intl }) => {
                       name="cidade"
                       component={Input}
                       isRequired
+                      disabled
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 6">
@@ -322,6 +405,7 @@ const Checkout = ({ intl }) => {
                       name="estado"
                       component={Input}
                       isRequired
+                      disabled
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 6">
@@ -349,12 +433,12 @@ const Checkout = ({ intl }) => {
                             <div className="d-flex align-items-center mt-3 mb-3">
                               <Field
                                 label="Retirar no estabelecimento"
-                                name="withdraw"
+                                name="pickup"
                                 component={RenderCheckbox}
                                 onChange={(event) => {
                                   event.preventDefault();
-                                  propsForm.setFieldValue('withdraw', !propsForm.values.withdraw);
-                                  setWithdraw(!propsForm.values.withdraw);
+                                  propsForm.setFieldValue('pickup', !propsForm.values.pickup);
+                                  setWithdraw(!propsForm.values.pickup);
                                 }}
                               />
                             </div>
