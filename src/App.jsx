@@ -1,18 +1,24 @@
 import 'babel-polyfill';
 import 'url-search-params-polyfill';
 import React, { useState, useEffect, useContext } from 'react';
-import ReactPaginate from 'react-paginate';
+import { Router, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
-import GridList from 'components/GridList';
+import * as yup from 'yup';
+
+import GridProducts from 'containers/GridProducts';
 import MainContainer from 'containers/mainContainer';
-import SideBar from 'components/SideBar';
+import Cart from 'containers/Cart';
+import Checkout from 'containers/Checkout';
+import Row from 'components/Row';
+import Grid from 'components/Grid';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
+import history from 'utils/history';
 
 import getStoreName from 'getStoreName';
-import FiltersMobile from 'components/FiltersMobile';
+import formatFormErrors from 'utils/formatFormErrors';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faArrowRight, faArrowLeft,
@@ -25,12 +31,12 @@ import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
 import {
   getStoreInfo,
-  getProducts,
   getCategories,
-  getSearch,
 } from 'requests';
 
 import FilterContext from 'contexts/FilterContext';
+import ShopContext from 'contexts/ShopContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import initGA from './initGA';
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
@@ -45,60 +51,44 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Section = styled.section`
-  &&& {
-    padding-top: 20px;
+const Content = styled.div`
+  position: relative;
+  top: 80px;
+  padding-bottom: 80px;
 
-    @media (max-width: 768px) {
-      padding-top: 12px;
-    }
+  @media (max-width: 768px) {
+    top: 105px;
   }
+`;
+
+const Breadcrumb = styled.nav`
+  &&& {
+    background: transparent;
+  }
+`;
+
+const BreadcrumbButton = styled.span`
+  align-items: center;
+  color: #f37c05;
+  display: flex;
+  justify-content: center;
+  padding: 0 0.75em;
+  cursor: pointer;
 `;
 
 const App = () => {
   const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState({});
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
-  const [maxPage, setMaxPage] = useState(1);
   const { filter, updateFilter } = useContext(FilterContext);
+  const { updateShop } = useContext(ShopContext);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
       <Spinner />
     </Container>
   ) : !loading && (<NotFound />));
-
-  const handlePagination = (data) => {
-    updateFilter({ page: data.selected + 1 });
-    setLoading(false);
-  };
-
-  const getProductList = (data) => {
-    setLoading(true);
-    if (filter.search) {
-      return getSearch(data.id, filter)
-        .then((response) => {
-          setProducts(response.data.produtos);
-          setMaxPage(response.data.totalPages);
-        })
-        .catch(() => {
-          setProducts({});
-          setMaxPage(-1);
-        })
-        .finally(() => setLoading(false));
-    }
-    return getProducts(data, filter)
-      .then((response) => {
-        setProducts(response.data.produtos);
-        setMaxPage(response.data.totalPages);
-      })
-      .catch(() => {
-        setProducts({});
-        setMaxPage(-1);
-      })
-      .finally(() => setLoading(false));
-  };
 
   const getCategoryList = (data) => {
     getCategories(data.id)
@@ -113,8 +103,8 @@ const App = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
         document.title = response.data.fantasia;
+        updateShop(response.data);
         setStore({ ...response.data, found: true, storeName: getStoreName() });
-        getProductList(response.data);
         getCategoryList(response.data);
       })
       .catch(() => {
@@ -123,17 +113,30 @@ const App = () => {
       });
   };
 
-  const prodArray = Object.keys(products).map(i => products[i]);
+  const cleanCart = () => {
+    const date1 = localStorage.getItem('cartInit');
+    const date2 = new Date().getTime();
+    const hourDiff = Math.abs(date1 - date2) / 36e5;
+    if (hourDiff > 1) {
+      localStorage.removeItem('cartInit');
+      localStorage.removeItem('cart');
+      updateShoppingCart({
+        basketCount: 0,
+      });
+    }
+  };
 
   useEffect(() => {
+    yup.setLocale(formatFormErrors());
     window.scrollTo(0, 0);
     getStore();
     initGA();
+    cleanCart();
   }, [filter]);
 
 
-  const home = (e) => {
-    if (e) { e.preventDefault(); }
+  const home = () => {
+    history.push('/');
     updateFilter({
       categoria: 0, label: 'Todas as categorias', page: 1, search: '',
     });
@@ -145,58 +148,35 @@ const App = () => {
     <>
       {store.found ? (
         <div>
-          <Header codigo={store.codigo} goHome={() => home()} />
-          <FiltersMobile
-            categories={categories}
-          />
-          <Section className="section">
-            <div className="container">
-              <nav className="breadcrumb" aria-label="breadcrumbs">
-                <ul>
-                  <li><a onClick={e => home(e)} href="!#">{ store.storeName }</a></li>
-                  <li className="is-active"><a href="!#" aria-current="page">{filter.search ? `resultados para: ${filter.search}` : filter.label}</a></li>
-                </ul>
-              </nav>
-              <MainContainer>
-                <div className="column is-hidden-touch is-3-desktop">
-                  <SideBar
-                    categories={categories}
-                    storeInfo={store}
-                  />
-                </div>
-                <div className="column is-12-tablet is-9-desktop">
-                  {loading ? (
-                    <Container>
-                      <Spinner />
-                    </Container>
-                  ) : (<GridList itens={prodArray} loading={loading} />)}
-                  {(prodArray.length > 1 && maxPage > 1) && (
-                    <ReactPaginate
-                      previousLabel="Anterior"
-                      nextLabel="Próxima"
-                      breakLabel="..."
-                      breakClassName="break-me"
-                      pageCount={maxPage}
-                      marginPagesDisplayed={2}
-                      pageRangeDisplayed={5}
-                      onPageChange={handlePagination}
-                      containerClassName="pagination"
-                      subContainerClassName="pages pagination"
-                      activeClassName="active"
-                      forcePage={(filter.page ? filter.page - 1 : 0)}
-                    />
-                  )}
-                </div>
-              </MainContainer>
-            </div>
-          </Section>
+          <Header categories={categories} codigo={store.codigo} goHome={() => home()} />
+          <Content className="container mb-5">
+            <Row>
+              <Grid cols="12">
+                <Breadcrumb>
+                  <ol className="breadcrumb pl-0 mb-0">
+                    <li className="breadcrumb-item"><BreadcrumbButton onClick={e => home(e)} href="#">{ store.storeName }</BreadcrumbButton></li>
+                    <li className="breadcrumb-item active">{filter.search ? `resultados para: ${filter.search}` : filter.label}</li>
+                  </ol>
+                </Breadcrumb>
+              </Grid>
+            </Row>
+            <MainContainer>
+              <Router
+                history={history}
+              >
+                <Switch>
+                  <Route path="/" exact component={GridProducts} />
+                  <Route path="/cart" exact component={Cart} />
+                  <Route path="/checkout" exact component={Checkout} />
+                </Switch>
+              </Router>
+            </MainContainer>
+          </Content>
           <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
-
     </>
   );
 };
-
 
 export default App;

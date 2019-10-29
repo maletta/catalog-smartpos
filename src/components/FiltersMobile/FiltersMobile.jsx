@@ -10,11 +10,10 @@ const Div = styled.div`
   flex-grow: 0;
   justify-content: space-between;
   background: #fff;
-  border-bottom: 2px solid #eee;
 `;
 
 const Label = styled.div`
-  padding: 10px 15px 10px 15px;
+  padding: 5px 15px 5px 15px;
   color: #3483fa;
   white-space: nowrap;
   overflow: hidden;
@@ -32,7 +31,7 @@ const AreaSelect = styled.div`
   right: 0;
   left: 0;
   height: 100%;
-  z-index: 31;
+  z-index: 9999;
   background: #fff;
   overflow: auto;
 `;
@@ -134,8 +133,8 @@ const FiltersMobile = ({ categories }) => {
   );
 
   return (
-    <>
-      <Div className="is-hidden-desktop">
+    <div className="d-md-none">
+      <Div>
         <Dropdown>
           <Label onClick={() => setDropdownOpen(!isDropdownOpen)}>
             <Icon>
@@ -152,7 +151,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Maior preço');
                 }}
               >
-                Maior preço
+                {'Maior preço'}
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -161,7 +160,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Menor preço');
                 }}
               >
-                Menor preço
+                {'Menor preço'}
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -170,7 +169,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('A-Z');
                 }}
               >
-                A-Z
+                {'A-Z'}
               </DropdownContenItem>
               <DropdownContenItem
                 onClick={() => {
@@ -179,7 +178,7 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Z-A');
                 }}
               >
-                Z-A
+                {'Z-A'}
               </DropdownContenItem>
             </DropdownContent>
           )}
@@ -212,14 +211,13 @@ const FiltersMobile = ({ categories }) => {
                 setCategorySelected(null);
               }}
             >
-
-              Todas as Categorias
+              {'Todas as Categorias'}
             </SelectItem>
             {renderCategories()}
           </Select>
         </AreaSelect>
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import GridItem from 'components/GridItem';
-import notFound from 'assets/no_result_found.png';
 import styled from 'styled-components';
+
+import Row from 'components/Row';
+import GridItem from 'components/GridItem';
+import ImgnotFound from 'assets/no_result_found.png';
 
 const Container = styled.div`
   display: flex;
@@ -15,20 +17,21 @@ const Text = styled.div`
 `;
 
 const GridList = (props) => {
-  const { itens } = props;
-  const items = itens.map(item => <GridItem key={item.id} item={item} />);
+  const {
+    itens,
+    openModal,
+    enableOrder,
+    notFound,
+  } = props;
+  const items = itens.map(item => (
+    <GridItem key={item.id} item={item} openModal={openModal} enableOrder={enableOrder} />
+  ));
   return (
     <>
-      {items.length > 0 ? (
-        <div className="column is-fluid is-paddingless">
-          <div className="columns is-mobile is-multiline">
-            {items}
-          </div>
-        </div>
-      ) : (
+      {(notFound) ? (
         <>
           <Container className="container is-fluid">
-            <img src={notFound} alt="nenhum resultado" />
+            <img src={ImgnotFound} alt="nenhum resultado" />
           </Container>
           <Container className="container is-fluid">
             <Text>
@@ -36,13 +39,22 @@ const GridList = (props) => {
             </Text>
           </Container>
         </>
-      )}
+      ) : (
+        <Row
+          className="d-flex"
+        >
+          {items}
+        </Row>
+      ) }
     </>
   );
 };
 
 GridList.propTypes = {
+  notFound: PropTypes.bool.isRequired,
   itens: PropTypes.arrayOf(PropTypes.object).isRequired,
+  openModal: PropTypes.func.isRequired,
+  enableOrder: PropTypes.number.isRequired,
 };
 
 GridList.defaultProps = {

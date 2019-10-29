@@ -15,6 +15,7 @@ module.exports = {
     'react/jsx-filename-extension': 'off',
     "react/destructuring-assignment": 'off',
     "react/forbid-prop-types": "off",
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
   },
   env: {
     jest: true,

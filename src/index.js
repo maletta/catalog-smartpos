@@ -9,17 +9,24 @@ import dynamicManifest from 'dynamicManifest';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 import { FilterProvider } from './contexts/FilterContext';
+import { ShopProvider } from './contexts/ShopContext';
+import { ShoppingCartProvider } from './contexts/ShoppingCartContext';
 
-
+import 'bootstrap/dist/css/bootstrap-reboot.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'styles/index.scss';
 
 ReactDOM.render((
   <IntlProvider language={{ locale: 'pt', messages: {} }}>
     <ThemeProvider theme={defaultTheme}>
-      <FilterProvider>
-        {dynamicManifest()}
-        <App />
-      </FilterProvider>
+      <ShopProvider>
+        <FilterProvider>
+          <ShoppingCartProvider>
+            {dynamicManifest()}
+            <App />
+          </ShoppingCartProvider>
+        </FilterProvider>
+      </ShopProvider>
     </ThemeProvider>
   </IntlProvider>), document.getElementById('root'));
 

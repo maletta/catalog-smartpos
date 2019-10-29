@@ -13,6 +13,7 @@ const Button = styled.a`
 
 const Li = styled.li`
   margin: 0 0 3px;
+  cursor: pointer;
 `;
 
 const LinkItem = (props) => {

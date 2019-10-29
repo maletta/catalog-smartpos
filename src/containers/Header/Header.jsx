@@ -1,13 +1,25 @@
 import React, { useContext, useState } from 'react';
 import ReactGA from 'react-ga';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
+
+import Row from 'components/Row';
+import Grid from 'components/Grid';
+import FiltersMobile from 'components/FiltersMobile';
+
 import FilterContext from 'contexts/FilterContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import history from 'utils/history';
+import ShopContext from 'contexts/ShopContext';
 
 const Container = styled.nav`
   padding-top: 5px;
   padding-bottom: 8px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 768px) {
+    padding-bottom: 0;
+  }
 
   &&& {
     background: #00529b;
@@ -15,39 +27,28 @@ const Container = styled.nav`
 `;
 
 const Field = styled.div`
-  padding-top: 8px;
-  margin-left: 120px;
-  width: 450px;
+  justify-content: center;
+  width: 80%;
 
   @media (max-width: 800px) {
     width: 100%;
-    margin-left: 20px;
-  }
-
-  @media (max-width: 375px) {
-    margin-left: 0;
   }
 `;
+
 const Logo = styled.div`
   margin: 0;
-  width: 70px;
-  padding-left: 15px;
-  padding-top: 8px;
   cursor: pointer;
+  height: 50px;
+
+  @media (max-width: 376px) {
+    margin-left: 8px;
+  }
 `;
 
 const LogoImage = styled.img`
-  width: 100%;
-
-  @media (max-width: 360px) {
-    width: 45px;
-  }
-`;
-
-const Colums = styled.div`
-  &&& {
-    margin-right: 0;
-  }
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 `;
 
 const Search = styled.div`
@@ -80,11 +81,56 @@ const SearchButton = styled.button`
   font-size: 20px;
 `;
 
+const CartArea = styled.div`
+  padding-top: 23px;
+`;
+
+const CartIcon = styled.i`
+  cursor: pointer;
+  position: relative;
+  color: #fff;
+  font-size: 1.5rem;
+`;
+
+const CartCounter = styled.div`
+  position: relative;
+  width: 20px;
+  height: 20px;
+  top: -30px;
+  right: -25px;
+  color: #fff;
+  background: #dc0300;
+  border-radius: 50%;
+  padding: 4px;
+  line-height: 13px;
+  font-size: 11px;
+  text-align: center;
+  box-sizing: border-box;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  transform: scale(0);
+  animation-delay: 3s;
+  ${props => (props.count > 0) && css`
+    animation-name: scale;
+    animation-duration: 2s;
+    animation-fill-mode: both;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+  `}
+  @keyframes scale {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.6); }
+    100% { transform: scale(1); }
+  }
+`;
+
 
 const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
-  const { codigo, goHome } = props;
+  const { codigo, goHome, categories } = props;
   const [search, setSearch] = useState('');
+  const { shoppingCart } = useContext(ShoppingCartContext);
+  const { shop } = useContext(ShopContext);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
   const submit = (e) => {
     e.preventDefault();
@@ -94,6 +140,7 @@ const Header = (props) => {
         action: 'SEARCH',
         label: search,
       });
+      history.push('/');
       updateFilter({
         search, page: 1, categoria: 0, label: '',
       });
@@ -104,44 +151,69 @@ const Header = (props) => {
   };
 
   return (
-
-    <>
-      <Container className="navbar">
-        <div className="container">
-          <Colums className="columns is-mobile">
-            <div className="column is-2 is-3-desktop">
-              <Logo onClick={() => goHome()}>
-                <LogoImage src={imageBaseUrl} alt="Logo" />
-              </Logo>
-            </div>
-
-            <div className="column is-9">
-              <Field>
-                <form className="navbar-item" onSubmit={e => submit(e)}>
-                  <Search>
-                    <SearchInput
-                      value={search}
-                      onChange={e => setSearch(e.target.value)}
-                      placeholder="Buscar produtos, marcas e muito mais…"
-                      type="text"
-                      name="search"
-                    />
-                    <SearchButton type="submit"><i className="fa fa-search" /></SearchButton>
-                  </Search>
-                </form>
-              </Field>
-            </div>
-          </Colums>
-        </div>
-      </Container>
-
-    </>
+    <Container className="fixed-top">
+      <div className="container">
+        <Row>
+          <Grid
+            cols="2 3 3 3 3"
+            className="d-flex align-items-center justify-content-center"
+          >
+            <Logo
+              onClick={() => goHome()}
+            >
+              <LogoImage src={imageBaseUrl} alt="Logo" />
+            </Logo>
+          </Grid>
+          <Grid
+            cols="8 7 7 7 8"
+            className="d-flex justify-content-center align-items-center"
+          >
+            <Field>
+              <form onSubmit={e => submit(e)}>
+                <Search>
+                  <SearchInput
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    placeholder="Buscar produtos, marcas e muito mais…"
+                    type="text"
+                    name="search"
+                  />
+                  <SearchButton type="submit"><i className="fa fa-search" /></SearchButton>
+                </Search>
+              </form>
+            </Field>
+          </Grid>
+          <Grid cols="2 2 2 2 1">
+            {(shop.is_enableOrder === 1) && (
+              <CartArea>
+                <CartIcon
+                  onClick={() => {
+                    history.push('/cart');
+                  }}
+                  className="fa fa-shopping-cart"
+                >
+                  <CartCounter
+                    count={shoppingCart.basketCount}
+                  >
+                    {shoppingCart.basketCount}
+                  </CartCounter>
+                </CartIcon>
+              </CartArea>
+            )}
+          </Grid>
+        </Row>
+      </div>
+      <FiltersMobile
+        categories={categories}
+      />
+    </Container>
   );
 };
 
 Header.propTypes = {
   codigo: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
+  categories: PropTypes.array.isRequired,
 };
 
 export default Header;

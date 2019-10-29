@@ -1,7 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import lodash from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import Row from 'components/Row';
+import Grid from 'components/Grid';
 import FooterContact from 'components/FooterContact';
 import PropTypes from 'prop-types';
 import ReactGA from 'react-ga';
@@ -17,7 +20,6 @@ const FullWidthFooterDownload = styled.div`
   background-color: #fff;
   width: 100%;
   color: #3a3a3a;
-  padding: 1.5rem 1.5rem !important;
 `;
 
 const FullWidthFooterInfo = styled.div`
@@ -25,6 +27,7 @@ const FullWidthFooterInfo = styled.div`
   width: 100%;
   color: #3a3a3a;
   border-bottom: solid 1px #b1b1b1;
+  padding-bottom: 50px;
 `;
 
 const FooterInfoTitle = styled.h5`
@@ -37,6 +40,13 @@ const AddressInfo = styled.h6`
   font-size: 0.9rem;
 `;
 
+const OpenHourItem = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  font-weight: ${props => (props.currentDay ? '700' : '400')};
+`;
+
 const FullWidthCopyright = styled.div`
   background-color: #fff;
   width: 100%;
@@ -44,7 +54,7 @@ const FullWidthCopyright = styled.div`
   border-top: solid 1px #b1b1b1;
 `;
 
-const FooterCopyright = styled.span`
+const FooterCopyright = styled.div`
   color: #3a3a3a;
   text-align: center;
   font-size: 0.8rem;
@@ -65,9 +75,8 @@ const LinkSocial = styled.a`
 
 const ButtonDownload = styled.a`
   color: #022751 !important;
-  border-color: #022751 !important;
+  border: 2px solid #022751 !important;
   font-weight: bold;
-  padding: 20px 25px !important;
 `;
 
 const FixedButton = styled.div`
@@ -95,144 +104,255 @@ const SocialIcon = styled.span`
   display: inline-block;
 `;
 
-const Footer = ({ storeInfo }) => (
-  <>
-    <FullWidthFooter className="section">
-      <div className="container">
-        <div className="columns">
-          <div className="column is-12">
-            <FooterContact storeInfo={storeInfo} />
-          </div>
+const LinkNetPOS = styled.a`
+  color: #00529b;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 5px 5px;
+
+  :hover {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+`;
+
+const daysOfWeek = [
+  {
+    dayOfWeek: 'Domingo',
+    name: 'SUNDAY',
+    position: 0,
+  },
+  {
+    dayOfWeek: 'Segunda-feira',
+    name: 'MONDAY',
+    position: 1,
+  },
+  {
+    dayOfWeek: 'Terça-feira',
+    name: 'TUESDAY',
+    position: 2,
+  },
+  {
+    dayOfWeek: 'Quarta-feira',
+    name: 'WEDNESDAY',
+    position: 3,
+  },
+  {
+    dayOfWeek: 'Quinta-feira',
+    name: 'THURSDAY',
+    position: 4,
+  },
+  {
+    dayOfWeek: 'Sexta-feira',
+    name: 'FRIDAY',
+    position: 5,
+  },
+  {
+    dayOfWeek: 'Sábado',
+    name: 'SATURDAY',
+    position: 6,
+  },
+];
+
+const Footer = ({ storeInfo }) => {
+  let openHours = (storeInfo.openHours || []);
+  openHours = openHours.map(day => ({
+    ...day,
+    ...daysOfWeek[lodash.findKey(daysOfWeek, { name: day.dayOfWeek })],
+  }));
+
+  const getIntOfDay = new Date().getDay();
+
+  return (
+    <>
+      <FullWidthFooter>
+        <div className="container">
+          <Row className="columns pt-4 pb-5">
+            <Grid cols="12" className="d-flex align-items-center">
+              <FooterContact storeInfo={storeInfo} />
+            </Grid>
+          </Row>
         </div>
-      </div>
-    </FullWidthFooter>
-    <FullWidthFooterInfo className="section">
-      <div className="container">
-        <div className="columns">
-          <div className="column is-10">
-            <FooterInfoTitle>Endereço</FooterInfoTitle>
-            <AddressInfo>{storeInfo.fantasia || ''}</AddressInfo>
-            <AddressInfo>{`${storeInfo.tipoLogradouro || ''} ${storeInfo.endereco || ''}`}</AddressInfo>
-            <AddressInfo>
-              {storeInfo.numero && (`Número ${storeInfo.numero}`)}
-              {(storeInfo.complemento || '') && ` - ${storeInfo.complemento || ''}`}
-            </AddressInfo>
-            <AddressInfo>{`${storeInfo.cidade || ''} ${storeInfo.uf && ` - ${storeInfo.uf}`}`}</AddressInfo>
-            <AddressInfo>{storeInfo.cep && `CEP: ${storeInfo.cep}`}</AddressInfo>
-          </div>
-          <div className="column is-2">
-            <FooterInfoTitle>Redes sociais</FooterInfoTitle>
-            <ul>
-              {storeInfo.facebook && (
-              <li>
-                <LinkSocial
-                  href={`https://www.facebook.com/${storeInfo.facebook}`}
-                  rel="noopener noreferrer nofollow"
+      </FullWidthFooter>
+      <FullWidthFooterInfo>
+        <div style={{ position: 'relative', top: '40px' }} className="container">
+          <Row>
+            <Grid
+              cols="12 12 4 4 4"
+              className="pb-5"
+            >
+              <FooterInfoTitle>Endereço</FooterInfoTitle>
+              <AddressInfo>{storeInfo.fantasia || ''}</AddressInfo>
+              <AddressInfo>{`${storeInfo.tipoLogradouro || ''} ${storeInfo.endereco || ''}`}</AddressInfo>
+              <AddressInfo>
+                {storeInfo.numero && (`Número ${storeInfo.numero}`)}
+                {(storeInfo.complemento || '') && ` - ${storeInfo.complemento || ''}`}
+              </AddressInfo>
+              <AddressInfo>{`${storeInfo.cidade || ''} ${storeInfo.uf && ` - ${storeInfo.uf}`}`}</AddressInfo>
+              <AddressInfo>{storeInfo.cep && `CEP: ${storeInfo.cep}`}</AddressInfo>
+            </Grid>
+            <Grid
+              cols="6 8 4 3 3"
+              className="pb-5"
+            >
+              {(openHours.length > 0) && (
+                <>
+                  <FooterInfoTitle>Horário de funcionamento</FooterInfoTitle>
+                  <div>
+                    {openHours.map(day => (
+                      <OpenHourItem
+                        currentDay={getIntOfDay === day.position}
+                        key={day.name}
+                      >
+                        <div>
+                          {day.dayOfWeek}
+                        </div>
+                        <div>
+                          {(day.closed ? 'Fechado' : `${day.openHour} - ${day.closeHour}`)}
+                        </div>
+                      </OpenHourItem>
+                    ))}
+                  </div>
+                </>
+              )}
+            </Grid>
+            <Grid
+              cols="12 12 4 5 5"
+              className="d-flex justify-content-md-end pb-5"
+            >
+              <div>
+                {(storeInfo.facebook || storeInfo.instagram) && (
+                  <FooterInfoTitle>Redes sociais</FooterInfoTitle>
+                )}
+                <ul>
+                  {storeInfo.facebook && (
+                  <li>
+                    <LinkSocial
+                      href={`https://www.facebook.com/${storeInfo.facebook}`}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                      onClick={() => {
+                        ReactGA.event({
+                          category: 'FOOTER',
+                          action: 'CLICK_FACEBOOK',
+                          label: storeInfo.usuario,
+                        });
+                      }}
+                    >
+                      <SocialIcon>
+                        <FontAwesomeIcon icon={['fab', 'facebook-f']} color="#3a3a3a" size="1x" />
+                      </SocialIcon>
+                      {storeInfo.facebook}
+                    </LinkSocial>
+                  </li>
+                  )}
+                  {storeInfo.instagram && (
+                    <li>
+                      <LinkSocial
+                        href={`https://www.instagram.com/${storeInfo.instagram}`}
+                        rel="noopener noreferrer nofollow"
+                        target="_blank"
+                        onClick={() => {
+                          ReactGA.event({
+                            category: 'FOOTER',
+                            action: 'CLICK_INSTAGRAM',
+                            label: storeInfo.usuario,
+                          });
+                        }}
+                      >
+                        <SocialIcon>
+                          <FontAwesomeIcon icon={['fab', 'instagram']} color="#3a3a3a" size="1x" />
+                        </SocialIcon>
+                        {storeInfo.instagram}
+                      </LinkSocial>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </Grid>
+          </Row>
+        </div>
+      </FullWidthFooterInfo>
+      <FullWidthFooterDownload>
+        <div className="container">
+          <Row className="pt-3 pb-3">
+            <Grid cols="12 7 8 8 8" className="d-flex align-items-center">
+              <div className="mb-3 mb-sm-0">
+                <strong>Baixe o SmartPOS App! </strong>
+                <span>Automação comercial inteligente</span>
+              </div>
+            </Grid>
+            <Grid cols="12 5 4 4 4" className="d-flex justify-content-xl-end">
+              <div>
+                <ButtonDownload
+                  href="https://play.google.com/store/apps/details?id=br.com.netpos.smartpos"
+                  rel="noopener noreferrer"
                   target="_blank"
+                  className="btn"
                   onClick={() => {
                     ReactGA.event({
                       category: 'FOOTER',
-                      action: 'CLICK_FACEBOOK',
+                      action: 'CLICK_SMARTPOS_PLAYSTORE',
                       label: storeInfo.usuario,
                     });
                   }}
                 >
-                  <SocialIcon>
-                    <FontAwesomeIcon icon={['fab', 'facebook-f']} color="#3a3a3a" size="1x" />
-                  </SocialIcon>
-                  {storeInfo.facebook}
-                </LinkSocial>
-              </li>
-              )}
-              {storeInfo.instagram && (
-                <li>
-                  <LinkSocial
-                    href={`https://www.instagram.com/${storeInfo.instagram}`}
-                    rel="noopener noreferrer nofollow"
+                  <Icon>
+                    <FontAwesomeIcon icon={['fab', 'google-play']} color="#022751" size="1x" />
+                  </Icon>
+                  <span>Baixar na Play Store</span>
+                </ButtonDownload>
+              </div>
+            </Grid>
+          </Row>
+        </div>
+      </FullWidthFooterDownload>
+      <FullWidthCopyright>
+        <div className="container">
+          <Row>
+            <Grid cols="12">
+              <FooterCopyright>
+                <span>
+                  {'Todos os direitos reservados - Built with love by'}
+                  <LinkNetPOS
+                    href="https://www.smartpos.net.br"
+                    rel="noopener noreferrer"
                     target="_blank"
-                    onClick={() => {
-                      ReactGA.event({
-                        category: 'FOOTER',
-                        action: 'CLICK_INSTAGRAM',
-                        label: storeInfo.usuario,
-                      });
-                    }}
+                    title="SmartPOS"
                   >
-                    <SocialIcon>
-                      <FontAwesomeIcon icon={['fab', 'instagram']} color="#3a3a3a" size="1x" />
-                    </SocialIcon>
-                    {storeInfo.instagram}
-                  </LinkSocial>
-                </li>
-              )}
-            </ul>
-          </div>
+                    {'SmartPOS'}
+                  </LinkNetPOS>
+                </span>
+                <FontAwesomeIcon icon={['far', 'heart']} color="red" size="sm" />
+              </FooterCopyright>
+            </Grid>
+          </Row>
         </div>
-      </div>
-    </FullWidthFooterInfo>
-    <FullWidthFooterDownload className="section">
-      <div className="container">
-        <div className="columns is-vcentered">
-          <div className="column is-9-desktop is-8-tablet">
-            <strong>Baixe o SmartPOS App! </strong>
-            <span>Automação comercial inteligente</span>
-          </div>
-          <div className="column is-3">
-            <ButtonDownload
-              href="https://play.google.com/store/apps/details?id=br.com.netpos.smartpos"
-              rel="noopener noreferrer"
-              target="_blank"
-              className="button is-outlined"
-              onClick={() => {
-                ReactGA.event({
-                  category: 'FOOTER',
-                  action: 'CLICK_SMARTPOS_PLAYSTORE',
-                  label: storeInfo.usuario,
-                });
-              }}
-            >
-              <Icon>
-                <FontAwesomeIcon icon={['fab', 'google-play']} color="#022751" size="1x" />
-              </Icon>
-              <span>Baixar na Play Store</span>
-            </ButtonDownload>
-          </div>
-        </div>
-      </div>
-    </FullWidthFooterDownload>
-    <FullWidthCopyright className="section">
-      <div className="columns is-centered">
-        <div className="column is-12 is-12-mobile has-text-centered">
-          <FooterCopyright>
-            <span>Todos os direitos reservados - Built with love by SmartPOS </span>
-            <FontAwesomeIcon icon={['far', 'heart']} color="red" size="sm" />
-          </FooterCopyright>
-        </div>
-      </div>
-    </FullWidthCopyright>
-    {storeInfo.whatsapp && (
-      <FixedButton>
-        <a
-          href={`https://api.whatsapp.com/send?phone=55${storeInfo.whatsapp}`}
-          rel="noopener noreferrer"
-          target="_blank"
-          title="Iniciar conversa pelo WhatsApp"
-          onClick={() => {
-            ReactGA.event({
-              category: 'FOOTER',
-              action: 'CLICK_FLOAT_WHATS',
-              label: storeInfo.usuario,
-            });
-          }}
-        >
-          <ButtonWhatsApp>
-            <FontAwesomeIcon icon={['fab', 'whatsapp']} />
-          </ButtonWhatsApp>
-        </a>
-      </FixedButton>
-    )}
-  </>
-);
+      </FullWidthCopyright>
+      {storeInfo.whatsapp && (
+        <FixedButton>
+          <a
+            href={`https://api.whatsapp.com/send?phone=55${storeInfo.whatsapp}`}
+            rel="noopener noreferrer"
+            target="_blank"
+            title="Iniciar conversa pelo WhatsApp"
+            onClick={() => {
+              ReactGA.event({
+                category: 'FOOTER',
+                action: 'CLICK_FLOAT_WHATS',
+                label: storeInfo.usuario,
+              });
+            }}
+          >
+            <ButtonWhatsApp>
+              <FontAwesomeIcon icon={['fab', 'whatsapp']} />
+            </ButtonWhatsApp>
+          </a>
+        </FixedButton>
+      )}
+    </>
+  );
+};
 
 Footer.propTypes = {
   storeInfo: PropTypes.object.isRequired,

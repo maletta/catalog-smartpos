@@ -22,17 +22,39 @@ $control-border-width: 2px;
 $input-border-color: transparent;
 $input-shadow: none;
 
-@import "~bulma/bulma.sass";
-
-
+:root {
+  --color-primary: #F38A00;
+  --color-primary-light: #ffc67c;
+  --color-gray-light-1: #d7d7d7;
+  --color-gray-light: #efefef;
+  --color-gray-light-1: #d7d7d7;
+  --color-gray-light-2: #918f8f;
+  --color-white: #FFF;
+  --button-primary: #F38A00;
+}
 html, body {
   background: #EBEBEB;
 }
 
+.fixed-top {
+  z-index: 998;
+}
+
+ul {
+  list-style: none !important;
+  padding-left: 0;
+}
+
+.cursor-pointer{
+  cursor: pointer;
+}
+
 /* STYLE PAGINATION */
 .pagination {
-  margin-top: 25px;
   justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .pagination li {
@@ -44,6 +66,8 @@ html, body {
   padding: 7px;
   border-radius: 5px;
   font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .pagination li a:hover {
@@ -69,9 +93,24 @@ html, body {
 }
 
 .breadcrumb a, .breadcrumb a:hover {
-  color: #f37c05;
+  color: #6c757d;
 }
 
 .breadcrumb li.is-active a {
-  color: #666;
+  color: #eee;
+}
+
+.is-mb-paddingless {
+  padding-bottom: 0 !important;
+}
+
+.scrollAreaOrder {
+  overflow: auto;
+  max-height: 65vh;
+  padding-right: 1.2rem;
+
+  @media (max-width: 768px) {
+    margin-right: 1.2rem;
+    padding-right: 0.5rem;
+  }
 }
