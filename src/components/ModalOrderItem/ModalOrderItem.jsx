@@ -40,7 +40,7 @@ const Title = styled.h3`
   margin-right: 50px;
   width: 460px;
 
-  @media (max-width: 992px) { 
+  @media (max-width: 992px) {
     margin-right: 40px;
   }
 
