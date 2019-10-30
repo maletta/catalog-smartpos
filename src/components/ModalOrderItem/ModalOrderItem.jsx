@@ -34,18 +34,24 @@ const AreaTitle = styled.div`
 `;
 
 const Title = styled.h3`
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: #fff;
   margin-bottom: 0;
+  margin-right: 50px;
+  width: 460px;
+
+  @media (max-width: 992px) { 
+    margin-right: 40px;
+  }
+
+  @media (max-width: 768px) {
+    width: auto;
+  }
 `;
 
 const Content = styled.div`
   padding-top: 10px;
   width: 500px;
-
-  @media (max-width: 992px) {
-    width: 400px;
-  }
 
   @media (max-width: 768px) {
     width: 100%;
