@@ -192,7 +192,7 @@ const Footer = ({ storeInfo }) => {
               <AddressInfo>{storeInfo.cep && `CEP: ${storeInfo.cep}`}</AddressInfo>
             </Grid>
             <Grid
-              cols="6 8 4 3 3"
+              cols="10 6 4 3 3"
               className="pb-5"
             >
               {(openHours.length > 0) && (
