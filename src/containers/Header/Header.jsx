@@ -26,6 +26,14 @@ const Container = styled.nav`
   }
 `;
 
+const AreaMenu = styled.div`
+  padding: 10px 0 10px 0;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
+`;
+
 const Field = styled.div`
   justify-content: center;
   width: 80%;
@@ -82,7 +90,6 @@ const SearchButton = styled.button`
 `;
 
 const CartArea = styled.div`
-  padding-top: 23px;
 `;
 
 const CartIcon = styled.i`
@@ -90,6 +97,7 @@ const CartIcon = styled.i`
   position: relative;
   color: #fff;
   font-size: 1.5rem;
+  top: 9px;
 `;
 
 const CartCounter = styled.div`
@@ -97,7 +105,7 @@ const CartCounter = styled.div`
   width: 20px;
   height: 20px;
   top: -30px;
-  right: -25px;
+  right: -20px;
   color: #fff;
   background: #dc0300;
   border-radius: 50%;
@@ -150,9 +158,13 @@ const Header = (props) => {
     window.history.pushState({}, '', `${baseUrl}?search=${search}`);
   };
 
+  const { pathname } = history.location;
+
   return (
     <Container className="fixed-top">
-      <div className="container">
+      <AreaMenu
+        className="container"
+      >
         <Row>
           <Grid
             cols="2 3 3 3 3"
@@ -183,9 +195,12 @@ const Header = (props) => {
               </form>
             </Field>
           </Grid>
-          <Grid cols="2 2 2 2 1">
-            {(shop.is_enableOrder === 1) && (
-              <CartArea>
+          <Grid
+            className="d-flex align-items-center justify-content-center"
+            cols="2 2 2 2 1"
+          >
+            <CartArea>
+              {(shop.is_enableOrder === 1) && (
                 <CartIcon
                   onClick={() => {
                     history.push('/cart');
@@ -198,14 +213,16 @@ const Header = (props) => {
                     {shoppingCart.basketCount}
                   </CartCounter>
                 </CartIcon>
-              </CartArea>
-            )}
+              )}
+            </CartArea>
           </Grid>
         </Row>
-      </div>
-      <FiltersMobile
-        categories={categories}
-      />
+      </AreaMenu>
+      {(pathname === '/' && (
+        <FiltersMobile
+          categories={categories}
+        />
+      ))}
     </Container>
   );
 };

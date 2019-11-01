@@ -34,18 +34,24 @@ const AreaTitle = styled.div`
 `;
 
 const Title = styled.h3`
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: #fff;
   margin-bottom: 0;
+  margin-right: 50px;
+  width: 460px;
+
+  @media (max-width: 992px) {
+    margin-right: 40px;
+  }
+
+  @media (max-width: 768px) {
+    width: auto;
+  }
 `;
 
 const Content = styled.div`
   padding-top: 10px;
   width: 500px;
-
-  @media (max-width: 992px) {
-    width: 400px;
-  }
 
   @media (max-width: 768px) {
     width: 100%;
@@ -133,6 +139,11 @@ const ModifierItemSellValue = styled.span`
   color: #ea1d2c;
   font-size: 0.875rem;
   font-weight: 600;
+`;
+
+const TotalValue = styled.div`
+  font-weight: 600;
+  margin-bottom: 15px;
 `;
 
 const ModalOrderItem = (props) => {
@@ -408,8 +419,16 @@ const ModalOrderItem = (props) => {
                 className="pt-3 mr-2"
               >
                 <Grid
-                  cols="5 6 6 6 6"
-                  className="d-flex align-items-center justify-content-center"
+                  cols="12"
+                  className="d-flex align-items-sm-start justify-content-end"
+                >
+                  <TotalValue>
+                    {`Total ${intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}`}
+                  </TotalValue>
+                </Grid>
+                <Grid
+                  cols="7 8 8 8 8"
+                  className="d-flex align-items-center justify-content-end"
                 >
                   <Counter
                     limit={100}
@@ -421,12 +440,12 @@ const ModalOrderItem = (props) => {
                   />
                 </Grid>
                 <Grid
-                  cols="7 6 6 6 6"
+                  cols="5 4 4 4 4"
                   className="d-flex align-items-center justify-content-end"
                 >
                   <div>
                     <Button
-                      value={`Adicionar ${intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}`}
+                      value="Adicionar"
                       type="submit"
                       disabled={modifiersErrors}
                     />

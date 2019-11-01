@@ -411,7 +411,9 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12 6 6 6 6">
                     <Row>
                       <Grid cols="12">
-                        <SectionTitle>Entrega e pagamento</SectionTitle>
+                        <SectionTitle>
+                          {'Entrega e pagamento'}
+                        </SectionTitle>
                       </Grid>
                       <Grid cols="12">
                         {(shop.deliveryMode === 'DELIVERY' || shop.deliveryMode === 'BOTH') && (
@@ -424,7 +426,7 @@ const Checkout = ({ intl }) => {
                           <>
                             <span>Entrega</span>
                             <ValueDelivery>
-                              Você iré retirar o pedido no estabelecimento do vendedor
+                              {'Você iré retirar o pedido no estabelecimento do vendedor'}
                             </ValueDelivery>
                           </>
                         )}
