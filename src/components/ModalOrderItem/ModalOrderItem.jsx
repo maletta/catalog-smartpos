@@ -141,6 +141,11 @@ const ModifierItemSellValue = styled.span`
   font-weight: 600;
 `;
 
+const TotalValue = styled.div`
+  font-weight: 600;
+  margin-bottom: 15px;
+`;
+
 const ModalOrderItem = (props) => {
   const {
     intl, productOnModal, setProductOnModal, modalOpen, setModalOpen, storeId,
@@ -414,8 +419,16 @@ const ModalOrderItem = (props) => {
                 className="pt-3 mr-2"
               >
                 <Grid
-                  cols="5 6 6 6 6"
-                  className="d-flex align-items-center justify-content-center"
+                  cols="12"
+                  className="d-flex align-items-sm-start justify-content-end"
+                >
+                  <TotalValue>
+                    {`Total ${intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}`}
+                  </TotalValue>
+                </Grid>
+                <Grid
+                  cols="7 8 8 8 8"
+                  className="d-flex align-items-center justify-content-end"
                 >
                   <Counter
                     limit={100}
@@ -427,12 +440,12 @@ const ModalOrderItem = (props) => {
                   />
                 </Grid>
                 <Grid
-                  cols="7 6 6 6 6"
+                  cols="5 4 4 4 4"
                   className="d-flex align-items-center justify-content-end"
                 >
                   <div>
                     <Button
-                      value={`Adicionar ${intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}`}
+                      value="Adicionar"
                       type="submit"
                       disabled={modifiersErrors}
                     />
