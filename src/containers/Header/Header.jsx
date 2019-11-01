@@ -28,6 +28,10 @@ const Container = styled.nav`
 
 const AreaMenu = styled.div`
   padding: 10px 0 10px 0;
+
+  @media (max-width: 768px) {
+    padding: 10px;
+  }
 `;
 
 const Field = styled.div`
@@ -101,7 +105,7 @@ const CartCounter = styled.div`
   width: 20px;
   height: 20px;
   top: -30px;
-  right: -25px;
+  right: -20px;
   color: #fff;
   background: #dc0300;
   border-radius: 50%;
