@@ -57,7 +57,7 @@ const Content = styled.div`
   padding-bottom: 80px;
 
   @media (max-width: 768px) {
-    top: 105px;
+    ${props => (props.pathname === '/' ? 'top: 105px' : 'top: 70px')};
   }
 `;
 
@@ -134,6 +134,7 @@ const App = () => {
     cleanCart();
   }, [filter]);
 
+  const { pathname } = history.location;
 
   const home = () => {
     history.push('/');
@@ -149,7 +150,10 @@ const App = () => {
       {store.found ? (
         <div>
           <Header categories={categories} codigo={store.codigo} goHome={() => home()} />
-          <Content className="container mb-5">
+          <Content
+            pathname={pathname}
+            className="container mb-5"
+          >
             <Row>
               <Grid cols="12">
                 <Breadcrumb>
