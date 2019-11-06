@@ -322,7 +322,6 @@ const ModalOrderItem = (props) => {
         <Title>{productOnModal.descricao}</Title>
       </AreaTitle>
       <Content>
-        <Description>{productOnModal.observacao}</Description>
         <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
         <Formik
           onSubmit={submitOrderItem}
