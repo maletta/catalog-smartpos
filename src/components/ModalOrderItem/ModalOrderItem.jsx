@@ -58,11 +58,6 @@ const Content = styled.div`
   }
 `;
 
-const Description = styled.p`
-  font-size: 1rem;
-  margin-bottom: 5px;
-`;
-
 const Price = styled.h3`
   font-size: 1.5rem;
   font-weight: bold;
