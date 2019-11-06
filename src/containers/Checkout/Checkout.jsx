@@ -163,6 +163,7 @@ const Checkout = ({ intl }) => {
     pickup: false,
     catalog_id: shop.id,
     loja: shop.codigo,
+    isInvalid: false,
   };
 
   const verifyRecaptcha = (value) => {
@@ -494,9 +495,15 @@ const Checkout = ({ intl }) => {
                     />
                   </Grid>
                   <Grid cols="12">
-                    <Alert
-                      text="Atenção: você irá realizar o pagamento diretamente com o vendedor!"
-                    />
+                    {propsForm.values.isInvalid === true ?
+                      <Alert
+                        text="Atenção: preencha corretamente as informações para prosseguir!"
+                        typeAlert="danger"
+                      /> :
+                      <Alert
+                        text="Atenção: você irá realizar o pagamento diretamente com o vendedor!"
+                      />
+                    }
                   </Grid>
                   <Grid
                     cols="12"
@@ -515,6 +522,9 @@ const Checkout = ({ intl }) => {
                         value="Enviar pedido"
                         type="submit"
                         isLoading={propsForm.isSubmitting}
+                        onClick={() => {
+                          propsForm.isValid === true ? propsForm.values.isInvalid = false : propsForm.values.isInvalid = true
+                        }}
                         disabled={!reCaptchaToken}
                       />
                     </div>
