@@ -58,11 +58,6 @@ const Content = styled.div`
   }
 `;
 
-const Description = styled.p`
-  font-size: 1rem;
-  margin-bottom: 5px;
-`;
-
 const Price = styled.h3`
   font-size: 1.5rem;
   font-weight: bold;
@@ -322,7 +317,6 @@ const ModalOrderItem = (props) => {
         <Title>{productOnModal.descricao}</Title>
       </AreaTitle>
       <Content>
-        <Description>{productOnModal.observacao}</Description>
         <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
         <Formik
           onSubmit={submitOrderItem}
