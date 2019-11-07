@@ -326,8 +326,8 @@ const Checkout = ({ intl }) => {
                           propsForm.setFieldValue('estado', address.data.uf);
                           propsForm.setFieldValue('codcidade', address.data.ibge);
                           propsForm.setFieldValue('cidade', address.data.localidade);
-                          propsForm.setFieldValue('endereco', endereco);
-                          propsForm.setFieldValue('tipoLogradouro', tipoLogradouro);
+                          propsForm.setFieldValue('endereco', endereco.trim());
+                          propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
                         });
                       }}
                       isRequired
