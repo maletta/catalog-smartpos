@@ -326,8 +326,8 @@ const Checkout = ({ intl }) => {
                           propsForm.setFieldValue('estado', address.data.uf);
                           propsForm.setFieldValue('codcidade', address.data.ibge);
                           propsForm.setFieldValue('cidade', address.data.localidade);
-                          propsForm.setFieldValue('endereco', endereco);
-                          propsForm.setFieldValue('tipoLogradouro', tipoLogradouro);
+                          propsForm.setFieldValue('endereco', endereco.trim());
+                          propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
                         });
                       }}
                       isRequired
@@ -426,7 +426,7 @@ const Checkout = ({ intl }) => {
                           <>
                             <span>Entrega</span>
                             <ValueDelivery>
-                              {'Você iré retirar o pedido no estabelecimento do vendedor'}
+                              {'Você irá retirar o pedido no estabelecimento do vendedor'}
                             </ValueDelivery>
                           </>
                         )}
@@ -497,6 +497,12 @@ const Checkout = ({ intl }) => {
                     <Alert
                       text="Atenção: você irá realizar o pagamento diretamente com o vendedor!"
                     />
+                    {(Object.keys(propsForm.errors).length > 0 && propsForm.submitCount > 0) && (
+                      <Alert
+                        text="Verifique se há campos incorretos no formulário!"
+                        typeAlert="danger"
+                      />
+                    )}
                   </Grid>
                   <Grid
                     cols="12"
