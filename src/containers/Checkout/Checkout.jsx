@@ -497,6 +497,12 @@ const Checkout = ({ intl }) => {
                     <Alert
                       text="Atenção: você irá realizar o pagamento diretamente com o vendedor!"
                     />
+                    {(Object.keys(propsForm.errors).length > 0 && propsForm.submitCount > 0) && (
+                      <Alert
+                        text="Verifique se há campos incorretos no formulário!"
+                        typeAlert="danger"
+                      />
+                    )}
                   </Grid>
                   <Grid
                     cols="12"
