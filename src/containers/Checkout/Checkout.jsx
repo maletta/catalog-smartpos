@@ -426,7 +426,7 @@ const Checkout = ({ intl }) => {
                           <>
                             <span>Entrega</span>
                             <ValueDelivery>
-                              {'Você iré retirar o pedido no estabelecimento do vendedor'}
+                              {'Você irá retirar o pedido no estabelecimento do vendedor'}
                             </ValueDelivery>
                           </>
                         )}
