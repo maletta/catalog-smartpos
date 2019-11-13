@@ -116,18 +116,18 @@ const Checkout = ({ intl }) => {
       orderProducts: stateCart,
     };
 
-    createOrder(values).then(() => {
+    createOrder(values).then((response) => {
+      localStorage.removeItem('cartInit');
+      localStorage.removeItem('cart');
       Swal.fire({
         type: 'success',
-        title: 'Pedido enviado com sucesso',
+        title: `Pedido '${response.data.orderName}', enviado com sucesso`,
         showConfirmButton: false,
         onClose: () => {
           history.push('/');
           updateShoppingCart({
             basketCount: 0,
           });
-          localStorage.removeItem('cartInit');
-          localStorage.removeItem('cart');
         },
       });
     }).catch(() => {
