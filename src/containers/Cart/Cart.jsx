@@ -88,7 +88,7 @@ const Cart = ({ intl }) => {
           >
             <div>
               <TitleEmptyCar>
-               O seu carrinho está vazio
+                {'O seu carrinho está vazio'}
               </TitleEmptyCar>
             </div>
             <div>
@@ -114,7 +114,7 @@ const Cart = ({ intl }) => {
               className="mb-2 mt-2"
             >
               <Total>
-                Total:
+                {'Total:'}
                 {intl.formatNumber(totalCar, { style: 'currency', currency: 'BRL' })}
               </Total>
             </div>
