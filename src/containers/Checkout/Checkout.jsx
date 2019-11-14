@@ -119,8 +119,8 @@ const Checkout = ({ intl }) => {
     createOrder(values).then((response) => {
       localStorage.removeItem('cartInit');
       localStorage.removeItem('cart');
-      const msg = `Você acabou de receber o pedido ${response.data.orderName} do seu catalogo online SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`
-      const linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=+55${shop.whatsapp}&text=${encodeURIComponent(msg)}' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`
+      const msg = `Você acabou de receber o pedido ${response.data.orderName} do seu catalogo online SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
+      const linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`;
       Swal.fire({
         type: 'success',
         title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
