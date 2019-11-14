@@ -125,6 +125,7 @@ const Checkout = ({ intl }) => {
         type: 'success',
         title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
         showConfirmButton: false,
+        showCloseButton: true,
         footer: (shop.whatsapp != null && shop.whatsapp.length >= 10 && linkWhatsApp),
         onClose: () => {
           history.push('/');
