@@ -119,10 +119,10 @@ const Checkout = ({ intl }) => {
     createOrder(values).then((response) => {
       localStorage.removeItem('cartInit');
       localStorage.removeItem('cart');
-      let linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=+55${shop.whatsapp}&text=%20O%20Pedido%20${response.data.orderName}%20,%20foi%20efetuado%20!' target='blank'>Enviar Menssagem pelo WhatsApp.</a>`
+      let linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=+55${shop.whatsapp}&text=%20O%20Pedido%20${response.data.orderName}%20,%20foi%20efetuado%20!' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`
       Swal.fire({
         type: 'success',
-        title: `Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso`,
+        title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
         showConfirmButton: false,
         footer: (shop.whatsapp != null && shop.whatsapp.length >= 10 && linkWhatsApp),
         onClose: () => {
