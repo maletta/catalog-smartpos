@@ -117,6 +117,9 @@ const Checkout = ({ intl }) => {
     };
 
     createOrder(values).then((response) => {
+      // console.log('https://api.whatsapp.com/send?phone=' + shop.whatsapp + '&text=%20' + "message");
+      console.log('https://api.whatsapp.com/send?phone=' + "+5519995143772" + '&text=%20' + `O%20pedido%20'${response.data.orderName}'%20,%20foi%20efetuado!`);
+      
       localStorage.removeItem('cartInit');
       localStorage.removeItem('cart');
       Swal.fire({
