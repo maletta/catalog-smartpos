@@ -89,9 +89,6 @@ const SearchButton = styled.button`
   font-size: 20px;
 `;
 
-const CartArea = styled.div`
-`;
-
 const CartIcon = styled.i`
   cursor: pointer;
   position: relative;
@@ -199,7 +196,7 @@ const Header = (props) => {
             className="d-flex align-items-center justify-content-center"
             cols="2 2 2 2 1"
           >
-            <CartArea>
+            <div>
               {(shop.is_enableOrder === 1) && (
                 <CartIcon
                   onClick={() => {
@@ -214,7 +211,7 @@ const Header = (props) => {
                   </CartCounter>
                 </CartIcon>
               )}
-            </CartArea>
+            </div>
           </Grid>
         </Row>
       </AreaMenu>

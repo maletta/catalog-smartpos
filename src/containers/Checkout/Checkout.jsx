@@ -116,18 +116,22 @@ const Checkout = ({ intl }) => {
       orderProducts: stateCart,
     };
 
-    createOrder(values).then(() => {
+    createOrder(values).then((response) => {
+      localStorage.removeItem('cartInit');
+      localStorage.removeItem('cart');
+      const msg = `Você acabou de receber o pedido ${response.data.orderName} do seu catálogo online SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
+      const linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`;
       Swal.fire({
         type: 'success',
-        title: 'Pedido enviado com sucesso',
+        title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
         showConfirmButton: false,
+        showCloseButton: true,
+        footer: (shop.whatsapp != null && shop.whatsapp.length >= 10 && linkWhatsApp),
         onClose: () => {
           history.push('/');
           updateShoppingCart({
             basketCount: 0,
           });
-          localStorage.removeItem('cartInit');
-          localStorage.removeItem('cart');
         },
       });
     }).catch(() => {
