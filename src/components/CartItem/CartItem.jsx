@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Counter from 'components/Form/Counter';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 import { injectIntl, intlShape } from 'react-intl';
 import NoImage from '../../assets/no-image.png';
 
@@ -130,7 +131,8 @@ const CartItem = (props) => {
   } = props;
   const [imageProduct, setImage] = useState(NoImage);
   const [showNote, setShowNote] = useState(false);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}`;
+  const data_atual = moment().format('MMMM Do YYYY, h:mm:ss a');
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}?lastUpdate=${data_atual}`;
 
   let img;
   if (product.viewMode === 'IMAGE') {

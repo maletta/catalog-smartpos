@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 import ReactGA from 'react-ga';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
+import moment from 'moment';
 
 import Row from 'components/Row';
 import Grid from 'components/Grid';
@@ -136,7 +137,8 @@ const Header = (props) => {
   const [search, setSearch] = useState('');
   const { shoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
+  const data_atual = moment().format('MMMM Do YYYY, h:mm:ss a');
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${data_atual}`;
   const submit = (e) => {
     e.preventDefault();
     if (search) {

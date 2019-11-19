@@ -1,11 +1,13 @@
 
 import getStoreName from 'getStoreName';
+import moment from 'moment';
 import axios from 'axios';
 
 const ManifestJson = () => {
   axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/${getStoreName()}`)
     .then((response) => {
       const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
+      const data_atual = moment().format('MMMM Do YYYY, h:mm:ss a');
       const myDynamicManifest = {
         name: getStoreName(),
         short_name: getStoreName(),
@@ -15,7 +17,7 @@ const ManifestJson = () => {
         display: 'standalone',
         theme_color: '#0f4a73',
         icons: [{
-          src: `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}`,
+          src: `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}?lastUpdate=${data_atual}`,
           sizes: '256x256',
           type: 'image/png',
         }],
@@ -24,7 +26,7 @@ const ManifestJson = () => {
       const blob = new window.Blob([stringManifest], { type: 'application/json' });
       const manifestURL = URL.createObjectURL(blob);
       document.querySelector('#manifest').setAttribute('href', manifestURL);
-      document.querySelector('#icon').setAttribute('href', `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}`);
+      document.querySelector('#icon').setAttribute('href', `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}?lastUpdate=${data_atual}`);
     });
 };
 

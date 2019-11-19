@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 import Grid from 'components/Grid';
+import moment from 'moment';
 
 import NoImage from '../../assets/no-image.png';
 
@@ -65,7 +66,8 @@ const GridItem = (props) => {
     enableOrder,
   } = props;
   const [image, setImage] = useState(NoImage);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}`;
+  const data_atual = moment().format('MMMM Do YYYY, h:mm:ss a');
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${data_atual}`;
 
   let img;
   if (item.viewMode === 'IMAGE') {
