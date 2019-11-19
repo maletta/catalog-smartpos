@@ -17,7 +17,7 @@ const ManifestJson = () => {
         display: 'standalone',
         theme_color: '#0f4a73',
         icons: [{
-          src: `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}?lastUpdate=${data_atual}`,
+          src: `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}?lastUpdate=${dataAtual}`,
           sizes: '256x256',
           type: 'image/png',
         }],
@@ -26,7 +26,7 @@ const ManifestJson = () => {
       const blob = new window.Blob([stringManifest], { type: 'application/json' });
       const manifestURL = URL.createObjectURL(blob);
       document.querySelector('#manifest').setAttribute('href', manifestURL);
-      document.querySelector('#icon').setAttribute('href', `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}?lastUpdate=${data_atual}`);
+      document.querySelector('#icon').setAttribute('href', `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}?lastUpdate=${dataAtual}`);
     });
 };
 
