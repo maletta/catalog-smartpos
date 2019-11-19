@@ -7,7 +7,7 @@ const ManifestJson = () => {
   axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/${getStoreName()}`)
     .then((response) => {
       const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-      const data_atual = moment().format('MMMM Do YYYY, h:mm:ss a');
+      const dataAtual = moment().format('DD-MM-YYYY h:mm:ss');
       const myDynamicManifest = {
         name: getStoreName(),
         short_name: getStoreName(),

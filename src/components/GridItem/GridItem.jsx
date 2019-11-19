@@ -66,7 +66,7 @@ const GridItem = (props) => {
     enableOrder,
   } = props;
   const [image, setImage] = useState(NoImage);
-  const data_atual = moment().format('MMMM Do YYYY, h:mm:ss a');
+  const dataAtual = moment().format('DD-MM-YYYY h:mm:ss');
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${data_atual}`;
 
   let img;

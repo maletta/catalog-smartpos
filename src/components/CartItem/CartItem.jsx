@@ -131,7 +131,7 @@ const CartItem = (props) => {
   } = props;
   const [imageProduct, setImage] = useState(NoImage);
   const [showNote, setShowNote] = useState(false);
-  const data_atual = moment().format('MMMM Do YYYY, h:mm:ss a');
+  const dataAtual = moment().format('DD-MM-YYYY h:mm:ss');
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}?lastUpdate=${data_atual}`;
 
   let img;
