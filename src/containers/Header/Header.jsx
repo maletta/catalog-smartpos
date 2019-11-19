@@ -138,7 +138,7 @@ const Header = (props) => {
   const { shoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
   const dataAtual = moment().format('DD-MM-YYYY h:mm:ss');
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${data_atual}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${dataAtual}`;
   const submit = (e) => {
     e.preventDefault();
     if (search) {

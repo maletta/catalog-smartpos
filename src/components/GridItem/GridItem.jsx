@@ -67,7 +67,7 @@ const GridItem = (props) => {
   } = props;
   const [image, setImage] = useState(NoImage);
   const dataAtual = moment().format('DD-MM-YYYY h:mm:ss');
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${data_atual}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${dataAtual}`;
 
   let img;
   if (item.viewMode === 'IMAGE') {
