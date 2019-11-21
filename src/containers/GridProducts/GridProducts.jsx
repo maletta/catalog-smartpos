@@ -35,8 +35,7 @@ const GridProducts = () => {
       .then((response) => {
         setCategories(response.data);
       })
-      .catch(() => setCategories([]))
-      .finally(() => setLoading(false));
+      .catch(() => setCategories([]));
   };
 
   const getProductList = (data) => {
@@ -50,8 +49,7 @@ const GridProducts = () => {
         .catch(() => {
           setProducts({});
           setMaxPage(-1);
-        })
-        .finally(() => setLoading(false));
+        }).finally(() => setLoading(false));
     }
     return getProducts(data, filter)
       .then((response) => {
@@ -62,8 +60,7 @@ const GridProducts = () => {
         setNotFound(true);
         setProducts({});
         setMaxPage(-1);
-      })
-      .finally(() => setLoading(false));
+      }).finally(() => setLoading(false));
   };
 
   const handleOpenModal = (item) => {
@@ -73,18 +70,20 @@ const GridProducts = () => {
 
   const handlePagination = (data) => {
     updateFilter({ page: data.selected + 1 });
-    setLoading(false);
   };
+
+  useEffect(() => {
+    getCategoryList(shop);
+  }, [false]);
 
   useEffect(() => {
     setProducts([]);
     setNotFound(false);
-    getCategoryList(shop);
     yup.setLocale(formatFormErrors());
     getProductList(shop);
     window.scrollTo(0, 0);
     initGA();
-  }, [shop]);
+  }, [filter.categoria]);
 
   return (
     <>
@@ -98,14 +97,7 @@ const GridProducts = () => {
             storeInfo={store}
           />
         </Grid>
-        {loading ? (
-          <Grid
-            cols="12 9 9 9 9"
-            className="d-flex align-items-center justify-content-center"
-          >
-            <Spinner />
-          </Grid>
-        ) : (
+        {(!loading) ? (
           <Grid cols="12 12 9 9 9">
             <GridList
               itens={prodArray}
@@ -123,7 +115,7 @@ const GridProducts = () => {
                   pageCount={maxPage}
                   marginPagesDisplayed={2}
                   pageRangeDisplayed={5}
-                  onPageChange={handlePagination}
+                  onPageChange={() => handlePagination()}
                   containerClassName="pagination"
                   subContainerClassName="pages pagination"
                   activeClassName="active"
@@ -132,9 +124,15 @@ const GridProducts = () => {
               </Row>
             )}
           </Grid>
+        ) : (
+          <Grid
+            cols="12 9 9 9 9"
+            className="d-flex align-items-center justify-content-center"
+          >
+            <Spinner />
+          </Grid>
         )}
       </Row>
-
       <ModalOrderItem
         productOnModal={productOnModal}
         setProductOnModal={setProductOnModal}

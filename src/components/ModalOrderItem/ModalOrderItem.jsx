@@ -177,6 +177,7 @@ const ModalOrderItem = (props) => {
         categoria: productOnModal.categoria,
         pricing: productPricing,
         viewMode: productOnModal.viewMode,
+        atualizacao: productOnModal.atualizacao,
         uuid: uuidv1(),
       });
 
