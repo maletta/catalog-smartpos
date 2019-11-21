@@ -132,11 +132,14 @@ const CartCounter = styled.div`
 
 const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
-  const { codigo, goHome, categories } = props;
+  const {
+    codigo, goHome, categories, atualizacao,
+  } = props;
   const [search, setSearch] = useState('');
   const { shoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${atualizacao}`;
+
   const submit = (e) => {
     e.preventDefault();
     if (search) {
@@ -228,6 +231,7 @@ Header.propTypes = {
   codigo: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
+  atualizacao: PropTypes.string.isRequired,
 };
 
 export default Header;

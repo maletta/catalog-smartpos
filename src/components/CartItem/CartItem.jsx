@@ -130,7 +130,7 @@ const CartItem = (props) => {
   } = props;
   const [imageProduct, setImage] = useState(NoImage);
   const [showNote, setShowNote] = useState(false);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}?lastUpdate=${product.atualizacao}`;
 
   let img;
   if (product.viewMode === 'IMAGE') {

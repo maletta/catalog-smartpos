@@ -149,7 +149,12 @@ const App = () => {
     <>
       {store.found ? (
         <div>
-          <Header categories={categories} codigo={store.codigo} goHome={() => home()} />
+          <Header
+            categories={categories}
+            codigo={store.codigo}
+            goHome={() => home()}
+            atualizacao={store.atualizacao}
+          />
           <Content
             pathname={pathname}
             className="container mb-5"
