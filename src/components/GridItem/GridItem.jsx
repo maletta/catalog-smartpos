@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
-import Grid from 'components/Grid';
 
+import Grid from 'components/Grid';
 import NoImage from '../../assets/no-image.png';
 
 const Container = styled.div`
@@ -65,7 +65,7 @@ const GridItem = (props) => {
     enableOrder,
   } = props;
   const [image, setImage] = useState(NoImage);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`;
 
   let img;
   if (item.viewMode === 'IMAGE') {
