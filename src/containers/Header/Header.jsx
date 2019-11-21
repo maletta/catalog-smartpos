@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import ReactGA from 'react-ga';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
-import moment from 'moment';
 
 import Row from 'components/Row';
 import Grid from 'components/Grid';
@@ -133,12 +132,14 @@ const CartCounter = styled.div`
 
 const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
-  const { codigo, goHome, categories } = props;
+  const {
+    codigo, goHome, categories, atualizacao,
+  } = props;
   const [search, setSearch] = useState('');
   const { shoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
-  const dataAtual = moment().format('DD-MM-YYYY h:mm:ss');
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${dataAtual}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${atualizacao}`;
+
   const submit = (e) => {
     e.preventDefault();
     if (search) {
@@ -230,6 +231,7 @@ Header.propTypes = {
   codigo: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
+  atualizacao: PropTypes.string.isRequired,
 };
 
 export default Header;
