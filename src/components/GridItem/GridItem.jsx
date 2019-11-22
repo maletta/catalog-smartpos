@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
@@ -64,7 +64,18 @@ const GridItem = (props) => {
     openModal,
     enableOrder,
   } = props;
+  const [image, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`;
+
+  let img;
+  if (item.viewMode === 'IMAGE') {
+    img = new Image();
+    img.src = imageBaseUrl;
+
+    img.onload = () => {
+      setImage(imageBaseUrl);
+    };
+  }
 
   return (
     <>
@@ -81,12 +92,7 @@ const GridItem = (props) => {
           className={`${(enableOrder === 1) && 'cursor-pointer'}`}
         >
           <div className="card-image">
-            {(item.viewMode === 'IMAGE') ? (
-              <Img src={imageBaseUrl} title={item.descricao} alt="Produto" />
-            ) : (
-              <Img src={NoImage} title={item.descricao} alt="Produto" />
-            )}
-
+            <Img src={image} title={item.descricao} alt="Produto" />
           </div>
           <Cardcontent>
             <div>

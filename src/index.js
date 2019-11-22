@@ -9,6 +9,8 @@ import dynamicManifest from 'dynamicManifest';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 import { ShopProvider } from './contexts/ShopContext';
+import { FilterProvider } from './contexts/FilterContext';
+import { ShoppingCartProvider } from './contexts/ShoppingCartContext';
 
 import 'bootstrap/dist/css/bootstrap-reboot.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -18,8 +20,12 @@ ReactDOM.render((
   <IntlProvider language={{ locale: 'pt', messages: {} }}>
     <ThemeProvider theme={defaultTheme}>
       <ShopProvider>
-        {dynamicManifest()}
-        <App />
+        <FilterProvider>
+          <ShoppingCartProvider>
+            {dynamicManifest()}
+            <App />
+          </ShoppingCartProvider>
+        </FilterProvider>
       </ShopProvider>
     </ThemeProvider>
   </IntlProvider>), document.getElementById('root'));

@@ -33,9 +33,8 @@ import {
   getCategories,
 } from 'requests';
 
-import FilterContext, { FilterProvider } from 'contexts/FilterContext';
+import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
-import ShoppingCartContext, { ShoppingCartProvider } from 'contexts/ShoppingCartContext';
 
 import initGA from './initGA';
 
@@ -66,6 +65,7 @@ const App = () => {
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
   const { updateShop } = useContext(ShopContext);
+  const { updateFilter } = useContext(FilterContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
@@ -121,9 +121,9 @@ const App = () => {
 
   const home = () => {
     history.push('/');
-    // updateFilter({
-    //   categoria: 0, label: 'Todas as categorias', page: 1, search: '',
-    // });
+    updateFilter({
+      categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+    });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
     window.history.pushState({}, '', `${baseUrl}`);
   };
@@ -132,34 +132,30 @@ const App = () => {
     <>
       {store.found ? (
         <div>
-          <ShoppingCartProvider>
-            <FilterProvider>
-              <Header
-                categories={categories}
-                codigo={store.codigo}
-                goHome={() => home()}
-                atualizacao={store.atualizacao}
-              />
-              <Content
-                pathname={pathname}
-                className="container mb-5"
+          <Header
+            categories={categories}
+            codigo={store.codigo}
+            goHome={() => home()}
+            atualizacao={store.atualizacao}
+          />
+          <Content
+            pathname={pathname}
+            className="container mb-5"
+          >
+            <Breadcrumb goHome={() => home()} />
+            <MainContainer>
+              <Router
+                history={history}
               >
-                <Breadcrumb goHome={() => home()} />
-                <MainContainer>
-                  <Router
-                    history={history}
-                  >
-                    <Switch>
-                      <Route path="/" exact component={GridProducts} />
-                      <Route path="/cart" exact component={Cart} />
-                      <Route path="/checkout" exact component={Checkout} />
-                    </Switch>
-                  </Router>
-                </MainContainer>
-              </Content>
-              <Footer storeInfo={store} />
-            </FilterProvider>
-          </ShoppingCartProvider>
+                <Switch>
+                  <Route path="/" exact component={GridProducts} />
+                  <Route path="/cart" exact component={Cart} />
+                  <Route path="/checkout" exact component={Checkout} />
+                </Switch>
+              </Router>
+            </MainContainer>
+          </Content>
+          <Footer storeInfo={store} />
         </div>
       ) : (notFoundHandle())}
     </>

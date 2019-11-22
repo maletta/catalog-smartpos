@@ -83,7 +83,7 @@ const GridProducts = () => {
     getProductList(shop);
     window.scrollTo(0, 0);
     initGA();
-  }, [filter.categoria]);
+  }, [filter]);
 
   return (
     <>
@@ -115,7 +115,7 @@ const GridProducts = () => {
                   pageCount={maxPage}
                   marginPagesDisplayed={2}
                   pageRangeDisplayed={5}
-                  onPageChange={() => handlePagination()}
+                  onPageChange={handlePagination}
                   containerClassName="pagination"
                   subContainerClassName="pages pagination"
                   activeClassName="active"
