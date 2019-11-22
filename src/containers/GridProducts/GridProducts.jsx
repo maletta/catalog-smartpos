@@ -15,6 +15,8 @@ import { getCategories, getProducts, getSearch } from 'requests';
 
 import formatFormErrors from 'utils/formatFormErrors';
 import initGA from 'initGA';
+import history from 'utils/history';
+import slug from 'utils/slug';
 
 const GridProducts = () => {
   const [loading, setLoading] = useState(true);
@@ -64,6 +66,8 @@ const GridProducts = () => {
   };
 
   const handleOpenModal = (item) => {
+    const slugURL = slug(item.descricao);
+    history.push(`item/${item.id}/${slugURL}`);
     setProductOnModal(item);
     setModalOpen(true);
   };

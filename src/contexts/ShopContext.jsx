@@ -9,12 +9,18 @@ export const ShopProvider = ({ children }) => {
     id: null,
   });
 
+  const [category, setCategory] = useState([]);
+
   const updateShop = (newShop) => {
     setShop(prevState => ({ ...prevState, ...newShop }));
   };
 
+  const updateCategoy = (newShop) => {
+    setCategory(newShop);
+  };
+
   return (
-    <ShopContext.Provider value={{ shop, updateShop }}>
+    <ShopContext.Provider value={{ shop, updateShop, category, updateCategoy }}>
       {children}
     </ShopContext.Provider>
   );

@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
+import history from 'utils/history';
 
 const FilterContext = createContext();
 
@@ -23,6 +24,7 @@ export const FilterProvider = ({ children }) => {
   }, [filter]);
 
   const updateFilter = (newFilter) => {
+    history.push('/');
     setFilter(state => ({ ...state, ...newFilter }));
   };
 

@@ -14,6 +14,8 @@ import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
+import SingleProduct from 'containers/SingleProduct';
+
 import history from 'utils/history';
 
 import getStoreName from 'getStoreName';
@@ -65,7 +67,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
-  const { updateShop } = useContext(ShopContext);
+  const { updateShop, category, updateCategoy1 } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
@@ -79,6 +81,7 @@ const App = () => {
     getCategories(data.id)
       .then((response) => {
         setCategories(response.data);
+        updateCategoy1(response.data);
       })
       .catch(() => setCategories())
       .finally(() => setLoading(false));
@@ -138,7 +141,7 @@ const App = () => {
       {store.found ? (
         <div>
           <Header
-            categories={categories}
+            categories={category}
             codigo={store.codigo}
             goHome={() => home()}
             atualizacao={store.atualizacao}
@@ -156,6 +159,7 @@ const App = () => {
                   <Route path="/" exact component={GridProducts} />
                   <Route path="/cart" exact component={Cart} />
                   <Route path="/checkout" exact component={Checkout} />
+                  <Route path="/item/:id/:descricao" exact component={SingleProduct} />
                 </Switch>
               </Router>
             </MainContainer>
