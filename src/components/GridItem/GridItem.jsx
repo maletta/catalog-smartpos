@@ -92,11 +92,7 @@ const GridItem = (props) => {
           className={`${(enableOrder === 1) && 'cursor-pointer'}`}
         >
           <div className="card-image">
-            {(item.viewMode === 'IMAGE') ? (
-              <Img src={image} alt="product" />
-            ) : (
-              <Img src={image} alt="product" />
-            )}
+            <Img src={image} title={item.descricao} alt="Produto" />
           </div>
           <Cardcontent>
             <div>

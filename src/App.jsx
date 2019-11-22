@@ -9,12 +9,11 @@ import GridProducts from 'containers/GridProducts';
 import MainContainer from 'containers/mainContainer';
 import Cart from 'containers/Cart';
 import Checkout from 'containers/Checkout';
-import Row from 'components/Row';
-import Grid from 'components/Grid';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
+import Breadcrumb from 'containers/Breadcrumb';
 import history from 'utils/history';
 
 import getStoreName from 'getStoreName';
@@ -36,7 +35,7 @@ import {
 
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
-import ShoppingCartContext from 'contexts/ShoppingCartContext';
+
 import initGA from './initGA';
 
 library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
@@ -61,28 +60,12 @@ const Content = styled.div`
   }
 `;
 
-const Breadcrumb = styled.nav`
-  &&& {
-    background: transparent;
-  }
-`;
-
-const BreadcrumbButton = styled.span`
-  align-items: center;
-  color: #f37c05;
-  display: flex;
-  justify-content: center;
-  padding: 0 0.75em;
-  cursor: pointer;
-`;
-
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
-  const { filter, updateFilter } = useContext(FilterContext);
   const { updateShop } = useContext(ShopContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { updateFilter } = useContext(FilterContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
@@ -120,19 +103,19 @@ const App = () => {
     if (hourDiff > 1) {
       localStorage.removeItem('cartInit');
       localStorage.removeItem('cart');
-      updateShoppingCart({
-        basketCount: 0,
-      });
     }
   };
 
   useEffect(() => {
+    getStore();
+  }, [false]);
+
+  useEffect(() => {
     yup.setLocale(formatFormErrors());
     window.scrollTo(0, 0);
-    getStore();
     initGA();
     cleanCart();
-  }, [filter]);
+  }, [false]);
 
   const { pathname } = history.location;
 
@@ -159,16 +142,7 @@ const App = () => {
             pathname={pathname}
             className="container mb-5"
           >
-            <Row>
-              <Grid cols="12">
-                <Breadcrumb>
-                  <ol className="breadcrumb pl-0 mb-0">
-                    <li className="breadcrumb-item"><BreadcrumbButton onClick={e => home(e)} href="#">{ store.storeName }</BreadcrumbButton></li>
-                    <li className="breadcrumb-item active">{filter.search ? `resultados para: ${filter.search}` : filter.label}</li>
-                  </ol>
-                </Breadcrumb>
-              </Grid>
-            </Row>
+            <Breadcrumb goHome={() => home()} />
             <MainContainer>
               <Router
                 history={history}

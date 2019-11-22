@@ -136,6 +136,7 @@ const CartItem = (props) => {
   if (product.viewMode === 'IMAGE') {
     img = new Image();
     img.src = imageBaseUrl;
+
     img.onload = () => {
       setImage(imageBaseUrl);
     };
