@@ -35,6 +35,7 @@ import {
 
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 import initGA from './initGA';
 
@@ -66,6 +67,7 @@ const App = () => {
   const [store, setStore] = useState({});
   const { updateShop } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const notFoundHandle = () => (loading ? (
     <Container>
@@ -103,6 +105,9 @@ const App = () => {
     if (hourDiff > 1) {
       localStorage.removeItem('cartInit');
       localStorage.removeItem('cart');
+      updateShoppingCart({
+        basketCount: 0,
+      });
     }
   };
 
