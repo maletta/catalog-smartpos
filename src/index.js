@@ -8,8 +8,8 @@ import defaultTheme from 'styles/DefaultTheme';
 import dynamicManifest from 'dynamicManifest';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
-import { FilterProvider } from './contexts/FilterContext';
 import { ShopProvider } from './contexts/ShopContext';
+import { FilterProvider } from './contexts/FilterContext';
 import { ShoppingCartProvider } from './contexts/ShoppingCartContext';
 
 import 'bootstrap/dist/css/bootstrap-reboot.min.css';
