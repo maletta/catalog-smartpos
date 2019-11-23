@@ -69,7 +69,7 @@ const SingleProduct = (props) => {
 };
 
 SingleProduct.propTypes = {
-  match: PropTypes.object({}).isRequired,
+  match: PropTypes.shape({}).isRequired,
 };
 
 export default SingleProduct;
