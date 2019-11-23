@@ -11,7 +11,7 @@ import SideBar from 'components/SideBar';
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 
-import { getCategories, getProducts, getSearch } from 'requests';
+import { getProducts, getSearch } from 'requests';
 
 import formatFormErrors from 'utils/formatFormErrors';
 import initGA from 'initGA';
@@ -25,20 +25,11 @@ const GridProducts = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [productOnModal, setProductOnModal] = useState({});
   const [maxPage, setMaxPage] = useState(1);
-  const [categories, setCategories] = useState([]);
   const [store] = useState({});
   const { filter, updateFilter } = useContext(FilterContext);
-  const { shop } = useContext(ShopContext);
+  const { shop, categories } = useContext(ShopContext);
 
   const prodArray = Object.keys(products).map(i => products[i]);
-
-  const getCategoryList = (data) => {
-    getCategories(data.id)
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch(() => setCategories([]));
-  };
 
   const getProductList = (data) => {
     setLoading(true);
@@ -75,10 +66,6 @@ const GridProducts = () => {
   const handlePagination = (data) => {
     updateFilter({ page: data.selected + 1 });
   };
-
-  useEffect(() => {
-    getCategoryList(shop);
-  }, [false]);
 
   useEffect(() => {
     setProducts([]);

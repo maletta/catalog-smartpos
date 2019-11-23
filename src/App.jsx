@@ -65,9 +65,8 @@ const Content = styled.div`
 
 const App = () => {
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
-  const { updateShop, category, updateCategoy1 } = useContext(ShopContext);
+  const { updateShop, categories, updateCategory } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
@@ -80,10 +79,9 @@ const App = () => {
   const getCategoryList = (data) => {
     getCategories(data.id)
       .then((response) => {
-        setCategories(response.data);
-        updateCategoy1(response.data);
+        updateCategory(response.data);
       })
-      .catch(() => setCategories())
+      .catch(() => updateCategory([]))
       .finally(() => setLoading(false));
   };
 
@@ -141,7 +139,7 @@ const App = () => {
       {store.found ? (
         <div>
           <Header
-            categories={category}
+            categories={categories}
             codigo={store.codigo}
             goHome={() => home()}
             atualizacao={store.atualizacao}
