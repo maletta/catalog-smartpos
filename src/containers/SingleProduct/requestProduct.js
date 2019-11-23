@@ -5,7 +5,6 @@ import getModifiersOfProduct from 'api/modifiersRequests';
 import getProduct from 'api/productRequests';
 
 const getInfoProduct = async (tenant, product) => {
-
   const additionalInfo = await axios.all([
     getProduct(tenant, product),
     getVariantsOfProduct(tenant, product),
@@ -17,7 +16,6 @@ const getInfoProduct = async (tenant, product) => {
     variants: additionalInfo[1].data,
     modifiers: additionalInfo[2].data,
   };
-
 };
 
 export default getInfoProduct;

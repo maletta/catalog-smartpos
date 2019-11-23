@@ -1,9 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+
+
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import SideBar from 'components/SideBar';
-
 import ShopContext from 'contexts/ShopContext';
 
 import getInfoProduct from './requestProduct';
@@ -34,10 +36,9 @@ const SingleProduct = (props) => {
   };
 
   useEffect(() => {
-    const { params: { id, descricao } } = props.match;
+    const { params: { id } } = props.match;
     getInfoProduct(shop.id, id).then((response) => {
       setProduct(response);
-
     });
   }, [false]);
 
@@ -65,6 +66,10 @@ const SingleProduct = (props) => {
       </Row>
     </>
   );
+};
+
+SingleProduct.propTypes = {
+  match: PropTypes.object({}).isRequired,
 };
 
 export default SingleProduct;
