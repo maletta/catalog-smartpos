@@ -15,16 +15,19 @@ export const FilterProvider = ({ children }) => {
     orderBy: parsed.orderBy,
     sortBy: parsed.sortBy,
     search: parsed.search,
+    redirect: false,
   });
 
   useEffect(() => {
     const stringified = queryString.stringify({ ...parsed, ...filter });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-    if (filter.categoria) { window.history.pushState({}, '', `${baseUrl}?${stringified}`); }
+    //if (filter.categoria) { window.history.pushState({}, '', `${baseUrl}?${stringified}`); }
   }, [filter]);
 
   const updateFilter = (newFilter) => {
-    history.push('/');
+    if (newFilter.redirect) {
+      history.push('/');
+    }
     setFilter(state => ({ ...state, ...newFilter }));
   };
 

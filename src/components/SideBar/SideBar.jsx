@@ -16,7 +16,7 @@ const SideBar = (props) => {
       text={item.descricao}
       selected={item.id === filter.categoria}
       onClick={() => updateFilter({
-        categoria: item.id, label: item.descricao, search: undefined, page: 1,
+        categoria: item.id, label: item.descricao, search: undefined, page: 1, redirect: true,
       })}
     />
   ));
@@ -25,22 +25,22 @@ const SideBar = (props) => {
       <List title="Ordernar por" isFullHeight>
         <LinkItem
           text="Maior preço"
-          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'valorVenda' })}
+          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'valorVenda', redirect: true })}
           selected={(filter.orderBy === 'desc' && filter.sortBy === 'valorVenda')}
         />
         <LinkItem
           text="Menor preço"
-          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'valorVenda' })}
+          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'valorVenda', redirect: true })}
           selected={(filter.orderBy === 'asc' && filter.sortBy === 'valorVenda')}
         />
         <LinkItem
           text="A-Z"
-          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'descricao' })}
+          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'descricao', redirect: true })}
           selected={(filter.orderBy === 'asc' && filter.sortBy === 'descricao')}
         />
         <LinkItem
           text="Z-A"
-          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'descricao' })}
+          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'descricao', redirect: true })}
           selected={(filter.orderBy === 'desc' && filter.sortBy === 'descricao')}
         />
       </List>
@@ -48,8 +48,9 @@ const SideBar = (props) => {
         <LinkItem
           text="Todas as categorias"
           onClick={() => updateFilter({
-            categoria: 0, label: 'Todas as categorias', search: undefined, page: 1,
+            categoria: 0, label: 'Todas as categorias', search: undefined, page: 1, redirect: true,
           })}
+          selected={(filter.label === 'Todas as categorias')}
         />
         {items}
       </List>

@@ -15,8 +15,6 @@ import { getProducts, getSearch } from 'requests';
 
 import formatFormErrors from 'utils/formatFormErrors';
 import initGA from 'initGA';
-import history from 'utils/history';
-import slug from 'utils/slug';
 
 const GridProducts = () => {
   const [loading, setLoading] = useState(true);
@@ -56,13 +54,6 @@ const GridProducts = () => {
       }).finally(() => setLoading(false));
   };
 
-  const handleOpenModal = (item) => {
-    const slugURL = slug(item.descricao);
-    history.push(`item/${item.id}/${slugURL}`);
-    setProductOnModal(item);
-    setModalOpen(true);
-  };
-
   const handlePagination = (data) => {
     updateFilter({ page: data.selected + 1 });
   };
@@ -94,7 +85,6 @@ const GridProducts = () => {
               itens={prodArray}
               notFound={notFound}
               enableOrder={shop.is_enableOrder}
-              openModal={handleOpenModal}
             />
             {(prodArray.length > 1 && maxPage > 1) && (
               <Row className="d-flex align-items-center justify-content-center">

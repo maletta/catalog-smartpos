@@ -1,41 +1,51 @@
-import React, { useState, useContext, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import {FormattedPlural, injectIntl, intlShape} from 'react-intl';
+import { FormattedPlural, injectIntl, intlShape } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
+import uuidv1 from 'uuid/v1';
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+} from 'react-share';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
-import Button from 'components/Form/Button';
 import ButtonPrice from 'components/Form/ButtonPrice';
 import TextArea from 'components/Form/TextArea';
-import Checkbox from 'components/Form/RenderCheckbox';
 import Counter from 'components/Form/Counter';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import SideBar from 'components/SideBar';
 import ShopContext from 'contexts/ShopContext';
+import FilterContext from 'contexts/FilterContext';
 import ItemModifiers from 'components/ItemModifiers';
 
 import getInfoProduct from './requestProduct';
 import NoImage from '../../assets/no-image.png';
-import uuidv1 from "uuid/v1";
+
 
 const Img = styled.img`
   width: 100%;
   border-radius: 5px;
+  
+  @media (max-width: 576px) { 
+    width: 100%;
+  }
 `;
 
 const Container = styled.div`
   display: flex;
   background: #fff;  
   border-radius: 5px;
-  padding: 15px 15px 0 15px;
+  padding-top: 15px;
   height: auto;
 `;
 
 const FooterContainer = styled.div`
   background: #fff;
-  height: 80px;
+  height: 75px;
   width: 100%;
   position: sticky;
   bottom: 0;
@@ -47,6 +57,13 @@ const Title = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
   color: #707070;
+`;
+
+const SubTitle = styled.h4`
+  font-size: 1rem;
+  font-weight: 600;
+  color: #707070;
+  margin-top: 15px;
 `;
 
 const Price = styled.h3`
@@ -116,6 +133,11 @@ const ModifierTitleRequired = styled.span`
   border-radius: 3px;
 `;
 
+const SocialIcon = styled.i`
+  font-size: 2rem;
+  color: #00529B;
+`;
+
 const SingleProduct = (props) => {
   const { intl } = props;
   const [product, setProduct] = useState({
@@ -130,16 +152,10 @@ const SingleProduct = (props) => {
   const [initialValues, setInitialValues] = useState({ quantity: 1 });
   const [isLoaded, setLoaded] = useState(false);
   const { shop, categories } = useContext(ShopContext);
+  const { updateFilter } = useContext(FilterContext);
   const [image, setImage] = useState(NoImage);
-  const barBotton = useRef(null);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.codigo}?lastUpdate`;
+  const completeURL = window.location.href;
 
-  const img = new Image();
-  img.src = imageBaseUrl;
-
-  img.onload = () => {
-    setImage(imageBaseUrl);
-  };
 
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
@@ -150,13 +166,14 @@ const SingleProduct = (props) => {
 
   useEffect(() => {
     setLoaded(false);
+
     const { params: { id } } = props.match;
     getInfoProduct(shop.id, id).then((response) => {
       setInitialValues({
         variant: {},
         note: '',
         quantity: 1,
-        id: response.id,
+        id: response.codigo,
         descricao: response.descricao,
         categoria: response.categoria,
         pricing: productPricing,
@@ -164,12 +181,21 @@ const SingleProduct = (props) => {
         atualizacao: response.atualizacao,
         uuid: uuidv1(),
       });
+      updateFilter({ label: response.descricao });
       setProduct(response);
       setProductPricing({
         product: response.valorVenda,
         modifiers: 0,
       });
       setModifierSelected(prevState => ([...prevState, []]));
+      if (response.codigo) {
+        const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
+        const img = new Image();
+        img.src = imageBaseUrl;
+        img.onload = () => {
+          setImage(imageBaseUrl);
+        };
+      }
     }).finally(() => setLoaded(true));
   }, [false]);
 
@@ -182,118 +208,158 @@ const SingleProduct = (props) => {
         >
           <SideBar categories={categories} />
         </Grid>
-        <Container
-          className="col col-12 col-sm-3 col-md-3 col-lg-3 col-xl-9"
+        <Grid
+          cols="12 12 9 9 9"
         >
           <Formik
             onSubmit={submitItem}
             initialValues={initialValues}
             render={propsForm => (
               <Form style={{ width: '100%' }}>
-                <Row className="d-flex">
-                  <Grid cols="12 3 3 6 6">
-                    <Img src={image} title={product.descricao} alt="Produto" />
-                  </Grid>
-                  <Grid cols="12 3 3 6 6">
-                    <Title>{product.descricao}</Title>
-                    {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
-                    <Price>{intl.formatNumber(product.valorVenda, { style: 'currency', currency: 'BRL' })}</Price>
-                    <hr />
-                    {(product.variants.length > 0) && (
-                      <SelectDropDown
-                        id="variants"
-                        label="Variações"
-                        options={product.variants}
-                        getOptionLabel={label => (
-                          <LabelVariant>
-                            <div>{label.name}</div>
-                            {(label.sellValue) && (<div>{intl.formatNumber(label.sellValue, { style: 'currency', currency: 'BRL' })}</div>)}
-                          </LabelVariant>
-                        )}
-                        onChange={(value) => {
-                          propsForm.setFieldValue('variant', value);
-                          setVariantSelected({ name: value.name });
-                          setProductPricing(prevState => ({
-                            ...prevState,
-                            product: value.sellValue,
-                          }));
-                        }}
-                        getOptionValue={option => option.id}
-                        isInvalid={propsForm.errors.variant}
-                        touched={propsForm.touched.variant}
-                        isRequired
-                      />
-                    )}
-                    {(isLoaded) && (
-                      <>
-                        <ModifiersArea>
-                          {product.modifiers.map((mod, index) => {
-                            const hasError = false;
-                            return (
-                              <div key={mod.id}>
-                                <ModifierHeader
-                                  hasError={hasError}
-                                >
-                                  <div>
-                                    <ModifierTitle
-                                      hasError={hasError}
-                                    >
-                                      {mod.name}
-                                    </ModifierTitle>
-                                    <ModifierAmountTitle
-                                      hasError={hasError}
-                                    >
-                                      {`Máximo ${mod.maxQuantity} `}
-                                      <FormattedPlural
-                                        value={mod.maxQuantity}
-                                        one="opção"
-                                        other="opções"
-                                      />
-                                    </ModifierAmountTitle>
-                                  </div>
-                                  {(mod.required) && (
-                                    <div>
-                                      <ModifierTitleRequired
-                                        hasError={hasError}
-                                      >
-                                        {'Obrigatório'}
-                                      </ModifierTitleRequired>
-                                    </div>
-                                  )}
-                                </ModifierHeader>
-                                <ul>
-                                  <ItemModifiers
-                                    modifier={mod}
-                                    hasError={hasError}
-                                    propsForm={propsForm}
-                                    index={index}
-                                    modifierSelected={modifierSelected}
-                                  />
-                                </ul>
-                              </div>
-                            );
-                          })}
-                        </ModifiersArea>
-                        <div className="column is-mb-paddingless is-12 is-mb-paddingless">
-                          <Field
-                            name="note"
-                            inputId="observacao"
-                            component={TextArea}
-                            label="Observação"
-                            autoFocus={false}
-                            rows={3}
-                          />
+                <Container className="row d-flex">
+                  <Grid
+                    cols="12 6 6 6 6"
+                    className="d-none d-md-block"
+                  >
+                    <Row>
+                      <Grid cols="12">
+                        <Img src={image} title={product.descricao} alt="Produto" />
+                      </Grid>
+                      <Grid cols="12">
+                        <SubTitle>Compartilhe nas redes sociais</SubTitle>
+                        <div style={{ width: '50%' }} className="d-flex justify-content-between">
+                          <FacebookShareButton url={completeURL}>
+                            <SocialIcon className="fab fa-facebook-square" />
+                          </FacebookShareButton>
+                          <TwitterShareButton url={completeURL}>
+                            <SocialIcon className="fab fa-twitter-square" />
+                          </TwitterShareButton>
+                          <WhatsappShareButton url={completeURL}>
+                            <SocialIcon className="fab fa-whatsapp-square" />
+                          </WhatsappShareButton>
+                          <EmailShareButton url={completeURL}>
+                            <SocialIcon className="fas fa-envelope-square" />
+                          </EmailShareButton>
                         </div>
-                      </>
-                    )}
+                      </Grid>
+                      <Grid cols="12">
+                        <SubTitle>Descrição do item</SubTitle>
+                      </Grid>
+                    </Row>
+                  </Grid>
+                  <Grid cols="12 12 6 6 6">
+                    <Row>
+                      <Grid cols="6" className="d-md-none mb-3">
+                        <Img src={image} title={product.descricao} alt="Produto" />
+                      </Grid>
+                      <Grid cols="6 6 12 12 12">
+                        <Title>{product.descricao}</Title>
+                        {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
+                        <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                      </Grid>
+                    </Row>
+                    <Row>
+                      <Grid cols="12">
+                        {(product.variants.length > 0) && (
+                          <SelectDropDown
+                            id="variants"
+                            label="Variações"
+                            options={product.variants}
+                            getOptionLabel={label => (
+                              <LabelVariant>
+                                <div>{label.name}</div>
+                                {(label.sellValue) && (<div>{intl.formatNumber(label.sellValue, { style: 'currency', currency: 'BRL' })}</div>)}
+                              </LabelVariant>
+                            )}
+                            onChange={(value) => {
+                              propsForm.setFieldValue('variant', value);
+                              setVariantSelected({ name: value.name });
+                              setProductPricing(prevState => ({
+                                ...prevState,
+                                product: value.sellValue,
+                              }));
+                            }}
+                            getOptionValue={option => option.id}
+                            isInvalid={propsForm.errors.variant}
+                            touched={propsForm.touched.variant}
+                            isRequired
+                          />
+                        )}
+                        {(isLoaded) && (
+                          <>
+                            <ModifiersArea>
+                              {product.modifiers.map((mod, index) => {
+                                const hasError = false;
+                                return (
+                                  <div key={mod.id}>
+                                    <ModifierHeader
+                                      hasError={hasError}
+                                    >
+                                      <div>
+                                        <ModifierTitle
+                                          hasError={hasError}
+                                        >
+                                          {mod.name}
+                                        </ModifierTitle>
+                                        <ModifierAmountTitle
+                                          hasError={hasError}
+                                        >
+                                          {`Máximo ${mod.maxQuantity} `}
+                                          <FormattedPlural
+                                            value={mod.maxQuantity}
+                                            one="opção"
+                                            other="opções"
+                                          />
+                                        </ModifierAmountTitle>
+                                      </div>
+                                      {(mod.required) && (
+                                        <div>
+                                          <ModifierTitleRequired
+                                            hasError={hasError}
+                                          >
+                                            {'Obrigatório'}
+                                          </ModifierTitleRequired>
+                                        </div>
+                                      )}
+                                    </ModifierHeader>
+                                    <ul>
+                                      <ItemModifiers
+                                        modifier={mod}
+                                        hasError={hasError}
+                                        propsForm={propsForm}
+                                        index={index}
+                                        modifierSelected={modifierSelected}
+                                      />
+                                    </ul>
+                                  </div>
+                                );
+                              })}
+                            </ModifiersArea>
+                            <div className="column is-mb-paddingless is-12 is-mb-paddingless">
+                              <Field
+                                name="note"
+                                inputId="observacao"
+                                component={TextArea}
+                                label="Observação"
+                                autoFocus={false}
+                                rows={3}
+                              />
+                            </div>
+                          </>
+                        )}
+                      </Grid>
+                    </Row>
                   </Grid>
                   <FooterContainer>
                     <Row
                       className="justify-content-end"
                     >
-                      <Grid cols="6">
+                      <Grid cols="12 12 12 6 6">
                         <Row>
-                          <Grid cols="5">
+                          <Grid
+                            cols="5"
+                            className="d-flex justify-content-center align-items-center"
+                          >
                             <div>
                               <Counter
                                 limit={100}
@@ -307,7 +373,7 @@ const SingleProduct = (props) => {
                           </Grid>
                           <Grid
                             cols="7"
-                            className="d-flex justify-content-start align-items-end"
+                            className="d-flex justify-content-center align-items-end"
                           >
                             <div>
                               <ButtonPrice
@@ -321,11 +387,11 @@ const SingleProduct = (props) => {
                       </Grid>
                     </Row>
                   </FooterContainer>
-                </Row>
+                </Container>
               </Form>
             )}
           />
-        </Container>
+        </Grid>
       </Row>
     </>
   );
