@@ -133,14 +133,12 @@ const CartItem = (props) => {
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}?lastUpdate=${product.atualizacao}`;
 
   let img;
-  if (product.viewMode === 'IMAGE') {
-    img = new Image();
-    img.src = imageBaseUrl;
+  img = new Image();
+  img.src = imageBaseUrl;
 
-    img.onload = () => {
-      setImage(imageBaseUrl);
-    };
-  }
+  img.onload = () => {
+    setImage(imageBaseUrl);
+  };
 
   return (
     <ListItem>
@@ -163,7 +161,7 @@ const CartItem = (props) => {
           </div>
         </div>
         <AreaControl>
-          {(product.note.length > 0) && (
+          {(product.note && product.note.length > 0) && (
             <div>
               <NoteButton
                 className="far fa-comment"

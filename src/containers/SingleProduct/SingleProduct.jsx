@@ -10,6 +10,7 @@ import {
   WhatsappShareButton,
   EmailShareButton,
 } from 'react-share';
+import lodash from 'lodash';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
@@ -20,7 +21,11 @@ import Grid from 'components/Grid';
 import SideBar from 'components/SideBar';
 import ShopContext from 'contexts/ShopContext';
 import FilterContext from 'contexts/FilterContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
+import history from 'utils/history';
+import daysOfWeek from 'utils/daysOfWeek';
+import orderValidation from './orderSchema';
 
 import getInfoProduct from './requestProduct';
 import NoImage from '../../assets/no-image.png';
@@ -40,7 +45,7 @@ const Container = styled.div`
   background: #fff;  
   border-radius: 5px;
   padding-top: 15px;
-  height: auto;
+  min-height: 70vh;
 `;
 
 const FooterContainer = styled.div`
@@ -97,22 +102,13 @@ const ModifierHeader = styled.div`
   align-items: center;
   background: #fff;
   margin: 0 0 0 0;
-  ${props => (props.hasError ? `
-    border-width: 0 0 0 1px;
-    border-style: solid;
-    border-color: #ff2323;
-    padding: 10px 0 10px 9px;
-    ` : `
-    border-width: 0;
-    padding: 10px 0 10px 10px;
-  `)}
 `;
 
 const ModifierTitle = styled.span`
   font-size: 1rem;
   line-height: 1.25em;
   font-weight: 600;
-  color: ${props => (props.hasError ? ' #ff2323' : '#3f3e3e')};
+  color: #3f3e3e;
 `;
 
 const ModifierAmountTitle = styled.span`
@@ -120,7 +116,7 @@ const ModifierAmountTitle = styled.span`
   font-size: 0.875rem;
   line-height: 17px;
   display: block;
-  color: ${props => (props.hasError ? ' #ff2323' : '#717171')};
+  color: #3f3e3e;
 `;
 
 const ModifierTitleRequired = styled.span`
@@ -136,6 +132,7 @@ const ModifierTitleRequired = styled.span`
 const SocialIcon = styled.i`
   font-size: 2rem;
   color: #00529B;
+  cursor: pointer;
 `;
 
 const SingleProduct = (props) => {
@@ -149,24 +146,84 @@ const SingleProduct = (props) => {
   });
   const [modifierSelected, setModifierSelected] = useState([[]]);
   const [variantSelected, setVariantSelected] = useState({ name: '' });
-  const [initialValues, setInitialValues] = useState({ quantity: 1 });
+  const [modifiersErrors, setModifiersErrors] = useState(false);
+  const [initialValues, setInitialValues] = useState({ quantity: 1, variant: {} });
   const [isLoaded, setLoaded] = useState(false);
   const { shop, categories } = useContext(ShopContext);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
   const [image, setImage] = useState(NoImage);
   const completeURL = window.location.href;
 
-
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
-  const submitItem = (values) => {
-    console.log(values);
+  const isBusinessOpen = () => {
+    const getCurrentTime = `${new Date().getHours()}:${new Date().getMinutes()}`;
+    const getIntOfDay = new Date().getDay();
+    if (shop.openHours.length > 0) {
+      const openHours = shop.openHours.map(day => ({
+        ...day,
+        ...daysOfWeek[lodash.findKey(daysOfWeek, { name: day.dayOfWeek })],
+      }));
+      const currentDay = openHours[getIntOfDay];
+      if ((getCurrentTime >= currentDay.openHour) && (getCurrentTime <= currentDay.closeHour)) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  }
+
+
+  const submitItem = (values, { resetForm }) => {
+    console.log(shop.allowOrderOutsideBusinessHours, isBusinessOpen());
+    //return isBusinessOpen();
+    if (isBusinessOpen() && !shop.allowOrderOutsideBusinessHours) {
+      return false;
+    }
+
+    const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+    const newItem = {
+      ...values,
+      pricing: productPricing,
+      modifiers: modifierSelected,
+    };
+
+    let newCart = [];
+    let indexToUpdate = null;
+    const repeat = prevCart.filter((item, index) => {
+      indexToUpdate = index;
+      return (lodash.isEqual(
+        lodash.omit(item, ['quantity']),
+        lodash.omit(newItem, ['quantity']),
+      ));
+    });
+
+    if (repeat.length) {
+      prevCart[indexToUpdate].quantity += values.quantity;
+      newCart = prevCart;
+    } else {
+      newCart = [
+        ...prevCart,
+        newItem,
+      ];
+    }
+    const basketCount = newCart.reduce((count, val) => (count + val.quantity), 0);
+    updateShoppingCart({
+      basketCount,
+    });
+    localStorage.setItem('cart', JSON.stringify(newCart));
+    localStorage.setItem('cartInit', new Date().getTime());
+    setTimeout(() => {
+      history.push('/cart');
+      resetForm({ quantity: 1, variant: {} });
+    }, 1000);
   };
 
 
   useEffect(() => {
     setLoaded(false);
-
+    window.scrollTo(0, 0);
     const { params: { id } } = props.match;
     getInfoProduct(shop.id, id).then((response) => {
       setInitialValues({
@@ -196,6 +253,8 @@ const SingleProduct = (props) => {
           setImage(imageBaseUrl);
         };
       }
+      response.modifiers.map(item => ((item.required && modifiersErrors === false)
+        && setModifiersErrors(true)));
     }).finally(() => setLoaded(true));
   }, [false]);
 
@@ -214,6 +273,8 @@ const SingleProduct = (props) => {
           <Formik
             onSubmit={submitItem}
             initialValues={initialValues}
+            validationSchema={orderValidation(product.variants)}
+            enableReinitialize
             render={propsForm => (
               <Form style={{ width: '100%' }}>
                 <Container className="row d-flex">
@@ -265,6 +326,7 @@ const SingleProduct = (props) => {
                             id="variants"
                             label="Variações"
                             options={product.variants}
+                            value={variantSelected}
                             getOptionLabel={label => (
                               <LabelVariant>
                                 <div>{label.name}</div>
@@ -274,6 +336,7 @@ const SingleProduct = (props) => {
                             onChange={(value) => {
                               propsForm.setFieldValue('variant', value);
                               setVariantSelected({ name: value.name });
+                              propsForm.setFieldTouched('variant', true);
                               setProductPricing(prevState => ({
                                 ...prevState,
                                 product: value.sellValue,
@@ -289,12 +352,11 @@ const SingleProduct = (props) => {
                           <>
                             <ModifiersArea>
                               {product.modifiers.map((mod, index) => {
-                                const hasError = false;
+                                const hasError = (mod.required
+                                  && (modifierSelected[index].length <= 0));
                                 return (
                                   <div key={mod.id}>
-                                    <ModifierHeader
-                                      hasError={hasError}
-                                    >
+                                    <ModifierHeader>
                                       <div>
                                         <ModifierTitle
                                           hasError={hasError}
@@ -329,6 +391,9 @@ const SingleProduct = (props) => {
                                         propsForm={propsForm}
                                         index={index}
                                         modifierSelected={modifierSelected}
+                                        setProductPricing={setProductPricing}
+                                        setModifierSelected={setModifierSelected}
+                                        setModifiersErrors={setModifiersErrors}
                                       />
                                     </ul>
                                   </div>
@@ -380,6 +445,8 @@ const SingleProduct = (props) => {
                                 value="ADICIONAR"
                                 price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
                                 type="submit"
+                                disabled={modifiersErrors}
+                                isLoading={propsForm.isSubmitting}
                               />
                             </div>
                           </Grid>

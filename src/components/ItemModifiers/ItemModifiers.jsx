@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import { injectIntl, intlShape } from 'react-intl';
 
 import Checkbox from 'components/Form/RenderCheckbox/RenderCheckbox';
@@ -22,7 +23,47 @@ const ModifierItemSellValue = styled.span`
   font-weight: 600;
 `;
 
-const ItemModifiers = ({ modifier, hasError, propsForm, index, intl, modifierSelected }) => {
+const ItemModifiers = (props) => {
+  const {
+    modifier,
+    hasError,
+    index,
+    intl,
+    modifierSelected,
+    setProductPricing,
+    setModifierSelected,
+    setModifiersErrors,
+  } = props;
+  const checkedItems = (isChecked, item) => {
+    if (isChecked) {
+      const removing = modifierSelected[index]
+        .filter(itemChecked => (item.id !== itemChecked.id));
+      setProductPricing(prevState => ({
+        ...prevState,
+        modifiers: (prevState.modifiers - item.sellValue),
+      }));
+      setModifierSelected((prevState) => {
+        const newMod = prevState;
+        newMod[index] = removing;
+        return [...newMod];
+      });
+      if (modifier.required && !hasError) {
+        setModifiersErrors(() => true);
+      }
+    } else if (modifierSelected[index].length < modifier.maxQuantity) {
+      setProductPricing(prevState => ({
+        ...prevState,
+        modifiers: (prevState.modifiers + item.sellValue),
+      }));
+      setModifierSelected((prevState) => {
+        prevState[index].push(item);
+        return ([...prevState]);
+      });
+      if (modifier.required && hasError) {
+        setModifiersErrors(() => false);
+      }
+    }
+  };
 
   return (
     modifier.itens.map((item) => {
@@ -39,6 +80,9 @@ const ItemModifiers = ({ modifier, hasError, propsForm, index, intl, modifierSel
               value: isChecked,
             }}
             disabled={(!isAvailable && !isChecked)}
+            onChange={() => {
+              checkedItems(isChecked, item);
+            }}
           />
         </ModifierItem>
       );
@@ -47,6 +91,10 @@ const ItemModifiers = ({ modifier, hasError, propsForm, index, intl, modifierSel
 
 ItemModifiers.propTypes = {
   intl: intlShape.isRequired,
+  modifierSelected: PropTypes.array.isRequired,
+  setProductPricing: PropTypes.func.isRequired,
+  setModifierSelected: PropTypes.func.isRequired,
+  setModifiersErrors: PropTypes.func.isRequired,
 };
 
 export default injectIntl(ItemModifiers);
