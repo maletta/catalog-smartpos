@@ -16,7 +16,14 @@ pipelines:
         script:
           - yarn install
           - yarn lint
-
+    - step:
+        caches:
+          - node
+        name: ✔ Cypress
+        image: cypress/base:10
+        script:
+          - yarn install
+          - yarn cypress:run
   branches:
       develop:
         - step:
