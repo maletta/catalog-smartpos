@@ -59,7 +59,7 @@ const Content = styled.div`
   padding-bottom: 80px;
 
   @media (max-width: 768px) {
-    ${props => (props.pathname === '/' ? 'top: 105px' : 'top: 70px')};
+    ${props => (props.pathname !== '/checkout' ? 'top: 105px' : 'top: 70px')};
   }
 `;
 
@@ -157,7 +157,7 @@ const App = () => {
                   <Route path="/" exact component={GridProducts} />
                   <Route path="/cart" exact component={Cart} />
                   <Route path="/checkout" exact component={Checkout} />
-                  <Route path="/item/:id/:descricao" exact component={SingleProduct} />
+                  <Route path="/item/:id/:descricao?" component={SingleProduct} />
                 </Switch>
               </Router>
             </MainContainer>

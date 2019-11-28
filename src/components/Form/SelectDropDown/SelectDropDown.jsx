@@ -23,7 +23,7 @@ const Label = styled.label`
   margin-bottom: 0;
   font-size: 1rem;
   line-height: 1.25em;
-  font-weight: 600;  
+  font-weight: 600;
 `;
 
 const Text = styled.span`

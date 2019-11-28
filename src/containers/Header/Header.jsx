@@ -218,7 +218,7 @@ const Header = (props) => {
           </Grid>
         </Row>
       </AreaMenu>
-      {(pathname === '/' && (
+      {(pathname !== '/checkout' && (
         <FiltersMobile
           categories={categories}
         />

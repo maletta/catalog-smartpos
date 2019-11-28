@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 import history from 'utils/history';
@@ -17,12 +17,6 @@ export const FilterProvider = ({ children }) => {
     search: parsed.search,
     redirect: false,
   });
-
-  useEffect(() => {
-    const stringified = queryString.stringify({ ...parsed, ...filter });
-    const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-    //if (filter.categoria) { window.history.pushState({}, '', `${baseUrl}?${stringified}`); }
-  }, [filter]);
 
   const updateFilter = (newFilter) => {
     if (newFilter.redirect) {

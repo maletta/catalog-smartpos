@@ -9,7 +9,6 @@ const Button = styled.a`
   text-align: left;
   font-size: 14px;
   color: ${props => (props.selected ? '#f38a00' : '#6c757d')} !important;
-  
 `;
 
 const Li = styled.li`

@@ -98,7 +98,9 @@ const FiltersMobile = ({ categories }) => {
       key={item.id}
       title={item.descricao}
       onClick={() => {
-        updateFilter({ categoria: item.id, page: 1, search: undefined });
+        updateFilter({
+          categoria: item.id, page: 1, search: undefined, redirect: true, label: item.descricao,
+        });
         setSelectCategoryOpen(false);
         setCategorySelected(item.descricao);
       }}

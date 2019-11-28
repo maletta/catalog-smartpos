@@ -12,7 +12,7 @@ import NoImage from '../../assets/no-image.png';
 const LinkToItem = styled(Link)`
   color: #212529;
   text-decoration: none;
-  
+
   :hover {
     color: #212529;
     text-decoration: none;
@@ -47,8 +47,8 @@ const Descricao = styled.div`
   justify-content: flex-start;
   text-align: left;
   font-size: 1.2rem;
-  
-   @media (max-width: 768px) {
+
+  @media (max-width: 768px) {
     font-size: 1rem;
   }
 `;
