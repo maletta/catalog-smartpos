@@ -403,9 +403,7 @@ const SingleProduct = (props) => {
                       </Grid>
                       {(shop.is_enableOrder === 1) && (
                         <FooterContainer>
-                          <Row
-                            className="justify-content-end"
-                          >
+                          <div className="justify-content-end">
                             <Grid cols="12 12 12 6 6">
                               <Row>
                                 <Grid
@@ -439,7 +437,7 @@ const SingleProduct = (props) => {
                                 </Grid>
                               </Row>
                             </Grid>
-                          </Row>
+                          </div>
                         </FooterContainer>
                       )}
                     </Container>
