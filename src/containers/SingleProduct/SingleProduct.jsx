@@ -287,9 +287,9 @@ const SingleProduct = (props) => {
                               </EmailShareButton>
                             </div>
                           </Grid>
-                          <Grid cols="12">
+                          {/* <Grid cols="12">
                             <SubTitle>Descrição do item</SubTitle>
-                          </Grid>
+                          </Grid> */}
                         </Row>
                       </Grid>
                       <Grid cols="12 12 6 6 6">
