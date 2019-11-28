@@ -293,7 +293,7 @@ const Footer = ({ storeInfo }) => {
           </Row>
         </div>
       </FullWidthCopyright>
-      {storeInfo.whatsapp && (
+      {(storeInfo.is_enableOrder === 0 && storeInfo.whatsapp) && (
         <FixedButton>
           <a
             href={`https://api.whatsapp.com/send?phone=55${storeInfo.whatsapp}`}
