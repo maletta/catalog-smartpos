@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { injectIntl, intlShape } from 'react-intl';
+import slug from 'utils/slug';
 
 import Grid from 'components/Grid';
 import NoImage from '../../assets/no-image.png';
+
+
+const LinkToItem = styled(Link)`
+  color: #212529;
+  text-decoration: none;
+
+  :hover {
+    color: #212529;
+    text-decoration: none;
+  }
+`;
 
 const Container = styled.div`
   height: 100%;
@@ -34,6 +47,10 @@ const Descricao = styled.div`
   justify-content: flex-start;
   text-align: left;
   font-size: 1.2rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const PriceFrom = styled.p`
@@ -61,7 +78,6 @@ const GridItem = (props) => {
   const {
     item,
     intl,
-    openModal,
     enableOrder,
   } = props;
   const [image, setImage] = useState(NoImage);
@@ -84,29 +100,26 @@ const GridItem = (props) => {
         className="mb-3"
       >
         <Container
-          onClick={() => {
-            if (enableOrder) {
-              openModal(item);
-            }
-          }}
           className={`${(enableOrder === 1) && 'cursor-pointer'}`}
         >
-          <div className="card-image">
-            <Img src={image} title={item.descricao} alt="Produto" />
-          </div>
-          <Cardcontent>
-            <div>
-              {(item.hasVariant === 1) && (<PriceFrom>a partir de </PriceFrom>)}
-              <Price>
-                {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
-              </Price>
+          <LinkToItem to={`item/${item.id}/${slug(item.descricao)}`}>
+            <div className="card-image">
+              <Img src={image} title={item.descricao} alt="Produto" />
             </div>
-            <Descricao>
-              <span>{item.descricao}</span>
-            </Descricao>
-            {(item.not_control_stock === 0 && item.stock <= 0)
-              && (<Unavailable>Produto indisponível</Unavailable>)}
-          </Cardcontent>
+            <Cardcontent>
+              <div>
+                {(item.hasVariant === 1) && (<PriceFrom>a partir de </PriceFrom>)}
+                <Price>
+                  {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
+                </Price>
+              </div>
+              <Descricao>
+                <span>{item.descricao}</span>
+              </Descricao>
+              {(item.not_control_stock === 0 && item.stock <= 0)
+                && (<Unavailable>Produto indisponível</Unavailable>)}
+            </Cardcontent>
+          </LinkToItem>
         </Container>
       </Grid>
     </>
@@ -114,7 +127,6 @@ const GridItem = (props) => {
 };
 
 GridItem.propTypes = {
-  openModal: PropTypes.func.isRequired,
   item: PropTypes.shape({
     id: PropTypes.number.isRequired,
     descricao: PropTypes.string.isRequired,
