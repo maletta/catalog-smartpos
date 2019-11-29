@@ -292,11 +292,11 @@ const SingleProduct = (props) => {
                         className="d-none d-md-block"
                       >
                         <Row>
-                          <Grid cols="12">
+                          <Grid cols="12" className="mb-3">
                             <Img src={image} title={product.descricao} alt="Produto" />
                           </Grid>
-                          <Grid cols="12">
-                            <SubTitle>Compartilhe nas redes sociais</SubTitle>
+                          <Grid cols="12" className="mb-3">
+                            <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
                             {renderSocialIcon()}
                           </Grid>
                           {/* <Grid cols="12">
