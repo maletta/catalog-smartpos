@@ -43,7 +43,7 @@ const Container = styled.div`
   background: #fff;
   border-radius: 5px;
   padding-top: 15px;
-  min-height: 70vh;
+  min-height: 50vh;
 
   @media (max-width: 576px) {
     min-height: 40vh;
@@ -64,13 +64,17 @@ const Title = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
   color: #707070;
+ 
+  @media (max-width: 576px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const SubTitle = styled.h4`
   font-size: 1rem;
   font-weight: 600;
   color: #707070;
-  margin-top: 15px;
+  margin: 0;
 `;
 
 const Price = styled.h3`
@@ -78,6 +82,10 @@ const Price = styled.h3`
   font-weight: 300;
   margin-bottom: 15px;
   color: #707070;
+
+  @media (max-width: 576px) {
+    font-size: 2rem;
+  }
 `;
 
 const PriceFrom = styled.p`
@@ -240,6 +248,23 @@ const SingleProduct = (props) => {
       .finally(() => setLoaded(true));
   }, [false]);
 
+  const renderSocialIcon = () => (
+    <div style={{ width: '50%' }} className="d-flex justify-content-between">
+      <FacebookShareButton url={completeURL}>
+        <SocialIcon className="fab fa-facebook-square" />
+      </FacebookShareButton>
+      <TwitterShareButton url={completeURL}>
+        <SocialIcon className="fab fa-twitter-square" />
+      </TwitterShareButton>
+      <WhatsappShareButton url={completeURL}>
+        <SocialIcon className="fab fa-whatsapp-square" />
+      </WhatsappShareButton>
+      <EmailShareButton url={completeURL}>
+        <SocialIcon className="fas fa-envelope-square" />
+      </EmailShareButton>
+    </div>
+  );
+
   return (
     <>
       <Row>
@@ -272,20 +297,7 @@ const SingleProduct = (props) => {
                           </Grid>
                           <Grid cols="12">
                             <SubTitle>Compartilhe nas redes sociais</SubTitle>
-                            <div style={{ width: '50%' }} className="d-flex justify-content-between">
-                              <FacebookShareButton url={completeURL}>
-                                <SocialIcon className="fab fa-facebook-square" />
-                              </FacebookShareButton>
-                              <TwitterShareButton url={completeURL}>
-                                <SocialIcon className="fab fa-twitter-square" />
-                              </TwitterShareButton>
-                              <WhatsappShareButton url={completeURL}>
-                                <SocialIcon className="fab fa-whatsapp-square" />
-                              </WhatsappShareButton>
-                              <EmailShareButton url={completeURL}>
-                                <SocialIcon className="fas fa-envelope-square" />
-                              </EmailShareButton>
-                            </div>
+                            {renderSocialIcon()}
                           </Grid>
                           {/* <Grid cols="12">
                             <SubTitle>Descrição do item</SubTitle>
@@ -294,10 +306,10 @@ const SingleProduct = (props) => {
                       </Grid>
                       <Grid cols="12 12 6 6 6">
                         <Row>
-                          <Grid cols="6" className="d-md-none mb-3">
+                          <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
                             <Img src={image} title={product.descricao} alt="Produto" />
                           </Grid>
-                          <Grid cols="6 6 12 12 12">
+                          <Grid cols="7 6 12 12 12">
                             <Title>{product.descricao}</Title>
                             {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
                             <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
@@ -399,11 +411,15 @@ const SingleProduct = (props) => {
                               </>
                             )}
                           </Grid>
+                          <Grid cols="12" className="d-md-none mb-3">
+                            <SubTitle>Compartilhe nas redes sociais</SubTitle>
+                            {renderSocialIcon()}
+                          </Grid>
                         </Row>
                       </Grid>
                       {(shop.is_enableOrder === 1) && (
                         <FooterContainer>
-                          <div className="justify-content-end">
+                          <div className="d-flex justify-content-end">
                             <Grid cols="12 12 12 6 6">
                               <Row>
                                 <Grid
