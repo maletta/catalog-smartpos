@@ -25,7 +25,6 @@ pipelines:
           - yarn install
           - yarn start &
           - yarn wait-on http://localhost:3000
-          - curl http://localhost:3000/cypress-test
           - yarn cypress:run
   branches:
       develop:
