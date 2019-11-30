@@ -12,7 +12,8 @@
     "update-merge": "git fetch && git merge origin/develop",
     "test": "react-scripts test --env=jsdom --modulePaths=src",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run",
+    "ci:cy": "start-server-and-test start http-get://localhost:3000 cypress:run"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
