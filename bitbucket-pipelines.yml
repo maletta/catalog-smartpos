@@ -23,7 +23,9 @@ pipelines:
         image: cypress/base:10
         script:
           - yarn install
-          - yarn ci:cy
+          - yarn start
+          - sleep 15
+          - yarn cypress:run
   branches:
       develop:
         - step:
