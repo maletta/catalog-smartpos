@@ -89,7 +89,7 @@ const GridItem = (props) => {
               openModal(item);
             }
           }}
-          className={`${(enableOrder === 1) && 'cursor-pointer'}`}
+          className={`${(enableOrder === 1) && 'cursor-pointer'} product-item`}
         >
           <div className="card-image">
             <Img src={image} title={item.descricao} alt="Produto" />
