@@ -23,9 +23,7 @@ pipelines:
         image: cypress/base:10
         script:
           - yarn install
-          - yarn build
-          - yarn http-server build --port 3000 & yarn wait-on http://localhost:3000
-          - yarn cypress:run
+          - yarn start-server-and-test start http://localhost:3000 cypress:run
   branches:
       develop:
         - step:
