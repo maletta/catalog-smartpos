@@ -23,7 +23,7 @@ pipelines:
         image: cypress/base:10
         script:
           - yarn install
-          - yarn start & wait-on http://localhost:3000
+          - yarn start & yarn wait-on http://localhost:3000
           - yarn cypress:run
   branches:
       develop:
