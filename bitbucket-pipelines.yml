@@ -20,7 +20,7 @@ pipelines:
         caches:
           - node
         name: ✔ Cypress
-        image: cypress/base:12.1.0
+        image: cypress/base:10.15.3
         script:
           - yarn install
           - yarn ci:cy
