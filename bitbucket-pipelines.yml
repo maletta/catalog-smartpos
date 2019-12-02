@@ -24,6 +24,7 @@ pipelines:
         script:
           - yarn install
           - export REACT_APP_GET_NAME_DOMAIN=false
+          - unset NODE_OPTIONS
           - yarn ci:cy
   branches:
       develop:
