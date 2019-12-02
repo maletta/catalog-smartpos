@@ -1,4 +1,6 @@
 image: netpos/node-aws
+options:
+  max-time: 10
 
 pipelines:
   default:
