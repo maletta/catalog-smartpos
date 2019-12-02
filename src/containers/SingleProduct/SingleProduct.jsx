@@ -11,6 +11,8 @@ import {
   EmailShareButton,
 } from 'react-share';
 import lodash from 'lodash';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
@@ -43,7 +45,7 @@ const Container = styled.div`
   background: #fff;
   border-radius: 5px;
   padding-top: 15px;
-  min-height: 70vh;
+  min-height: 50vh;
 
   @media (max-width: 576px) {
     min-height: 40vh;
@@ -64,13 +66,17 @@ const Title = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
   color: #707070;
+ 
+  @media (max-width: 576px) {
+    font-size: 1.2rem;
+  }
 `;
 
 const SubTitle = styled.h4`
   font-size: 1rem;
   font-weight: 600;
   color: #707070;
-  margin-top: 15px;
+  margin: 0 0 10px 0;
 `;
 
 const Price = styled.h3`
@@ -78,6 +84,10 @@ const Price = styled.h3`
   font-weight: 300;
   margin-bottom: 15px;
   color: #707070;
+
+  @media (max-width: 576px) {
+    font-size: 2rem;
+  }
 `;
 
 const PriceFrom = styled.p`
@@ -240,6 +250,23 @@ const SingleProduct = (props) => {
       .finally(() => setLoaded(true));
   }, [false]);
 
+  const renderSocialIcon = () => (
+    <div style={{ width: '50%' }} className="d-flex justify-content-between">
+      <FacebookShareButton url={completeURL}>
+        <SocialIcon className="fab fa-facebook-square" />
+      </FacebookShareButton>
+      <TwitterShareButton url={completeURL}>
+        <SocialIcon className="fab fa-twitter-square" />
+      </TwitterShareButton>
+      <WhatsappShareButton url={completeURL}>
+        <SocialIcon className="fab fa-whatsapp-square" />
+      </WhatsappShareButton>
+      <EmailShareButton url={completeURL}>
+        <SocialIcon className="fas fa-envelope-square" />
+      </EmailShareButton>
+    </div>
+  );
+
   return (
     <>
       <Row>
@@ -267,37 +294,39 @@ const SingleProduct = (props) => {
                         className="d-none d-md-block"
                       >
                         <Row>
-                          <Grid cols="12">
+                          <Grid cols="12" className="mb-3">
                             <Img src={image} title={product.descricao} alt="Produto" />
                           </Grid>
-                          <Grid cols="12">
-                            <SubTitle>Compartilhe nas redes sociais</SubTitle>
-                            <div style={{ width: '50%' }} className="d-flex justify-content-between">
-                              <FacebookShareButton url={completeURL}>
-                                <SocialIcon className="fab fa-facebook-square" />
-                              </FacebookShareButton>
-                              <TwitterShareButton url={completeURL}>
-                                <SocialIcon className="fab fa-twitter-square" />
-                              </TwitterShareButton>
-                              <WhatsappShareButton url={completeURL}>
-                                <SocialIcon className="fab fa-whatsapp-square" />
-                              </WhatsappShareButton>
-                              <EmailShareButton url={completeURL}>
-                                <SocialIcon className="fas fa-envelope-square" />
-                              </EmailShareButton>
-                            </div>
+                          <Grid cols="12" className="mb-3">
+                            <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
+                            {renderSocialIcon()}
                           </Grid>
-                          {/* <Grid cols="12">
-                            <SubTitle>Descrição do item</SubTitle>
-                          </Grid> */}
+                          {(product.longDescription) && (
+                            <>
+                              <Grid cols="12 mb-3">
+                                <SubTitle>Descrição do item</SubTitle>
+                              </Grid>
+                              <Grid cols="12 mb-3">
+                                <ReactQuill
+                                  readOnly
+                                  theme="snow"
+                                  value={product.longDescription}
+                                  enable={false}
+                                  modules={{
+                                    toolbar: [],
+                                  }}
+                                />
+                              </Grid>
+                            </>
+                          )}
                         </Row>
                       </Grid>
                       <Grid cols="12 12 6 6 6">
                         <Row>
-                          <Grid cols="6" className="d-md-none mb-3">
+                          <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
                             <Img src={image} title={product.descricao} alt="Produto" />
                           </Grid>
-                          <Grid cols="6 6 12 12 12">
+                          <Grid cols="7 6 12 12 12">
                             <Title>{product.descricao}</Title>
                             {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
                             <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
@@ -399,11 +428,33 @@ const SingleProduct = (props) => {
                               </>
                             )}
                           </Grid>
+                          <Grid cols="12" className="d-md-none mb-3">
+                            <SubTitle>Compartilhe nas redes sociais</SubTitle>
+                            {renderSocialIcon()}
+                          </Grid>
+                          {(product.longDescription) && (
+                            <>
+                              <Grid cols="12" className="d-md-none">
+                                <SubTitle>Descrição do item</SubTitle>
+                              </Grid>
+                              <Grid cols="12" className="d-md-none mb-3">
+                                <ReactQuill
+                                  readOnly
+                                  theme="snow"
+                                  value={product.longDescription}
+                                  enable={false}
+                                  modules={{
+                                    toolbar: [],
+                                  }}
+                                />
+                              </Grid>
+                            </>
+                          )}
                         </Row>
                       </Grid>
                       {(shop.is_enableOrder === 1) && (
                         <FooterContainer>
-                          <div className="justify-content-end">
+                          <div className="d-flex justify-content-end">
                             <Grid cols="12 12 12 6 6">
                               <Row>
                                 <Grid

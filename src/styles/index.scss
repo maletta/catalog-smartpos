@@ -114,3 +114,19 @@ ul {
     padding-right: 0.5rem;
   }
 }
+
+.quill > .ql-toolbar {
+  display: none;
+}
+
+.quill > .ql-container {
+  border: 0px;
+}
+
+.ql-editor {
+  padding: 0 15px 12px 0 !important;
+}
+
+.ql-editor > * {
+  cursor: default;
+}

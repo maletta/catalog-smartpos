@@ -61,6 +61,11 @@ const Btn = styled.button`
     outline: initial;
   }
 
+  @media (max-width: 576px) {
+    font-size: 0.9rem;
+    padding: 0.5rem 10px 0.5rem;
+  }
+
   ${props => (props.isLoading ? `
     color: transparent !important;
     cursor: default;
