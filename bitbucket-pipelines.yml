@@ -23,6 +23,7 @@ pipelines:
         image: cypress/base:10.15.3
         script:
           - yarn install
+          - export REACT_APP_GET_NAME_DOMAIN=false
           - yarn ci:cy
   branches:
       develop:
