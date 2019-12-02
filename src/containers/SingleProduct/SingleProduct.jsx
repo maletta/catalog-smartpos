@@ -11,6 +11,8 @@ import {
   EmailShareButton,
 } from 'react-share';
 import lodash from 'lodash';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
@@ -74,7 +76,7 @@ const SubTitle = styled.h4`
   font-size: 1rem;
   font-weight: 600;
   color: #707070;
-  margin: 0;
+  margin: 0 0 10px 0;
 `;
 
 const Price = styled.h3`
@@ -299,9 +301,24 @@ const SingleProduct = (props) => {
                             <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
                             {renderSocialIcon()}
                           </Grid>
-                          {/* <Grid cols="12">
-                            <SubTitle>Descrição do item</SubTitle>
-                          </Grid> */}
+                          {(product.longDescription) && (
+                            <>
+                              <Grid cols="12 mb-3">
+                                <SubTitle>Descrição do item</SubTitle>
+                              </Grid>
+                              <Grid cols="12 mb-3">
+                                <ReactQuill
+                                  readOnly
+                                  theme="snow"
+                                  value={product.longDescription}
+                                  enable={false}
+                                  modules={{
+                                    toolbar: [],
+                                  }}
+                                />
+                              </Grid>
+                            </>
+                          )}
                         </Row>
                       </Grid>
                       <Grid cols="12 12 6 6 6">
@@ -415,6 +432,24 @@ const SingleProduct = (props) => {
                             <SubTitle>Compartilhe nas redes sociais</SubTitle>
                             {renderSocialIcon()}
                           </Grid>
+                          {(product.longDescription) && (
+                            <>
+                              <Grid cols="12" className="d-md-none">
+                                <SubTitle>Descrição do item</SubTitle>
+                              </Grid>
+                              <Grid cols="12" className="d-md-none mb-3">
+                                <ReactQuill
+                                  readOnly
+                                  theme="snow"
+                                  value={product.longDescription}
+                                  enable={false}
+                                  modules={{
+                                    toolbar: [],
+                                  }}
+                                />
+                              </Grid>
+                            </>
+                          )}
                         </Row>
                       </Grid>
                       {(shop.is_enableOrder === 1) && (
