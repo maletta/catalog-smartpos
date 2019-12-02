@@ -22,7 +22,7 @@ pipelines:
         caches:
           - node
         name: ✔ Cypress
-        image: cypress/base:10.15.3
+        image: cypress/base:10
         script:
           - yarn install
           - export REACT_APP_GET_NAME_DOMAIN=false
