@@ -67,7 +67,9 @@
     "stylelint-processor-styled-components": "^1.5.1"
   },
   "husky": {
-    "hooks": {}
+    "hooks": {
+      "pre-push": "yarn run lint"
+    }
   },
   "browserslist": [
     ">0.2%",
