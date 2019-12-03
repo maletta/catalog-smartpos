@@ -18,7 +18,7 @@ const getSearch = (id, filter) => {
   });
 };
 
-const getStoreInfo = id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/${id}`);
+const getStoreInfo = () => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/cypress-test`);
 
 const getCategories = id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/categorias/${id}`);
 
