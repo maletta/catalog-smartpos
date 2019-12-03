@@ -9,7 +9,6 @@ const SideBar = (props) => {
     categories,
   } = props;
   const { filter, updateFilter } = useContext(FilterContext);
-
   const items = categories.map(item => (
     <LinkItem
       key={item.id}
@@ -20,6 +19,7 @@ const SideBar = (props) => {
       })}
     />
   ));
+
   return (
     <aside>
       <List title="Ordernar por" isFullHeight>
@@ -59,8 +59,11 @@ const SideBar = (props) => {
 };
 
 SideBar.propTypes = {
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.array,
 };
 
+SideBar.defaultProps = {
+  categories: null,
+};
 
 export default SideBar;
