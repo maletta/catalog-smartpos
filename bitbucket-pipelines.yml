@@ -27,7 +27,6 @@ pipelines:
           - yarn install
           - export REACT_APP_GET_NAME_DOMAIN=false
           - unset NODE_OPTIONS
-          - curl http://localhost:3000
           - curl https://slip.qa.smartpos.net.br/catalog/v1/loja/cypress-test
           - yarn ci:cy
   branches:
