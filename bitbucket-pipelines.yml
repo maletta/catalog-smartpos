@@ -10,8 +10,6 @@ pipelines:
         name: 🔨 Build
         script:
           - yarn install
-          - curl http://localhost:3000
-          - curl https://slip.qa.smartpos.net.br/catalog/v1/loja/cypress-test
           - yarn build
     - step:
         caches:
