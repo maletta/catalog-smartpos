@@ -19,12 +19,11 @@ const Text = styled.div`
 const GridList = (props) => {
   const {
     itens,
-    openModal,
     enableOrder,
     notFound,
   } = props;
   const items = itens.map(item => (
-    <GridItem key={item.id} item={item} openModal={openModal} enableOrder={enableOrder} />
+    <GridItem key={item.id} item={item} enableOrder={enableOrder} />
   ));
   return (
     <>
@@ -53,7 +52,6 @@ const GridList = (props) => {
 GridList.propTypes = {
   notFound: PropTypes.bool.isRequired,
   itens: PropTypes.arrayOf(PropTypes.object).isRequired,
-  openModal: PropTypes.func.isRequired,
   enableOrder: PropTypes.number.isRequired,
 };
 

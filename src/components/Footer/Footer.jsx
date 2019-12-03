@@ -9,6 +9,8 @@ import FooterContact from 'components/FooterContact';
 import PropTypes from 'prop-types';
 import ReactGA from 'react-ga';
 
+import daysOfWeek from 'utils/daysOfWeek';
+
 const FullWidthFooter = styled.div`
   position: relative;
   background-color: #f37c05;
@@ -115,44 +117,6 @@ const LinkNetPOS = styled.a`
     text-decoration: none;
   }
 `;
-
-const daysOfWeek = [
-  {
-    dayOfWeek: 'Domingo',
-    name: 'SUNDAY',
-    position: 0,
-  },
-  {
-    dayOfWeek: 'Segunda-feira',
-    name: 'MONDAY',
-    position: 1,
-  },
-  {
-    dayOfWeek: 'Terça-feira',
-    name: 'TUESDAY',
-    position: 2,
-  },
-  {
-    dayOfWeek: 'Quarta-feira',
-    name: 'WEDNESDAY',
-    position: 3,
-  },
-  {
-    dayOfWeek: 'Quinta-feira',
-    name: 'THURSDAY',
-    position: 4,
-  },
-  {
-    dayOfWeek: 'Sexta-feira',
-    name: 'FRIDAY',
-    position: 5,
-  },
-  {
-    dayOfWeek: 'Sábado',
-    name: 'SATURDAY',
-    position: 6,
-  },
-];
 
 const Footer = ({ storeInfo }) => {
   let openHours = (storeInfo.openHours || []);
@@ -329,7 +293,7 @@ const Footer = ({ storeInfo }) => {
           </Row>
         </div>
       </FullWidthCopyright>
-      {storeInfo.whatsapp && (
+      {(storeInfo.is_enableOrder === 0 && storeInfo.whatsapp) && (
         <FixedButton>
           <a
             href={`https://api.whatsapp.com/send?phone=55${storeInfo.whatsapp}`}
