@@ -93,6 +93,7 @@ const FiltersMobile = ({ categories }) => {
   const [categorySelected, setCategorySelected] = useState(null);
   const [dropdownSelected, setDropdownSelected] = useState(null);
   const { updateFilter } = useContext(FilterContext);
+
   const renderCategories = categories.map(item => (
     <SelectItem
       key={item.id}
@@ -218,7 +219,11 @@ const FiltersMobile = ({ categories }) => {
 };
 
 FiltersMobile.propTypes = {
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.array,
+};
+
+FiltersMobile.defaultProps = {
+  categories: null,
 };
 
 export default FiltersMobile;
