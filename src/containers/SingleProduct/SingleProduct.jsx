@@ -156,7 +156,7 @@ const SingleProduct = (props) => {
     product: 0,
     modifiers: 0,
   });
-  const [modifierSelected, setModifierSelected] = useState([[]]);
+  const [modifierSelected, setModifierSelected] = useState([]);
   const [variantSelected, setVariantSelected] = useState({ name: '' });
   const [modifiersErrors, setModifiersErrors] = useState(false);
   const [initialValues, setInitialValues] = useState({ quantity: 1, variant: {} });
@@ -242,8 +242,12 @@ const SingleProduct = (props) => {
           setImage(imageBaseUrl);
         };
       }
-      response.modifiers.map(item => ((item.required && modifiersErrors === false)
-        && setModifiersErrors(true)));
+      response.modifiers.map((item) => {
+        if (item.required && modifiersErrors === false) {
+          setModifiersErrors(true);
+        }
+        return setModifierSelected(prevState => ([...prevState, []]));
+      });
       setProductFound(true);
     })
       .catch(() => setProductFound(false))
