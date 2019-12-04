@@ -26,7 +26,7 @@ pipelines:
         script:
           - yarn install
           - export REACT_APP_GET_NAME_DOMAIN=false
-          - export REACT_APP_MAIN_API=https://ms.smartpos.net.br/catalog
+          - export REACT_APP_MAIN_API=https://slip.qa.smartpos.net.br/catalog
           - unset NODE_OPTIONS
           - curl https://slip.qa.smartpos.net.br/catalog/v1/loja/cypress-test
           - yarn ci:cy
