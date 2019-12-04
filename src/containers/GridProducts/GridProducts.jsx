@@ -14,7 +14,6 @@ import ShopContext from 'contexts/ShopContext';
 import { getProducts, getSearch } from 'requests';
 
 import formatFormErrors from 'utils/formatFormErrors';
-import initGA from 'initGA';
 
 const GridProducts = () => {
   const [loading, setLoading] = useState(true);
@@ -64,7 +63,6 @@ const GridProducts = () => {
     yup.setLocale(formatFormErrors());
     getProductList(shop);
     window.scrollTo(0, 0);
-    initGA();
   }, [filter]);
 
   return (
