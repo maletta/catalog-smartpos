@@ -68,7 +68,9 @@ const Content = styled.div`
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [store, setStore] = useState({});
-  const { updateShop, categories, updateCategory } = useContext(ShopContext);
+  const {
+    updateShop, shop, categories, updateCategory,
+  } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
@@ -93,12 +95,6 @@ const App = () => {
         updateShop(response.data);
         setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
-        if (!response.data.allowOrderOutsideBusinessHours) {
-          const date = moment().format();
-          const timezone = date.substr(date.length - 6);
-          const openStore = await getBusinessHour(response.data.id, response.data.codigo, timezone);
-          console.log(openStore, timezone, response.data.id, response.data.codigo);
-        }
       })
       .catch(() => {
         setStore({ found: false });
@@ -106,6 +102,15 @@ const App = () => {
       });
   };
 
+  const BusinessHour = () => {
+    if (!store.allowOrderOutsideBusinessHours) {
+      const date = moment().format();
+      const timezone = date.substr(date.length - 6);
+      getBusinessHour(store.id, store.codigo, timezone).then((openStore) => {
+        updateShop(openStore.data);
+      });
+    }
+  };
 
   const cleanCart = () => {
     const date1 = localStorage.getItem('cartInit');
@@ -123,6 +128,10 @@ const App = () => {
   useEffect(() => {
     getStore();
   }, [false]);
+
+  useEffect(() => {
+    BusinessHour();
+  }, [loading]);
 
   useEffect(() => {
     yup.setLocale(formatFormErrors());

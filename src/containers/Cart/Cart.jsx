@@ -1,13 +1,18 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
+import Swal from 'sweetalert2';
 
 import Button from 'components/Form/Button';
 import CartItem from 'components/CartItem';
 import Grid from 'components/Grid';
 import history from 'utils/history';
 import FilterContext from 'contexts/FilterContext';
+import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+
+
+import ClosedStore from '../../assets/closed-store.svg';
 
 const Container = styled.div`
   background: #fff;
@@ -30,6 +35,7 @@ const Cart = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
   const { updateFilter } = useContext(FilterContext);
   const [stateCart, setStateCar] = useState(cart);
+  const { shop } = useContext(ShopContext);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [totalCar, setTotalCar] = useState(0);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
@@ -143,7 +149,21 @@ const Cart = ({ intl }) => {
             <Button
               value="Finalizar pedido"
               onClick={() => {
-                history.push('/checkout');
+                if (!shop.closedNow) {
+                  history.push('/checkout');
+                } else {
+                  Swal.fire({
+                    title: `<div>
+                      <div><img src="${ClosedStore}"></div>
+                      <div><p class="foradohorario-titulo">Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}.</p><div>
+                      <div><p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p><div>
+                    </div>`,
+                    showConfirmButton: false,
+                    showCloseButton: true,
+                  }).then(() => {
+                    history.push('/');
+                  });
+                }
               }}
             />
           </Grid>

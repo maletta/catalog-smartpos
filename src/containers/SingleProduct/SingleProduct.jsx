@@ -173,13 +173,11 @@ const SingleProduct = (props) => {
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
   const submitItem = (values, { resetForm }) => {
-    // catalog/v1/loja/3957a42e-74eb-4095-a662-70c01c346689/1036/-03:0/timezone
-    // colocar modal >>
-    if (!shop.allowOrderOutsideBusinessHours) {
+    if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
       Swal.fire({
         title: `<div>
           <div><img src="${ClosedStore}"></div>
-          <div><p class="foradohorario-titulo">${'Este estabelecimento abre entre "11:00 e 16:00".'}</p><div>
+          <div><p class="foradohorario-titulo">Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}.</p><div>
           <div><p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p><div>
         </div>`,
         showConfirmButton: false,
@@ -187,44 +185,44 @@ const SingleProduct = (props) => {
       }).then(() => {
         history.push('/');
       });
-    }
-    // condicional para travar modal.
-    const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-    const newItem = {
-      ...values,
-      pricing: productPricing,
-      modifiers: modifierSelected,
-    };
-
-    let newCart = [];
-    let indexToUpdate = null;
-    const repeat = prevCart.filter((item, index) => {
-      indexToUpdate = index;
-      return (lodash.isEqual(
-        lodash.omit(item, ['quantity']),
-        lodash.omit(newItem, ['quantity']),
-      ));
-    });
-
-    if (repeat.length) {
-      prevCart[indexToUpdate].quantity += values.quantity;
-      newCart = prevCart;
     } else {
-      newCart = [
-        ...prevCart,
-        newItem,
-      ];
+      const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+      const newItem = {
+        ...values,
+        pricing: productPricing,
+        modifiers: modifierSelected,
+      };
+
+      let newCart = [];
+      let indexToUpdate = null;
+      const repeat = prevCart.filter((item, index) => {
+        indexToUpdate = index;
+        return (lodash.isEqual(
+          lodash.omit(item, ['quantity']),
+          lodash.omit(newItem, ['quantity']),
+        ));
+      });
+
+      if (repeat.length) {
+        prevCart[indexToUpdate].quantity += values.quantity;
+        newCart = prevCart;
+      } else {
+        newCart = [
+          ...prevCart,
+          newItem,
+        ];
+      }
+      const basketCount = newCart.reduce((count, val) => (count + val.quantity), 0);
+      updateShoppingCart({
+        basketCount,
+      });
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      localStorage.setItem('cartInit', new Date().getTime());
+      setTimeout(() => {
+        history.push('/cart');
+        resetForm({ quantity: 1, variant: {} });
+      }, 1000);
     }
-    const basketCount = newCart.reduce((count, val) => (count + val.quantity), 0);
-    updateShoppingCart({
-      basketCount,
-    });
-    localStorage.setItem('cart', JSON.stringify(newCart));
-    localStorage.setItem('cartInit', new Date().getTime());
-    setTimeout(() => {
-      history.push('/cart');
-      resetForm({ quantity: 1, variant: {} });
-    }, 1000);
   };
 
 
