@@ -58,15 +58,18 @@ const AreaControl = styled.div`
 
   @media (max-width: 768px) {
     width: 100%;
-    justify-content: space-around;
   }
 `;
 
 const ControlAmount = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 110px;
+  align-items: start;
+  margin-right: 30px;
+
+  @media (max-width: 768px) {
+    margin-right: 0;
+  }
 `;
 
 const ControlExclude = styled.button`
@@ -74,7 +77,7 @@ const ControlExclude = styled.button`
   background: #fff;
   border: 0;
   padding: 0;
-  margin: 0;
+  margin: 5px 0 0 0;
 `;
 
 const ItemPricing = styled.div`
@@ -107,6 +110,7 @@ const Img = styled.img`
 const NoteButton = styled.span`
   cursor: pointer;
   font-size: 1.2rem;
+  margin-right: 15px;
 `;
 
 const NoteContent = styled.div`
@@ -132,15 +136,12 @@ const CartItem = (props) => {
   const [showNote, setShowNote] = useState(false);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}?lastUpdate=${product.atualizacao}`;
 
-  let img;
-  if (product.viewMode === 'IMAGE') {
-    img = new Image();
-    img.src = imageBaseUrl;
+  const img = new Image();
+  img.src = imageBaseUrl;
 
-    img.onload = () => {
-      setImage(imageBaseUrl);
-    };
-  }
+  img.onload = () => {
+    setImage(imageBaseUrl);
+  };
 
   return (
     <ListItem>
@@ -163,7 +164,7 @@ const CartItem = (props) => {
           </div>
         </div>
         <AreaControl>
-          {(product.note.length > 0) && (
+          {(product.note && product.note.length > 0) && (
             <div>
               <NoteButton
                 className="far fa-comment"
@@ -192,7 +193,7 @@ const CartItem = (props) => {
                 updateAmount(amount, prodIndex);
               }}
             />
-            <div style={{ marginTop: '-10px' }}>
+            <div>
               <ControlExclude
                 onClick={() => deleteItem(product)}
               >

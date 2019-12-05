@@ -93,12 +93,15 @@ const FiltersMobile = ({ categories }) => {
   const [categorySelected, setCategorySelected] = useState(null);
   const [dropdownSelected, setDropdownSelected] = useState(null);
   const { updateFilter } = useContext(FilterContext);
+
   const renderCategories = categories.map(item => (
     <SelectItem
       key={item.id}
       title={item.descricao}
       onClick={() => {
-        updateFilter({ categoria: item.id, page: 1, search: undefined });
+        updateFilter({
+          categoria: item.id, page: 1, search: undefined, redirect: true, label: item.descricao,
+        });
         setSelectCategoryOpen(false);
         setCategorySelected(item.descricao);
       }}
@@ -216,7 +219,11 @@ const FiltersMobile = ({ categories }) => {
 };
 
 FiltersMobile.propTypes = {
-  categories: PropTypes.array.isRequired,
+  categories: PropTypes.array,
+};
+
+FiltersMobile.defaultProps = {
+  categories: null,
 };
 
 export default FiltersMobile;

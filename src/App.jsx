@@ -14,6 +14,8 @@ import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
+import SingleProduct from 'containers/SingleProduct';
+
 import history from 'utils/history';
 
 import getStoreName from 'utils/getStoreName';
@@ -57,15 +59,14 @@ const Content = styled.div`
   padding-bottom: 80px;
 
   @media (max-width: 768px) {
-    ${props => (props.pathname === '/' ? 'top: 105px' : 'top: 70px')};
+    ${props => (props.pathname !== '/checkout' ? 'top: 105px' : 'top: 70px')};
   }
 `;
 
 const App = () => {
   const [loading, setLoading] = useState(true);
-  const [categories, setCategories] = useState([]);
   const [store, setStore] = useState({});
-  const { updateShop } = useContext(ShopContext);
+  const { updateShop, categories, updateCategory } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
@@ -78,9 +79,9 @@ const App = () => {
   const getCategoryList = (data) => {
     getCategories(data.id)
       .then((response) => {
-        setCategories(response.data);
+        updateCategory(response.data);
       })
-      .catch(() => setCategories())
+      .catch(() => updateCategory([]))
       .finally(() => setLoading(false));
   };
 
@@ -156,6 +157,7 @@ const App = () => {
                   <Route path="/" exact component={GridProducts} />
                   <Route path="/cart" exact component={Cart} />
                   <Route path="/checkout" exact component={Checkout} />
+                  <Route path="/item/:id/:descricao?" component={SingleProduct} />
                 </Switch>
               </Router>
             </MainContainer>
