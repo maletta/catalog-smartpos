@@ -4,6 +4,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import moment from 'moment';
 
 import GridProducts from 'containers/GridProducts';
 import MainContainer from 'containers/mainContainer';
@@ -38,6 +39,7 @@ import {
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import getBusinessHour from './api/businessHoursRequests';
 
 import initGA from './initGA';
 
@@ -84,20 +86,26 @@ const App = () => {
       .catch(() => updateCategory([]))
       .finally(() => setLoading(false));
   };
-
   const getStore = () => {
     getStoreInfo(getStoreName())
-      .then((response) => {
+      .then(async (response) => {
         document.title = response.data.fantasia;
         updateShop(response.data);
         setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
+        if (!response.data.allowOrderOutsideBusinessHours) {
+          const date = moment().format();
+          const timezone = date.substr(date.length - 6);
+          const openStore = await getBusinessHour(response.data.id, response.data.codigo, timezone);
+          console.log(openStore, timezone, response.data.id, response.data.codigo);
+        }
       })
       .catch(() => {
         setStore({ found: false });
         setLoading(false);
       });
   };
+
 
   const cleanCart = () => {
     const date1 = localStorage.getItem('cartInit');
