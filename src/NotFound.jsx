@@ -28,7 +28,7 @@ const NotFound = () => (
         <img src={store} alt="store" width="300px" />
       </Image>
       <Text>
-        <span>Loja não encontrada.</span>
+        <span className="404page">Loja não encontrada.</span>
       </Text>
       <footer>
         <div className="d-flex align-items-center justify-content-center">

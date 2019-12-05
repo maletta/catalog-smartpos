@@ -1,9 +1,9 @@
 const store = {
-  domain: process.env.REACT_APP_GET_NAME_DOMAIN,
-  name: 'smartposbr',
-  title: 'SmartPOS',
-  search_key: 'Queijo nozinho',
-  price: '10',
+  domain: 'https://cypress-test.qa.smartpos.net.br/',
+  name: 'cypress-test',
+  title: 'Cypress',
+  search_key: 'Câmera Canon Sl2',
+  price: '2.357,00',
 };
 
 export default store;

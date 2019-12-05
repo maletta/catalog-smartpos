@@ -34,3 +34,6 @@ yarn-error.log*
 
 #eslint
 .eslintrc.json
+
+#cypress files
+cypress/videos

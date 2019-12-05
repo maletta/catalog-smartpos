@@ -1,3 +1,5 @@
 import { createBrowserHistory } from 'history';
 
-export default createBrowserHistory({ basename: process.env.REACT_APP_BASENAME });
+import { getBaseName } from 'utils/getStoreName';
+
+export default createBrowserHistory({ basename: getBaseName() });

@@ -1,5 +1,5 @@
 
-import getStoreName from 'getStoreName';
+import getStoreName from 'utils/getStoreName';
 import axios from 'axios';
 
 const ManifestJson = () => {

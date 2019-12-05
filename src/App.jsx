@@ -18,7 +18,7 @@ import SingleProduct from 'containers/SingleProduct';
 
 import history from 'utils/history';
 
-import getStoreName from 'getStoreName';
+import getStoreName from 'utils/getStoreName';
 import formatFormErrors from 'utils/formatFormErrors';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
