@@ -78,7 +78,6 @@ const GridItem = (props) => {
   const {
     item,
     intl,
-    enableOrder,
   } = props;
   const [image, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`;
@@ -100,7 +99,7 @@ const GridItem = (props) => {
         className="mb-3"
       >
         <Container
-          className={`${(enableOrder === 1) && 'cursor-pointer'}`}
+          className="product-item"
         >
           <LinkToItem to={`item/${item.id}/${slug(item.descricao)}`}>
             <div className="card-image">
@@ -133,7 +132,6 @@ GridItem.propTypes = {
     valorVenda: PropTypes.number.isRequired,
   }).isRequired,
   intl: intlShape.isRequired,
-  enableOrder: PropTypes.number.isRequired,
 };
 
 
