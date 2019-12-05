@@ -10,9 +10,9 @@ describe('Test Products', () => {
     cy.get('.breadcrumb').contains(store.search_key);
   });
   it('Check if the name is correct', () => {
-    cy.get('.iPklfd').contains(store.search_key);
+    cy.get('.product-item').contains(store.search_key);
   });
   it('Check if the price is correct', () => {
-    cy.get('.iPklfd').contains(store.price);
+    cy.get('.product-item').contains(store.price);
   });
 });

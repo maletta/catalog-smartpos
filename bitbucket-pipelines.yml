@@ -1,22 +1,27 @@
 image: netpos/node-aws
+options:
+  max-time: 10
 
 pipelines:
   default:
     - step:
         caches:
           - node
-        name: 🔨 Build
+        name: 🔨 Build & ✨ Lint
         script:
           - yarn install
           - yarn build
+          - yarn lint
     - step:
         caches:
           - node
-        name: ✨ Lint
+        name: ✔ Cypress
+        image: cypress/base:10
         script:
           - yarn install
-          - yarn lint
-
+          - export REACT_APP_GET_NAME_DOMAIN=false
+          - export REACT_APP_MAIN_API=https://slip.qa.smartpos.net.br/catalog
+          - yarn ci:cy
   branches:
       develop:
         - step:
