@@ -155,8 +155,8 @@ const Cart = ({ intl }) => {
                   Swal.fire({
                     title: `<div>
                       <div><img src="${ClosedStore}"></div>
-                      <div><p class="foradohorario-titulo">Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}.</p><div>
-                      <div><p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p><div>
+                      <div><span class="foradohorario-titulo">Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}.</span><div>
+                      <div><span class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</span><div>
                     </div>`,
                     showConfirmButton: false,
                     showCloseButton: true,
