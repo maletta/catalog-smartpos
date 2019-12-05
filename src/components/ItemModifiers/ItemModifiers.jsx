@@ -33,6 +33,7 @@ const ItemModifiers = (props) => {
     setProductPricing,
     setModifierSelected,
     setModifiersErrors,
+    modifiersErrors,
   } = props;
   const checkedItems = (isChecked, item) => {
     if (isChecked) {
@@ -42,25 +43,31 @@ const ItemModifiers = (props) => {
         ...prevState,
         modifiers: (prevState.modifiers - item.sellValue),
       }));
+
       setModifierSelected((prevState) => {
         const newMod = prevState;
         newMod[index] = removing;
         return [...newMod];
       });
-      if (modifier.required && !hasError) {
-        setModifiersErrors(() => true);
+
+      if (modifier.required) {
+        modifiersErrors[index] = true;
+        setModifiersErrors(modifiersErrors);
       }
     } else if (modifierSelected[index].length < modifier.maxQuantity) {
       setProductPricing(prevState => ({
         ...prevState,
         modifiers: (prevState.modifiers + item.sellValue),
       }));
+
       setModifierSelected((prevState) => {
         prevState[index].push(item);
         return ([...prevState]);
       });
+
       if (modifier.required && hasError) {
-        setModifiersErrors(() => false);
+        modifiersErrors[index] = false;
+        setModifiersErrors(modifiersErrors);
       }
     }
   };
@@ -93,6 +100,7 @@ const ItemModifiers = (props) => {
 ItemModifiers.propTypes = {
   intl: intlShape.isRequired,
   modifierSelected: PropTypes.array.isRequired,
+  modifiersErrors: PropTypes.array.isRequired,
   setProductPricing: PropTypes.func.isRequired,
   setModifierSelected: PropTypes.func.isRequired,
   setModifiersErrors: PropTypes.func.isRequired,

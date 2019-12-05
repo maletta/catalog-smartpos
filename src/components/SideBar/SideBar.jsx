@@ -12,6 +12,7 @@ const SideBar = (props) => {
   const items = categories.map(item => (
     <LinkItem
       key={item.id}
+      id={item.id}
       text={item.descricao}
       selected={item.id === filter.categoria}
       onClick={() => updateFilter({
