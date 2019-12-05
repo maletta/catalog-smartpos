@@ -331,9 +331,9 @@ const SingleProduct = (props) => {
                             <Img src={image} title={product.descricao} alt="Produto" />
                           </Grid>
                           <Grid cols="7 6 12 12 12">
-                            <Title>{product.descricao}</Title>
+                            <Title className="test-name-product">{product.descricao}</Title>
                             {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
-                            <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                            <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
                           </Grid>
                         </Row>
                         <Row>
