@@ -26,7 +26,6 @@ const ModifierItemSellValue = styled.span`
 const ItemModifiers = (props) => {
   const {
     modifier,
-    hasError,
     index,
     intl,
     modifierSelected,
@@ -50,8 +49,11 @@ const ItemModifiers = (props) => {
         return [...newMod];
       });
 
-      if (modifier.required) {
+      if (modifier.required && modifierSelected[index].length <= 1) {
         modifiersErrors[index] = true;
+        setModifiersErrors(modifiersErrors);
+      } else if (modifier.required) {
+        modifiersErrors[index] = false;
         setModifiersErrors(modifiersErrors);
       }
     } else if (modifierSelected[index].length < modifier.maxQuantity) {
@@ -65,7 +67,7 @@ const ItemModifiers = (props) => {
         return ([...prevState]);
       });
 
-      if (modifier.required && hasError) {
+      if (modifier.required) {
         modifiersErrors[index] = false;
         setModifiersErrors(modifiersErrors);
       }
