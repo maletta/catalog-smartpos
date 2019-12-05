@@ -41,11 +41,12 @@ LinkItem.propTypes = {
   text: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   selected: PropTypes.bool,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.number,
 };
 
 LinkItem.defaultProps = {
   selected: false,
+  id: 0,
 };
 
 

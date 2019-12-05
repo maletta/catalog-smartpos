@@ -369,19 +369,16 @@ const SingleProduct = (props) => {
                               <>
                                 <ModifiersArea>
                                   {product.modifiers.map((mod, index) => {
-                                    const hasError = modifiersErrors[index];
+                                    const hasError = (mod.required
+                                      ? (modifierSelected[index].length > 0) : false);
                                     return (
                                       <div key={mod.id}>
                                         <ModifierHeader>
                                           <div>
-                                            <ModifierTitle
-                                              hasError={hasError}
-                                            >
+                                            <ModifierTitle>
                                               {mod.name}
                                             </ModifierTitle>
-                                            <ModifierAmountTitle
-                                              hasError={hasError}
-                                            >
+                                            <ModifierAmountTitle>
                                               {`Máximo ${mod.maxQuantity} `}
                                               <FormattedPlural
                                                 value={mod.maxQuantity}
@@ -393,7 +390,7 @@ const SingleProduct = (props) => {
                                           {(mod.required) && (
                                             <div>
                                               <ModifierTitleRequired
-                                                hasError={hasError}
+                                                hasError={!hasError}
                                               >
                                                 {'Obrigatório'}
                                               </ModifierTitleRequired>
@@ -403,7 +400,6 @@ const SingleProduct = (props) => {
                                         <ul>
                                           <ItemModifiers
                                             modifier={mod}
-                                            hasError={hasError}
                                             propsForm={propsForm}
                                             index={index}
                                             modifierSelected={modifierSelected}
