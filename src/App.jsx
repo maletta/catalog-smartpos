@@ -69,7 +69,7 @@ const App = () => {
   const [loading, setLoading] = useState(true);
   const [store, setStore] = useState({});
   const {
-    updateShop, shop, categories, updateCategory,
+    updateShop, categories, updateCategory,
   } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
