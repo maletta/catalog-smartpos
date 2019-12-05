@@ -158,7 +158,7 @@ const SingleProduct = (props) => {
   });
   const [modifierSelected, setModifierSelected] = useState([]);
   const [variantSelected, setVariantSelected] = useState({ name: '' });
-  const [modifiersErrors, setModifiersErrors] = useState(false);
+  const [modifiersErrors, setModifiersErrors] = useState([]);
   const [initialValues, setInitialValues] = useState({ quantity: 1, variant: {} });
   const [isLoaded, setLoaded] = useState(false);
   const [isProductFound, setProductFound] = useState(true);
@@ -242,12 +242,10 @@ const SingleProduct = (props) => {
           setImage(imageBaseUrl);
         };
       }
-      response.modifiers.map((item) => {
-        if (item.required && modifiersErrors === false) {
-          setModifiersErrors(true);
-        }
-        return setModifierSelected(prevState => ([...prevState, []]));
-      });
+
+      response.modifiers.map(() => setModifierSelected(prevState => ([...prevState, []])));
+      const modRequired = response.modifiers.map(item => item.required);
+      setModifiersErrors(modRequired);
       setProductFound(true);
     })
       .catch(() => setProductFound(false))
@@ -270,6 +268,8 @@ const SingleProduct = (props) => {
       </EmailShareButton>
     </div>
   );
+
+  const hasModifiersErrors = modifiersErrors.filter(item => item);
 
   return (
     <>
@@ -369,8 +369,7 @@ const SingleProduct = (props) => {
                               <>
                                 <ModifiersArea>
                                   {product.modifiers.map((mod, index) => {
-                                    const hasError = (mod.required
-                                      && (modifierSelected[index].length <= 0));
+                                    const hasError = modifiersErrors[index];
                                     return (
                                       <div key={mod.id}>
                                         <ModifierHeader>
@@ -411,6 +410,7 @@ const SingleProduct = (props) => {
                                             setProductPricing={setProductPricing}
                                             setModifierSelected={setModifierSelected}
                                             setModifiersErrors={setModifiersErrors}
+                                            modifiersErrors={modifiersErrors}
                                           />
                                         </ul>
                                       </div>
@@ -485,7 +485,7 @@ const SingleProduct = (props) => {
                                       value="ADICIONAR"
                                       price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
                                       type="submit"
-                                      disabled={modifiersErrors}
+                                      disabled={(hasModifiersErrors.length > 0)}
                                       isLoading={propsForm.isSubmitting}
                                     />
                                   </div>
