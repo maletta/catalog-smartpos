@@ -90,7 +90,7 @@ const App = () => {
       .then((response) => {
         document.title = response.data.fantasia;
         updateShop(response.data);
-        setStore({ ...response.data, found: true, storeName: 'cypress-test' });
+        setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
       })
       .catch(() => {
