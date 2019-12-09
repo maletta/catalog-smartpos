@@ -173,7 +173,7 @@ const SingleProduct = (props) => {
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
   const submitItem = (values, { resetForm }) => {
-    if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
+    if (!shop.allowOrderOutsideBusinessHours && !shop.closedNow) {
       Swal.fire({
         title: `<div>
           <div><img src="${ClosedStore}"></div>
@@ -181,7 +181,7 @@ const SingleProduct = (props) => {
           <div><span class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</span><div>
         </div>`,
         showConfirmButton: true,
-        confirmButtonColor: 'red',
+        confirmButtonColor: '#F38A00',
         showCloseButton: true,
       }).then(() => setLoaded(false));
     } else {
