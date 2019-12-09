@@ -90,7 +90,7 @@ const App = () => {
   };
   const getStore = () => {
     getStoreInfo(getStoreName())
-      .then(async (response) => {
+      .then((response) => {
         document.title = response.data.fantasia;
         updateShop(response.data);
         setStore({ ...response.data, found: true, storeName: getStoreName() });
@@ -130,7 +130,9 @@ const App = () => {
   }, [false]);
 
   useEffect(() => {
-    BusinessHour();
+    if (store.id) {
+      BusinessHour();
+    }
   }, [loading]);
 
   useEffect(() => {

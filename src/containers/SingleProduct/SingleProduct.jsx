@@ -173,18 +173,17 @@ const SingleProduct = (props) => {
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
   const submitItem = (values, { resetForm }) => {
-    if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
+    if (!shop.allowOrderOutsideBusinessHours && !shop.closedNow) {
       Swal.fire({
         title: `<div>
           <div><img src="${ClosedStore}"></div>
           <div><span class="foradohorario-titulo">Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}.</span><div>
           <div><span class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</span><div>
         </div>`,
-        showConfirmButton: false,
+        showConfirmButton: true,
+        confirmButtonColor: 'red',
         showCloseButton: true,
-      }).then(() => {
-        history.push('/');
-      });
+      }).then(() => setLoaded(false));
     } else {
       const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
       const newItem = {
