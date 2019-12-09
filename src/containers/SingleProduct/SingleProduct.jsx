@@ -173,7 +173,7 @@ const SingleProduct = (props) => {
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
   const submitItem = (values, { resetForm }) => {
-    if (!shop.allowOrderOutsideBusinessHours && !shop.closedNow) {
+    if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
       Swal.fire({
         title: `<div>
           <div><img src="${ClosedStore}"></div>

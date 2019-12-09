@@ -158,7 +158,8 @@ const Cart = ({ intl }) => {
                       <div><span class="foradohorario-titulo">Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}.</span><div>
                       <div><span class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</span><div>
                     </div>`,
-                    showConfirmButton: false,
+                    showConfirmButton: true,
+                    confirmButtonColor: '#F38A00',
                     showCloseButton: true,
                   }).then(() => {
                     history.push('/');
