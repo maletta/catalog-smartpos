@@ -172,8 +172,9 @@ const SingleProduct = (props) => {
 
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
-  const submitItem = (values, { resetForm }) => {
+  const submitItem = (values, { resetForm, setSubmitting }) => {
     if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
+      setSubmitting(false);
       Swal.fire({
         title: `<div>
           <div><img src="${ClosedStore}"></div>
@@ -184,44 +185,45 @@ const SingleProduct = (props) => {
         confirmButtonColor: '#F38A00',
         showCloseButton: true,
       }).then(() => setLoaded(false));
-    } else {
-      const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-      const newItem = {
-        ...values,
-        pricing: productPricing,
-        modifiers: modifierSelected,
-      };
-
-      let newCart = [];
-      let indexToUpdate = null;
-      const repeat = prevCart.filter((item, index) => {
-        indexToUpdate = index;
-        return (lodash.isEqual(
-          lodash.omit(item, ['quantity']),
-          lodash.omit(newItem, ['quantity']),
-        ));
-      });
-
-      if (repeat.length) {
-        prevCart[indexToUpdate].quantity += values.quantity;
-        newCart = prevCart;
-      } else {
-        newCart = [
-          ...prevCart,
-          newItem,
-        ];
-      }
-      const basketCount = newCart.reduce((count, val) => (count + val.quantity), 0);
-      updateShoppingCart({
-        basketCount,
-      });
-      localStorage.setItem('cart', JSON.stringify(newCart));
-      localStorage.setItem('cartInit', new Date().getTime());
-      setTimeout(() => {
-        history.push('/cart');
-        resetForm({ quantity: 1, variant: {} });
-      }, 1000);
+      return false;
     }
+    const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+    const newItem = {
+      ...values,
+      pricing: productPricing,
+      modifiers: modifierSelected,
+    };
+
+    let newCart = [];
+    let indexToUpdate = null;
+    const repeat = prevCart.filter((item, index) => {
+      indexToUpdate = index;
+      return (lodash.isEqual(
+        lodash.omit(item, ['quantity']),
+        lodash.omit(newItem, ['quantity']),
+      ));
+    });
+
+    if (repeat.length) {
+      prevCart[indexToUpdate].quantity += values.quantity;
+      newCart = prevCart;
+    } else {
+      newCart = [
+        ...prevCart,
+        newItem,
+      ];
+    }
+    const basketCount = newCart.reduce((count, val) => (count + val.quantity), 0);
+    updateShoppingCart({
+      basketCount,
+    });
+    localStorage.setItem('cart', JSON.stringify(newCart));
+    localStorage.setItem('cartInit', new Date().getTime());
+    setTimeout(() => {
+      history.push('/cart');
+      resetForm({ quantity: 1, variant: {} });
+    }, 1000);
+    return false;
   };
 
 
