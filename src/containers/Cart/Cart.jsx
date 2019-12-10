@@ -1,13 +1,18 @@
 import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
+import Swal from 'sweetalert2';
 
 import Button from 'components/Form/Button';
 import CartItem from 'components/CartItem';
 import Grid from 'components/Grid';
 import history from 'utils/history';
 import FilterContext from 'contexts/FilterContext';
+import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+
+
+import ClosedStore from '../../assets/closed-store.svg';
 
 const Container = styled.div`
   background: #fff;
@@ -30,6 +35,7 @@ const Cart = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
   const { updateFilter } = useContext(FilterContext);
   const [stateCart, setStateCar] = useState(cart);
+  const { shop } = useContext(ShopContext);
   const [forceUpdate, setForceUpdate] = useState(0);
   const [totalCar, setTotalCar] = useState(0);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
@@ -46,6 +52,26 @@ const Cart = ({ intl }) => {
     setStateCar(updateAmountCar);
     setForceUpdate(updateAmountCar[prodIndex].quantity);
     localStorage.setItem('cart', JSON.stringify(updateAmountCar));
+  };
+
+  const verifyRedirect = () => {
+    if (!shop.closedNow) {
+      history.push('/checkout');
+    } else {
+      Swal.fire({
+        html: `<div>
+        <div><img src="${ClosedStore}"></div>
+        <span class="foradohorario-titulo"> ${shop.openHour.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre ${shop.openHour.openHour} e ${shop.openHour.closeHour}`}</span>
+        <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
+        </div>`,
+        showConfirmButton: true,
+        confirmButtonColor: '#F38A00',
+        showCloseButton: true,
+      }).then(() => {
+        history.push('/');
+      });
+    }
+    return false;
   };
 
 
@@ -142,9 +168,7 @@ const Cart = ({ intl }) => {
           >
             <Button
               value="Finalizar pedido"
-              onClick={() => {
-                history.push('/checkout');
-              }}
+              onClick={verifyRedirect}
             />
           </Grid>
         </>
