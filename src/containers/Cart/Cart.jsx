@@ -153,10 +153,10 @@ const Cart = ({ intl }) => {
                   history.push('/checkout');
                 } else {
                   Swal.fire({
-                    title: `<div>
+                    html: `<div>
                       <div><img src="${ClosedStore}"></div>
-                      <div><span class="foradohorario-titulo">Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}.</span><div>
-                      <div><span class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</span><div>
+                      <span class="foradohorario-titulo"> ${!shop.openHour.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}`}</span>
+                      <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
                     </div>`,
                     showConfirmButton: true,
                     confirmButtonColor: '#F38A00',

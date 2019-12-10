@@ -178,7 +178,7 @@ const SingleProduct = (props) => {
       Swal.fire({
         html: `<div>
           <div><img src="${ClosedStore}"></div>
-          <span class="foradohorario-titulo">Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}.</span>
+          <span class="foradohorario-titulo"> ${shop.openHour.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}`}</span>
           <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
         </div>`,
         showConfirmButton: true,
