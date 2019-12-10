@@ -54,6 +54,26 @@ const Cart = ({ intl }) => {
     localStorage.setItem('cart', JSON.stringify(updateAmountCar));
   };
 
+  const verifyRedirect = () => {
+    if (!shop.closedNow) {
+      history.push('/checkout');
+    } else {
+      Swal.fire({
+        html: `<div>
+        <div><img src="${ClosedStore}"></div>
+        <span class="foradohorario-titulo"> ${shop.openHour.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre ${shop.openHour.openHour} e ${shop.openHour.closeHour}`}</span>
+        <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
+        </div>`,
+        showConfirmButton: true,
+        confirmButtonColor: '#F38A00',
+        showCloseButton: true,
+      }).then(() => {
+        history.push('/');
+      });
+    }
+    return false;
+  };
+
 
   useEffect(() => {
     const total = stateCart.reduce(
@@ -148,24 +168,7 @@ const Cart = ({ intl }) => {
           >
             <Button
               value="Finalizar pedido"
-              onClick={() => {
-                if (!shop.closedNow) {
-                  history.push('/checkout');
-                } else {
-                  Swal.fire({
-                    html: `<div>
-                      <div><img src="${ClosedStore}"></div>
-                      <span class="foradohorario-titulo"> ${!shop.openHour.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre ${shop.openHour.openHour} - ${shop.openHour.closeHour}`}</span>
-                      <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
-                    </div>`,
-                    showConfirmButton: true,
-                    confirmButtonColor: '#F38A00',
-                    showCloseButton: true,
-                  }).then(() => {
-                    history.push('/');
-                  });
-                }
-              }}
+              onClick={verifyRedirect}
             />
           </Grid>
         </>
