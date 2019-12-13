@@ -31,6 +31,7 @@
     "formik": "^1.5.8",
     "history": "^4.9.0",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "prop-types": "^15.6.2",
     "query-string": "^6.5.0",
     "react": "^16.7.0",

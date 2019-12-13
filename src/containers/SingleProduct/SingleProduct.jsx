@@ -13,6 +13,7 @@ import {
 import lodash from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import Swal from 'sweetalert2';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
@@ -30,6 +31,7 @@ import orderValidation from './orderSchema';
 
 import getInfoProduct from './requestProduct';
 import NoImage from '../../assets/no-image.png';
+import ClosedStore from '../../assets/closed-store.svg';
 
 const Img = styled.img`
   width: 100%;
@@ -170,7 +172,21 @@ const SingleProduct = (props) => {
 
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
-  const submitItem = (values, { resetForm }) => {
+  const submitItem = (values, { resetForm, setSubmitting }) => {
+    if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
+      setSubmitting(false);
+      Swal.fire({
+        html: `<div>
+          <div><img src="${ClosedStore}"></div>
+          <span class="foradohorario-titulo"> ${shop.openHour.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre ${shop.openHour.openHour} e ${shop.openHour.closeHour}`}</span>
+          <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
+        </div>`,
+        showConfirmButton: true,
+        confirmButtonColor: '#F38A00',
+        showCloseButton: true,
+      }).then(() => setLoaded(false));
+      return false;
+    }
     const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
     const newItem = {
       ...values,
@@ -207,6 +223,7 @@ const SingleProduct = (props) => {
       history.push('/cart');
       resetForm({ quantity: 1, variant: {} });
     }, 1000);
+    return false;
   };
 
 
