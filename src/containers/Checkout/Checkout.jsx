@@ -23,7 +23,7 @@ import FilterContext from 'contexts/FilterContext';
 import history from 'utils/history';
 
 import checkoutSchema from './checkoutSchema';
-import createOrder from './requestCheckout';
+import createOrder, { getPayments } from './requestCheckout';
 import getCep from './getCep';
 
 const ContainerCheckout = styled.div`
@@ -39,29 +39,6 @@ const ValueDelivery = styled.h6`
 const ResumeItem = styled.div`
   margin: 10px 0;
 `;
-
-const paymentMethods = [
-  {
-    label: 'Dinheiro',
-    value: 'money',
-  },
-  {
-    label: 'Cartão de crédito',
-    value: 'credit_card',
-  },
-  {
-    label: 'Cartão de débito',
-    value: 'debit_card',
-  },
-  {
-    label: 'Vale alimentação',
-    value: 'food_voucher',
-  },
-  {
-    label: 'Vale refeição',
-    value: 'food_ticket',
-  },
-];
 
 const personType = [
   {
@@ -96,6 +73,7 @@ const Checkout = ({ intl }) => {
   const [coastDelivery, setCoastDelivery] = useState(0);
   const [withdraw, setWithdraw] = useState(false);
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
+  const [paymentsType, setPaymentType] = useState([]);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const recaptchaRef = useRef();
 
@@ -104,7 +82,7 @@ const Checkout = ({ intl }) => {
       ...formValues,
       pickup: false,
       observacao: '',
-      formaPagamento: '',
+      pagamento: null,
     };
     localStorage.setItem('dataUser', JSON.stringify(valuesForStorage));
 
@@ -160,7 +138,7 @@ const Checkout = ({ intl }) => {
     cidade: '',
     codcidade: '',
     estado: '',
-    formaPagamento: '',
+    pagamento: '',
     tipoPessoa: '',
     fantasia: '',
     razaoSocial: '',
@@ -172,6 +150,12 @@ const Checkout = ({ intl }) => {
   const verifyRecaptcha = (value) => {
     setReCaptchaToken(value);
   };
+
+  useEffect(() => {
+    getPayments(shop.id).then((response) => {
+      setPaymentType(response.data);
+    });
+  }, []);
 
   useEffect(() => {
     const total = stateCart.reduce(
@@ -453,15 +437,15 @@ const Checkout = ({ intl }) => {
                       </Grid>
                       <Grid>
                         <SelectDropDown
-                          id="formaPagamento"
+                          id="pagamento"
                           label="Forma de pagamento"
                           cacheOptions
-                          options={paymentMethods}
-                          getOptionLabel={label => label.label}
-                          getOptionValue={option => option.value}
-                          onChange={event => propsForm.setFieldValue('formaPagamento', event.value)}
-                          isInvalid={propsForm.errors.formaPagamento}
-                          touched={propsForm.touched.formaPagamento}
+                          options={paymentsType}
+                          getOptionLabel={label => label.descricao}
+                          getOptionValue={option => option.codigo}
+                          onChange={event => propsForm.setFieldValue('pagamento', event)}
+                          isInvalid={propsForm.errors.pagamento}
+                          touched={propsForm.touched.pagamento}
                           isRequired
                         />
                       </Grid>
