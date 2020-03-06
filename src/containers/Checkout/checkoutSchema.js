@@ -45,7 +45,7 @@ const checkoutSchema = (isNaturalPerson) => {
         .min(2)
         .max(50)
         .required(),
-      formaPagamento: yup.string()
+      pagamento: yup.object()
         .required(),
     });
   }
@@ -93,7 +93,7 @@ const checkoutSchema = (isNaturalPerson) => {
       .min(2)
       .max(50)
       .required(),
-    formaPagamento: yup.string()
+    pagamento: yup.object()
       .required(),
   });
 };
