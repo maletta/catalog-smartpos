@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
+import ItemsCarousel from 'react-items-carousel';
 import { FormattedPlural, injectIntl, intlShape } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
@@ -149,8 +150,22 @@ const SocialIcon = styled.i`
   cursor: pointer;
 `;
 
+const Icon = styled.i`
+  font-size: 2rem;
+
+  @media (max-width: 576px) {
+    font-size: 0.8rem;
+  }
+
+  :hover {
+    color: #00529b;
+  }
+`;
+
 const SingleProduct = (props) => {
   const { intl } = props;
+  const [activeItemIndex, setActiveItemIndex] = useState(0);
+  const chevronWidth = 40;
   const [product, setProduct] = useState({
     variants: [],
   });
@@ -288,6 +303,26 @@ const SingleProduct = (props) => {
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
 
+  const renderImage = () => (
+    <div style={{ padding: `0 ${chevronWidth}px` }}>
+      <ItemsCarousel
+        requestToChangeActive={setActiveItemIndex}
+        activeItemIndex={activeItemIndex}
+        numberOfCards={1}
+        leftChevron={<Icon className="far fa-arrow-alt-circle-left" />}
+        rightChevron={<Icon className="far fa-arrow-alt-circle-right" />}
+        outsideChevron
+        chevronWidth={chevronWidth}
+      >
+
+        <Img src={image} title={product.descricao} alt="Produto" />
+        <Img src={image} title={product.descricao} alt="Produto" />
+        <Img src={image} title={product.descricao} alt="Produto" />
+        <Img src={image} title={product.descricao} alt="Produto" />
+      </ItemsCarousel>
+    </div>
+  );
+
   return (
     <>
       <Row>
@@ -316,7 +351,7 @@ const SingleProduct = (props) => {
                       >
                         <Row>
                           <Grid cols="12" className="mb-3">
-                            <Img src={image} title={product.descricao} alt="Produto" />
+                            {renderImage()}
                           </Grid>
                           <Grid cols="12" className="mb-3">
                             <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
@@ -345,7 +380,7 @@ const SingleProduct = (props) => {
                       <Grid cols="12 12 6 6 6">
                         <Row>
                           <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
-                            <Img src={image} title={product.descricao} alt="Produto" />
+                            {renderImage()}
                           </Grid>
                           <Grid cols="7 6 12 12 12">
                             <Title className="test-name-product">{product.descricao}</Title>
