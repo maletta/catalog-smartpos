@@ -11,7 +11,10 @@ import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
 import Button from 'components/Form/Button';
 import Input from 'components/Form/Input';
+import InputCrediCard from 'components/Form/InputCreditCard';
+import InputCvv from 'components/Form/InputCvv';
 import MaskedNumberInput from 'components/Form/MaskedNumberInput';
+import MaskInput from 'components/Form/MaskInput';
 import TextArea from 'components/Form/TextArea';
 import SectionTitle from 'components/SectionTitle';
 import Alert from 'components/Alert';
@@ -23,7 +26,7 @@ import FilterContext from 'contexts/FilterContext';
 import history from 'utils/history';
 
 import checkoutSchema from './checkoutSchema';
-import createOrder, { getPayments } from './requestCheckout';
+import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import getCep from './getCep';
 
 const ContainerCheckout = styled.div`
@@ -66,6 +69,7 @@ const Checkout = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
   const dataUser = localStorage.getItem('dataUser') ? JSON.parse(localStorage.getItem('dataUser')) : {};
   const [isNaturalPerson, setNaturalPerson] = useState((dataUser.tipoPessoa && dataUser.tipoPessoa.value === 'FISICA'));
+  const [paymentPage, setPaymentPage] = useState(null);
   const { shop } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const [stateCart] = useState(cart);
@@ -74,8 +78,14 @@ const Checkout = ({ intl }) => {
   const [withdraw, setWithdraw] = useState(false);
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [paymentsType, setPaymentType] = useState([]);
+  const [creditCardBrands, setCreditCardBrands] = useState([]);
+  const [creditCardBrand, setCreditCardBrand] = useState({
+    name: 'amex',
+    cvvSize: 0,
+  });
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const recaptchaRef = useRef();
+  const { PagSeguroDirectPayment } = window.window;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
     const valuesForStorage = {
@@ -93,35 +103,52 @@ const Checkout = ({ intl }) => {
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
     };
-
-    createOrder(values).then((response) => {
-      localStorage.removeItem('cartInit');
-      localStorage.removeItem('cart');
-      const msg = `Você acabou de receber o pedido ${response.data.orderName} do seu catálogo online SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
-      const linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`;
-      Swal.fire({
-        type: 'success',
-        title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
-        showConfirmButton: false,
-        showCloseButton: true,
-        footer: (shop.whatsapp != null && shop.whatsapp.length >= 10 && linkWhatsApp),
-        onClose: () => {
-          history.push('/');
-          updateShoppingCart({
-            basketCount: 0,
-          });
-        },
+    if (paymentPage) {
+      setPaymentPage(values);
+    } else {
+      PagSeguroDirectPayment.onSenderHashReady((response) => {
+        if (response.status === 'error') {
+          console.log(response.message);
+          return false;
+        }
+        setPaymentPage({
+          ...paymentsType,
+          senderHash: response.senderHash,
+        });
       });
-    }).catch(() => {
-      Swal.fire({
-        type: 'error',
-        title: 'Oops...',
-        text: 'Erro ao enviar o pedido',
-      });
-    }).finally(() => {
-      setSubmitting(false);
-    });
+    }
+    setPaymentPage(values);
+    setSubmitting(false);
+    // createOrder(values).then((response) => {
+    //   localStorage.removeItem('cartInit');
+    //   localStorage.removeItem('cart');
+    //   const msg = `Você acabou de receber o pedido ${response.data.orderName} do seu catálogo online SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
+    //   const linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`;
+    //   Swal.fire({
+    //     type: 'success',
+    //     title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
+    //     showConfirmButton: false,
+    //     showCloseButton: true,
+    //     footer: (shop.whatsapp != null && shop.whatsapp.length >= 10 && linkWhatsApp),
+    //     onClose: () => {
+    //       history.push('/');
+    //       updateShoppingCart({
+    //         basketCount: 0,
+    //       });
+    //     },
+    //   });
+    // }).catch(() => {
+    //   Swal.fire({
+    //     type: 'error',
+    //     title: 'Oops...',
+    //     text: 'Erro ao enviar o pedido',
+    //   });
+    // }).finally(() => {
+    //   setSubmitting(false);
+    // });
   };
+
+  console.log(shop);
 
   const initialValues = {
     name: '',
@@ -145,6 +172,7 @@ const Checkout = ({ intl }) => {
     pickup: false,
     catalog_id: shop.id,
     loja: shop.codigo,
+    gatwayPagseguro: false,
   };
 
   const verifyRecaptcha = (value) => {
@@ -154,6 +182,9 @@ const Checkout = ({ intl }) => {
   useEffect(() => {
     getPayments(shop.id).then((response) => {
       setPaymentType(response.data);
+    });
+    getSessionPag(shop.id).then((response) => {
+      PagSeguroDirectPayment.setSessionId(response.data.session);
     });
   }, []);
 
@@ -176,6 +207,34 @@ const Checkout = ({ intl }) => {
     }
   }, [coastDelivery]);
 
+  const handleLoadPaymentsPag = () => {
+    PagSeguroDirectPayment.getPaymentMethods({
+      amount: totalCar,
+      success(response) {
+        const creditCard = Object.keys(response.paymentMethods.CREDIT_CARD.options);
+        const creditCardBrandList = creditCard
+          .map(item => (response.paymentMethods.CREDIT_CARD.options[item]));
+        setCreditCardBrands(creditCardBrandList);
+      },
+      error(response) {
+        console.log('ERROR', response);
+      },
+    });
+  };
+
+  const getInstallments = () => {
+    PagSeguroDirectPayment.getInstallments({
+      amount: 118.80,
+      maxInstallmentNoInterest: 2,
+      brand: creditCardBrand.name,
+      success: function(response){
+        // Retorna as opções de parcelamento disponíveis
+      },
+      error: function(response) {
+        // callback para chamadas que falharam.
+      },
+    });
+  }
 
   return (
     <ContainerCheckout>
@@ -187,333 +246,440 @@ const Checkout = ({ intl }) => {
             validationSchema={checkoutSchema(isNaturalPerson)}
             render={propsForm => (
               <Form>
-                <Row>
-                  <Grid cols="12">
-                    <SectionTitle>Dados cadastrais</SectionTitle>
-                  </Grid>
-                  {(dataUser.catalog_id) && (
-                    <Grid cols="12">
-                      <Alert
-                        text="Para ajudar você a finalizar o pedido mais rapidamente, já preenchemos o formulário com os dados do seu último pedido!"
-                        typeAlert="warning"
-                      />
-                    </Grid>
-                  )}
-                  <Grid cols="12 6 6 6 6">
-                    <SelectDropDown
-                      id="tipoPessoa"
-                      label="Tipo de cadastro"
-                      cacheOptions
-                      options={personType}
-                      defaultValue={propsForm.values.tipoPessoa}
-                      getOptionLabel={label => label.label}
-                      getOptionValue={option => option.value}
-                      onChange={(event) => {
-                        propsForm.setFieldValue('tipoPessoa', event);
-                        if (event.value === 'FISICA') {
-                          setNaturalPerson(true);
-                        } else {
-                          setNaturalPerson(false);
-                        }
-                      }}
-                      isInvalid={propsForm.errors.tipoPessoa}
-                      touched={propsForm.touched.tipoPessoa}
-                      isRequired
-                    />
-                  </Grid>
-                  {(isNaturalPerson) && (
-                  <Grid cols="12 6 6 6 6">
-                    <Field
-                      label="Nome"
-                      name="name"
-                      component={Input}
-                      isRequired
-                    />
-                  </Grid>
-                  )}
-                  {(!isNaturalPerson) && (
-                    <>
-                      <Grid cols="12 6 6 6 6">
-                        <Field
-                          label="Razão social"
-                          name="razaoSocial"
-                          component={Input}
-                          isRequired
-                        />
-                      </Grid>
-                      <Grid cols="12 6 6 6 6">
-                        <Field
-                          label="Nome fantasia"
-                          name="fantasia"
-                          component={Input}
-                          isRequired
-                        />
-                      </Grid>
-                    </>
-                  )}
-                  <Grid cols="12 6 6 6 6">
-                    <Field
-                      label="E-mail"
-                      name="email"
-                      type="email"
-                      component={Input}
-                      isRequired
-                    />
-                  </Grid>
-                  {(isNaturalPerson) ? (
-                    <Grid cols="12 6 6 6 6">
-                      <Field
-                        label="CPF"
-                        name="documento"
-                        format="###.###.###-##"
-                        component={MaskedNumberInput}
-                        isRequired
-                      />
-                    </Grid>
-                  ) : (
-                    <Grid cols="12 6 6 6 6">
-                      <Field
-                        label="CNPJ"
-                        name="documento"
-                        format="##.###.###/####-##"
-                        component={MaskedNumberInput}
-                        isRequired
-                      />
-                    </Grid>
-                  )}
-                  <Grid cols="12 6 6 6 6">
-                    <Field
-                      label="Telefone"
-                      name="fone"
-                      type="tel"
-                      component={Input}
-                      isRequired
-                    />
-                  </Grid>
-                </Row>
-                <Row>
-                  <Grid cols="12">
-                    <SectionTitle>Endereço</SectionTitle>
-                  </Grid>
-                  <Grid cols="12 6 6 3 3">
-                    <Field
-                      label="CEP"
-                      name="cep"
-                      type="tel"
-                      format="#####-###"
-                      component={MaskedNumberInput}
-                      onValueChange={(values) => {
-                        propsForm.setFieldValue('cep', values.formattedValue);
-                        if (values.value.length < 8) {
-                          return;
-                        }
-                        getCep(values.value).then((address) => {
-                          const tipoLogradouro = address.data.logradouro.substring(0, address.data.logradouro.indexOf(' ') + 1);
-                          const endereco = address.data.logradouro.substring(address.data.logradouro.indexOf(' ') + 1);
-                          propsForm.setFieldValue('bairro', address.data.bairro);
-                          propsForm.setFieldValue('estado', address.data.uf);
-                          propsForm.setFieldValue('codcidade', address.data.ibge);
-                          propsForm.setFieldValue('cidade', address.data.localidade);
-                          propsForm.setFieldValue('endereco', endereco.trim());
-                          propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
-                        });
-                      }}
-                      isRequired
-                    />
-                  </Grid>
-                  <Grid cols="12 6 6 3 3">
-                    <Field
-                      label="Tipo logradouro"
-                      name="tipoLogradouro"
-                      placeholder="Exemplo: Rua"
-                      component={Input}
-                      isRequired
-                    />
-                  </Grid>
-                  <Grid cols="12 12 6 6 6">
-                    <Field
-                      label="Endereço"
-                      name="endereco"
-                      component={Input}
-                      isRequired
-                    />
-                  </Grid>
-                  <Grid cols="12 6 6 6 4">
-                    <Field
-                      label="Número"
-                      name="numero"
-                      component={Input}
-                      isRequired
-                    />
-                  </Grid>
-                  <Grid cols="12 6 6 6 8">
-                    <Field
-                      label="Complemento"
-                      name="complemento"
-                      component={Input}
-                    />
-                  </Grid>
-                  <Grid cols="12 12 8 8 8">
-                    <Field
-                      label="Bairro"
-                      name="bairro"
-                      component={Input}
-                      isRequired
-                    />
-                  </Grid>
-                  <Grid cols="12 12 4 4 4">
-                    <SelectDropDown
-                      id="tipoEndereco"
-                      label="Tipo de endereço"
-                      cacheOptions
-                      options={addressType}
-                      defaultValue={propsForm.values.tipoEndereco}
-                      getOptionLabel={label => label.label}
-                      getOptionValue={option => option.value}
-                      onChange={(event) => {
-                        propsForm.setFieldValue('tipoEndereco', event);
-                      }}
-                      isInvalid={propsForm.errors.tipoEndereco}
-                      touched={propsForm.touched.tipoEndereco}
-                      isRequired
-                    />
-                  </Grid>
-                  <Grid cols="12 6 6 6 6">
-                    <Field
-                      label="Cidade"
-                      name="cidade"
-                      component={Input}
-                      isRequired
-                      disabled
-                    />
-                  </Grid>
-                  <Grid cols="12 6 6 6 6">
-                    <Field
-                      label="Estado"
-                      name="estado"
-                      component={Input}
-                      isRequired
-                      disabled
-                    />
-                  </Grid>
-                  <Grid cols="12 6 6 6 6">
+                {(!paymentPage) ? (
+                  <>
                     <Row>
                       <Grid cols="12">
-                        <SectionTitle>
-                          {'Entrega e pagamento'}
-                        </SectionTitle>
+                        <SectionTitle>Dados cadastrais</SectionTitle>
+                      </Grid>
+                      {(dataUser.catalog_id) && (
+                        <Grid cols="12">
+                          <Alert
+                            text="Para ajudar você a finalizar o pedido mais rapidamente, já preenchemos o formulário com os dados do seu último pedido!"
+                            typeAlert="warning"
+                          />
+                        </Grid>
+                      )}
+                      <Grid cols="12 6 6 6 6">
+                        <SelectDropDown
+                          id="tipoPessoa"
+                          label="Tipo de cadastro"
+                          cacheOptions
+                          options={personType}
+                          defaultValue={propsForm.values.tipoPessoa}
+                          getOptionLabel={label => label.label}
+                          getOptionValue={option => option.value}
+                          onChange={(event) => {
+                            propsForm.setFieldValue('tipoPessoa', event);
+                            if (event.value === 'FISICA') {
+                              setNaturalPerson(true);
+                            } else {
+                              setNaturalPerson(false);
+                            }
+                          }}
+                          isInvalid={propsForm.errors.tipoPessoa}
+                          touched={propsForm.touched.tipoPessoa}
+                          isRequired
+                        />
+                      </Grid>
+                      {(isNaturalPerson) && (
+                        <Grid cols="12 6 6 6 6">
+                          <Field
+                            label="Nome"
+                            name="name"
+                            component={Input}
+                            isRequired
+                          />
+                        </Grid>
+                      )}
+                      {(!isNaturalPerson) && (
+                        <>
+                          <Grid cols="12 6 6 6 6">
+                            <Field
+                              label="Razão social"
+                              name="razaoSocial"
+                              component={Input}
+                              isRequired
+                            />
+                          </Grid>
+                          <Grid cols="12 6 6 6 6">
+                            <Field
+                              label="Nome fantasia"
+                              name="fantasia"
+                              component={Input}
+                              isRequired
+                            />
+                          </Grid>
+                        </>
+                      )}
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="E-mail"
+                          name="email"
+                          type="email"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      {(isNaturalPerson) ? (
+                        <Grid cols="12 6 6 6 6">
+                          <Field
+                            label="CPF"
+                            name="documento"
+                            format="###.###.###-##"
+                            component={MaskedNumberInput}
+                            isRequired
+                          />
+                        </Grid>
+                      ) : (
+                        <Grid cols="12 6 6 6 6">
+                          <Field
+                            label="CNPJ"
+                            name="documento"
+                            format="##.###.###/####-##"
+                            component={MaskedNumberInput}
+                            isRequired
+                          />
+                        </Grid>
+                      )}
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Telefone"
+                          name="fone"
+                          type="tel"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                    </Row>
+                    <Row>
+                      <Grid cols="12">
+                        <SectionTitle>Endereço</SectionTitle>
+                      </Grid>
+                      <Grid cols="12 6 6 3 3">
+                        <Field
+                          label="CEP"
+                          name="cep"
+                          type="tel"
+                          format="#####-###"
+                          component={MaskedNumberInput}
+                          onValueChange={(values) => {
+                            propsForm.setFieldValue('cep', values.formattedValue);
+                            if (values.value.length < 8) {
+                              return;
+                            }
+                            getCep(values.value).then((address) => {
+                              const tipoLogradouro = address.data.logradouro.substring(0, address.data.logradouro.indexOf(' ') + 1);
+                              const endereco = address.data.logradouro.substring(address.data.logradouro.indexOf(' ') + 1);
+                              propsForm.setFieldValue('bairro', address.data.bairro);
+                              propsForm.setFieldValue('estado', address.data.uf);
+                              propsForm.setFieldValue('codcidade', address.data.ibge);
+                              propsForm.setFieldValue('cidade', address.data.localidade);
+                              propsForm.setFieldValue('endereco', endereco.trim());
+                              propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
+                            });
+                          }}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 3 3">
+                        <Field
+                          label="Tipo logradouro"
+                          name="tipoLogradouro"
+                          inputId="tipoLogradouro"
+                          placeholder="Exemplo: Rua"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 12 6 6 6">
+                        <Field
+                          label="Endereço"
+                          name="endereco"
+                          inputId="endereco"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 4">
+                        <Field
+                          label="Número"
+                          name="numero"
+                          inputId="numero"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 8">
+                        <Field
+                          label="Complemento"
+                          name="complemento"
+                          inputId="complemento"
+                          component={Input}
+                        />
+                      </Grid>
+                      <Grid cols="12 12 8 8 8">
+                        <Field
+                          label="Bairro"
+                          name="bairro"
+                          inputId="bairro"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 12 4 4 4">
+                        <SelectDropDown
+                          id="tipoEndereco"
+                          label="Tipo de endereço"
+                          cacheOptions
+                          options={addressType}
+                          defaultValue={propsForm.values.tipoEndereco}
+                          getOptionLabel={label => label.label}
+                          getOptionValue={option => option.value}
+                          onChange={(event) => {
+                            propsForm.setFieldValue('tipoEndereco', event);
+                          }}
+                          isInvalid={propsForm.errors.tipoEndereco}
+                          touched={propsForm.touched.tipoEndereco}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Cidade"
+                          name="cidade"
+                          inputId="cidade"
+                          component={Input}
+                          isRequired
+                          disabled
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Estado"
+                          name="estado"
+                          inputId="estado"
+                          component={Input}
+                          isRequired
+                          disabled
+                        />
                       </Grid>
                       <Grid cols="12">
-                        {(shop.deliveryMode === 'DELIVERY' || shop.deliveryMode === 'BOTH') && (
-                          <>
-                            <span>Taxa de entrega</span>
-                            <ValueDelivery>{intl.formatNumber(shop.deliveryFee, { style: 'currency', currency: 'BRL' })}</ValueDelivery>
-                          </>
-                        )}
-                        {(shop.deliveryMode === 'PICKUP') && (
-                          <>
-                            <span>Entrega</span>
-                            <ValueDelivery>
-                              {'Você irá retirar o pedido no estabelecimento do vendedor'}
-                            </ValueDelivery>
-                          </>
-                        )}
-                        {(shop.deliveryMode === 'BOTH') && (
-                          <>
+                        <>
+                          <SectionTitle>
+                            {'Pagamento e entrega'}
+                          </SectionTitle>
+                          {(shop.allowPayOnline === 1) && (
                             <div className="d-flex align-items-center mt-3 mb-3">
                               <Field
-                                label="Retirar no estabelecimento"
-                                name="pickup"
+                                label="Pagamento pelo PagSeguro"
+                                name="gatwayPagseguro"
                                 component={RenderCheckbox}
                                 onChange={(event) => {
                                   event.preventDefault();
-                                  propsForm.setFieldValue('pickup', !propsForm.values.pickup);
-                                  setWithdraw(!propsForm.values.pickup);
+                                  propsForm.setFieldValue('gatwayPagseguro', !propsForm.values.gatwayPagseguro);
                                 }}
                               />
                             </div>
-                          </>
+                          )}
+                          <Alert
+                            text={(propsForm.values.gatwayPagseguro) ? 'Finalize a compra para realizar o pagamento pelo PagSeguro' : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'}
+                          />
+                        </>
+                      </Grid>
+                      {(propsForm.values.gatwayPagseguro) || (
+                        <Grid cols="12 12 6 6 6">
+                          <SelectDropDown
+                            id="pagamento"
+                            label="Forma de pagamento"
+                            cacheOptions
+                            options={paymentsType}
+                            getOptionLabel={label => label.descricao}
+                            getOptionValue={option => option.codigo}
+                            onChange={event => propsForm.setFieldValue('pagamento', event)}
+                            isInvalid={propsForm.errors.pagamento}
+                            touched={propsForm.touched.pagamento}
+                            isRequired
+                          />
+                        </Grid>
+                      )}
+                      <Grid cols="12">
+                        <Row>
+                          <Grid cols="12">
+                            {(shop.deliveryMode === 'DELIVERY' || shop.deliveryMode === 'BOTH') && (
+                              <>
+                                <span>Taxa de entrega</span>
+                                <ValueDelivery>{intl.formatNumber(shop.deliveryFee, { style: 'currency', currency: 'BRL' })}</ValueDelivery>
+                              </>
+                            )}
+                            {(shop.deliveryMode === 'PICKUP') && (
+                              <>
+                                <span>Entrega</span>
+                                <ValueDelivery>
+                                  {'Você irá retirar o pedido no estabelecimento do vendedor'}
+                                </ValueDelivery>
+                              </>
+                            )}
+                            {(shop.deliveryMode === 'BOTH') && (
+                              <>
+                                <div className="d-flex align-items-center mt-3 mb-3">
+                                  <Field
+                                    label="Retirar no estabelecimento"
+                                    name="pickup"
+                                    component={RenderCheckbox}
+                                    onChange={(event) => {
+                                      event.preventDefault();
+                                      propsForm.setFieldValue('pickup', !propsForm.values.pickup);
+                                      setWithdraw(!propsForm.values.pickup);
+                                    }}
+                                  />
+                                </div>
+                              </>
+                            )}
+                          </Grid>
+
+                        </Row>
+                      </Grid>
+                      <Grid cols="12 6 6 6 6">
+                        <Row>
+                          <Grid cols="12">
+                            <SectionTitle>Resumo do pedido</SectionTitle>
+                          </Grid>
+                          <Grid cols="12">
+                            <ResumeItem>
+                              <span>Pedido: </span>
+                              <strong>{intl.formatNumber(totalCar, { style: 'currency', currency: 'BRL' })}</strong>
+                            </ResumeItem>
+                            <ResumeItem>
+                              <span>Entrega: </span>
+                              <strong>{intl.formatNumber(withdraw ? 0 : coastDelivery, { style: 'currency', currency: 'BRL' })}</strong>
+                            </ResumeItem>
+                            <ResumeItem>
+                              <span>Total: </span>
+                              <strong>{intl.formatNumber(withdraw ? totalCar : (coastDelivery + totalCar), { style: 'currency', currency: 'BRL' })}</strong>
+                            </ResumeItem>
+                          </Grid>
+                        </Row>
+                      </Grid>
+                      <Grid cols="12">
+                        <Field
+                          inputId="observacao"
+                          label="Observação"
+                          name="observacao"
+                          component={TextArea}
+                          rows={3}
+                        />
+                      </Grid>
+                      <Grid cols="12">
+                        {(Object.keys(propsForm.errors).length > 0
+                          && propsForm.submitCount > 0) && (
+                          <Alert
+                            text="Verifique se há campos incorretos no formulário!"
+                            typeAlert="danger"
+                          />
                         )}
                       </Grid>
-                      <Grid>
+                      <Grid cols="12" className="d-flex justify-content-end">
+                        <div>
+                          <Button
+                            value={(propsForm.values.gatwayPagseguro) ? 'Ir para o pagamento' : 'Enviar pedido'}
+                            type="submit"
+                            isLoading={propsForm.isSubmitting}
+                          />
+                        </div>
+                      </Grid>
+                    </Row>
+                  </>
+                ) : (
+                  <>
+                    <Row>
+                      <Grid cols="12">
                         <SelectDropDown
                           id="pagamento"
                           label="Forma de pagamento"
                           cacheOptions
-                          options={paymentsType}
-                          getOptionLabel={label => label.descricao}
-                          getOptionValue={option => option.codigo}
+                          options={creditCardBrands}
+                          getOptionLabel={label => label.displayName}
+                          getOptionValue={option => option.name}
                           onChange={event => propsForm.setFieldValue('pagamento', event)}
                           isInvalid={propsForm.errors.pagamento}
                           touched={propsForm.touched.pagamento}
                           isRequired
                         />
                       </Grid>
-                    </Row>
-                  </Grid>
-                  <Grid cols="12 6 6 6 6">
-                    <Row>
-                      <Grid cols="12">
-                        <SectionTitle>Resumo do pedido</SectionTitle>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Nome do titular"
+                          name="nameHolder"
+                          component={Input}
+                          isRequired
+                        />
                       </Grid>
-                      <Grid cols="12">
-                        <ResumeItem>
-                          <span>Pedido: </span>
-                          <strong>{intl.formatNumber(totalCar, { style: 'currency', currency: 'BRL' })}</strong>
-                        </ResumeItem>
-                        <ResumeItem>
-                          <span>Entrega: </span>
-                          <strong>{intl.formatNumber(withdraw ? 0 : coastDelivery, { style: 'currency', currency: 'BRL' })}</strong>
-                        </ResumeItem>
-                        <ResumeItem>
-                          <span>Total: </span>
-                          <strong>{intl.formatNumber(withdraw ? totalCar : (coastDelivery + totalCar), { style: 'currency', currency: 'BRL' })}</strong>
-                        </ResumeItem>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Número do cartão"
+                          name="cardNumber"
+                          format={(creditCardBrand.name === 'amex' ? '#### ###### ######' : '#### #### #### ####')}
+                          component={InputCrediCard}
+                          onChange={(event) => {
+                            const { value } = event.target;
+                            PagSeguroDirectPayment.getBrand({
+                              cardBin: value,
+                              success(reponse) {
+                                console.log(reponse);
+                                setCreditCardBrand(reponse);
+                              },
+                            });
+                          }}
+                          isRequired
+                          type="tel"
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Validade"
+                          name="expiration"
+                          placeholder="MM/AAAA"
+                          format="##/####"
+                          component={MaskInput}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Código de segurança"
+                          name="cvv"
+                          format={(creditCardBrand.name === 'amex' ? '####' : '###')}
+                          component={InputCvv}
+                          isRequired
+                          type="tel"
+                        />
+                      </Grid>
+
+                      <Grid
+                        cols="12"
+                        className="d-flex justify-content-end mb-3"
+                      >
+                        <ReCAPTCHA
+                          ref={recaptchaRef}
+                          sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
+                          hl="pt-BR"
+                          onChange={verifyRecaptcha}
+                        />
+                      </Grid>
+                      <Grid cols="12" className="d-flex justify-content-end">
+                        <div>
+                          <Button
+                            value="Enviar pedido"
+                            type="submit"
+                            isLoading={propsForm.isSubmitting}
+                            disabled={!reCaptchaToken}
+                          />
+                        </div>
                       </Grid>
                     </Row>
-                  </Grid>
-                  <Grid cols="12">
-                    <Field
-                      inputId="observacao"
-                      label="Observação"
-                      name="observacao"
-                      component={TextArea}
-                      rows={3}
-                    />
-                  </Grid>
-                  <Grid cols="12">
-                    <Alert
-                      text="Atenção: você irá realizar o pagamento diretamente com o vendedor!"
-                    />
-                    {(Object.keys(propsForm.errors).length > 0 && propsForm.submitCount > 0) && (
-                      <Alert
-                        text="Verifique se há campos incorretos no formulário!"
-                        typeAlert="danger"
-                      />
-                    )}
-                  </Grid>
-                  <Grid
-                    cols="12"
-                    className="d-flex justify-content-end mb-3"
-                  >
-                    <ReCAPTCHA
-                      ref={recaptchaRef}
-                      sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
-                      hl="pt-BR"
-                      onChange={verifyRecaptcha}
-                    />
-                  </Grid>
-                  <Grid cols="12" className="d-flex justify-content-end">
-                    <div>
-                      <Button
-                        value="Enviar pedido"
-                        type="submit"
-                        isLoading={propsForm.isSubmitting}
-                        disabled={!reCaptchaToken}
-                      />
-                    </div>
-                  </Grid>
-                </Row>
+                  </>
+                )}
               </Form>
             )}
           />

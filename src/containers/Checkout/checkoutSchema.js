@@ -94,7 +94,13 @@ const checkoutSchema = (isNaturalPerson) => {
       .max(50)
       .required(),
     pagamento: yup.object()
-      .required(),
+      .test('perIPI-rule', 'Campo inválido', function (inputValue) {
+        const gatwayPagseguro = this.resolve(yup.ref('gatwayPagseguro'));
+        if (!gatwayPagseguro && !inputValue) {
+          return false;
+        }
+        return true;
+      }),
   });
 };
 
