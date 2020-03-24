@@ -75,7 +75,7 @@ const BrandCard = styled.span`
   position: absolute;
   width: 70px;
   height: 43px;
-  background: url(${BgCreditCard}) #fff no-repeat ${props => (props.brand && brandPosition[props.brand].positionBg)};
+  background: url(${BgCreditCard}) #fff no-repeat ${props => (brandPosition[props.brand] && brandPosition[props.brand].positionBg)};
   transition: background-position 0.2s ease-in;
 `;
 

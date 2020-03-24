@@ -46,7 +46,28 @@ const checkoutSchema = (isNaturalPerson) => {
         .max(50)
         .required(),
       pagamento: yup.object()
+        .test('gatwayPagseguro', 'Campo inválido', function (inputValue) {
+          const gatwayPagseguro = this.resolve(yup.ref('gatwayPagseguro'));
+          if (!gatwayPagseguro) {
+            return inputValue.codigo;
+          }
+          return true;
+        }),
+      nameHolder: yup.string()
         .required(),
+      cardNumber: yup.string()
+        .min(6, 'Valor inválido')
+        .required(),
+      expiration_unformatted: yup.string()
+        .required()
+        .min(6, 'Valor inválido')
+        .max(6, 'Valor inválido'),
+      cvv: yup.string()
+        .required()
+        .min(3)
+        .max(4),
+      installments: yup.number()
+        .typeError('Escolha uma parcela'),
     });
   }
 
@@ -94,13 +115,21 @@ const checkoutSchema = (isNaturalPerson) => {
       .max(50)
       .required(),
     pagamento: yup.object()
-      .test('perIPI-rule', 'Campo inválido', function (inputValue) {
+      .test('gatwayPagseguro', 'Campo inválido', function (inputValue) {
         const gatwayPagseguro = this.resolve(yup.ref('gatwayPagseguro'));
-        if (!gatwayPagseguro && !inputValue) {
-          return false;
+        if (!gatwayPagseguro) {
+          return inputValue.codigo;
         }
         return true;
       }),
+    nameHolder: yup.string()
+      .required(),
+    cardNumber: yup.string()
+      .required(),
+    expiration: yup.string()
+      .required(),
+    cvv: yup.string()
+      .required(),
   });
 };
 
