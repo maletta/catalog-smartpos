@@ -7,6 +7,7 @@ import { Formik, Form, Field } from 'formik';
 import Swal from 'sweetalert2';
 import NumberFormat from 'react-number-format';
 import ReCAPTCHA from 'react-google-recaptcha';
+import lodash from 'lodash';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
@@ -25,10 +26,12 @@ import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import FilterContext from 'contexts/FilterContext';
 import history from 'utils/history';
+import IconeShield from 'assets/lock.png';
 
 import checkoutSchema from './checkoutSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import getCep from './getCep';
+
 
 const ContainerCheckout = styled.div`
   background: #fff;
@@ -42,6 +45,13 @@ const ValueDelivery = styled.h6`
 
 const ResumeItem = styled.div`
   margin: 10px 0;
+`;
+
+const AddressCreditCard = styled.span`
+  color: #00529b;
+  text-decoration: underline;
+  font-weight: 500;
+  cursor: pointer;
 `;
 
 const personType = [
@@ -67,11 +77,11 @@ const addressType = [
 ];
 
 const Checkout = ({ intl }) => {
+  const { shop } = useContext(ShopContext);
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
   const dataUser = localStorage.getItem('dataUser') ? JSON.parse(localStorage.getItem('dataUser')) : {};
   const [isNaturalPerson, setNaturalPerson] = useState((dataUser.tipoPessoa && dataUser.tipoPessoa.value === 'FISICA'));
-  const [paymentPage, setPaymentPage] = useState(null);
-  const { shop } = useContext(ShopContext);
+  const [offlinePayment, setOfflinePayment] = useState((shop.allowPayOnline === 0));
   const { updateFilter } = useContext(FilterContext);
   const [stateCart] = useState(cart);
   const [totalCar, setTotalCar] = useState(0);
@@ -92,12 +102,48 @@ const Checkout = ({ intl }) => {
   const recaptchaRef = useRef();
   const { PagSeguroDirectPayment } = window.window;
 
+  const sendCheckout = (values, setSubmitting) => {
+    createOrder(values).then((response) => {
+      localStorage.removeItem('cartInit');
+      localStorage.removeItem('cart');
+      const msg = `Você acabou de receber o pedido ${response.data.orderName} do seu catálogo on-line SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
+      const linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`;
+      Swal.fire({
+        type: 'success',
+        title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
+        showConfirmButton: false,
+        showCloseButton: true,
+        footer: (shop.whatsapp != null && shop.whatsapp.length >= 10 && linkWhatsApp),
+        onClose: () => {
+          history.push('/');
+          updateShoppingCart({
+            basketCount: 0,
+          });
+        },
+      });
+    }).catch(() => {
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Erro ao enviar o pedido',
+      });
+    }).finally(() => {
+      setSubmitting(false);
+    });
+  };
+
   const submitCheckout = (formValues, { setSubmitting }) => {
     const valuesForStorage = {
       ...formValues,
       pickup: false,
       observacao: '',
-      pagamento: {},
+      pagamento: null,
+      installments: '',
+      cardNumber: '',
+      cardNumber_unformatted: '',
+      expiration: '',
+      expiration_unformatted: '',
+      cvv: '',
     };
     localStorage.setItem('dataUser', JSON.stringify(valuesForStorage));
 
@@ -109,56 +155,38 @@ const Checkout = ({ intl }) => {
       orderProducts: stateCart,
     };
 
-    if (formValues.gatwayPagseguro && state.loadPagseguro) {
+    // Pagamento pela pagseguro
+    if (formValues.gatwayPagseguro && state.senderHash) {
+      const pagamento = paymentsType[lodash.findKey(paymentsType, { tipoCartao: 'CREDITO_A_VISTA' })];
       PagSeguroDirectPayment.createCardToken({
-        cardNumber: formValues.cardNumber, // Número do cartão de crédito
+        cardNumber: formValues.cardNumber_unformatted, // Número do cartão de crédito
         brand: state.creditCardBrand.name, // Bandeira do cartão
         cvv: formValues.cvv, // CVV do cartão
         expirationMonth: formValues.expiration.split('/')[0], // Mês da expiração do cartão
         expirationYear: formValues.expiration.split('/')[1], // Ano da expiração do cartão, é necessário os 4 dígitos.
         success(response) {
-          console.log('success', response);
+          const valuesPag = {
+            ...values,
+            senderHash: state.senderHash,
+            cardTokenPag: response.card.token,
+            pagamento,
+          };
+          sendCheckout(valuesPag, setSubmitting);
         },
-        error(response) {
-          console.log('error', response);
-        },
-        complete: function(response) {
-          // Callback para todas chamadas.
+        error() {
+          Swal.fire({
+            type: 'warning',
+            title: 'Cartão inválido',
+            text: 'Por favor verifique seu cartão de crédito!',
+            showConfirmButton: true,
+            showCloseButton: true,
+          });
+          setSubmitting(false);
         },
       });
+    } else {
+      sendCheckout(values, setSubmitting);
     }
-
-    console.log(formValues);
-
-    setPaymentPage(values);
-    setSubmitting(false);
-    // createOrder(values).then((response) => {
-    //   localStorage.removeItem('cartInit');
-    //   localStorage.removeItem('cart');
-    //   const msg = `Você acabou de receber o pedido ${response.data.orderName} do seu catálogo online SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
-    //   const linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`;
-    //   Swal.fire({
-    //     type: 'success',
-    //     title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
-    //     showConfirmButton: false,
-    //     showCloseButton: true,
-    //     footer: (shop.whatsapp != null && shop.whatsapp.length >= 10 && linkWhatsApp),
-    //     onClose: () => {
-    //       history.push('/');
-    //       updateShoppingCart({
-    //         basketCount: 0,
-    //       });
-    //     },
-    //   });
-    // }).catch(() => {
-    //   Swal.fire({
-    //     type: 'error',
-    //     title: 'Oops...',
-    //     text: 'Erro ao enviar o pedido',
-    //   });
-    // }).finally(() => {
-    //   setSubmitting(false);
-    // });
   };
 
   const initialValues = {
@@ -169,7 +197,7 @@ const Checkout = ({ intl }) => {
     documento: '',
     endereco: '',
     tipoLogradouro: '',
-    tipoEndereco: '',
+    tipoEndereco: [],
     complemento: '',
     numero: '',
     bairro: '',
@@ -177,20 +205,33 @@ const Checkout = ({ intl }) => {
     codcidade: '',
     estado: '',
     pagamento: '',
-    tipoPessoa: '',
+    tipoPessoa: [],
     fantasia: '',
     razaoSocial: '',
     pickup: false,
     catalog_id: shop.id,
     loja: shop.codigo,
-    gatwayPagseguro: true,
-    offlinePayment: false,
+    gatwayPagseguro: (shop.allowPayOnline === 1),
+    offlinePayment: (shop.allowPayOnline === 0),
     nameHolder: '',
     cardNumber: '',
+    cardNumber_unformatted: '',
     expiration: '',
     expiration_unformatted: '',
+    allowedLimit: true,
     cvv: '',
     installments: '',
+    cpfHolder: '',
+    birthDateHolder: '',
+    cobrancaCep: '',
+    cobrancaBairro: '',
+    cobrancaEstado: '',
+    cobrancaComplemento: '',
+    cobrancaNumero: '',
+    cobrancaCodcidade: '',
+    cobrancaCidade: '',
+    cobrancaEndereco: '',
+    cobrancaTipoLogradouro: '',
   };
 
   const verifyRecaptcha = (value) => {
@@ -209,27 +250,32 @@ const Checkout = ({ intl }) => {
           creditCardBrands: creditCardBrandList,
         });
       },
-      error(response) {
-        console.log('ERROR', response);
-      },
+    });
+  };
+
+  const getHashReady = () => {
+    PagSeguroDirectPayment.onSenderHashReady((resPag) => {
+      if (resPag.status === 'error') {
+        return false;
+      }
+      return setState({
+        ...state,
+        senderHash: resPag.senderHash,
+      });
     });
   };
 
   const getInstallments = () => {
     PagSeguroDirectPayment.getInstallments({
       amount: (withdraw ? totalCar : (coastDelivery + totalCar)),
-      maxInstallmentNoInterest: 2,
+      // maxInstallmentNoInterest: 2,
       brand: state.creditCardBrand.name,
-      success: function(response) {
+      success(response) {
         const installments = response.installments[state.creditCardBrand.name];
-        console.log('Installments', installments);
         setState({
           ...state,
           installments,
         });
-      },
-      error: function(response) {
-        // callback para chamadas que falharam.
       },
     });
   };
@@ -240,22 +286,20 @@ const Checkout = ({ intl }) => {
     });
     getSessionPag(shop.id).then((response) => {
       PagSeguroDirectPayment.setSessionId(response.data.session);
-      PagSeguroDirectPayment.onSenderHashReady((resPag) => {
-        if (response.status === 'error') {
-          console.log(resPag.message);
-          return false;
-        }
-        setPaymentPage({
-          ...paymentsType,
-          senderHash: resPag.senderHash,
-        });
-      });
-      setState({
-        ...state,
-        loadPagseguro: true,
-      });
+      handleLoadPaymentsPag();
     });
   }, []);
+
+  const verifyMaxAndMinValue = (gatwayPagseguro) => {
+    if (gatwayPagseguro) {
+      if (shop.minValuePayOnline >= 0 && totalCar
+        > shop.minValuePayOnline && totalCar <= shop.maxValuePayOnline) {
+        return true;
+      }
+      return false;
+    }
+    return true;
+  };
 
   useEffect(() => {
     const total = stateCart.reduce(
@@ -274,31 +318,18 @@ const Checkout = ({ intl }) => {
     }
   }, [coastDelivery]);
 
-  useEffect(() => {
-    handleLoadPaymentsPag();
-    getInstallments();
-  },[state.loadPagseguro]);
-
-  const verifyMaxAndMinValue = (gatwayPagseguro) => {
-    if (gatwayPagseguro) {
-      if (shop.minValuePayOnline >= 0 && totalCar
-        > shop.minValuePayOnline && totalCar <= shop.maxValuePayOnline) {
-        return true;
-      }
-      return false;
-    }
-    return true;
-  };
-
-
   return (
     <ContainerCheckout>
       <Row className="d-flex">
         <Grid cols="12 12 12 9">
           <Formik
             onSubmit={submitCheckout}
-            initialValues={(dataUser.catalog_id ? dataUser : initialValues)}
-            validationSchema={checkoutSchema(isNaturalPerson, )}
+            initialValues={(dataUser.catalog_id ? ({
+              ...dataUser,
+              gatwayPagseguro: (shop.allowPayOnline === 1),
+              offlinePayment: (shop.allowPayOnline === 0),
+            }) : initialValues)}
+            validationSchema={checkoutSchema(isNaturalPerson, offlinePayment)}
             render={propsForm => (
               <Form>
                 <Row>
@@ -307,10 +338,26 @@ const Checkout = ({ intl }) => {
                   </Grid>
                   {(dataUser.catalog_id) && (
                     <Grid cols="12">
-                      <Alert
-                        text="Para ajudar você a finalizar o pedido mais rapidamente, já preenchemos o formulário com os dados do seu último pedido!"
-                        typeAlert="warning"
-                      />
+                      <>
+                        <Alert
+                          text="Para ajudar você a finalizar o pedido mais rapidamente, já preenchemos o formulário com os dados do seu último pedido!"
+                          typeAlert="warning"
+                        />
+                      </>
+                      {(propsForm.values.gatwayPagseguro
+                        && totalCar < shop.minValuePayOnline) && (
+                        <Alert
+                          text="Valor abaixo do permitido para pagamento on-line, adicione mais produtos"
+                          typeAlert="warning"
+                        />
+                      )}
+                      {(propsForm.values.gatwayPagseguro
+                        && totalCar > shop.maxValuePayOnline) && (
+                        <Alert
+                          text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
+                          typeAlert="warning"
+                        />
+                      )}
                     </Grid>
                   )}
                   <Grid cols="12 6 6 6 6">
@@ -340,6 +387,7 @@ const Checkout = ({ intl }) => {
                       <Field
                         label="Nome"
                         name="name"
+                        inputId="name"
                         component={Input}
                         isRequired
                       />
@@ -351,6 +399,7 @@ const Checkout = ({ intl }) => {
                         <Field
                           label="Razão social"
                           name="razaoSocial"
+                          inputId="razaoSocial"
                           component={Input}
                           isRequired
                         />
@@ -359,6 +408,7 @@ const Checkout = ({ intl }) => {
                         <Field
                           label="Nome fantasia"
                           name="fantasia"
+                          inputId="fantasia"
                           component={Input}
                           isRequired
                         />
@@ -369,6 +419,7 @@ const Checkout = ({ intl }) => {
                     <Field
                       label="E-mail"
                       name="email"
+                      inputId="email"
                       type="email"
                       component={Input}
                       isRequired
@@ -379,6 +430,7 @@ const Checkout = ({ intl }) => {
                       <Field
                         label="CPF"
                         name="documento"
+                        inputId="documento"
                         format="###.###.###-##"
                         component={MaskedNumberInput}
                         isRequired
@@ -389,6 +441,7 @@ const Checkout = ({ intl }) => {
                       <Field
                         label="CNPJ"
                         name="documento"
+                        inputId="documento"
                         format="##.###.###/####-##"
                         component={MaskedNumberInput}
                         isRequired
@@ -399,6 +452,7 @@ const Checkout = ({ intl }) => {
                     <Field
                       label="Telefone"
                       name="fone"
+                      inputId="fone"
                       type="tel"
                       component={Input}
                       isRequired
@@ -413,6 +467,7 @@ const Checkout = ({ intl }) => {
                     <Field
                       label="CEP"
                       name="cep"
+                      inputId="cep"
                       type="tel"
                       format="#####-###"
                       component={MaskedNumberInput}
@@ -559,7 +614,11 @@ const Checkout = ({ intl }) => {
                                       onChange={(event) => {
                                         event.preventDefault();
                                         propsForm.setFieldValue('pickup', !propsForm.values.pickup);
+                                        propsForm.setFieldValue('installments', null);
                                         setWithdraw(!propsForm.values.pickup);
+                                      }}
+                                      onBlur={() => {
+                                        getInstallments();
                                       }}
                                     />
                                   </div>
@@ -608,45 +667,46 @@ const Checkout = ({ intl }) => {
                                 event.preventDefault();
                                 propsForm.setFieldValue('offlinePayment', !propsForm.values.offlinePayment);
                                 propsForm.setFieldValue('gatwayPagseguro', !propsForm.values.gatwayPagseguro);
+                                setOfflinePayment(true);
                               }}
                             />
                           </div>
                           <div className="d-flex align-items-center mt-3 mb-3">
                             <Field
-                              label="Pague online"
+                              label="Pague on-line"
                               name="gatwayPagseguro"
                               component={RenderCheckbox}
                               onChange={(event) => {
                                 event.preventDefault();
                                 propsForm.setFieldValue('gatwayPagseguro', !propsForm.values.gatwayPagseguro);
                                 propsForm.setFieldValue('offlinePayment', !propsForm.values.offlinePayment);
+                                setOfflinePayment(false);
                               }}
                             />
                           </div>
                         </>
                       )}
                       <Alert
-                        text={(propsForm.values.gatwayPagseguro) ? 'Finalize a compra para realizar o pagamento pelo PagSeguro' : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'}
+                        text={(propsForm.values.gatwayPagseguro && shop.allowPayOnline === 1) ? 'Finalize a compra para realizar o pagamento pelo PagSeguro' : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'}
                       />
                       {(propsForm.values.gatwayPagseguro
                         && totalCar < shop.minValuePayOnline) && (
                         <Alert
-                          text="Valor abaixo do permitido para pagamento online, adicione mais produtos"
+                          text="Valor abaixo do permitido para pagamento on-line, adicione mais produtos"
                           typeAlert="warning"
                         />
                       )}
                       {(propsForm.values.gatwayPagseguro
                         && totalCar > shop.maxValuePayOnline) && (
                         <Alert
-                          text="Valor maior do que o permitido para pagamento online, remova alguns produtos"
+                          text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
                           typeAlert="warning"
                         />
                       )}
                     </>
                   </Grid>
-                  {console.log(propsForm.errors)}
-                  {(propsForm.values.gatwayPagseguro) || (
-                    <Grid cols="12 12 6 6 6">
+                  {(propsForm.values.offlinePayment) && (
+                    <Grid cols="12">
                       <SelectDropDown
                         id="pagamento"
                         label="Forma de pagamento"
@@ -661,30 +721,55 @@ const Checkout = ({ intl }) => {
                       />
                     </Grid>
                   )}
-                  {(propsForm.values.gatwayPagseguro) && (
+                  {(propsForm.values.gatwayPagseguro && shop.allowPayOnline === 1
+                    && verifyMaxAndMinValue(propsForm.values.gatwayPagseguro)) && (
                     <>
                       <Grid cols="12 6 6 6 6">
                         <Field
                           label="Nome do titular"
                           name="nameHolder"
+                          inputId="nameHolder"
                           component={Input}
                           isRequired
                         />
                       </Grid>
-                      <Grid cols="12 6 6 6 6">
-                        {}
+                      <Grid cols="12 6 6 6 3">
+                        <Field
+                          label="CPF do titular"
+                          name="cpfHolder"
+                          inputId="cpfHolder"
+                          format="###.###.###-##"
+                          component={MaskedNumberInput}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 3">
+                        <Field
+                          label="Data Nascimento"
+                          name="birthDateHolder"
+                          inputId="birthDateHolder"
+                          format="##/##/####"
+                          component={MaskedNumberInput}
+                          onValueChange={(event) => {
+                            propsForm.setFieldValue('birthDateHolder', event.formattedValue);
+                          }}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 9">
                         <Field
                           label="Número do cartão"
-                          name="cardNumber"
+                          name="cardNumber_unformatted"
+                          inputId="cardNumber_unformatted"
                           format={(state.creditCardBrand.name === 'amex' ? '#### ###### ######' : '#### #### #### ####')}
                           component={NumberFormat}
                           customInput={InputCrediCard}
                           brand={state.creditCardBrand.name}
                           onValueChange={(event) => {
-                            const { value } = event;
-                            propsForm.setFieldValue('cardNumber', value);
-                            if (value.length >= 7) {
-                              const cardBin = value.substring(0, 7);
+                            propsForm.setFieldValue('cardNumber', event.formattedValue);
+                            propsForm.setFieldValue('cardNumber_unformatted', event.value);
+                            if (event.value.length >= 7) {
+                              const cardBin = event.value.substring(0, 7);
                               PagSeguroDirectPayment.getBrand({
                                 cardBin,
                                 success(reponse) {
@@ -703,44 +788,161 @@ const Checkout = ({ intl }) => {
                           type="tel"
                         />
                       </Grid>
-                      <Grid cols="12 6 6 6 6">
+                      <Grid cols="12 6 6 6 3">
                         <Field
                           label="Validade"
-                          name="expiration_unformatted"
+                          name="expiration"
+                          inputId="expiration"
                           placeholder="MM/AAAA"
                           format="##/####"
                           component={MaskInput}
                           isRequired
                           onValueChange={(value) => {
                             propsForm.setFieldValue('expiration', value.formattedValue);
-                            propsForm.setFieldValue('expiration_unformatted', value.value);
                           }}
                         />
                       </Grid>
-                      <Grid cols="12 6 6 6 6">
+                      <Grid cols="12 6 6 6 4">
                         <Field
-                          label="Código de segurança"
+                          label="Cód. de segurança"
                           name="cvv"
+                          inputId="cvv"
                           format={(state.creditCardBrand.name === 'amex' ? '####' : '###')}
-                          component={InputCvv}
+                          component={NumberFormat}
+                          customInput={InputCvv}
+                          onValueChange={(value) => {
+                            propsForm.setFieldValue('cvv', value.value);
+                          }}
                           isRequired
                           type="tel"
                         />
                       </Grid>
-                      <Grid cols="12">
+                      <Grid cols="12 12 12 12 8">
                         <SelectDropDown
                           id="installments"
                           label="Parcelas"
-                          defaultValue={[]}
+                          value={propsForm.values.installments}
                           cacheOptions
                           options={state.installments}
                           getOptionLabel={label => (label.totalAmount && (`${label.quantity} ${(label.quantity === 1 ? 'parcela' : 'parcelas')} de ${intl.formatNumber(label.installmentAmount, { style: 'currency', currency: 'BRL' })} | Total: ${intl.formatNumber(label.totalAmount, { style: 'currency', currency: 'BRL' })} `))}
                           getOptionValue={option => option.quantity}
-                          onChange={event => propsForm.setFieldValue('installments', event.quantity)}
+                          onChange={(event) => {
+                            propsForm.setFieldValue('installments', event);
+                            getHashReady();
+                          }}
                           isInvalid={propsForm.errors.installments}
                           touched={propsForm.touched.installments}
                           placeholder="Preencha as informações do cartão para ver as opções de parcelamento"
                           isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12" className="mb-3">
+                        <AddressCreditCard
+                          onClick={() => {
+                            propsForm.setFieldValue('cobrancaCep', propsForm.values.cep);
+                            propsForm.setFieldValue('cobrancaBairro', propsForm.values.bairro);
+                            propsForm.setFieldValue('cobrancaEstado', propsForm.values.estado);
+                            propsForm.setFieldValue('cobrancaComplemento', propsForm.values.complemento);
+                            propsForm.setFieldValue('cobrancaNumero', propsForm.values.numero);
+                            propsForm.setFieldValue('cobrancaCodcidade', propsForm.values.codcidade);
+                            propsForm.setFieldValue('cobrancaCidade', propsForm.values.cidade);
+                            propsForm.setFieldValue('cobrancaEndereco', propsForm.values.endereco);
+                            propsForm.setFieldValue('cobrancaTipoLogradouro', propsForm.values.tipoLogradouro);
+                          }}
+                        >
+                          {'Endereço do cartão é o mesmo da entrega?'}
+                        </AddressCreditCard>
+                      </Grid>
+                      <Grid cols="12 6 6 3 3">
+                        <Field
+                          label="CEP"
+                          name="cobrancaCep"
+                          inputId="cobrancaCep"
+                          type="tel"
+                          format="#####-###"
+                          component={MaskedNumberInput}
+                          onValueChange={(values) => {
+                            propsForm.setFieldValue('cobrancaCep', values.formattedValue);
+                            if (values.value.length < 8) {
+                              return;
+                            }
+                            getCep(values.value).then((address) => {
+                              const tipoLogradouro = address.data.logradouro.substring(0, address.data.logradouro.indexOf(' ') + 1);
+                              const endereco = address.data.logradouro.substring(address.data.logradouro.indexOf(' ') + 1);
+                              propsForm.setFieldValue('cobrancaBairro', address.data.bairro);
+                              propsForm.setFieldValue('cobrancaEstado', address.data.uf);
+                              propsForm.setFieldValue('cobrancaCodcidade', address.data.ibge);
+                              propsForm.setFieldValue('cobrancaCidade', address.data.localidade);
+                              propsForm.setFieldValue('cobrancaEndereco', endereco.trim());
+                              propsForm.setFieldValue('cobrancaTipoLogradouro', tipoLogradouro.trim());
+                            });
+                          }}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 3 3">
+                        <Field
+                          label="Tipo logradouro"
+                          name="cobrancaTipoLogradouro"
+                          inputId="cobrancaTipoLogradouro"
+                          placeholder="Exemplo: Rua"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 12 6 6 6">
+                        <Field
+                          label="Endereço"
+                          name="cobrancaEndereco"
+                          inputId="cobrancaEndereco"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 4">
+                        <Field
+                          label="Número"
+                          name="cobrancaNumero"
+                          inputId="cobrancaNumero"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 8">
+                        <Field
+                          label="Complemento"
+                          name="cobrancaComplemento"
+                          inputId="cobrancaComplemento"
+                          component={Input}
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 6 6">
+                        <Field
+                          label="Bairro"
+                          name="cobrancaBairro"
+                          inputId="cobrancaBairro"
+                          component={Input}
+                          isRequired
+                        />
+                      </Grid>
+                      <Grid cols="12 6 6 4 4">
+                        <Field
+                          label="Cidade"
+                          name="cobrancaCidade"
+                          inputId="cobrancaCidade"
+                          component={Input}
+                          isRequired
+                          disabled
+                        />
+                      </Grid>
+                      <Grid cols="12 12 6 2 2">
+                        <Field
+                          label="Estado"
+                          name="cobrancaEstado"
+                          inputId="cobrancaEstado"
+                          component={Input}
+                          isRequired
+                          disabled
                         />
                       </Grid>
                     </>
@@ -755,7 +957,21 @@ const Checkout = ({ intl }) => {
                     </Grid>
                   )}
                   <Grid
-                    cols="12"
+                    cols="12 4 6 6 6"
+                    className="mt-0 d-flex flex-column"
+                  >
+                    <div className="mb-2">
+                      <img src={IconeShield} height={20} alt="Você está em uma conexão segura" />
+                      <span style={{ fontSize: '12px' }}>Você está em uma conexão segura</span>
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
+                        {'Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam'}
+                      </p>
+                    </div>
+                  </Grid>
+                  <Grid
+                    cols="12 8 6 6 6"
                     className="d-flex justify-content-end mb-3"
                   >
                     <ReCAPTCHA
@@ -768,10 +984,10 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12" className="d-flex justify-content-end">
                     <div>
                       <Button
-                        value={(propsForm.values.gatwayPagseguro) ? 'Ir para o pagamento' : 'Enviar pedido'}
+                        value={(propsForm.values.gatwayPagseguro) ? 'Finalizar compra' : 'Enviar pedido'}
                         type="submit"
                         isLoading={propsForm.isSubmitting}
-                        //disabled={(!reCaptchaToken && !propsForm.values.gatwayPagseguro)}
+                        disabled={(!reCaptchaToken)}
                       />
                     </div>
                   </Grid>

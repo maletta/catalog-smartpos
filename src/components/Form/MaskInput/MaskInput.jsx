@@ -14,16 +14,22 @@ const MaskInput = props => (
     }}
     onBlur={props.field.onBlur}
     {...props}
+    allowLeadingZeros
     customInput={Input}
   />
 );
 
 MaskInput.propTypes = {
-  field: PropTypes.shape({}).isRequired,
+  field: PropTypes.shape({
+    value: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    onBlur: PropTypes.func,
+  }).isRequired,
   form: PropTypes.shape({
     setFieldValue: PropTypes.func.isRequired,
   }).isRequired,
   format: PropTypes.string.isRequired,
 };
+
 
 export default MaskInput;

@@ -6,13 +6,16 @@ import get from 'lodash/get';
 import BgCvv from 'assets/CVV.png';
 
 const DivInvalid = styled.div`
+  font-size: 0.9rem;
   color: #dc3545;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+  margin-top: 3px;
   width: 100%;
   height: 15px;
 `;
 
 const StyledLabel = styled.label`
+  font-size: 0.9rem;
   width: 100%;
   margin-bottom: 0;
   position: relative;
@@ -59,7 +62,7 @@ const StyledInput = styled.input`
   padding: 0.7rem 0.75rem 0.65rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   width: 100%;
-  margin: 0;
+  margin-top: 1px;
 
   :focus {
     border-color: ${props => (props.hasError ? '#dc3545' : 'var(--color-primary)')};
@@ -101,7 +104,7 @@ const InputCvv = ({
   return (
     <>
       <StyledLabel htmlFor={inputId}>
-        {label}
+        {`${label} *`}
         {optionalLabel && (<OptionalLabel>{optionalLabel}</OptionalLabel>)}
         <StyledInput
           id={inputId}
@@ -136,6 +139,11 @@ InputCvv.propTypes = {
     PropTypes.string,
   ]),
   optionalLabel: PropTypes.string,
+  inputId: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  invalid: PropTypes.string,
+  errorMessage: PropTypes.string,
+  innerRef: PropTypes.PropTypes.shape({}),
 };
 
 InputCvv.defaultProps = {
@@ -149,6 +157,9 @@ InputCvv.defaultProps = {
   hasAccess: true,
   brand: 'none',
   optionalLabel: null,
+  invalid: null,
+  errorMessage: null,
+  innerRef: null,
 };
 
 export default InputCvv;
