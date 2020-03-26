@@ -21,10 +21,16 @@ const LinkItem = (props) => {
     text,
     onClick,
     selected,
+    id,
   } = props;
   return (
     <Li>
-      <Button title={text} selected={selected} onClick={onClick}>
+      <Button
+        title={text}
+        selected={selected}
+        onClick={onClick}
+        className={`category-${id}`}
+      >
         {text}
       </Button>
     </Li>
@@ -35,10 +41,12 @@ LinkItem.propTypes = {
   text: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
   selected: PropTypes.bool,
+  id: PropTypes.number,
 };
 
 LinkItem.defaultProps = {
   selected: false,
+  id: 0,
 };
 
 

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
 import * as yup from 'yup';
+import moment from 'moment';
 
 import GridProducts from 'containers/GridProducts';
 import MainContainer from 'containers/mainContainer';
@@ -38,6 +39,7 @@ import {
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import getBusinessHour from './api/businessHoursRequests';
 
 import initGA from './initGA';
 
@@ -66,7 +68,9 @@ const Content = styled.div`
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [store, setStore] = useState({});
-  const { updateShop, categories, updateCategory } = useContext(ShopContext);
+  const {
+    updateShop, categories, updateCategory,
+  } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
@@ -84,19 +88,28 @@ const App = () => {
       .catch(() => updateCategory([]))
       .finally(() => setLoading(false));
   };
-
   const getStore = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
         document.title = response.data.fantasia;
         updateShop(response.data);
-        setStore({ ...response.data, found: true, storeName: 'cypress-test' });
+        setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
       })
       .catch(() => {
         setStore({ found: false });
         setLoading(false);
       });
+  };
+
+  const BusinessHour = () => {
+    if (!store.allowOrderOutsideBusinessHours) {
+      const date = moment().format();
+      const timezone = date.substr(date.length - 6);
+      getBusinessHour(store.id, store.codigo, timezone).then((openStore) => {
+        updateShop(openStore.data);
+      });
+    }
   };
 
   const cleanCart = () => {
@@ -115,6 +128,12 @@ const App = () => {
   useEffect(() => {
     getStore();
   }, [false]);
+
+  useEffect(() => {
+    if (store.id) {
+      BusinessHour();
+    }
+  }, [loading]);
 
   useEffect(() => {
     yup.setLocale(formatFormErrors());

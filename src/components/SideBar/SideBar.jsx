@@ -9,9 +9,10 @@ const SideBar = (props) => {
     categories,
   } = props;
   const { filter, updateFilter } = useContext(FilterContext);
-  const items = categories.map(item => (
+  const items = categories.map((item, index) => (
     <LinkItem
       key={item.id}
+      id={index}
       text={item.descricao}
       selected={item.id === filter.categoria}
       onClick={() => updateFilter({

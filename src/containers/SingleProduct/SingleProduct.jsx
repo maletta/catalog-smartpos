@@ -13,6 +13,7 @@ import {
 import lodash from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import Swal from 'sweetalert2';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
@@ -30,6 +31,7 @@ import orderValidation from './orderSchema';
 
 import getInfoProduct from './requestProduct';
 import NoImage from '../../assets/no-image.png';
+import ClosedStore from '../../assets/closed-store.svg';
 
 const Img = styled.img`
   width: 100%;
@@ -158,7 +160,7 @@ const SingleProduct = (props) => {
   });
   const [modifierSelected, setModifierSelected] = useState([]);
   const [variantSelected, setVariantSelected] = useState({ name: '' });
-  const [modifiersErrors, setModifiersErrors] = useState(false);
+  const [modifiersErrors, setModifiersErrors] = useState([]);
   const [initialValues, setInitialValues] = useState({ quantity: 1, variant: {} });
   const [isLoaded, setLoaded] = useState(false);
   const [isProductFound, setProductFound] = useState(true);
@@ -170,7 +172,21 @@ const SingleProduct = (props) => {
 
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
-  const submitItem = (values, { resetForm }) => {
+  const submitItem = (values, { resetForm, setSubmitting }) => {
+    if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
+      setSubmitting(false);
+      Swal.fire({
+        html: `<div>
+          <div><img src="${ClosedStore}"></div>
+          <span class="foradohorario-titulo"> ${shop.openHour.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre ${shop.openHour.openHour} e ${shop.openHour.closeHour}`}</span>
+          <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
+        </div>`,
+        showConfirmButton: true,
+        confirmButtonColor: '#F38A00',
+        showCloseButton: true,
+      }).then(() => setLoaded(false));
+      return false;
+    }
     const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
     const newItem = {
       ...values,
@@ -207,6 +223,7 @@ const SingleProduct = (props) => {
       history.push('/cart');
       resetForm({ quantity: 1, variant: {} });
     }, 1000);
+    return false;
   };
 
 
@@ -242,12 +259,10 @@ const SingleProduct = (props) => {
           setImage(imageBaseUrl);
         };
       }
-      response.modifiers.map((item) => {
-        if (item.required && modifiersErrors === false) {
-          setModifiersErrors(true);
-        }
-        return setModifierSelected(prevState => ([...prevState, []]));
-      });
+
+      response.modifiers.map(() => setModifierSelected(prevState => ([...prevState, []])));
+      const modRequired = response.modifiers.map(item => item.required);
+      setModifiersErrors(modRequired);
       setProductFound(true);
     })
       .catch(() => setProductFound(false))
@@ -270,6 +285,8 @@ const SingleProduct = (props) => {
       </EmailShareButton>
     </div>
   );
+
+  const hasModifiersErrors = modifiersErrors.filter(item => item);
 
   return (
     <>
@@ -331,9 +348,9 @@ const SingleProduct = (props) => {
                             <Img src={image} title={product.descricao} alt="Produto" />
                           </Grid>
                           <Grid cols="7 6 12 12 12">
-                            <Title>{product.descricao}</Title>
+                            <Title className="test-name-product">{product.descricao}</Title>
                             {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
-                            <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                            <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
                           </Grid>
                         </Row>
                         <Row>
@@ -370,19 +387,15 @@ const SingleProduct = (props) => {
                                 <ModifiersArea>
                                   {product.modifiers.map((mod, index) => {
                                     const hasError = (mod.required
-                                      && (modifierSelected[index].length <= 0));
+                                      ? (modifierSelected[index].length > 0) : false);
                                     return (
                                       <div key={mod.id}>
                                         <ModifierHeader>
                                           <div>
-                                            <ModifierTitle
-                                              hasError={hasError}
-                                            >
+                                            <ModifierTitle>
                                               {mod.name}
                                             </ModifierTitle>
-                                            <ModifierAmountTitle
-                                              hasError={hasError}
-                                            >
+                                            <ModifierAmountTitle>
                                               {`Máximo ${mod.maxQuantity} `}
                                               <FormattedPlural
                                                 value={mod.maxQuantity}
@@ -394,7 +407,7 @@ const SingleProduct = (props) => {
                                           {(mod.required) && (
                                             <div>
                                               <ModifierTitleRequired
-                                                hasError={hasError}
+                                                hasError={!hasError}
                                               >
                                                 {'Obrigatório'}
                                               </ModifierTitleRequired>
@@ -404,13 +417,13 @@ const SingleProduct = (props) => {
                                         <ul>
                                           <ItemModifiers
                                             modifier={mod}
-                                            hasError={hasError}
                                             propsForm={propsForm}
                                             index={index}
                                             modifierSelected={modifierSelected}
                                             setProductPricing={setProductPricing}
                                             setModifierSelected={setModifierSelected}
                                             setModifiersErrors={setModifiersErrors}
+                                            modifiersErrors={modifiersErrors}
                                           />
                                         </ul>
                                       </div>
@@ -485,7 +498,7 @@ const SingleProduct = (props) => {
                                       value="ADICIONAR"
                                       price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
                                       type="submit"
-                                      disabled={modifiersErrors}
+                                      disabled={(hasModifiersErrors.length > 0)}
                                       isLoading={propsForm.isSubmitting}
                                     />
                                   </div>

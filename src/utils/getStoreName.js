@@ -4,7 +4,7 @@ const getStoreName = () => {
     const subdomain = parts.shift();
     return subdomain;
   }
-  return window.location.pathname.split('/').slice(-1)[0];
+  return window.location.pathname.split('/')[1];
 };
 
 const getBaseName = () => {

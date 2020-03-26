@@ -13,7 +13,7 @@ const Label = styled.label`
   width: 100%;
   color: #3f3e3e;
   margin-bottom: 0;
-  font-size: 0.9rem;;
+  font-size: 0.9rem;
   line-height: 1.25em;
 `;
 
