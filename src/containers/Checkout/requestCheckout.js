@@ -3,7 +3,6 @@ import axios from 'axios';
 const createOrder = (values) => {
   const checkout = {
     ...values,
-    nameHolder: null,
     cardNumber: null,
     cardNumber_unformatted: null,
     expiration: null,
