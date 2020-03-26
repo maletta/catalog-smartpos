@@ -12,16 +12,16 @@ pipelines:
           - yarn install
           - yarn build
           - yarn lint
-    - step:
-        caches:
-          - node
-        name: ✔ Cypress
-        image: cypress/base:10
-        script:
-          - yarn install
-          - export REACT_APP_GET_NAME_DOMAIN=false
-          - export REACT_APP_MAIN_API=https://slip.qa.smartpos.net.br/catalog
-          - yarn ci:cy
+#    - step:
+#        caches:
+#          - node
+#        name: ✔ Cypress
+#        image: cypress/base:10
+#        script:
+#          - yarn install
+#          - export REACT_APP_GET_NAME_DOMAIN=false
+#          - export REACT_APP_MAIN_API=https://slip.qa.smartpos.net.br/catalog
+#          - yarn ci:cy
   branches:
       develop:
         - step:
