@@ -143,3 +143,7 @@ ul {
   line-height: 25px;
   margin-top: 15px;
 }
+
+.breadcrumb-item+.breadcrumb-item {
+  padding-left: 0;
+}
