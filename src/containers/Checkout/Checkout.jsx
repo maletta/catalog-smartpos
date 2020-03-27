@@ -77,7 +77,7 @@ const addressType = [
 ];
 
 const Checkout = ({ intl }) => {
-  const { shop } = useContext(ShopContext);
+  const { shop, updateOrderPlaced } = useContext(ShopContext);
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
   const dataUser = localStorage.getItem('dataUser') ? JSON.parse(localStorage.getItem('dataUser')) : {};
   const [isNaturalPerson, setNaturalPerson] = useState((dataUser.tipoPessoa && dataUser.tipoPessoa.value === 'FISICA'));
@@ -106,21 +106,16 @@ const Checkout = ({ intl }) => {
     createOrder(values).then((response) => {
       localStorage.removeItem('cartInit');
       localStorage.removeItem('cart');
-      const msg = `Você acabou de receber o pedido ${response.data.orderName} do seu catálogo on-line SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
-      const linkWhatsApp = `<a href='https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}' target='blank'>Enviar confirmação do pedido por WhatsApp.</a>`;
-      Swal.fire({
-        type: 'success',
-        title: `<div>Pedido <strong>${response.data.orderName}</strong>, enviado com sucesso</div>`,
-        showConfirmButton: false,
-        showCloseButton: true,
-        footer: (shop.whatsapp != null && shop.whatsapp.length >= 10 && linkWhatsApp),
-        onClose: () => {
-          history.push('/');
-          updateShoppingCart({
-            basketCount: 0,
-          });
-        },
+      updateShoppingCart({
+        basketCount: 0,
       });
+      updateOrderPlaced({
+        ...values,
+        coastDelivery,
+        withdraw,
+        orderName: response.data.orderName,
+      });
+      history.push('/pedido-realizado');
     }).catch(() => {
       Swal.fire({
         type: 'error',
