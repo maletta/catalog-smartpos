@@ -287,8 +287,8 @@ const Checkout = ({ intl }) => {
 
   const verifyMaxAndMinValue = (gatwayPagseguro) => {
     if (gatwayPagseguro) {
-      if (shop.minValuePayOnline >= 0 && totalCar
-        > shop.minValuePayOnline && totalCar <= shop.maxValuePayOnline) {
+      if (shop.minValuePayOnline >= 0 && totalCar > shop.minValuePayOnline
+        && (shop.maxValuePayOnline === 0 || totalCar <= shop.maxValuePayOnline)) {
         return true;
       }
       return false;
@@ -347,7 +347,7 @@ const Checkout = ({ intl }) => {
                         />
                       )}
                       {(propsForm.values.gatwayPagseguro
-                        && totalCar > shop.maxValuePayOnline) && (
+                        && (totalCar > shop.maxValuePayOnline && shop.maxValuePayOnline !== 0)) && (
                         <Alert
                           text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
                           typeAlert="warning"
@@ -668,7 +668,7 @@ const Checkout = ({ intl }) => {
                           </div>
                           <div className="d-flex align-items-center mt-3 mb-3">
                             <Field
-                              label="Pague on-line"
+                              label="Pague on-line com cartão de crédito"
                               name="gatwayPagseguro"
                               component={RenderCheckbox}
                               onChange={(event) => {
@@ -692,7 +692,7 @@ const Checkout = ({ intl }) => {
                         />
                       )}
                       {(propsForm.values.gatwayPagseguro
-                        && totalCar > shop.maxValuePayOnline) && (
+                        && (totalCar > shop.maxValuePayOnline && shop.maxValuePayOnline !== 0)) && (
                         <Alert
                           text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
                           typeAlert="warning"
@@ -719,6 +719,14 @@ const Checkout = ({ intl }) => {
                   {(propsForm.values.gatwayPagseguro && shop.allowPayOnline === 1
                     && verifyMaxAndMinValue(propsForm.values.gatwayPagseguro)) && (
                     <>
+                      <Grid
+                        cols="12"
+                        className="mb-2"
+                      >
+                        {state.creditCardBrands.map(item => (
+                          <img key={item.code} src={`https://stc.pagseguro.uol.com.br/${item.images.MEDIUM.path}`} title={item.displayName} alt={item.displayName} />
+                        ))}
+                      </Grid>
                       <Grid cols="12 6 6 6 6">
                         <Field
                           label="Nome do titular"
