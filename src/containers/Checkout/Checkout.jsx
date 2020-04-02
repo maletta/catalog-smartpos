@@ -250,7 +250,7 @@ const Checkout = ({ intl }) => {
 
   const getInstallments = () => {
     PagSeguroDirectPayment.getInstallments({
-      amount: (withdraw ? totalCar : (costDelivery + totalCar)),
+      amount: (withdraw ? totalCar : (costDelivery.cost + totalCar)),
       // maxInstallmentNoInterest: 2,
       brand: state.creditCardBrand.name,
       success(response) {
