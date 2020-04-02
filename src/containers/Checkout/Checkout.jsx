@@ -223,7 +223,7 @@ const Checkout = ({ intl }) => {
 
   const handleLoadPaymentsPag = () => {
     PagSeguroDirectPayment.getPaymentMethods({
-      amount: (withdraw ? totalCar : (costDelivery + totalCar)),
+      amount: (withdraw ? totalCar : (costDelivery.cost + totalCar)),
       success(response) {
         const creditCard = Object.keys(response.paymentMethods.CREDIT_CARD.options);
         const creditCardBrandList = creditCard
@@ -296,6 +296,10 @@ const Checkout = ({ intl }) => {
       handleLoadPaymentsPag();
     });
   }, []);
+
+  useEffect(() => {
+    getInstallments();
+  }, [state.creditCardBrand.name]);
 
   const verifyMaxAndMinValue = (gatwayPagseguro) => {
     if (gatwayPagseguro) {
@@ -769,9 +773,6 @@ const Checkout = ({ intl }) => {
                                 },
                               });
                             }
-                          }}
-                          onBlur={() => {
-                            getInstallments();
                           }}
                           isRequired
                           type="tel"
