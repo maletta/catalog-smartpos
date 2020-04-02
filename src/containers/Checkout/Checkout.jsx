@@ -79,8 +79,7 @@ const addressType = [
 const Checkout = ({ intl }) => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-  const dataUser = localStorage.getItem('dataUser') ? JSON.parse(localStorage.getItem('dataUser')) : {};
-  const [isNaturalPerson, setNaturalPerson] = useState((dataUser.tipoPessoa && dataUser.tipoPessoa.value === 'FISICA'));
+  const [isNaturalPerson, setNaturalPerson] = useState(true);
   const [offlinePayment, setOfflinePayment] = useState((shop.allowPayOnline === 0));
   const { updateFilter } = useContext(FilterContext);
   const [stateCart] = useState(cart);
@@ -131,20 +130,6 @@ const Checkout = ({ intl }) => {
   };
 
   const submitCheckout = (formValues, { setSubmitting }) => {
-    const valuesForStorage = {
-      ...formValues,
-      pickup: false,
-      observacao: '',
-      pagamento: null,
-      installments: '',
-      cardNumber: '',
-      cardNumber_unformatted: '',
-      expiration: '',
-      expiration_unformatted: '',
-      cvv: '',
-    };
-    localStorage.setItem('dataUser', JSON.stringify(valuesForStorage));
-
     const values = {
       ...formValues,
       tipoPessoa: formValues.tipoPessoa.value,
@@ -278,12 +263,15 @@ const Checkout = ({ intl }) => {
     });
   };
 
-  const costDeliveryApi = (cep) => {
+  const costDeliveryApi = (cep, propsForm) => {
     checkingDelivery(cep, shop.id).then((response) => {
       setCostDelivery({
         ...response.data,
         cost: (shop.deliveryMode !== 'PICKUP' ? response.data.cost : 0),
       });
+      if (!response.data.isDeliverable && propsForm) {
+        propsForm.setFieldValue('pickup', true);
+      }
     });
   };
 
@@ -307,9 +295,6 @@ const Checkout = ({ intl }) => {
       PagSeguroDirectPayment.setSessionId(response.data.session);
       handleLoadPaymentsPag();
     });
-    if (dataUser.cep) {
-      costDeliveryApi(dataUser.cep);
-    }
   }, []);
 
   const verifyMaxAndMinValue = (gatwayPagseguro) => {
@@ -330,11 +315,7 @@ const Checkout = ({ intl }) => {
         <Grid cols="12 12 12 9">
           <Formik
             onSubmit={submitCheckout}
-            initialValues={(dataUser.catalog_id ? ({
-              ...dataUser,
-              gatwayPagseguro: (shop.allowPayOnline === 1),
-              offlinePayment: (shop.allowPayOnline === 0),
-            }) : initialValues)}
+            initialValues={initialValues}
             validationSchema={checkoutSchema(isNaturalPerson, offlinePayment)}
             render={propsForm => (
               <Form>
@@ -342,29 +323,19 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12">
                     <SectionTitle>Dados cadastrais</SectionTitle>
                   </Grid>
-                  {(dataUser.catalog_id) && (
-                    <Grid cols="12">
-                      <>
-                        <Alert
-                          text="Para ajudar você a finalizar o pedido mais rapidamente, já preenchemos o formulário com os dados do seu último pedido!"
-                          typeAlert="warning"
-                        />
-                      </>
-                      {(propsForm.values.gatwayPagseguro
-                        && totalCar < shop.minValuePayOnline) && (
-                        <Alert
-                          text="Valor abaixo do permitido para pagamento on-line, adicione mais produtos"
-                          typeAlert="warning"
-                        />
-                      )}
-                      {(propsForm.values.gatwayPagseguro
-                        && (totalCar > shop.maxValuePayOnline && shop.maxValuePayOnline !== 0)) && (
-                        <Alert
-                          text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
-                          typeAlert="warning"
-                        />
-                      )}
-                    </Grid>
+                  {(propsForm.values.gatwayPagseguro
+                    && totalCar < shop.minValuePayOnline) && (
+                    <Alert
+                      text="Valor abaixo do permitido para pagamento on-line, adicione mais produtos"
+                      typeAlert="warning"
+                    />
+                  )}
+                  {(propsForm.values.gatwayPagseguro
+                    && (totalCar > shop.maxValuePayOnline && shop.maxValuePayOnline !== 0)) && (
+                    <Alert
+                      text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
+                      typeAlert="warning"
+                    />
                   )}
                   <Grid cols="12 6 6 6 6">
                     <SelectDropDown
@@ -492,15 +463,7 @@ const Checkout = ({ intl }) => {
                           propsForm.setFieldValue('endereco', endereco.trim());
                           propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
                         });
-                        checkingDelivery(values.value, shop.id).then((response) => {
-                          setCostDelivery({
-                            ...response.data,
-                            cost: (shop.deliveryMode !== 'PICKUP' ? response.data.cost : 0),
-                          });
-                          if (!response.data.isDeliverable) {
-                            propsForm.setFieldValue('pickup', true);
-                          }
-                        });
+                        costDeliveryApi(values.value, propsForm);
                       }}
                       isRequired
                     />
