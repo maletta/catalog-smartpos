@@ -81,7 +81,7 @@ const OrderPlaced = ({ intl }) => {
   const totalItens = orderPlaced.orderProducts.reduce(
     (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
   );
-  const total = (orderPlaced.withdraw ? totalItens : (orderPlaced.coastDelivery + totalItens));
+  const total = (orderPlaced.withdraw ? totalItens : (orderPlaced.coastDelivery.cost + totalItens));
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -138,7 +138,7 @@ const OrderPlaced = ({ intl }) => {
                   <Item>
                     <>
                       <ItemValue>Entregra</ItemValue>
-                      <ItemValue>{intl.formatNumber((orderPlaced.withdraw ? 0 : orderPlaced.coastDelivery), { style: 'currency', currency: 'BRL' })}</ItemValue>
+                      <ItemValue>{intl.formatNumber((orderPlaced.withdraw ? 0 : orderPlaced.coastDelivery.cost), { style: 'currency', currency: 'BRL' })}</ItemValue>
                     </>
                   </Item>
                 </Ul>
