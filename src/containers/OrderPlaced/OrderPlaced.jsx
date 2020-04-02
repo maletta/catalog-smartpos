@@ -98,7 +98,7 @@ const OrderPlaced = ({ intl }) => {
             cols="12 12 12 12 9"
           >
             <TitlePage>
-              Seu pedido foi realizado com sucesso
+              {'Seu pedido foi realizado com sucesso'}
             </TitlePage>
             <Acknowledgment>
               {`Obrigado pela compra! Você receberá todos os dados da sua compra no e-mail: ${orderPlaced.email}`}

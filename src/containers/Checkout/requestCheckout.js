@@ -16,8 +16,11 @@ const getPayments = storeID => (axios.get(`${process.env.REACT_APP_MAIN_API}/v1/
 
 const getSessionPag = storeID => (axios.get(`${process.env.REACT_APP_MAIN_API}/v1/pagseguro/session/${storeID}`));
 
+const checkingDelivery = (locationCustomer, storeID) => (axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/${storeID}/frete/${locationCustomer}`));
+
 export {
   createOrder as default,
   getPayments,
   getSessionPag,
+  checkingDelivery,
 };
