@@ -29,7 +29,7 @@ import history from 'utils/history';
 import IconeShield from 'assets/lock.png';
 
 import checkoutSchema from './checkoutSchema';
-import createOrder, { getPayments, getSessionPag } from './requestCheckout';
+import createOrder, { getPayments, getSessionPag, checkingDelivery } from './requestCheckout';
 import getCep from './getCep';
 
 
@@ -85,7 +85,10 @@ const Checkout = ({ intl }) => {
   const { updateFilter } = useContext(FilterContext);
   const [stateCart] = useState(cart);
   const [totalCar, setTotalCar] = useState(0);
-  const [coastDelivery, setCoastDelivery] = useState(0);
+  const [costDelivery, setCostDelivery] = useState({
+    cost: 0,
+    isDeliverable: false,
+  });
   const [withdraw, setWithdraw] = useState(false);
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [paymentsType, setPaymentType] = useState([]);
@@ -111,7 +114,7 @@ const Checkout = ({ intl }) => {
       });
       updateOrderPlaced({
         ...values,
-        coastDelivery,
+        costDelivery,
         withdraw,
         orderName: response.data.orderName,
       });
@@ -235,7 +238,7 @@ const Checkout = ({ intl }) => {
 
   const handleLoadPaymentsPag = () => {
     PagSeguroDirectPayment.getPaymentMethods({
-      amount: (withdraw ? totalCar : (coastDelivery + totalCar)),
+      amount: (withdraw ? totalCar : (costDelivery + totalCar)),
       success(response) {
         const creditCard = Object.keys(response.paymentMethods.CREDIT_CARD.options);
         const creditCardBrandList = creditCard
@@ -262,7 +265,7 @@ const Checkout = ({ intl }) => {
 
   const getInstallments = () => {
     PagSeguroDirectPayment.getInstallments({
-      amount: (withdraw ? totalCar : (coastDelivery + totalCar)),
+      amount: (withdraw ? totalCar : (costDelivery + totalCar)),
       // maxInstallmentNoInterest: 2,
       brand: state.creditCardBrand.name,
       success(response) {
@@ -275,7 +278,28 @@ const Checkout = ({ intl }) => {
     });
   };
 
+  const costDeliveryApi = (cep) => {
+    checkingDelivery(cep, shop.id).then((response) => {
+      setCostDelivery({
+        ...response.data,
+        cost: (shop.deliveryMode !== 'PICKUP' ? response.data.cost : 0),
+      });
+    });
+  };
+
   useEffect(() => {
+    const total = stateCart.reduce(
+      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
+    );
+    setTotalCar(total);
+    updateFilter({
+      label: 'Finalizar o pedido',
+    });
+    if (cart.length < 1) {
+      updateFilter({
+        categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+      });
+    }
     getPayments(shop.id).then((response) => {
       setPaymentType(response.data);
     });
@@ -283,6 +307,9 @@ const Checkout = ({ intl }) => {
       PagSeguroDirectPayment.setSessionId(response.data.session);
       handleLoadPaymentsPag();
     });
+    if (dataUser.cep) {
+      costDeliveryApi(dataUser.cep);
+    }
   }, []);
 
   const verifyMaxAndMinValue = (gatwayPagseguro) => {
@@ -296,22 +323,6 @@ const Checkout = ({ intl }) => {
     return true;
   };
 
-  useEffect(() => {
-    const total = stateCart.reduce(
-      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
-    );
-    setCoastDelivery((shop.deliveryMode !== 'PICKUP' ? shop.deliveryFee : 0));
-    setTotalCar(total);
-    updateFilter({
-      label: 'Finalizar o pedido',
-    });
-    if (cart.length < 1) {
-      updateFilter({
-        categoria: 0, label: 'Todas as categorias', page: 1, search: '',
-      });
-      history.push('/');
-    }
-  }, [coastDelivery]);
 
   return (
     <ContainerCheckout>
@@ -456,7 +467,7 @@ const Checkout = ({ intl }) => {
                 </Row>
                 <Row>
                   <Grid cols="12">
-                    <SectionTitle>Endereço</SectionTitle>
+                    <SectionTitle>Endereço da entrega</SectionTitle>
                   </Grid>
                   <Grid cols="12 6 6 3 3">
                     <Field
@@ -480,6 +491,15 @@ const Checkout = ({ intl }) => {
                           propsForm.setFieldValue('cidade', address.data.localidade);
                           propsForm.setFieldValue('endereco', endereco.trim());
                           propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
+                        });
+                        checkingDelivery(values.value, shop.id).then((response) => {
+                          setCostDelivery({
+                            ...response.data,
+                            cost: (shop.deliveryMode !== 'PICKUP' ? response.data.cost : 0),
+                          });
+                          if (!response.data.isDeliverable) {
+                            propsForm.setFieldValue('pickup', true);
+                          }
                         });
                       }}
                       isRequired
@@ -588,7 +608,9 @@ const Checkout = ({ intl }) => {
                               {(shop.deliveryMode === 'DELIVERY' || shop.deliveryMode === 'BOTH') && (
                                 <>
                                   <span>Taxa de entrega</span>
-                                  <ValueDelivery>{intl.formatNumber(shop.deliveryFee, { style: 'currency', currency: 'BRL' })}</ValueDelivery>
+                                  <ValueDelivery>{intl.formatNumber(costDelivery.cost, { style: 'currency', currency: 'BRL' })}</ValueDelivery>
+                                  {(costDelivery.isDeliverable)
+                                  || (<ValueDelivery>Não faz entrega nesta região</ValueDelivery>)}
                                 </>
                               )}
                               {(shop.deliveryMode === 'PICKUP') && (
@@ -606,7 +628,8 @@ const Checkout = ({ intl }) => {
                                       label="Retirar no estabelecimento"
                                       name="pickup"
                                       component={RenderCheckbox}
-                                      onChange={(event) => {
+                                      disabled={!costDelivery.isDeliverable}
+                                      onClick={(event) => {
                                         event.preventDefault();
                                         propsForm.setFieldValue('pickup', !propsForm.values.pickup);
                                         propsForm.setFieldValue('installments', null);
@@ -635,11 +658,11 @@ const Checkout = ({ intl }) => {
                             </ResumeItem>
                             <ResumeItem>
                               <span>Entrega: </span>
-                              <strong>{intl.formatNumber(withdraw ? 0 : coastDelivery, { style: 'currency', currency: 'BRL' })}</strong>
+                              <strong>{intl.formatNumber(withdraw ? 0 : costDelivery.cost, { style: 'currency', currency: 'BRL' })}</strong>
                             </ResumeItem>
                             <ResumeItem>
                               <span>Total: </span>
-                              <strong>{intl.formatNumber(withdraw ? totalCar : (coastDelivery + totalCar), { style: 'currency', currency: 'BRL' })}</strong>
+                              <strong>{intl.formatNumber(withdraw ? totalCar : (costDelivery.cost + totalCar), { style: 'currency', currency: 'BRL' })}</strong>
                             </ResumeItem>
                           </Grid>
                         </Row>
