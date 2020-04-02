@@ -152,7 +152,7 @@ const Footer = ({ storeInfo }) => {
                 {storeInfo.numero && (`Número ${storeInfo.numero}`)}
                 {(storeInfo.complemento || '') && ` - ${storeInfo.complemento || ''}`}
               </AddressInfo>
-              <AddressInfo>{`${storeInfo.cidade || ''} ${storeInfo.uf && ` - ${storeInfo.uf}`}`}</AddressInfo>
+              <AddressInfo>{`${storeInfo.cidade || ''} ${(storeInfo.uf ? ` - ${storeInfo.uf}` : '')}`}</AddressInfo>
               <AddressInfo>{storeInfo.cep && `CEP: ${storeInfo.cep}`}</AddressInfo>
             </Grid>
             <Grid
