@@ -12,6 +12,9 @@ export const ShopProvider = ({ children }) => {
   const [categories, setCategory] = useState([]);
   const [orderPlaced, setOrderPlaced] = useState({
     orderProducts: [],
+    costDelivery: {
+      cost: 0,
+    },
   });
 
   const updateShop = (newShop) => {
