@@ -329,17 +329,21 @@ const Checkout = ({ intl }) => {
                   </Grid>
                   {(propsForm.values.gatwayPagseguro
                     && totalCar < shop.minValuePayOnline) && (
-                    <Alert
-                      text="Valor abaixo do permitido para pagamento on-line, adicione mais produtos"
-                      typeAlert="warning"
-                    />
+                    <Grid cols="12">
+                      <Alert
+                        text="Valor abaixo do permitido para pagamento on-line, adicione mais produtos"
+                        typeAlert="warning"
+                      />
+                    </Grid>
                   )}
                   {(propsForm.values.gatwayPagseguro
                     && (totalCar > shop.maxValuePayOnline && shop.maxValuePayOnline !== 0)) && (
-                    <Alert
-                      text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
-                      typeAlert="warning"
-                    />
+                    <Grid cols="12">
+                      <Alert
+                        text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
+                        typeAlert="warning"
+                      />
+                    </Grid>
                   )}
                   <Grid cols="12 6 6 6 6">
                     <SelectDropDown
