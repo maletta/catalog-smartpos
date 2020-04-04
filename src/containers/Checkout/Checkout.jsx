@@ -497,7 +497,7 @@ const Checkout = ({ intl }) => {
                   </Grid>
                   <Grid cols="12 6 6 6 4">
                     <Field
-                      label="Número"
+                      label="Número do endereço"
                       name="numero"
                       inputId="numero"
                       component={Input}
