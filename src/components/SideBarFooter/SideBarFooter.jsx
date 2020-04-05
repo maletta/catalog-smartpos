@@ -20,7 +20,7 @@ const SideBarFooter = () => (
     <List>
       <GenericItem>
         <Icon>
-          <FontAwesomeIcon icon="map-marker-alt" color="#F38A00" size="sm" />
+          <FontAwesomeIcon icon="map-marker-alt" color="var(--color-link)" size="sm" />
         </Icon>
         <span>Rua Ézio Wagner da Silva, 114 Ap 33 Bl 01 - Campinas/SP - 13060-367</span>
       </GenericItem>
