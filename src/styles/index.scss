@@ -22,9 +22,10 @@ $control-border-width: 2px;
 $input-border-color: transparent;
 $input-shadow: none;
 
-/*
-:root {
-  --color-primary: #F38A00;
+/* pagvendas 
+  --color-header: #00529B;
+  --color-primary: #F37C05;
+  --color-link: #F38A00;
   --color-primary-light: #ffc67c;
   --color-gray-light-1: #d7d7d7;
   --color-gray-light: #efefef;
@@ -32,20 +33,21 @@ $input-shadow: none;
   --color-gray-light-2: #918f8f;
   --color-white: #FFF;
   --button-primary: #F38A00;
-}*/
+  --color-secundary: #F38A00; 
+  */
 
 :root {
-  --color-header: #1EBA9B;
-  --color-primary: #1082BE;
-  --color-link: #1082BE;
-  --color-primary-light: #1082BE;
+  --color-header: #00529B;
+  --color-primary: #F37C05;
+  --color-link: #F38A00;
+  --color-primary-light: #ffc67c;
   --color-gray-light-1: #d7d7d7;
   --color-gray-light: #efefef;
   --color-gray-light-1: #d7d7d7;
   --color-gray-light-2: #918f8f;
   --color-white: #FFF;
-  --button-primary: #1082BE;
-  --color-secundary: #1082BE;
+  --button-primary: #F38A00;
+  --color-secundary: #F38A00;
 }
 
 html, body {
