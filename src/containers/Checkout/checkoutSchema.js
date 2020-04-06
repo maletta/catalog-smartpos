@@ -35,7 +35,7 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
           .max(150),
         complemento: yup.string()
           .max(50),
-        numero: yup.string()
+        numero: yup.number()
           .required()
           .max(50),
         bairro: yup.string()
@@ -83,7 +83,7 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
         .max(150),
       complemento: yup.string()
         .max(50),
-      numero: yup.string()
+      numero: yup.number()
         .required()
         .max(50),
       bairro: yup.string()
@@ -141,10 +141,10 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
         .max(50),
       cobrancaComplemento: yup.string()
         .max(50),
-      numero: yup.string()
+      numero: yup.number()
         .required()
         .max(50),
-      cobrancaNumero: yup.string()
+      cobrancaNumero: yup.number()
         .required()
         .max(50),
       bairro: yup.string()
@@ -228,10 +228,10 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
       .max(50),
     cobrancaComplemento: yup.string()
       .max(50),
-    numero: yup.string()
+    numero: yup.number()
       .required()
       .max(50),
-    cobrancaNumero: yup.string()
+    cobrancaNumero: yup.number()
       .required()
       .max(50),
     bairro: yup.string()
