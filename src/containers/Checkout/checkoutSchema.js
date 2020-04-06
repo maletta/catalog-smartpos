@@ -36,8 +36,7 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
         complemento: yup.string()
           .max(50),
         numero: yup.number()
-          .required()
-          .max(50),
+          .required(),
         bairro: yup.string()
           .required()
           .max(100),
@@ -84,8 +83,7 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
       complemento: yup.string()
         .max(50),
       numero: yup.number()
-        .required()
-        .max(50),
+        .required(),
       bairro: yup.string()
         .required()
         .max(100),
@@ -108,7 +106,18 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
         .required(),
       name: yup.string()
         .required()
-        .max(150),
+        .max(150)
+        .test('name', 'Nome completo', (value) => {
+          if (value) {
+            const firstName = value.split(' ').slice(0, 1).join(' ');
+            const lastName = value.split(' ').slice(1).join(' ');
+            if (firstName && lastName) {
+              return true;
+            }
+          }
+
+          return false;
+        }),
       email: yup.string()
         .required()
         .email(),
@@ -142,11 +151,9 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
       cobrancaComplemento: yup.string()
         .max(50),
       numero: yup.number()
-        .required()
-        .max(50),
+        .required(),
       cobrancaNumero: yup.number()
-        .required()
-        .max(50),
+        .required(),
       bairro: yup.string()
         .required()
         .max(100),
@@ -168,7 +175,18 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
         .max(50)
         .required(),
       nameHolder: yup.string()
-        .required(),
+        .required()
+        .test('nameHolder', 'Nome completo', (value) => {
+          if (value) {
+            const firstName = value.split(' ').slice(0, 1).join(' ');
+            const lastName = value.split(' ').slice(1).join(' ');
+            if (firstName && lastName) {
+              return true;
+            }
+          }
+
+          return false;
+        }),
       cpfHolder: yup.string()
         .test('cpf-valid', 'CPF inválido', value => validateCpf(value)),
       birthDateHolder: yup.string()
@@ -229,11 +247,9 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
     cobrancaComplemento: yup.string()
       .max(50),
     numero: yup.number()
-      .required()
-      .max(50),
+      .required(),
     cobrancaNumero: yup.number()
-      .required()
-      .max(50),
+      .required(),
     bairro: yup.string()
       .required()
       .max(100),
@@ -255,7 +271,18 @@ const checkoutSchema = (isNaturalPerson, offlinePayment) => {
       .max(50)
       .required(),
     nameHolder: yup.string()
-      .required(),
+      .required()
+      .test('nameHolder', 'Nome completo', (value) => {
+        if (value) {
+          const firstName = value.split(' ').slice(0, 1).join(' ');
+          const lastName = value.split(' ').slice(1).join(' ');
+          if (firstName && lastName) {
+            return true;
+          }
+        }
+
+        return false;
+      }),
     cpfHolder: yup.string()
       .test('cpf-valid', 'CPF inválido', value => validateCpf(value)),
     birthDateHolder: yup.string()
