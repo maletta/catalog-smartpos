@@ -22,7 +22,7 @@ const Container = styled.nav`
   }
 
   &&& {
-    background: #00529b;
+    background: var(--color-header);
   }
 `;
 

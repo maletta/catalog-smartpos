@@ -13,7 +13,7 @@ import daysOfWeek from 'utils/daysOfWeek';
 
 const FullWidthFooter = styled.div`
   position: relative;
-  background-color: #f37c05;
+  background-color: var(--color-secundary);
   width: 100%;
   color: #fff;
 `;
@@ -71,7 +71,7 @@ const LinkSocial = styled.a`
   color: #3a3a3a;
 
   :hover {
-    color: #f38a00;
+    color: var(--color-link);
   }
 `;
 
