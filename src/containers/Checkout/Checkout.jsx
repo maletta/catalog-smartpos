@@ -7,7 +7,6 @@ import { Formik, Form, Field } from 'formik';
 import Swal from 'sweetalert2';
 import NumberFormat from 'react-number-format';
 import ReCAPTCHA from 'react-google-recaptcha';
-import lodash from 'lodash';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
@@ -140,7 +139,6 @@ const Checkout = ({ intl }) => {
 
     // Pagamento pela pagseguro
     if (formValues.gatwayPagseguro && state.senderHash) {
-      const pagamento = paymentsType[lodash.findKey(paymentsType, { tipoCartao: 'CREDITO_A_VISTA' })];
       PagSeguroDirectPayment.createCardToken({
         cardNumber: formValues.cardNumber_unformatted, // Número do cartão de crédito
         brand: state.creditCardBrand.name, // Bandeira do cartão
@@ -152,7 +150,6 @@ const Checkout = ({ intl }) => {
             ...values,
             senderHash: state.senderHash,
             cardTokenPag: response.card.token,
-            pagamento,
           };
           sendCheckout(valuesPag, setSubmitting);
         },
