@@ -324,24 +324,6 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12">
                     <SectionTitle>Dados cadastrais</SectionTitle>
                   </Grid>
-                  {(propsForm.values.gatwayPagseguro
-                    && totalCar < shop.minValuePayOnline) && (
-                    <Grid cols="12">
-                      <Alert
-                        text="Valor abaixo do permitido para pagamento on-line, adicione mais produtos"
-                        typeAlert="warning"
-                      />
-                    </Grid>
-                  )}
-                  {(propsForm.values.gatwayPagseguro
-                    && (totalCar > shop.maxValuePayOnline && shop.maxValuePayOnline !== 0)) && (
-                    <Grid cols="12">
-                      <Alert
-                        text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
-                        typeAlert="warning"
-                      />
-                    </Grid>
-                  )}
                   <Grid cols="12 6 6 6 6">
                     <SelectDropDown
                       id="tipoPessoa"
@@ -678,14 +660,14 @@ const Checkout = ({ intl }) => {
                       {(propsForm.values.gatwayPagseguro
                         && totalCar < shop.minValuePayOnline) && (
                         <Alert
-                          text="Valor abaixo do permitido para pagamento on-line, adicione mais produtos"
+                          text={`Valor mínimo para pagamento on-line ${intl.formatNumber(shop.minValuePayOnline, { style: 'currency', currency: 'BRL' })}`}
                           typeAlert="warning"
                         />
                       )}
                       {(propsForm.values.gatwayPagseguro
                         && (totalCar > shop.maxValuePayOnline && shop.maxValuePayOnline !== 0)) && (
                         <Alert
-                          text="Valor maior do que o permitido para pagamento on-line, remova alguns produtos"
+                          text={`Valor máximo para pagamento on-line ${intl.formatNumber(shop.maxValuePayOnline, { style: 'currency', currency: 'BRL' })}`}
                           typeAlert="warning"
                         />
                       )}
