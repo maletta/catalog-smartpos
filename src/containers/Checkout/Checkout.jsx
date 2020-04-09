@@ -823,7 +823,7 @@ const Checkout = ({ intl }) => {
                             propsForm.setFieldValue('cobrancaTipoLogradouro', propsForm.values.tipoLogradouro);
                           }}
                         >
-                          {'Endereço do cartão é o mesmo da entrega?'}
+                          {'Clique aqui se o endereço do cartão é o mesmo da entrega'}
                         </AddressCreditCard>
                       </Grid>
                       <Grid cols="12 6 6 3 3">
