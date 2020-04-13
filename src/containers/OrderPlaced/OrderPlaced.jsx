@@ -128,7 +128,7 @@ const OrderPlaced = ({ intl }) => {
                 </CodeOrder>
                 <Ul>
                   {orderPlaced.orderProducts.map(item => (
-                    <Item>
+                    <Item key={item.uuid}>
                       <>
                         <ItemValue>{item.descricao}</ItemValue>
                         <ItemValue>{`${item.quantity} X ${intl.formatNumber((item.pricing.product + item.pricing.modifiers), { style: 'currency', currency: 'BRL' })}`}</ItemValue>
@@ -171,7 +171,7 @@ const OrderPlaced = ({ intl }) => {
             <div>{orderPlaced.name}</div>
             <div>{`CPF: ${orderPlaced.documento}`}</div>
             <div>{orderPlaced.email}</div>
-            <div>{`Telefone: ${orderPlaced.fone}`}</div>
+            <div>{`Telefone: ${orderPlaced.foneFormatted}`}</div>
           </Grid>
           <Grid
             cols="12 6 4 4 4"

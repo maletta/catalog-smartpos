@@ -173,6 +173,7 @@ const Checkout = ({ intl }) => {
     name: '',
     email: '',
     fone: '',
+    foneFormatted: '',
     cep: '',
     documento: '',
     endereco: '',
@@ -415,10 +416,16 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12 6 6 6 6">
                     <Field
                       label="Telefone"
-                      name="fone"
-                      inputId="fone"
+                      name="foneFormatted"
+                      inputId="foneFormatted"
                       type="tel"
-                      component={Input}
+                      component={MaskedNumberInput}
+                      format="(##) #####-####"
+                      mask=""
+                      onValueChange={(value) => {
+                        propsForm.setFieldValue('fone', value.value);
+                        propsForm.setFieldValue('foneFormatted', value.formattedValue);
+                      }}
                       isRequired
                     />
                   </Grid>
