@@ -137,7 +137,7 @@ const OrderPlaced = ({ intl }) => {
                   ))}
                   <Item>
                     <>
-                      <ItemValue>Entregra</ItemValue>
+                      <ItemValue>Entrega</ItemValue>
                       <ItemValue>{intl.formatNumber((orderPlaced.withdraw ? 0 : orderPlaced.costDelivery.cost), { style: 'currency', currency: 'BRL' })}</ItemValue>
                     </>
                   </Item>
