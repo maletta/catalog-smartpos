@@ -125,6 +125,7 @@ const Checkout = ({ intl }) => {
       });
     }).finally(() => {
       setSubmitting(false);
+      recaptchaRef.current.reset();
     });
   };
 
@@ -769,6 +770,7 @@ const Checkout = ({ intl }) => {
                                         // eslint-disable-next-line max-len
                                         const installments = installmentsResponse.installments[reponse.brand.name];
                                         propsForm.setFieldValue('installments', installments[0]);
+                                        getHashReady();
                                       },
                                     });
                                   }, 500);
@@ -820,7 +822,6 @@ const Checkout = ({ intl }) => {
                           getOptionValue={option => option.quantity}
                           onChange={(event) => {
                             propsForm.setFieldValue('installments', event);
-                            getHashReady();
                           }}
                           isInvalid={propsForm.errors.installments}
                           touched={propsForm.touched.installments}
