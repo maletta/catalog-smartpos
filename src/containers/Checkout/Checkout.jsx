@@ -173,11 +173,12 @@ const Checkout = ({ intl }) => {
     name: '',
     email: '',
     fone: '',
+    foneFormatted: '',
     cep: '',
     documento: '',
     endereco: '',
     tipoLogradouro: '',
-    tipoEndereco: [],
+    tipoEndereco: addressType[0],
     complemento: '',
     numero: '',
     bairro: '',
@@ -309,6 +310,7 @@ const Checkout = ({ intl }) => {
     return true;
   };
 
+  const totalWithDelivery = (withdraw ? totalCar : (costDelivery.cost + totalCar));
 
   return (
     <ContainerCheckout>
@@ -415,10 +417,16 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12 6 6 6 6">
                     <Field
                       label="Telefone"
-                      name="fone"
-                      inputId="fone"
+                      name="foneFormatted"
+                      inputId="foneFormatted"
                       type="tel"
-                      component={Input}
+                      component={MaskedNumberInput}
+                      format="(##) #####-####"
+                      mask=""
+                      onValueChange={(value) => {
+                        propsForm.setFieldValue('fone', value.value);
+                        propsForm.setFieldValue('foneFormatted', value.formattedValue);
+                      }}
                       isRequired
                     />
                   </Grid>
@@ -753,6 +761,17 @@ const Checkout = ({ intl }) => {
                                     ...state,
                                     creditCardBrand: reponse.brand,
                                   });
+                                  setTimeout(() => {
+                                    PagSeguroDirectPayment.getInstallments({
+                                      amount: totalWithDelivery,
+                                      brand: reponse.brand.name,
+                                      success(installmentsResponse) {
+                                        // eslint-disable-next-line max-len
+                                        const installments = installmentsResponse.installments[reponse.brand.name];
+                                        propsForm.setFieldValue('installments', installments[0]);
+                                      },
+                                    });
+                                  }, 500);
                                 },
                               });
                             }
