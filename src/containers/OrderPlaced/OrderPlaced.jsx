@@ -90,6 +90,9 @@ const OrderPlaced = ({ intl }) => {
     });
   }, []);
 
+  const inCash = ((orderPlaced.installments
+    && orderPlaced.installments.quantity > 1) ? `(parcelado ${orderPlaced.installments.quantity}x)` : '(à vista)');
+
   return (
     <div>
       <ContainerCheckout>
@@ -191,7 +194,7 @@ const OrderPlaced = ({ intl }) => {
             <TitleCustomer>
               {'Pagamento:'}
             </TitleCustomer>
-            {(orderPlaced.gatwayPagseguro) && (<div>Cartão de crédito</div>)}
+            {(orderPlaced.gatwayPagseguro) && (<div>{`Cartão de crédito ${inCash}`}</div>)}
             {(orderPlaced.offlinePayment) && (<div>Diretamente com o vendedor</div>)}
           </Grid>
         </Row>

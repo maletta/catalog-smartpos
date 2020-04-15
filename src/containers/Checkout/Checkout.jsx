@@ -92,24 +92,28 @@ const Checkout = ({ intl }) => {
   const [paymentsType, setPaymentType] = useState([]);
   const [state, setState] = useState({
     loadPagseguro: false,
-    creditCardBrands: [],
-    installments: [],
-    creditCardBrand: {
-      name: 'none',
-      cvvSize: 0,
-    },
+  });
+  const [installments, setInstallments] = useState([]);
+  const [creditCardBrands, setCreditCardBrands] = useState([]);
+  const [creditCardBrand, setCreditCardBrand] = useState({
+    name: 'none',
+    cvvSize: 0,
   });
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const recaptchaRef = useRef();
   const { PagSeguroDirectPayment } = window.window;
 
+  const cleanCart = () => {
+    localStorage.removeItem('cartInit');
+    localStorage.removeItem('cart');
+    updateShoppingCart({
+      basketCount: 0,
+    });
+  };
+
   const sendCheckout = (values, setSubmitting) => {
     createOrder(values).then((response) => {
-      localStorage.removeItem('cartInit');
-      localStorage.removeItem('cart');
-      updateShoppingCart({
-        basketCount: 0,
-      });
+      cleanCart();
       updateOrderPlaced({
         ...values,
         costDelivery,
@@ -117,15 +121,27 @@ const Checkout = ({ intl }) => {
         orderName: response.data.orderName,
       });
       history.push('/pedido-realizado');
-    }).catch(() => {
-      Swal.fire({
-        type: 'error',
-        title: 'Oops...',
-        text: 'Erro ao enviar o pedido',
-      });
+    }).catch((error) => {
+      if (error.response && error.response.status === 406) {
+        Swal.fire({
+          type: 'warning',
+          title: 'Divergência nos valores',
+          text: 'Pedido com valores divergentes, faça o seu pedido novamente!',
+          onClose: () => {
+            cleanCart();
+            history.push('/');
+          },
+        });
+      } else {
+        recaptchaRef.current.reset();
+        Swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Erro ao enviar o pedido',
+        });
+      }
     }).finally(() => {
       setSubmitting(false);
-      recaptchaRef.current.reset();
     });
   };
 
@@ -136,13 +152,14 @@ const Checkout = ({ intl }) => {
       tipoEndereco: formValues.tipoEndereco.value,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
+      deliveryValue: costDelivery.cost,
     };
 
     // Pagamento pela pagseguro
     if (formValues.gatwayPagseguro && state.senderHash) {
       PagSeguroDirectPayment.createCardToken({
         cardNumber: formValues.cardNumber_unformatted, // Número do cartão de crédito
-        brand: state.creditCardBrand.name, // Bandeira do cartão
+        brand: creditCardBrand.name, // Bandeira do cartão
         cvv: formValues.cvv, // CVV do cartão
         expirationMonth: formValues.expiration.split('/')[0], // Mês da expiração do cartão
         expirationYear: formValues.expiration.split('/')[1], // Ano da expiração do cartão, é necessário os 4 dígitos.
@@ -227,10 +244,7 @@ const Checkout = ({ intl }) => {
         const creditCard = Object.keys(response.paymentMethods.CREDIT_CARD.options);
         const creditCardBrandList = creditCard
           .map(item => (response.paymentMethods.CREDIT_CARD.options[item]));
-        setState({
-          ...state,
-          creditCardBrands: creditCardBrandList,
-        });
+        setCreditCardBrands(creditCardBrandList);
       },
     });
   };
@@ -247,19 +261,21 @@ const Checkout = ({ intl }) => {
     });
   };
 
-  const getInstallments = () => {
-    PagSeguroDirectPayment.getInstallments({
-      amount: (withdraw ? totalCar : (costDelivery.cost + totalCar)),
-      // maxInstallmentNoInterest: 2,
-      brand: state.creditCardBrand.name,
-      success(response) {
-        const installments = response.installments[state.creditCardBrand.name];
-        setState({
-          ...state,
-          installments,
-        });
-      },
-    });
+  const getInstallments = (cost) => {
+    if (creditCardBrand.name && creditCardBrand.name !== 'none') {
+      const withDelivery = cost ? cost + totalCar : costDelivery.cost + totalCar;
+      PagSeguroDirectPayment.getInstallments({
+        amount: (withdraw ? totalCar : withDelivery),
+        // maxInstallmentNoInterest: 2,
+        brand: creditCardBrand.name,
+        success(response) {
+          const installment = response.installments[creditCardBrand.name];
+          if (installment) {
+            setInstallments(installment);
+          }
+        },
+      });
+    }
   };
 
   const costDeliveryApi = (cep, propsForm) => {
@@ -271,8 +287,20 @@ const Checkout = ({ intl }) => {
       if (!response.data.isDeliverable && propsForm) {
         propsForm.setFieldValue('pickup', true);
       }
+      if (response.data.isDeliverable && propsForm) {
+        propsForm.setFieldValue('pickup', false);
+      }
     });
   };
+
+  useEffect(() => {
+    getInstallments();
+  }, [costDelivery.cost]);
+
+  useEffect(() => {
+    getInstallments();
+  }, [creditCardBrand.name]);
+
 
   useEffect(() => {
     const total = stateCart.reduce(
@@ -296,9 +324,6 @@ const Checkout = ({ intl }) => {
     });
   }, []);
 
-  useEffect(() => {
-    getInstallments();
-  }, [state.creditCardBrand.name]);
 
   const verifyMaxAndMinValue = (gatwayPagseguro) => {
     if (gatwayPagseguro) {
@@ -401,6 +426,7 @@ const Checkout = ({ intl }) => {
                         format="###.###.###-##"
                         component={MaskedNumberInput}
                         isRequired
+                        type="tel"
                       />
                     </Grid>
                   ) : (
@@ -412,6 +438,7 @@ const Checkout = ({ intl }) => {
                         format="##.###.###/####-##"
                         component={MaskedNumberInput}
                         isRequired
+                        type="tel"
                       />
                     </Grid>
                   )}
@@ -450,15 +477,18 @@ const Checkout = ({ intl }) => {
                           return;
                         }
                         getCep(values.value).then((address) => {
-                          const tipoLogradouro = address.data.logradouro.substring(0, address.data.logradouro.indexOf(' ') + 1);
-                          const endereco = address.data.logradouro.substring(address.data.logradouro.indexOf(' ') + 1);
-                          propsForm.setFieldValue('bairro', address.data.bairro);
-                          propsForm.setFieldValue('estado', address.data.uf);
-                          propsForm.setFieldValue('codcidade', address.data.ibge);
-                          propsForm.setFieldValue('cidade', address.data.localidade);
-                          propsForm.setFieldValue('endereco', endereco.trim());
-                          propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
+                          if (address.data.logradouro) {
+                            const tipoLogradouro = address.data.logradouro.substring(0, address.data.logradouro.indexOf(' ') + 1);
+                            const endereco = address.data.logradouro.substring(address.data.logradouro.indexOf(' ') + 1);
+                            propsForm.setFieldValue('bairro', address.data.bairro);
+                            propsForm.setFieldValue('estado', address.data.uf);
+                            propsForm.setFieldValue('codcidade', address.data.ibge);
+                            propsForm.setFieldValue('cidade', address.data.localidade);
+                            propsForm.setFieldValue('endereco', endereco.trim());
+                            propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
+                          }
                         });
+                        propsForm.setFieldValue('installments', null);
                         costDeliveryApi(values.value, propsForm);
                       }}
                       isRequired
@@ -490,6 +520,7 @@ const Checkout = ({ intl }) => {
                       inputId="numero"
                       component={Input}
                       isRequired
+                      type="tel"
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 8">
@@ -705,7 +736,7 @@ const Checkout = ({ intl }) => {
                         cols="12"
                         className="mb-2"
                       >
-                        {state.creditCardBrands.map(item => (
+                        {creditCardBrands.map(item => (
                           <img key={item.code} src={`https://stc.pagseguro.uol.com.br/${item.images.MEDIUM.path}`} title={item.displayName} alt={item.displayName} />
                         ))}
                       </Grid>
@@ -726,6 +757,7 @@ const Checkout = ({ intl }) => {
                           format="###.###.###-##"
                           component={MaskedNumberInput}
                           isRequired
+                          type="tel"
                         />
                       </Grid>
                       <Grid cols="12 6 6 6 3">
@@ -739,6 +771,10 @@ const Checkout = ({ intl }) => {
                             propsForm.setFieldValue('birthDateHolder', event.formattedValue);
                           }}
                           isRequired
+                          onBlur={() => {
+                            getHashReady();
+                          }}
+                          type="tel"
                         />
                       </Grid>
                       <Grid cols="12 6 6 6 9">
@@ -746,10 +782,10 @@ const Checkout = ({ intl }) => {
                           label="Número do cartão"
                           name="cardNumber_unformatted"
                           inputId="cardNumber_unformatted"
-                          format={(state.creditCardBrand.name === 'amex' ? '#### ###### ######' : '#### #### #### ####')}
+                          format={(creditCardBrand.name === 'amex' ? '#### ###### ######' : '#### #### #### ####')}
                           component={NumberFormat}
                           customInput={InputCrediCard}
-                          brand={state.creditCardBrand.name}
+                          brand={creditCardBrand.name}
                           onValueChange={(event) => {
                             propsForm.setFieldValue('cardNumber', event.formattedValue);
                             propsForm.setFieldValue('cardNumber_unformatted', event.value);
@@ -758,19 +794,17 @@ const Checkout = ({ intl }) => {
                               PagSeguroDirectPayment.getBrand({
                                 cardBin,
                                 success(reponse) {
-                                  setState({
-                                    ...state,
-                                    creditCardBrand: reponse.brand,
-                                  });
+                                  setCreditCardBrand(reponse.brand);
                                   setTimeout(() => {
                                     PagSeguroDirectPayment.getInstallments({
                                       amount: totalWithDelivery,
                                       brand: reponse.brand.name,
                                       success(installmentsResponse) {
-                                        // eslint-disable-next-line max-len
-                                        const installments = installmentsResponse.installments[reponse.brand.name];
-                                        propsForm.setFieldValue('installments', installments[0]);
-                                        getHashReady();
+                                        if (reponse.brand.name) {
+                                          // eslint-disable-next-line max-len
+                                          const installment = installmentsResponse.installments[reponse.brand.name];
+                                          propsForm.setFieldValue('installments', installment[0]);
+                                        }
                                       },
                                     });
                                   }, 500);
@@ -794,6 +828,7 @@ const Checkout = ({ intl }) => {
                           onValueChange={(value) => {
                             propsForm.setFieldValue('expiration', value.formattedValue);
                           }}
+                          type="tel"
                         />
                       </Grid>
                       <Grid cols="12 6 6 6 4">
@@ -801,7 +836,7 @@ const Checkout = ({ intl }) => {
                           label="Cód. de segurança"
                           name="cvv"
                           inputId="cvv"
-                          format={(state.creditCardBrand.name === 'amex' ? '####' : '###')}
+                          format={(creditCardBrand.name === 'amex' ? '####' : '###')}
                           component={NumberFormat}
                           customInput={InputCvv}
                           onValueChange={(value) => {
@@ -817,7 +852,7 @@ const Checkout = ({ intl }) => {
                           label="Parcelas"
                           value={propsForm.values.installments}
                           cacheOptions
-                          options={state.installments}
+                          options={installments}
                           getOptionLabel={label => (label.totalAmount && (`${label.quantity} ${(label.quantity === 1 ? 'parcela' : 'parcelas')} de ${intl.formatNumber(label.installmentAmount, { style: 'currency', currency: 'BRL' })} | Total: ${intl.formatNumber(label.totalAmount, { style: 'currency', currency: 'BRL' })} `))}
                           getOptionValue={option => option.quantity}
                           onChange={(event) => {
@@ -899,6 +934,7 @@ const Checkout = ({ intl }) => {
                           inputId="cobrancaNumero"
                           component={Input}
                           isRequired
+                          type="tel"
                         />
                       </Grid>
                       <Grid cols="12 6 6 6 8">
