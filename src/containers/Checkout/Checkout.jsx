@@ -426,6 +426,7 @@ const Checkout = ({ intl }) => {
                         format="###.###.###-##"
                         component={MaskedNumberInput}
                         isRequired
+                        type="tel"
                       />
                     </Grid>
                   ) : (
@@ -437,6 +438,7 @@ const Checkout = ({ intl }) => {
                         format="##.###.###/####-##"
                         component={MaskedNumberInput}
                         isRequired
+                        type="tel"
                       />
                     </Grid>
                   )}
@@ -518,6 +520,7 @@ const Checkout = ({ intl }) => {
                       inputId="numero"
                       component={Input}
                       isRequired
+                      type="tel"
                     />
                   </Grid>
                   <Grid cols="12 6 6 6 8">
@@ -754,6 +757,7 @@ const Checkout = ({ intl }) => {
                           format="###.###.###-##"
                           component={MaskedNumberInput}
                           isRequired
+                          type="tel"
                         />
                       </Grid>
                       <Grid cols="12 6 6 6 3">
@@ -770,6 +774,7 @@ const Checkout = ({ intl }) => {
                           onBlur={() => {
                             getHashReady();
                           }}
+                          type="tel"
                         />
                       </Grid>
                       <Grid cols="12 6 6 6 9">
@@ -823,6 +828,7 @@ const Checkout = ({ intl }) => {
                           onValueChange={(value) => {
                             propsForm.setFieldValue('expiration', value.formattedValue);
                           }}
+                          type="tel"
                         />
                       </Grid>
                       <Grid cols="12 6 6 6 4">
@@ -928,6 +934,7 @@ const Checkout = ({ intl }) => {
                           inputId="cobrancaNumero"
                           component={Input}
                           isRequired
+                          type="tel"
                         />
                       </Grid>
                       <Grid cols="12 6 6 6 8">
