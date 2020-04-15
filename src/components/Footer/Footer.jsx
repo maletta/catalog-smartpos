@@ -10,7 +10,37 @@ import PropTypes from 'prop-types';
 import ReactGA from 'react-ga';
 
 import daysOfWeek from 'utils/daysOfWeek';
+import CardCredit from '../../assets/Imagem 73@2x.png';
 
+
+const FullWidthCopyright = styled.div`
+  background-color: #fff;
+  width: 100%;
+  padding: 1.2rem 1.2rem !important;
+  border-top: solid 1px #b1b1b1;
+`;
+
+const FooterCopyright = styled.div`
+  color: #3a3a3a;
+  text-align: center;
+  font-size: 0.8rem;
+`;
+
+const LinkNetPOS = styled.a`
+  color: #00529b;
+  text-decoration: none;
+  font-weight: 600;
+  margin: 5px 5px;
+
+  :hover {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+`;
+
+const CardCreditImg = styled.img`
+  margin-right: -30px;
+`;
 const FullWidthFooter = styled.div`
   position: relative;
   background-color: var(--color-secundary);
@@ -47,19 +77,6 @@ const OpenHourItem = styled.div`
   justify-content: space-between;
   font-size: 0.9rem;
   font-weight: ${props => (props.currentDay ? '700' : '400')};
-`;
-
-const FullWidthCopyright = styled.div`
-  background-color: #fff;
-  width: 100%;
-  padding: 1.2rem 1.2rem !important;
-  border-top: solid 1px #b1b1b1;
-`;
-
-const FooterCopyright = styled.div`
-  color: #3a3a3a;
-  text-align: center;
-  font-size: 0.8rem;
 `;
 
 const Icon = styled.span`
@@ -106,18 +123,6 @@ const SocialIcon = styled.span`
   display: inline-block;
 `;
 
-const LinkNetPOS = styled.a`
-  color: #00529b;
-  text-decoration: none;
-  font-weight: 600;
-  margin: 5px 5px;
-
-  :hover {
-    color: var(--color-primary);
-    text-decoration: none;
-  }
-`;
-
 const Footer = ({ storeInfo }) => {
   let openHours = (storeInfo.openHours || []);
   openHours = openHours.map(day => ({
@@ -154,6 +159,57 @@ const Footer = ({ storeInfo }) => {
               </AddressInfo>
               <AddressInfo>{`${storeInfo.cidade || ''} ${(storeInfo.uf ? ` - ${storeInfo.uf}` : '')}`}</AddressInfo>
               <AddressInfo>{storeInfo.cep && `CEP: ${storeInfo.cep}`}</AddressInfo>
+              <br />
+              <br />
+              <div>
+                {(storeInfo.facebook || storeInfo.instagram) && (
+                  <FooterInfoTitle>Redes sociais</FooterInfoTitle>
+                )}
+                <ul>
+                  {storeInfo.facebook && (
+                    <li>
+                      <LinkSocial
+                        href={`https://www.facebook.com/${storeInfo.facebook}`}
+                        rel="noopener noreferrer nofollow"
+                        target="_blank"
+                        onClick={() => {
+                          ReactGA.event({
+                            category: 'FOOTER',
+                            action: 'CLICK_FACEBOOK',
+                            label: storeInfo.usuario,
+                          });
+                        }}
+                      >
+                        <SocialIcon>
+                          <FontAwesomeIcon icon={['fab', 'facebook-f']} color="#3a3a3a" size="1x" />
+                        </SocialIcon>
+                        {storeInfo.facebook}
+                      </LinkSocial>
+                    </li>
+                  )}
+                  {storeInfo.instagram && (
+                    <li>
+                      <LinkSocial
+                        href={`https://www.instagram.com/${storeInfo.instagram}`}
+                        rel="noopener noreferrer nofollow"
+                        target="_blank"
+                        onClick={() => {
+                          ReactGA.event({
+                            category: 'FOOTER',
+                            action: 'CLICK_INSTAGRAM',
+                            label: storeInfo.usuario,
+                          });
+                        }}
+                      >
+                        <SocialIcon>
+                          <FontAwesomeIcon icon={['fab', 'instagram']} color="#3a3a3a" size="1x" />
+                        </SocialIcon>
+                        {storeInfo.instagram}
+                      </LinkSocial>
+                    </li>
+                  )}
+                </ul>
+              </div>
             </Grid>
             <Grid
               cols="10 6 4 3 3"
@@ -181,58 +237,9 @@ const Footer = ({ storeInfo }) => {
               )}
             </Grid>
             <Grid
-              cols="12 12 4 5 5"
-              className="d-flex justify-content-md-end pb-5"
+              className="d-flex justify-content-md-end"
             >
-              <div>
-                {(storeInfo.facebook || storeInfo.instagram) && (
-                  <FooterInfoTitle>Redes sociais</FooterInfoTitle>
-                )}
-                <ul>
-                  {storeInfo.facebook && (
-                  <li>
-                    <LinkSocial
-                      href={`https://www.facebook.com/${storeInfo.facebook}`}
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
-                      onClick={() => {
-                        ReactGA.event({
-                          category: 'FOOTER',
-                          action: 'CLICK_FACEBOOK',
-                          label: storeInfo.usuario,
-                        });
-                      }}
-                    >
-                      <SocialIcon>
-                        <FontAwesomeIcon icon={['fab', 'facebook-f']} color="#3a3a3a" size="1x" />
-                      </SocialIcon>
-                      {storeInfo.facebook}
-                    </LinkSocial>
-                  </li>
-                  )}
-                  {storeInfo.instagram && (
-                    <li>
-                      <LinkSocial
-                        href={`https://www.instagram.com/${storeInfo.instagram}`}
-                        rel="noopener noreferrer nofollow"
-                        target="_blank"
-                        onClick={() => {
-                          ReactGA.event({
-                            category: 'FOOTER',
-                            action: 'CLICK_INSTAGRAM',
-                            label: storeInfo.usuario,
-                          });
-                        }}
-                      >
-                        <SocialIcon>
-                          <FontAwesomeIcon icon={['fab', 'instagram']} color="#3a3a3a" size="1x" />
-                        </SocialIcon>
-                        {storeInfo.instagram}
-                      </LinkSocial>
-                    </li>
-                  )}
-                </ul>
-              </div>
+              <CardCreditImg src={CardCredit} alt="bandeiras" width="280px" height="120px" />
             </Grid>
           </Row>
         </div>
