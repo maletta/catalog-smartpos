@@ -480,13 +480,13 @@ const Checkout = ({ intl }) => {
                           if (address.data.logradouro) {
                             const tipoLogradouro = address.data.logradouro.substring(0, address.data.logradouro.indexOf(' ') + 1);
                             const endereco = address.data.logradouro.substring(address.data.logradouro.indexOf(' ') + 1);
-                            propsForm.setFieldValue('bairro', address.data.bairro);
-                            propsForm.setFieldValue('estado', address.data.uf);
-                            propsForm.setFieldValue('codcidade', address.data.ibge);
-                            propsForm.setFieldValue('cidade', address.data.localidade);
                             propsForm.setFieldValue('endereco', endereco.trim());
                             propsForm.setFieldValue('tipoLogradouro', tipoLogradouro.trim());
                           }
+                          propsForm.setFieldValue('bairro', address.data.bairro);
+                          propsForm.setFieldValue('estado', address.data.uf);
+                          propsForm.setFieldValue('codcidade', address.data.ibge);
+                          propsForm.setFieldValue('cidade', address.data.localidade);
                         });
                         propsForm.setFieldValue('installments', null);
                         costDeliveryApi(values.value, propsForm);
