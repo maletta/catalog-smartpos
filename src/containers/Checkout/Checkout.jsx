@@ -152,7 +152,7 @@ const Checkout = ({ intl }) => {
       tipoEndereco: formValues.tipoEndereco.value,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
-      deliveryValue: costDelivery.cost,
+      deliveryValue: (formValues.pickup ? 0 : costDelivery.cost),
     };
 
     // Pagamento pela pagseguro
