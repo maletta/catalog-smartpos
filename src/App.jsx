@@ -16,6 +16,7 @@ import Footer from 'components/Footer';
 import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
 import SingleProduct from 'containers/SingleProduct';
+import OrderPlaced from 'containers/OrderPlaced';
 
 import history from 'utils/history';
 
@@ -176,6 +177,7 @@ const App = () => {
                   <Route path="/" exact component={GridProducts} />
                   <Route path="/cart" exact component={Cart} />
                   <Route path="/checkout" exact component={Checkout} />
+                  <Route path="/pedido-realizado" exact component={OrderPlaced} />
                   <Route path="/item/:id/:descricao?" component={SingleProduct} />
                 </Switch>
               </Router>

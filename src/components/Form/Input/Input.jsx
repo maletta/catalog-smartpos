@@ -44,7 +44,7 @@ const StyledInput = styled.input`
   padding: 0.7rem 0.75rem 0.65rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   width: 100%;
-  margin-top: 1px;
+  margin-top: 0;
   display: block;
 
   :focus {
@@ -71,6 +71,7 @@ const Value = styled.div`
 
 const Label = styled.span`
   font-size: 0.9rem;
+  line-height: 1.25em;
   ${props => props.isLabelFloat && (`
     position: relative;
     left: 12px;

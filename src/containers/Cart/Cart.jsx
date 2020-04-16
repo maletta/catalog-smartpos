@@ -65,7 +65,7 @@ const Cart = ({ intl }) => {
         <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
         </div>`,
         showConfirmButton: true,
-        confirmButtonColor: '#F38A00',
+        confirmButtonColor: 'var(-color--primary)',
         showCloseButton: true,
       }).then(() => {
         history.push('/');

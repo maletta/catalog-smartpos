@@ -10,6 +10,12 @@ export const ShopProvider = ({ children }) => {
   });
 
   const [categories, setCategory] = useState([]);
+  const [orderPlaced, setOrderPlaced] = useState({
+    orderProducts: [],
+    costDelivery: {
+      cost: 0,
+    },
+  });
 
   const updateShop = (newShop) => {
     setShop(prevState => ({ ...prevState, ...newShop }));
@@ -19,8 +25,12 @@ export const ShopProvider = ({ children }) => {
     setCategory(newShop);
   };
 
+  const updateOrderPlaced = (newOrder) => {
+    setOrderPlaced(newOrder);
+  };
+
   const provider = {
-    shop, updateShop, categories, updateCategory,
+    shop, updateShop, categories, updateCategory, orderPlaced, updateOrderPlaced,
   };
 
   return (

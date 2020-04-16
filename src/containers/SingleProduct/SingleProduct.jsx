@@ -182,7 +182,7 @@ const SingleProduct = (props) => {
           <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
         </div>`,
         showConfirmButton: true,
-        confirmButtonColor: '#F38A00',
+        confirmButtonColor: 'var(--color-primary)',
         showCloseButton: true,
       }).then(() => setLoaded(false));
       return false;
@@ -287,6 +287,12 @@ const SingleProduct = (props) => {
   );
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
+  const haveStock = () => {
+    if (product.noStock) {
+      return true;
+    }
+    return (product.Estoque && product.Estoque.quantidade >= 1);
+  };
 
   return (
     <>
@@ -469,7 +475,7 @@ const SingleProduct = (props) => {
                           )}
                         </Row>
                       </Grid>
-                      {(shop.is_enableOrder === 1) && (
+                      {(shop.is_enableOrder === 1 && haveStock()) && (
                         <FooterContainer>
                           <div className="d-flex justify-content-end">
                             <Grid cols="12 12 12 6 6">
@@ -498,7 +504,7 @@ const SingleProduct = (props) => {
                                       value="ADICIONAR"
                                       price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
                                       type="submit"
-                                      disabled={(hasModifiersErrors.length > 0)}
+                                      disabled={(hasModifiersErrors.length > 0 && isProductFound)}
                                       isLoading={propsForm.isSubmitting}
                                     />
                                   </div>
