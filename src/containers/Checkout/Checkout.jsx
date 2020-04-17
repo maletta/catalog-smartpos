@@ -489,7 +489,7 @@ const Checkout = ({ intl }) => {
                           propsForm.setFieldValue('cidade', address.data.localidade);
                         });
                         propsForm.setFieldValue('installments', null);
-                        costDeliveryApi(values.value, propsForm);
+                        costDeliveryApi(values.formattedValue, propsForm);
                       }}
                       isRequired
                     />
