@@ -68,7 +68,7 @@ const Title = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
   color: #707070;
- 
+
   @media (max-width: 576px) {
     font-size: 1.2rem;
   }
@@ -103,6 +103,14 @@ const LabelVariant = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
+  align-items: flex-start;
+`;
+
+const LabelVariantValues = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
 `;
 
 const ModifiersArea = styled.div`
@@ -149,10 +157,18 @@ const SocialIcon = styled.i`
   cursor: pointer;
 `;
 
+const Unavailable = styled.p`
+  color: #333;
+  font-size: 0.8rem;
+  text-align: left;
+  margin: 0;
+`;
+
 const SingleProduct = (props) => {
   const { intl } = props;
   const [product, setProduct] = useState({
     variants: [],
+    hasVariant: true,
   });
   const [productPricing, setProductPricing] = useState({
     product: 0,
@@ -288,10 +304,75 @@ const SingleProduct = (props) => {
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
   const haveStock = () => {
+    if (product.hasVariant) {
+      return true;
+    }
     if (product.noStock) {
       return true;
     }
-    return (product.Estoque && product.Estoque.quantidade >= 1);
+    if (shop.stock === 'ALL') {
+      return true;
+    }
+    if (shop.stock === 'UNAVAILABLE') {
+      return (product.Estoque && product.Estoque.quantidade >= 1);
+    }
+    return true;
+  };
+
+  const enableOrderButton = () => {
+    const availableVariants = product.variants.filter(item => !(item.catalogStock === 'UNAVAILABLE' && !item.noStock && item.Estoque && item.Estoque.quantidade < 1));
+    let isEnable = false;
+    if (product.hasVariant
+      && availableVariants.length && shop.is_enableOrder === 1 && haveStock()) {
+      isEnable = true;
+    }
+    if (!product.hasVariant && shop.is_enableOrder === 1 && haveStock()) {
+      isEnable = true;
+    }
+    return isEnable;
+  };
+
+  const renderOptionLabel = (values) => {
+    if (values.catalogStock === 'UNAVAILABLE') {
+      return (
+        <LabelVariant>
+          <LabelVariantValues>
+            <div>{values.name}</div>
+            {(values.sellValue)
+            && (
+              <div style={{
+                fontWeight: '600',
+                display: 'flex',
+                flexDirection: 'col',
+              }}
+              >
+                {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
+                {(!values.noStock && values.Estoque && values.Estoque.quantidade < 1) && (<div style={{ width: 'auto', marginLeft: '10px', color: '#C70039' }}>Item indisponível</div>)}
+              </div>
+            )}
+          </LabelVariantValues>
+        </LabelVariant>
+      );
+    }
+
+    return (
+      <LabelVariant>
+        <LabelVariantValues>
+          <div>{values.name}</div>
+          {(values.sellValue)
+          && (
+            <div style={{
+              fontWeight: '600',
+              display: 'flex',
+              flexDirection: 'col',
+            }}
+            >
+              {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
+            </div>
+          )}
+        </LabelVariantValues>
+      </LabelVariant>
+    );
   };
 
   return (
@@ -354,9 +435,12 @@ const SingleProduct = (props) => {
                             <Img src={image} title={product.descricao} alt="Produto" />
                           </Grid>
                           <Grid cols="7 6 12 12 12">
-                            <Title className="test-name-product">{product.descricao}</Title>
-                            {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
-                            <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                            <>
+                              <Title className="test-name-product">{product.descricao}</Title>
+                              {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
+                              <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                              {(haveStock()) || (<Unavailable>Produto indisponível</Unavailable>)}
+                            </>
                           </Grid>
                         </Row>
                         <Row>
@@ -367,20 +451,19 @@ const SingleProduct = (props) => {
                                 label="Variações"
                                 options={product.variants}
                                 value={variantSelected}
-                                getOptionLabel={label => (
-                                  <LabelVariant>
-                                    <div>{label.name}</div>
-                                    {(label.sellValue) && (<div>{intl.formatNumber(label.sellValue, { style: 'currency', currency: 'BRL' })}</div>)}
-                                  </LabelVariant>
-                                )}
+                                getOptionLabel={label => renderOptionLabel(label)}
                                 onChange={(value) => {
-                                  propsForm.setFieldValue('variant', value);
-                                  setVariantSelected({ name: value.name });
-                                  propsForm.setFieldTouched('variant', true);
-                                  setProductPricing(prevState => ({
-                                    ...prevState,
-                                    product: value.sellValue,
-                                  }));
+                                  if ((value.noStock === false
+                                    && value.Estoque && value.Estoque.quantidade > 1)
+                                    || (value.noStock)) {
+                                    propsForm.setFieldValue('variant', value);
+                                    setVariantSelected({ name: value.name });
+                                    propsForm.setFieldTouched('variant', true);
+                                    setProductPricing(prevState => ({
+                                      ...prevState,
+                                      product: value.sellValue,
+                                    }));
+                                  }
                                 }}
                                 getOptionValue={option => option.id}
                                 isInvalid={propsForm.errors.variant}
@@ -475,7 +558,7 @@ const SingleProduct = (props) => {
                           )}
                         </Row>
                       </Grid>
-                      {(shop.is_enableOrder === 1 && haveStock()) && (
+                      {(enableOrderButton()) && (
                         <FooterContainer>
                           <div className="d-flex justify-content-end">
                             <Grid cols="12 12 12 6 6">
@@ -520,7 +603,7 @@ const SingleProduct = (props) => {
               />
             </>
           ) : (
-            <>O produto que você procura não foi encontrado!</>
+            <div>O produto que você procura não foi encontrado!</div>
           )}
         </Grid>
       </Row>
