@@ -304,7 +304,7 @@ const SingleProduct = (props) => {
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
   const haveStock = () => {
-    if (product.noStock) {
+    if (product.noStock && !product.hasVariant) {
       return true;
     }
 
