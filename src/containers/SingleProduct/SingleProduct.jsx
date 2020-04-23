@@ -304,33 +304,56 @@ const SingleProduct = (props) => {
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
   const haveStock = () => {
-    if (product.hasVariant) {
-      return true;
-    }
     if (product.noStock) {
       return true;
     }
-    if (shop.stock === 'ALL') {
+
+    if (product.Estoque && product.Estoque.quantidade > 1) {
       return true;
     }
-    if (shop.stock === 'UNAVAILABLE') {
-      return (product.Estoque && product.Estoque.quantidade >= 1);
+    return false;
+  };
+
+  const haveStockVariant = (variant) => {
+    if (variant.noStock) {
+      return true;
     }
-    return true;
+    if (variant.Estoque && variant.Estoque.quantidade > 0) {
+      return true;
+    }
+    return false;
   };
 
   const enableOrderButton = () => {
-    const availableVariants = product.variants.filter(item => !(item.catalogStock === 'UNAVAILABLE' && !item.noStock && item.Estoque && item.Estoque.quantidade < 1));
+    const availableVariants = product.variants.filter(item => (haveStockVariant(item)));
     let isEnable = false;
-    if (product.hasVariant
-      && availableVariants.length && shop.is_enableOrder === 1 && haveStock()) {
+
+    if (!shop.is_enableOrder) {
+      isEnable = false;
+    }
+    if (product.catalogStock === 'ALL') {
       isEnable = true;
     }
-    if (!product.hasVariant && shop.is_enableOrder === 1 && haveStock()) {
-      isEnable = true;
+
+    if (product.catalogStock === 'ONLY_STOCK') {
+      if (haveStock() || availableVariants.length) {
+        isEnable = true;
+      } else {
+        setProductFound(false);
+        isEnable = false;
+      }
+    }
+
+    if (product.catalogStock === 'UNAVAILABLE') {
+      if (haveStock() || availableVariants.length > 0) {
+        isEnable = true;
+      } else {
+        isEnable = false;
+      }
     }
     return isEnable;
   };
+
 
   const renderOptionLabel = (values) => {
     if (values.catalogStock === 'UNAVAILABLE') {
@@ -347,7 +370,7 @@ const SingleProduct = (props) => {
               }}
               >
                 {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
-                {(!values.noStock && values.Estoque && values.Estoque.quantidade < 1) && (<div style={{ width: 'auto', marginLeft: '10px', color: '#C70039' }}>Item indisponível</div>)}
+                {(haveStockVariant(values)) || (<div style={{ width: 'auto', marginLeft: '10px' }}>Item indisponível</div>)}
               </div>
             )}
           </LabelVariantValues>
@@ -439,7 +462,7 @@ const SingleProduct = (props) => {
                               <Title className="test-name-product">{product.descricao}</Title>
                               {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
                               <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
-                              {(haveStock()) || (<Unavailable>Produto indisponível</Unavailable>)}
+                              {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
                             </>
                           </Grid>
                         </Row>
