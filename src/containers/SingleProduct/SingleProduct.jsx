@@ -274,6 +274,7 @@ const SingleProduct = (props) => {
         viewMode: response.viewMode,
         atualizacao: response.atualizacao,
         uuid: uuidv1(),
+        image: [],
       });
       updateFilter({ label: response.descricao });
       setProduct(response);
@@ -401,11 +402,12 @@ const SingleProduct = (props) => {
         outsideChevron
         chevronWidth={chevronWidth}
       >
-
         <Img src={image} title={product.descricao} alt="Produto" />
-        <Img src={image} title={product.descricao} alt="Produto" />
-        <Img src={image} title={product.descricao} alt="Produto" />
-        <Img src={image} title={product.descricao} alt="Produto" />
+        {product.images && (
+          product.images !== 'notFound' && ((product.images).map(img => (
+            <Img src={`${process.env.REACT_APP_IMG_API}${img.Key}`} title={product.descricao} alt="Produto" />
+          )))
+        )}
       </ItemsCarousel>
     </div>
   );
