@@ -14,7 +14,7 @@ const Nav = styled.nav`
 
 const BreadcrumbButton = styled.span`
   align-items: center;
-  color: #f37c05;
+  color: var(--color-link);
   display: flex;
   justify-content: center;
   padding: 0 0.75em;

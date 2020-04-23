@@ -14,7 +14,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "ci:cy": "start-server-and-test start http-get://localhost:3000 cypress:run",
-    "push": "yarn lint && yarn ci:cy"
+    "push": "yarn lint"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
