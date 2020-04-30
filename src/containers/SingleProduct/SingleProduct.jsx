@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
+import ItemsCarousel from 'react-items-carousel';
 import { FormattedPlural, injectIntl, intlShape } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
@@ -157,6 +158,18 @@ const SocialIcon = styled.i`
   cursor: pointer;
 `;
 
+const Icon = styled.i`
+  font-size: 2rem;
+
+  @media (max-width: 576px) {
+    font-size: 0.8rem;
+  }
+
+  :hover {
+    color: #00529b;
+  }
+`;
+
 const Unavailable = styled.p`
   color: #333;
   font-size: 0.8rem;
@@ -166,6 +179,8 @@ const Unavailable = styled.p`
 
 const SingleProduct = (props) => {
   const { intl } = props;
+  const [activeItemIndex, setActiveItemIndex] = useState(0);
+  const chevronWidth = 40;
   const [product, setProduct] = useState({
     variants: [],
     hasVariant: true,
@@ -259,6 +274,7 @@ const SingleProduct = (props) => {
         viewMode: response.viewMode,
         atualizacao: response.atualizacao,
         uuid: uuidv1(),
+        image: [],
       });
       updateFilter({ label: response.descricao });
       setProduct(response);
@@ -398,6 +414,27 @@ const SingleProduct = (props) => {
     );
   };
 
+  const renderImage = () => (
+    <div style={{ padding: `0 ${chevronWidth}px` }}>
+      <ItemsCarousel
+        requestToChangeActive={setActiveItemIndex}
+        activeItemIndex={activeItemIndex}
+        numberOfCards={1}
+        leftChevron={<Icon className="far fa-arrow-alt-circle-left" />}
+        rightChevron={<Icon className="far fa-arrow-alt-circle-right" />}
+        outsideChevron
+        chevronWidth={chevronWidth}
+      >
+        <Img src={image} title={product.descricao} alt="Produto" />
+        {product.images && (
+          product.images !== 'notFound' && ((product.images).map(img => (
+            <Img src={`${process.env.REACT_APP_IMG_API}${img.Key}`} title={product.descricao} alt="Produto" />
+          )))
+        )}
+      </ItemsCarousel>
+    </div>
+  );
+
   return (
     <>
       <Row>
@@ -426,7 +463,9 @@ const SingleProduct = (props) => {
                       >
                         <Row>
                           <Grid cols="12" className="mb-3">
-                            <Img src={image} title={product.descricao} alt="Produto" />
+                            {(process.env.REACT_APP_ENV === 'production')
+                              ? (<Img src={image} title={product.descricao} alt="Produto" />)
+                              : renderImage()}
                           </Grid>
                           <Grid cols="12" className="mb-3">
                             <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
@@ -455,7 +494,9 @@ const SingleProduct = (props) => {
                       <Grid cols="12 12 6 6 6">
                         <Row>
                           <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
-                            <Img src={image} title={product.descricao} alt="Produto" />
+                            {(process.env.REACT_APP_ENV === 'production')
+                              ? (<Img src={image} title={product.descricao} alt="Produto" />)
+                              : renderImage()}
                           </Grid>
                           <Grid cols="7 6 12 12 12">
                             <>
