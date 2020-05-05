@@ -477,7 +477,7 @@ const SingleProduct = (props) => {
                                 getOptionLabel={label => renderOptionLabel(label)}
                                 onChange={(value) => {
                                   if ((value.noStock === false
-                                    && value.Estoque && value.Estoque.quantidade > 1)
+                                    && value.Estoque && value.Estoque.quantidade > 0)
                                     || (value.noStock)) {
                                     propsForm.setFieldValue('variant', value);
                                     setVariantSelected({ name: value.name });
