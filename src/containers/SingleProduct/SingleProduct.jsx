@@ -308,7 +308,7 @@ const SingleProduct = (props) => {
       return true;
     }
 
-    if (product.Estoque && product.Estoque.quantidade > 1) {
+    if (product.Estoque && product.Estoque.quantidade > 0) {
       return true;
     }
     return false;
