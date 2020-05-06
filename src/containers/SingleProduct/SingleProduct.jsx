@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
+import ItemsCarousel from 'react-items-carousel';
 import { FormattedPlural, injectIntl, intlShape } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
@@ -68,7 +69,7 @@ const Title = styled.h1`
   font-size: 1.5rem;
   font-weight: 600;
   color: #707070;
- 
+
   @media (max-width: 576px) {
     font-size: 1.2rem;
   }
@@ -103,6 +104,14 @@ const LabelVariant = styled.div`
   display: flex;
   width: 100%;
   justify-content: space-between;
+  align-items: flex-start;
+`;
+
+const LabelVariantValues = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: flex-start;
 `;
 
 const ModifiersArea = styled.div`
@@ -149,10 +158,32 @@ const SocialIcon = styled.i`
   cursor: pointer;
 `;
 
+const Icon = styled.i`
+  font-size: 2rem;
+
+  @media (max-width: 576px) {
+    font-size: 0.8rem;
+  }
+
+  :hover {
+    color: #00529b;
+  }
+`;
+
+const Unavailable = styled.p`
+  color: #333;
+  font-size: 0.8rem;
+  text-align: left;
+  margin: 0;
+`;
+
 const SingleProduct = (props) => {
   const { intl } = props;
+  const [activeItemIndex, setActiveItemIndex] = useState(0);
+  const chevronWidth = 40;
   const [product, setProduct] = useState({
     variants: [],
+    hasVariant: true,
   });
   const [productPricing, setProductPricing] = useState({
     product: 0,
@@ -243,6 +274,7 @@ const SingleProduct = (props) => {
         viewMode: response.viewMode,
         atualizacao: response.atualizacao,
         uuid: uuidv1(),
+        image: [],
       });
       updateFilter({ label: response.descricao });
       setProduct(response);
@@ -288,11 +320,120 @@ const SingleProduct = (props) => {
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
   const haveStock = () => {
-    if (product.noStock) {
+    if (product.noStock && !product.hasVariant) {
       return true;
     }
-    return (product.Estoque && product.Estoque.quantidade >= 1);
+
+    if (product.Estoque && product.Estoque.quantidade > 0) {
+      return true;
+    }
+    return false;
   };
+
+  const haveStockVariant = (variant) => {
+    if (variant.noStock) {
+      return true;
+    }
+    if (variant.Estoque && variant.Estoque.quantidade > 0) {
+      return true;
+    }
+    return false;
+  };
+
+  const enableOrderButton = () => {
+    const availableVariants = product.variants.filter(item => (haveStockVariant(item)));
+    let isEnable = false;
+
+    if (!shop.is_enableOrder) {
+      isEnable = false;
+    }
+    if (product.catalogStock === 'ALL') {
+      isEnable = true;
+    }
+
+    if (product.catalogStock === 'ONLY_STOCK') {
+      if (haveStock() || availableVariants.length) {
+        isEnable = true;
+      } else {
+        setProductFound(false);
+        isEnable = false;
+      }
+    }
+
+    if (product.catalogStock === 'UNAVAILABLE') {
+      if (haveStock() || availableVariants.length > 0) {
+        isEnable = true;
+      } else {
+        isEnable = false;
+      }
+    }
+    return isEnable;
+  };
+
+
+  const renderOptionLabel = (values) => {
+    if (values.catalogStock === 'UNAVAILABLE') {
+      return (
+        <LabelVariant>
+          <LabelVariantValues>
+            <div>{values.name}</div>
+            {(values.sellValue)
+            && (
+              <div style={{
+                fontWeight: '600',
+                display: 'flex',
+                flexDirection: 'col',
+              }}
+              >
+                {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
+                {(haveStockVariant(values)) || (<div style={{ width: 'auto', marginLeft: '10px' }}>Item indisponível</div>)}
+              </div>
+            )}
+          </LabelVariantValues>
+        </LabelVariant>
+      );
+    }
+
+    return (
+      <LabelVariant>
+        <LabelVariantValues>
+          <div>{values.name}</div>
+          {(values.sellValue)
+          && (
+            <div style={{
+              fontWeight: '600',
+              display: 'flex',
+              flexDirection: 'col',
+            }}
+            >
+              {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
+            </div>
+          )}
+        </LabelVariantValues>
+      </LabelVariant>
+    );
+  };
+
+  const renderImage = () => (
+    <div style={{ padding: `0 ${chevronWidth}px` }}>
+      <ItemsCarousel
+        requestToChangeActive={setActiveItemIndex}
+        activeItemIndex={activeItemIndex}
+        numberOfCards={1}
+        leftChevron={<Icon className="far fa-arrow-alt-circle-left" />}
+        rightChevron={<Icon className="far fa-arrow-alt-circle-right" />}
+        outsideChevron
+        chevronWidth={chevronWidth}
+      >
+        <Img src={image} title={product.descricao} alt="Produto" />
+        {product.images && (
+          product.images !== 'notFound' && ((product.images).map(img => (
+            <Img src={`${process.env.REACT_APP_IMG_API}${img.Key}`} title={product.descricao} alt="Produto" />
+          )))
+        )}
+      </ItemsCarousel>
+    </div>
+  );
 
   return (
     <>
@@ -322,7 +463,9 @@ const SingleProduct = (props) => {
                       >
                         <Row>
                           <Grid cols="12" className="mb-3">
-                            <Img src={image} title={product.descricao} alt="Produto" />
+                            {(process.env.REACT_APP_ENV === 'production')
+                              ? (<Img src={image} title={product.descricao} alt="Produto" />)
+                              : renderImage()}
                           </Grid>
                           <Grid cols="12" className="mb-3">
                             <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
@@ -351,12 +494,17 @@ const SingleProduct = (props) => {
                       <Grid cols="12 12 6 6 6">
                         <Row>
                           <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
-                            <Img src={image} title={product.descricao} alt="Produto" />
+                            {(process.env.REACT_APP_ENV === 'production')
+                              ? (<Img src={image} title={product.descricao} alt="Produto" />)
+                              : renderImage()}
                           </Grid>
                           <Grid cols="7 6 12 12 12">
-                            <Title className="test-name-product">{product.descricao}</Title>
-                            {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
-                            <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                            <>
+                              <Title className="test-name-product">{product.descricao}</Title>
+                              {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
+                              <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                              {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
+                            </>
                           </Grid>
                         </Row>
                         <Row>
@@ -367,20 +515,19 @@ const SingleProduct = (props) => {
                                 label="Variações"
                                 options={product.variants}
                                 value={variantSelected}
-                                getOptionLabel={label => (
-                                  <LabelVariant>
-                                    <div>{label.name}</div>
-                                    {(label.sellValue) && (<div>{intl.formatNumber(label.sellValue, { style: 'currency', currency: 'BRL' })}</div>)}
-                                  </LabelVariant>
-                                )}
+                                getOptionLabel={label => renderOptionLabel(label)}
                                 onChange={(value) => {
-                                  propsForm.setFieldValue('variant', value);
-                                  setVariantSelected({ name: value.name });
-                                  propsForm.setFieldTouched('variant', true);
-                                  setProductPricing(prevState => ({
-                                    ...prevState,
-                                    product: value.sellValue,
-                                  }));
+                                  if ((value.noStock === false
+                                    && value.Estoque && value.Estoque.quantidade > 0)
+                                    || (value.noStock)) {
+                                    propsForm.setFieldValue('variant', value);
+                                    setVariantSelected({ name: value.name });
+                                    propsForm.setFieldTouched('variant', true);
+                                    setProductPricing(prevState => ({
+                                      ...prevState,
+                                      product: value.sellValue,
+                                    }));
+                                  }
                                 }}
                                 getOptionValue={option => option.id}
                                 isInvalid={propsForm.errors.variant}
@@ -475,7 +622,7 @@ const SingleProduct = (props) => {
                           )}
                         </Row>
                       </Grid>
-                      {(shop.is_enableOrder === 1 && haveStock()) && (
+                      {(enableOrderButton()) && (
                         <FooterContainer>
                           <div className="d-flex justify-content-end">
                             <Grid cols="12 12 12 6 6">
@@ -520,7 +667,7 @@ const SingleProduct = (props) => {
               />
             </>
           ) : (
-            <>O produto que você procura não foi encontrado!</>
+            <div>O produto que você procura não foi encontrado!</div>
           )}
         </Grid>
       </Row>
