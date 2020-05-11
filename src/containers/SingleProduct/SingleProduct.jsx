@@ -463,9 +463,7 @@ const SingleProduct = (props) => {
                       >
                         <Row>
                           <Grid cols="12" className="mb-3">
-                            {(process.env.REACT_APP_ENV === 'production')
-                              ? (<Img src={image} title={product.descricao} alt="Produto" />)
-                              : renderImage()}
+                            {renderImage()}
                           </Grid>
                           <Grid cols="12" className="mb-3">
                             <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
@@ -494,9 +492,7 @@ const SingleProduct = (props) => {
                       <Grid cols="12 12 6 6 6">
                         <Row>
                           <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
-                            {(process.env.REACT_APP_ENV === 'production')
-                              ? (<Img src={image} title={product.descricao} alt="Produto" />)
-                              : renderImage()}
+                            {renderImage()}
                           </Grid>
                           <Grid cols="7 6 12 12 12">
                             <>
