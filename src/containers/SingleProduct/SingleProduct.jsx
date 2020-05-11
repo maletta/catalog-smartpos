@@ -428,7 +428,7 @@ const SingleProduct = (props) => {
         <Img src={image} title={product.descricao} alt="Produto" />
         {product.images && (
           product.images !== 'notFound' && ((product.images).map(img => (
-            <Img src={`${process.env.REACT_APP_IMG_API}${img.Key}`} title={product.descricao} alt="Produto" />
+            <Img src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
           )))
         )}
       </ItemsCarousel>
