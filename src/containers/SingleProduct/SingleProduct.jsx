@@ -415,24 +415,28 @@ const SingleProduct = (props) => {
   };
 
   const renderImage = () => (
-    <div style={{ padding: `0 ${chevronWidth}px` }}>
-      <ItemsCarousel
-        requestToChangeActive={setActiveItemIndex}
-        activeItemIndex={activeItemIndex}
-        numberOfCards={1}
-        leftChevron={<Icon className="far fa-arrow-alt-circle-left" />}
-        rightChevron={<Icon className="far fa-arrow-alt-circle-right" />}
-        outsideChevron
-        chevronWidth={chevronWidth}
-      >
-        <Img src={image} title={product.descricao} alt="Produto" />
-        {product.images && (
-          product.images !== 'notFound' && ((product.images).map(img => (
-            <Img src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
-          )))
-        )}
-      </ItemsCarousel>
-    </div>
+    <>
+      {product.images !== 'notFound' ? (
+        <div style={{ padding: `0 ${chevronWidth}px` }}>
+          <ItemsCarousel
+            requestToChangeActive={setActiveItemIndex}
+            activeItemIndex={activeItemIndex}
+            numberOfCards={1}
+            leftChevron={<Icon className="far fa-arrow-alt-circle-left" />}
+            rightChevron={<Icon className="far fa-arrow-alt-circle-right" />}
+            outsideChevron
+            chevronWidth={chevronWidth}
+          >
+            <Img src={image} title={product.descricao} alt="Produto" />
+            {product.images && (
+              product.images !== 'notFound' && ((product.images).map(img => (
+                <Img src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+              )))
+            )}
+          </ItemsCarousel>
+        </div>
+      ) : <Img src={image} title={product.descricao} alt="Produto" />}
+    </>
   );
 
   return (
