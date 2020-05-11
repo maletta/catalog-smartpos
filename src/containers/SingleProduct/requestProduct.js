@@ -4,16 +4,7 @@ import getVariantsOfProduct from 'api/variantsRequests';
 import getModifiersOfProduct from 'api/modifiersRequests';
 import getProduct from 'api/productRequests';
 import getDescription from 'api/productDescription';
-
-const listPhotos = (tenant, product) => (
-  axios.get('https://slip.qa.smartpos.net.br/photo-service/v1/list',
-    {
-      params: {
-        tenant_id: tenant,
-        id: product,
-      },
-    })
-);
+import listPhotos from 'api/photo';
 
 const getInfoProduct = async (tenant, product) => {
   const additionalInfo = await axios.all([
