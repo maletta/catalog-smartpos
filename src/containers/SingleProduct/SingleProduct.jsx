@@ -177,10 +177,18 @@ const Unavailable = styled.p`
   margin: 0;
 `;
 
+const Carousel = styled.div`
+  padding: 0 30px;
+
+  @media (max-width: 576px) {
+    padding: 0 0;
+  }
+`;
+
 const SingleProduct = (props) => {
   const { intl } = props;
   const [activeItemIndex, setActiveItemIndex] = useState(0);
-  const chevronWidth = 40;
+  const chevronWidth = 45;
   const [product, setProduct] = useState({
     variants: [],
     hasVariant: true,
@@ -415,24 +423,28 @@ const SingleProduct = (props) => {
   };
 
   const renderImage = () => (
-    <div style={{ padding: `0 ${chevronWidth}px` }}>
-      <ItemsCarousel
-        requestToChangeActive={setActiveItemIndex}
-        activeItemIndex={activeItemIndex}
-        numberOfCards={1}
-        leftChevron={<Icon className="far fa-arrow-alt-circle-left" />}
-        rightChevron={<Icon className="far fa-arrow-alt-circle-right" />}
-        outsideChevron
-        chevronWidth={chevronWidth}
-      >
-        <Img src={image} title={product.descricao} alt="Produto" />
-        {product.images && (
-          product.images !== 'notFound' && ((product.images).map(img => (
-            <Img src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
-          )))
-        )}
-      </ItemsCarousel>
-    </div>
+    <>
+      {product.images !== 'notFound' ? (
+        <Carousel>
+          <ItemsCarousel
+            requestToChangeActive={setActiveItemIndex}
+            activeItemIndex={activeItemIndex}
+            numberOfCards={1}
+            leftChevron={<Icon className="far fa-arrow-alt-circle-left" />}
+            rightChevron={<Icon className="far fa-arrow-alt-circle-right" />}
+            outsideChevron
+            chevronWidth={chevronWidth}
+          >
+            <Img src={image} title={product.descricao} alt="Produto" />
+            {product.images && (
+              product.images !== 'notFound' && ((product.images).map(img => (
+                <Img src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+              )))
+            )}
+          </ItemsCarousel>
+        </Carousel>
+      ) : <Img src={image} title={product.descricao} alt="Produto" />}
+    </>
   );
 
   return (

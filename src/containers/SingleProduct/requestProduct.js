@@ -12,8 +12,7 @@ const getInfoProduct = async (tenant, product) => {
     getVariantsOfProduct(tenant, product),
     getModifiersOfProduct(tenant, product),
     getDescription(tenant, product),
-    (process.env.REACT_APP_ENV !== 'production')
-    && (listPhotos(tenant, product) && listPhotos(tenant, product)),
+    listPhotos(tenant, product) && listPhotos(tenant, product),
   ]);
 
   return {
