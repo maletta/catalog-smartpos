@@ -177,10 +177,18 @@ const Unavailable = styled.p`
   margin: 0;
 `;
 
+const Carousel = styled.div`
+  padding: 0 30px;
+
+  @media (max-width: 576px) {
+    padding: 0 0;
+  }
+`;
+
 const SingleProduct = (props) => {
   const { intl } = props;
   const [activeItemIndex, setActiveItemIndex] = useState(0);
-  const chevronWidth = 40;
+  const chevronWidth = 45;
   const [product, setProduct] = useState({
     variants: [],
     hasVariant: true,
@@ -417,7 +425,7 @@ const SingleProduct = (props) => {
   const renderImage = () => (
     <>
       {product.images !== 'notFound' ? (
-        <div style={{ padding: `0 ${chevronWidth}px` }}>
+        <Carousel>
           <ItemsCarousel
             requestToChangeActive={setActiveItemIndex}
             activeItemIndex={activeItemIndex}
@@ -434,7 +442,7 @@ const SingleProduct = (props) => {
               )))
             )}
           </ItemsCarousel>
-        </div>
+        </Carousel>
       ) : <Img src={image} title={product.descricao} alt="Produto" />}
     </>
   );
