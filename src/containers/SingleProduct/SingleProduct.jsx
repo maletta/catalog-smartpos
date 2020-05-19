@@ -351,10 +351,6 @@ const SingleProduct = (props) => {
   const enableOrderButton = () => {
     const availableVariants = product.variants.filter(item => (haveStockVariant(item)));
     let isEnable = false;
-    if (!haveStock()) {
-      isEnable = false;
-      return false;
-    }
     if (shop.is_enableOrder === 0) {
       isEnable = false;
       return false;
@@ -595,6 +591,7 @@ const SingleProduct = (props) => {
                                     );
                                   })}
                                 </ModifiersArea>
+                                {enableOrderButton() && (
                                 <div className="column is-mb-paddingless is-12 is-mb-paddingless">
                                   <Field
                                     name="note"
@@ -605,6 +602,7 @@ const SingleProduct = (props) => {
                                     rows={3}
                                   />
                                 </div>
+                                )}
                               </>
                             )}
                           </Grid>
