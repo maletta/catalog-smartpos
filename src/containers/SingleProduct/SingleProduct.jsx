@@ -351,9 +351,9 @@ const SingleProduct = (props) => {
   const enableOrderButton = () => {
     const availableVariants = product.variants.filter(item => (haveStockVariant(item)));
     let isEnable = false;
-
-    if (!shop.is_enableOrder) {
+    if (shop.is_enableOrder === 0) {
       isEnable = false;
+      return false;
     }
     if (product.catalogStock === 'ALL') {
       isEnable = true;
@@ -591,17 +591,17 @@ const SingleProduct = (props) => {
                                     );
                                   })}
                                 </ModifiersArea>
-                                {(shop.is_enableOrder === 1) && (
-                                  <div className="column is-mb-paddingless is-12 is-mb-paddingless">
-                                    <Field
-                                      name="note"
-                                      inputId="observacao"
-                                      component={TextArea}
-                                      label="Observação"
-                                      autoFocus={false}
-                                      rows={3}
-                                    />
-                                  </div>
+                                {enableOrderButton() && (
+                                <div className="column is-mb-paddingless is-12 is-mb-paddingless">
+                                  <Field
+                                    name="note"
+                                    inputId="observacao"
+                                    component={TextArea}
+                                    label="Observação"
+                                    autoFocus={false}
+                                    rows={3}
+                                  />
+                                </div>
                                 )}
                               </>
                             )}
