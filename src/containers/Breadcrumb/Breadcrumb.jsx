@@ -21,6 +21,13 @@ const BreadcrumbButton = styled.span`
   cursor: pointer;
 `;
 
+const LinkCategories = styled.span`
+  cursor: pointer;
+
+  :hover {
+    color: var(--color-primary);
+  }
+`;
 const Breadcrumb = (prop) => {
   const { goHome } = prop;
   const { filter } = useContext(FilterContext);
@@ -32,7 +39,13 @@ const Breadcrumb = (prop) => {
         <Nav>
           <ol className="breadcrumb pl-0 mb-0">
             <li className="breadcrumb-item"><BreadcrumbButton onClick={e => goHome(e)} href="#">{shop.usuario}</BreadcrumbButton></li>
-            <li className="breadcrumb-item active">{filter.search ? `resultados para: ${filter.search}` : filter.label}</li>
+            <li>
+              {filter.search ? `/ resultados para: ${filter.search}` : (
+                <LinkCategories>
+                  {`/ ${filter.label}`}
+                </LinkCategories>
+              )}
+            </li>
           </ol>
         </Nav>
       </Grid>
