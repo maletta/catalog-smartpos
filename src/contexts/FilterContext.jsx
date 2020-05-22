@@ -5,11 +5,12 @@ import history from 'utils/history';
 
 const FilterContext = createContext();
 
+const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
 export const FilterProvider = ({ children }) => {
   const parsed = queryString.parse(window.location.search);
 
   const [filter, setFilter] = useState({
-    label: parsed.item || 'Todas as categorias',
+    label: parsed.label || 'Todas as categorias',
     page: parsed.page,
     categoria: parsed.categoria,
     orderBy: parsed.orderBy,
@@ -21,6 +22,7 @@ export const FilterProvider = ({ children }) => {
   const updateFilter = (newFilter) => {
     if (newFilter.redirect) {
       history.push('/');
+      window.history.pushState({}, '', `${baseUrl}?categoria=${newFilter.categoria}&label=${newFilter.label}`);
     }
     setFilter(state => ({ ...state, ...newFilter }));
   };

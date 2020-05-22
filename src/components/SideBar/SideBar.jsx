@@ -14,7 +14,7 @@ const SideBar = (props) => {
       key={item.id}
       id={index}
       text={item.descricao}
-      selected={item.id === filter.categoria}
+      selected={item.id === parseInt(filter.categoria, 10)}
       onClick={() => updateFilter({
         categoria: item.id, label: item.descricao, search: undefined, page: 1, redirect: true,
       })}
