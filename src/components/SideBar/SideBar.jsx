@@ -26,22 +26,30 @@ const SideBar = (props) => {
       <List title="Ordernar por" isFullHeight>
         <LinkItem
           text="Maior preço"
-          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'valorVenda', redirect: true })}
+          onClick={() => updateFilter({
+            orderBy: 'desc', sortBy: 'valorVenda', redirect: true, categoria: filter.categoria, label: filter.label,
+          })}
           selected={(filter.orderBy === 'desc' && filter.sortBy === 'valorVenda')}
         />
         <LinkItem
           text="Menor preço"
-          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'valorVenda', redirect: true })}
+          onClick={() => updateFilter({
+            orderBy: 'asc', sortBy: 'valorVenda', redirect: true, categoria: filter.categoria, label: filter.label,
+          })}
           selected={(filter.orderBy === 'asc' && filter.sortBy === 'valorVenda')}
         />
         <LinkItem
           text="A-Z"
-          onClick={() => updateFilter({ orderBy: 'asc', sortBy: 'descricao', redirect: true })}
+          onClick={() => updateFilter({
+            orderBy: 'asc', sortBy: 'descricao', redirect: true, categoria: filter.categoria, label: filter.label,
+          })}
           selected={(filter.orderBy === 'asc' && filter.sortBy === 'descricao')}
         />
         <LinkItem
           text="Z-A"
-          onClick={() => updateFilter({ orderBy: 'desc', sortBy: 'descricao', redirect: true })}
+          onClick={() => updateFilter({
+            orderBy: 'desc', sortBy: 'descricao', redirect: true, categoria: filter.categoria, label: filter.label,
+          })}
           selected={(filter.orderBy === 'desc' && filter.sortBy === 'descricao')}
         />
       </List>
