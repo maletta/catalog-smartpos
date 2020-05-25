@@ -293,6 +293,18 @@ const Checkout = ({ intl }) => {
     });
   };
 
+  const enableSubmitButton = () => {
+    let disable = false;
+    if (shop.deliveryMode === 'DELIVERY' && !costDelivery.isDeliverable) {
+      disable = true;
+    }
+
+    if (!reCaptchaToken) {
+      disable = true;
+    }
+    return disable;
+  };
+
   useEffect(() => {
     getInstallments();
   }, [costDelivery.cost]);
@@ -1016,7 +1028,7 @@ const Checkout = ({ intl }) => {
                         value={(propsForm.values.gatwayPagseguro) ? 'Finalizar compra' : 'Enviar pedido'}
                         type="submit"
                         isLoading={propsForm.isSubmitting}
-                        disabled={(!reCaptchaToken)}
+                        disabled={enableSubmitButton()}
                       />
                     </div>
                   </Grid>
