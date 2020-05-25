@@ -353,7 +353,7 @@ const SingleProduct = (props) => {
     let isEnable = false;
 
     if (!shop.is_enableOrder) {
-      isEnable = false;
+      return false;
     }
     if (product.catalogStock === 'ALL') {
       isEnable = true;
