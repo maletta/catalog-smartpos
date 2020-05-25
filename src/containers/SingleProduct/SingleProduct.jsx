@@ -591,17 +591,17 @@ const SingleProduct = (props) => {
                                     );
                                   })}
                                 </ModifiersArea>
-                                {(shop.is_enableOrder === 1) && (
-                                  <div className="column is-mb-paddingless is-12 is-mb-paddingless">
-                                    <Field
-                                      name="note"
-                                      inputId="observacao"
-                                      component={TextArea}
-                                      label="Observação"
-                                      autoFocus={false}
-                                      rows={3}
-                                    />
-                                  </div>
+                                {enableOrderButton() && (
+                                <div className="column is-mb-paddingless is-12 is-mb-paddingless">
+                                  <Field
+                                    name="note"
+                                    inputId="observacao"
+                                    component={TextArea}
+                                    label="Observação"
+                                    autoFocus={false}
+                                    rows={3}
+                                  />
+                                </div>
                                 )}
                               </>
                             )}
