@@ -148,7 +148,11 @@ const App = () => {
   const home = () => {
     history.push('/');
     updateFilter({
-      categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+      categoria: 0,
+      label: 'Todas as categorias',
+      page: 1,
+      search: '',
+      categoryName: '',
     });
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
     window.history.pushState({}, '', `${baseUrl}`);

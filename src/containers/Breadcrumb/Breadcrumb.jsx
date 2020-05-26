@@ -58,6 +58,7 @@ const Breadcrumb = (prop) => {
                     <LinkCategories onClick={() => {
                       updateFilter({
                         ...filter,
+                        label: '',
                         redirect: false,
                       });
                       home();
