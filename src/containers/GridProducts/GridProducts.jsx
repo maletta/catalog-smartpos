@@ -54,7 +54,7 @@ const GridProducts = () => {
   };
 
   const handlePagination = (data) => {
-    updateFilter({ page: data.selected + 1 });
+    updateFilter({ page: data.selected + 1, categoryName: '' });
   };
 
   useEffect(() => {

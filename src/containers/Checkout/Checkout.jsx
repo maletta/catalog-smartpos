@@ -320,11 +320,11 @@ const Checkout = ({ intl }) => {
     );
     setTotalCar(total);
     updateFilter({
-      label: 'Finalizar o pedido',
+      label: 'Finalizar o pedido', categoryName: '',
     });
     if (cart.length < 1) {
       updateFilter({
-        categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+        categoria: 0, label: 'Todas as categorias', page: 1, search: '', categoryName: '',
       });
     }
     getPayments(shop.id).then((response) => {

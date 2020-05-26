@@ -12,11 +12,12 @@ export const FilterProvider = ({ children }) => {
   const [filter, setFilter] = useState({
     label: parsed.label || 'Todas as categorias',
     page: parsed.page,
-    categoria: parsed.categoria,
+    categoria: parsed.categoria || 0,
     orderBy: parsed.orderBy,
     sortBy: parsed.sortBy,
     search: parsed.search,
     redirect: false,
+    categoryName: '',
   });
 
   const updateFilter = (newFilter) => {
