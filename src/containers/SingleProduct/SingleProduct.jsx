@@ -208,13 +208,17 @@ const SingleProduct = (props) => {
   const [isProductFound, setProductFound] = useState(true);
   const { shop, categories } = useContext(ShopContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
-  const { updateFilter } = useContext(FilterContext);
+  const { filter, updateFilter } = useContext(FilterContext);
   const [image, setImage] = useState(NoImage);
   const completeURL = window.location.href;
 
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
 
   const submitItem = (values, { resetForm, setSubmitting }) => {
+    updateFilter({
+      ...filter,
+      categoryName: 'category.descricao',
+    });
     if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
       setSubmitting(false);
       Swal.fire({
