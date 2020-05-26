@@ -28,6 +28,9 @@ import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
 import history from 'utils/history';
+import {
+  getCategories,
+} from 'requests';
 import orderValidation from './orderSchema';
 
 import getInfoProduct from './requestProduct';
@@ -284,7 +287,14 @@ const SingleProduct = (props) => {
         uuid: uuidv1(),
         image: [],
       });
-      updateFilter({ label: response.descricao });
+      getCategories(response.tenant_id).then((res) => {
+        const category = res.data.find(r => r.id === response.codcategoria);
+        updateFilter({
+          label: response.descricao,
+          categoryName: category.descricao,
+          categoria: category.id,
+        });
+      });
       setProduct(response);
       setProductPricing({
         product: response.valorVenda,
@@ -306,7 +316,7 @@ const SingleProduct = (props) => {
       setProductFound(true);
     })
       .catch(() => setProductFound(false))
-      .finally(() => setLoaded(true));
+      .finally(() => { setLoaded(true); });
   }, [false]);
 
   const renderSocialIcon = () => (
