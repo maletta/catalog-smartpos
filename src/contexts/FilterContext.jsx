@@ -5,7 +5,6 @@ import history from 'utils/history';
 
 const FilterContext = createContext();
 
-const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
 export const FilterProvider = ({ children }) => {
   const parsed = queryString.parse(window.location.search);
 
@@ -17,13 +16,14 @@ export const FilterProvider = ({ children }) => {
     sortBy: parsed.sortBy,
     search: parsed.search,
     redirect: false,
-    categoryName: '',
+    categoryName: parsed.nome || '',
   });
 
   const updateFilter = (newFilter) => {
     if (newFilter.redirect) {
       history.push('/');
-      window.history.pushState({}, '', `${baseUrl}?categoria=${newFilter.categoria}&label=${newFilter.label}`);
+      const baseUrl2 = [window.location.protocol, '//', window.location.host, '/', window.location.pathname.split('/')[1]].join('');
+      window.history.pushState({}, '', `${baseUrl2}?categoria=${newFilter.categoria}&nome=${newFilter.categoryName}`);
     }
     setFilter(state => ({ ...state, ...newFilter }));
   };

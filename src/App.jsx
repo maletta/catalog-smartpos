@@ -72,7 +72,7 @@ const App = () => {
   const {
     updateShop, categories, updateCategory,
   } = useContext(ShopContext);
-  const { updateFilter } = useContext(FilterContext);
+  const { filter, updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const notFoundHandle = () => (loading ? (
@@ -149,13 +149,14 @@ const App = () => {
     history.push('/');
     updateFilter({
       categoria: 0,
-      label: 'Todas as categorias',
+      label: '',
       page: 1,
       search: '',
-      categoryName: '',
+      categoryName: 'Todas as categorias',
+      redirect: true,
     });
-    const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-    window.history.pushState({}, '', `${baseUrl}`);
+    const baseUrl = [window.location.protocol, '//', window.location.host, '/', window.location.pathname.split('/')[1]].join('');
+    window.history.pushState({}, '', `${baseUrl}?categoria=${filter.categoria}&nome=Todas as categorias`);
   };
 
   return (

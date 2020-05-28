@@ -16,16 +16,20 @@ const SideBar = (props) => {
       text={item.descricao}
       selected={item.id === parseInt(filter.categoria, 10)}
       onClick={() => updateFilter({
-        categoria: item.id, label: item.descricao, search: undefined, page: 1, redirect: true, categoryName: '',
+        categoria: item.id, label: '', search: undefined, page: 1, redirect: true, categoryName: item.descricao,
       })}
     />
   ));
 
-  const clear = (category, label) => {
-    if (category) {
-      return 'Todas as categorias';
+  const clear = () => {
+    if (categories) {
+      const cat = categories.find(c => c.id === parseInt(filter.categoria, 10));
+      if (!cat) {
+        return 'Todas as categorias';
+      }
+      return (cat.descricao);
     }
-    return label;
+    return false;
   };
 
   return (
@@ -34,24 +38,24 @@ const SideBar = (props) => {
         <LinkItem
           text="Maior preço"
           onClick={() => updateFilter({
-            categoryName: '',
+            categoryName: clear(),
             orderBy: 'desc',
             sortBy: 'valorVenda',
-            redirect: true,
+            redirect2: true,
             categoria: filter.categoria,
-            label: clear(filter.categoryName, filter.label),
+            label: '',
           })}
           selected={(filter.orderBy === 'desc' && filter.sortBy === 'valorVenda')}
         />
         <LinkItem
           text="Menor preço"
           onClick={() => updateFilter({
-            categoryName: '',
+            categoryName: clear(),
             orderBy: 'asc',
             sortBy: 'valorVenda',
             redirect: true,
             categoria: filter.categoria,
-            label: clear(filter.categoryName, filter.label),
+            label: '',
           })}
           selected={(filter.orderBy === 'asc' && filter.sortBy === 'valorVenda')}
         />
@@ -62,19 +66,20 @@ const SideBar = (props) => {
             sortBy: 'descricao',
             redirect: true,
             categoria: filter.categoria,
-            label: clear(filter.categoryName, filter.label),
+            label: '',
+            categoryName: clear(),
           })}
           selected={(filter.orderBy === 'asc' && filter.sortBy === 'descricao')}
         />
         <LinkItem
           text="Z-A"
           onClick={() => updateFilter({
-            categoryName: '',
+            categoryName: filter.categoryName,
             orderBy: 'desc',
             sortBy: 'descricao',
             redirect: true,
             categoria: filter.categoria,
-            label: clear(filter.categoryName, filter.label),
+            label: '',
           })}
           selected={(filter.orderBy === 'desc' && filter.sortBy === 'descricao')}
         />
@@ -83,9 +88,9 @@ const SideBar = (props) => {
         <LinkItem
           text="Todas as categorias"
           onClick={() => updateFilter({
-            categoryName: '', categoria: 0, label: 'Todas as categorias', search: undefined, page: 1, redirect: true,
+            categoryName: '', categoria: 0, label: '', search: undefined, page: 1, redirect: true,
           })}
-          selected={(filter.label === 'Todas as categorias')}
+          selected={(filter.categoryName === 'Todas as categorias')}
         />
         {items}
       </List>
