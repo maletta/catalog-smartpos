@@ -213,11 +213,10 @@ const SingleProduct = (props) => {
   const completeURL = window.location.href;
 
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
-
   const submitItem = (values, { resetForm, setSubmitting }) => {
     updateFilter({
       ...filter,
-      categoryName: 'category.descricao',
+      categoryName: '',
     });
     if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
       setSubmitting(false);
