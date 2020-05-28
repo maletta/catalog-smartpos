@@ -212,13 +212,13 @@ const Footer = ({ storeInfo }) => {
               </div>
             </Grid>
             <Grid
-              cols="10 6 4 3 3"
+              cols="10 6 4 4 4"
               className="pb-5"
             >
               {(openHours.length > 0) && (
                 <>
-                  <FooterInfoTitle>Horário de funcionamento</FooterInfoTitle>
-                  <div>
+                  <Grid cols="12">
+                    <FooterInfoTitle>Horário de funcionamento</FooterInfoTitle>
                     {openHours.map(day => (
                       <OpenHourItem
                         currentDay={getIntOfDay === day.position}
@@ -227,12 +227,18 @@ const Footer = ({ storeInfo }) => {
                         <div>
                           {day.dayOfWeek}
                         </div>
-                        <div>
-                          {(day.closed ? 'Fechado' : `${day.openHour} - ${day.closeHour}`)}
-                        </div>
+                        <br />
+                        {day.hours.map((itemHour, indexHour) => (
+                          <>
+                            <span>
+                              {(day.closed ? 'Fechado' : `${itemHour.openHour} às ${itemHour.closeHour}`)}
+                            </span>
+                            <br />
+                          </>
+                        ))}
                       </OpenHourItem>
                     ))}
-                  </div>
+                  </Grid>
                 </>
               )}
             </Grid>

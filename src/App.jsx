@@ -92,8 +92,10 @@ const App = () => {
   const getStore = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
+        const today = response.data.openHours[moment().day()];
+        const closeNow = today.closed;
         document.title = response.data.fantasia;
-        updateShop(response.data);
+        updateShop({ ...response.data, today, closeNow });
         setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
       })
