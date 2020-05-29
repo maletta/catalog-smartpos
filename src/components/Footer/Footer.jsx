@@ -147,7 +147,7 @@ const Footer = ({ storeInfo }) => {
         <div style={{ position: 'relative', top: '40px' }} className="container">
           <Row>
             <Grid
-              cols="12 12 4 4 4"
+              cols="12 12 2 2 2"
               className="pb-5"
             >
               <FooterInfoTitle>Endereço</FooterInfoTitle>
@@ -212,7 +212,7 @@ const Footer = ({ storeInfo }) => {
               </div>
             </Grid>
             <Grid
-              cols="10 6 4 4 4"
+              cols="10 6 6 6 6"
               className="pb-5"
             >
               {(openHours.length > 0) && (
@@ -229,12 +229,12 @@ const Footer = ({ storeInfo }) => {
                         </div>
                         <br />
                         {day.hours.map((itemHour, indexHour) => (
-                          <>
+                          // eslint-disable-next-line react/no-array-index-key
+                          <Row key={indexHour}>
                             <span>
                               {(day.closed ? 'Fechado' : `${itemHour.openHour} às ${itemHour.closeHour}`)}
                             </span>
-                            <br />
-                          </>
+                          </Row>
                         ))}
                       </OpenHourItem>
                     ))}

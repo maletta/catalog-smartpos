@@ -93,7 +93,27 @@ const App = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
         const today = response.data.openHours[moment().day()];
-        const closeNow = today.closed;
+        const verifyIsClosed = () => {
+          const anyHour = response.data.allowOrderOutsideBusinessHours;
+          const { hours } = today;
+          const hourNow = moment().format('HH:mm');
+          let isClosed = true;
+          if (today.closed) {
+            return true;
+          }
+          if (anyHour === 1) {
+            return false;
+          }
+          hours.map((item) => {
+            if (item.openHour < hourNow && item.closeHour > hourNow) {
+              isClosed = false;
+            }
+
+            return !!isClosed;
+          });
+          return isClosed;
+        };
+        const closeNow = verifyIsClosed();
         document.title = response.data.fantasia;
         updateShop({ ...response.data, today, closeNow });
         setStore({ ...response.data, found: true, storeName: getStoreName() });

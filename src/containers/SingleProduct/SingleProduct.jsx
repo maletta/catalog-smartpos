@@ -219,7 +219,7 @@ const SingleProduct = (props) => {
       ...filter,
       categoryName: 'category.descricao',
     });
-    if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
+    if (shop.allowOrderOutsideBusinessHours === 1 || shop.closeNow) {
       setSubmitting(false);
       Swal.fire({
         html: `<div>

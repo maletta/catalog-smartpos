@@ -55,7 +55,7 @@ const Cart = ({ intl }) => {
   };
 
   const verifyRedirect = () => {
-    if (!shop.closedNow) {
+    if (shop.allowOrderOutsideBusinessHours === 1 || !shop.closeNow) {
       history.push('/checkout');
     } else {
       Swal.fire({
