@@ -293,6 +293,18 @@ const Checkout = ({ intl }) => {
     });
   };
 
+  const enableSubmitButton = () => {
+    let disable = false;
+    if (shop.deliveryMode === 'DELIVERY' && !costDelivery.isDeliverable) {
+      disable = true;
+    }
+
+    if (!reCaptchaToken) {
+      disable = true;
+    }
+    return disable;
+  };
+
   useEffect(() => {
     getInstallments();
   }, [costDelivery.cost]);
@@ -308,11 +320,11 @@ const Checkout = ({ intl }) => {
     );
     setTotalCar(total);
     updateFilter({
-      label: 'Finalizar o pedido',
+      label: 'Finalizar o pedido', categoryName: '',
     });
     if (cart.length < 1) {
       updateFilter({
-        categoria: 0, label: 'Todas as categorias', page: 1, search: '',
+        categoria: 0, label: 'Todas as categorias', page: 1, search: '', categoryName: '',
       });
     }
     getPayments(shop.id).then((response) => {
@@ -1016,7 +1028,7 @@ const Checkout = ({ intl }) => {
                         value={(propsForm.values.gatwayPagseguro) ? 'Finalizar compra' : 'Enviar pedido'}
                         type="submit"
                         isLoading={propsForm.isSubmitting}
-                        disabled={(!reCaptchaToken)}
+                        disabled={enableSubmitButton()}
                       />
                     </div>
                   </Grid>

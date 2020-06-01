@@ -28,6 +28,9 @@ import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
 import history from 'utils/history';
+import {
+  getCategories,
+} from 'requests';
 import orderValidation from './orderSchema';
 
 import getInfoProduct from './requestProduct';
@@ -205,13 +208,16 @@ const SingleProduct = (props) => {
   const [isProductFound, setProductFound] = useState(true);
   const { shop, categories } = useContext(ShopContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
-  const { updateFilter } = useContext(FilterContext);
+  const { filter, updateFilter } = useContext(FilterContext);
   const [image, setImage] = useState(NoImage);
   const completeURL = window.location.href;
 
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
-
   const submitItem = (values, { resetForm, setSubmitting }) => {
+    updateFilter({
+      ...filter,
+      categoryName: '',
+    });
     if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
       setSubmitting(false);
       Swal.fire({
@@ -284,7 +290,14 @@ const SingleProduct = (props) => {
         uuid: uuidv1(),
         image: [],
       });
-      updateFilter({ label: response.descricao });
+      getCategories(response.tenant_id).then((res) => {
+        const category = res.data.find(r => r.id === response.codcategoria);
+        updateFilter({
+          label: response.descricao,
+          categoryName: category.descricao,
+          categoria: category.id,
+        });
+      });
       setProduct(response);
       setProductPricing({
         product: response.valorVenda,
@@ -306,7 +319,7 @@ const SingleProduct = (props) => {
       setProductFound(true);
     })
       .catch(() => setProductFound(false))
-      .finally(() => setLoaded(true));
+      .finally(() => { setLoaded(true); });
   }, [false]);
 
   const renderSocialIcon = () => (
@@ -351,8 +364,8 @@ const SingleProduct = (props) => {
   const enableOrderButton = () => {
     const availableVariants = product.variants.filter(item => (haveStockVariant(item)));
     let isEnable = false;
-    if (shop.is_enableOrder === 0) {
-      isEnable = false;
+
+    if (!shop.is_enableOrder) {
       return false;
     }
     if (product.catalogStock === 'ALL') {

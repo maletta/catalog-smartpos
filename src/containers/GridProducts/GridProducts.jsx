@@ -12,7 +12,6 @@ import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 
 import { getProducts, getSearch } from 'requests';
-
 import formatFormErrors from 'utils/formatFormErrors';
 
 const GridProducts = () => {
@@ -27,7 +26,6 @@ const GridProducts = () => {
   const { shop, categories } = useContext(ShopContext);
 
   const prodArray = Object.keys(products).map(i => products[i]);
-
   const getProductList = (data) => {
     setLoading(true);
     if (filter.search) {
@@ -64,6 +62,13 @@ const GridProducts = () => {
     getProductList(shop);
     window.scrollTo(0, 0);
   }, [filter]);
+
+  useEffect(() => {
+    updateFilter({
+      ...filter,
+      label: '',
+    });
+  }, []);
 
   return (
     <>

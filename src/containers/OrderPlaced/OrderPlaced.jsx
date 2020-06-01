@@ -86,7 +86,7 @@ const OrderPlaced = ({ intl }) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     updateFilter({
-      label: 'Pedido enviado',
+      label: 'Pedido enviado', categoryName: '',
     });
   }, []);
 

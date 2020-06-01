@@ -150,7 +150,7 @@ const Header = (props) => {
       });
       history.push('/');
       updateFilter({
-        search, page: 1, categoria: 0, label: '',
+        search, page: 1, categoria: 0, label: '', categoryName: '',
       });
     }
     setSearch('');
