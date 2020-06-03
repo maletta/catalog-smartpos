@@ -226,8 +226,10 @@ const SingleProduct = (props) => {
           <div><img src="${ClosedStore}"></div>
           <span class="foradohorario-titulo"> 
           ${shop.today.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre:
-            ${shop.today.hours.map(itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`)}`}
           </span>
+          <div class="foradohorario-hours">
+            ${shop.today.hours.map(itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`)}`}
+          </div>
           <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
         </div>`,
         showConfirmButton: true,
