@@ -37,6 +37,9 @@ import getInfoProduct from './requestProduct';
 import NoImage from '../../assets/no-image.png';
 import ClosedStore from '../../assets/closed-store.svg';
 
+import ArrowLeft from '../../assets/arrow-left.svg';
+import ArrowRight from '../../assets/arrow-right.svg';
+
 const Img = styled.img`
   width: 100%;
   border-radius: 5px;
@@ -86,6 +89,7 @@ const SubTitle = styled.h4`
 `;
 
 const Price = styled.h3`
+  margin-top: 20px;
   font-size: 2.5rem;
   font-weight: 300;
   margin-bottom: 15px;
@@ -161,18 +165,6 @@ const SocialIcon = styled.i`
   cursor: pointer;
 `;
 
-const Icon = styled.i`
-  font-size: 2rem;
-
-  @media (max-width: 576px) {
-    font-size: 0.8rem;
-  }
-
-  :hover {
-    color: #00529b;
-  }
-`;
-
 const Unavailable = styled.p`
   color: #333;
   font-size: 0.8rem;
@@ -188,10 +180,62 @@ const Carousel = styled.div`
   }
 `;
 
+const CodCategory = styled.span`
+  font-size: 14px;
+  color: #989696;
+  margin-top: -5px;
+`;
+
+const IconArrow = styled.div`
+  width: 40px;
+  height: 60px;
+
+  @media (max-width: 576px) {
+    width: 20px;
+    height: 30px;
+  }
+
+  background-color: #00549b;
+  color: white;
+  border-radius: 3px;
+  display: flex;
+  padding-left: 8px;
+  padding-right: 8px;
+  opacity: 0.7;
+`;
+
+const Arrow = styled.img`
+  @media (max-width: 576px) {
+    width: 8px;
+  }
+`;
+
+const SmallThumb = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  justify-content: center;
+
+  @media (max-width: 576px) {
+    display: none;
+  }
+`;
+
+const Thumb = styled.div`
+  margin-right: 10px;
+  max-width: 100px;
+  padding: 0;
+  display: flex;
+  cursor: pointer;
+  ${props => props.IsActive && (
+    'box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);'
+  )}
+`;
+
 const SingleProduct = (props) => {
   const { intl } = props;
   const [activeItemIndex, setActiveItemIndex] = useState(0);
-  const chevronWidth = 45;
+  const chevronWidth = 10;
   const [product, setProduct] = useState({
     variants: [],
     hasVariant: true,
@@ -435,6 +479,12 @@ const SingleProduct = (props) => {
     );
   };
 
+  const renderArrows = arrow => (
+    <IconArrow>
+      {arrow === 'left' && <Arrow alt="arrow" src={ArrowLeft} />}
+      {arrow === 'right' && <Arrow alt="arrow" src={ArrowRight} />}
+    </IconArrow>
+  );
   const renderImage = () => (
     <>
       {product.images !== 'notFound' ? (
@@ -443,8 +493,8 @@ const SingleProduct = (props) => {
             requestToChangeActive={setActiveItemIndex}
             activeItemIndex={activeItemIndex}
             numberOfCards={1}
-            leftChevron={<Icon className="far fa-arrow-alt-circle-left" />}
-            rightChevron={<Icon className="far fa-arrow-alt-circle-right" />}
+            leftChevron={renderArrows('left')}
+            rightChevron={renderArrows('right')}
             outsideChevron
             chevronWidth={chevronWidth}
           >
@@ -489,6 +539,23 @@ const SingleProduct = (props) => {
                         <Row>
                           <Grid cols="12" className="mb-3">
                             {renderImage()}
+                            <SmallThumb>
+                              {product.images && (
+                              <>
+                                {product.images !== 'notFound' && (
+                                <Thumb IsActive={activeItemIndex === 0}>
+                                  <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
+                                </Thumb>
+                                )}
+                                {product.images !== 'notFound' && ((product.images).map((img, index) => (
+                                  <Thumb IsActive={activeItemIndex === index + 1}>
+                                    <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+                                  </Thumb>
+                                )))}
+                              </>
+                              )}
+
+                            </SmallThumb>
                           </Grid>
                           <Grid cols="12" className="mb-3">
                             <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
@@ -522,6 +589,9 @@ const SingleProduct = (props) => {
                           <Grid cols="7 6 12 12 12">
                             <>
                               <Title className="test-name-product">{product.descricao}</Title>
+                              <CodCategory>
+                                {`Cód. ${product.codigo}`}
+                              </CodCategory>
                               {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
                               <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
                               {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
