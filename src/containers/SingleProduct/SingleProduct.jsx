@@ -262,12 +262,17 @@ const SingleProduct = (props) => {
       ...filter,
       categoryName: '',
     });
-    if (!shop.allowOrderOutsideBusinessHours && shop.closedNow) {
+    if (!shop.allowOrderOutsideBusinessHours === 1 || shop.closeNow) {
       setSubmitting(false);
       Swal.fire({
         html: `<div>
           <div><img src="${ClosedStore}"></div>
-          <span class="foradohorario-titulo"> ${shop.openHour.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre ${shop.openHour.openHour} e ${shop.openHour.closeHour}`}</span>
+          <span class="foradohorario-titulo"> 
+          ${shop.today.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre:
+          </span>
+          <div class="foradohorario-hours">
+            ${shop.today.hours.map(itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`)}`}
+          </div>
           <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
         </div>`,
         showConfirmButton: true,
