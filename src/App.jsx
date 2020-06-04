@@ -168,6 +168,7 @@ const App = () => {
             codigo={store.codigo}
             goHome={() => home()}
             atualizacao={store.atualizacao}
+            store={store}
           />
           <Content
             pathname={pathname}
