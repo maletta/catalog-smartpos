@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from 'react';
-import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
 import Swal from 'sweetalert2';
 
@@ -13,14 +12,9 @@ import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 import Container from './components/Container';
 import TitleEmptyCart from './components/TitleEmptyCart';
+import Total from './components/Total';
 
 import ClosedStore from '../../assets/closed-store.svg';
-
-
-
-const Total = styled.span`
-  font-size: 2rem;
-`;
 
 const Cart = ({ intl }) => {
   const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
