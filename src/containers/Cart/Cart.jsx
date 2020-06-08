@@ -12,15 +12,11 @@ import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 import Container from './components/Container';
+import TitleEmptyCart from './components/TitleEmptyCart';
 
 import ClosedStore from '../../assets/closed-store.svg';
 
-const TitleEmptyCar = styled.h2`
-  font-size: 2rem;
-  text-align: center;
-  font-weight: lighter;
-  margin: 80px 80px;
-`;
+
 
 const Total = styled.span`
   font-size: 2rem;
@@ -110,21 +106,17 @@ const Cart = ({ intl }) => {
             className="d-flex flex-column align-items-center"
             style={{ minHeight: '40vh' }}
           >
-            <div>
-              <TitleEmptyCar>
-                {'O seu carrinho está vazio'}
-              </TitleEmptyCar>
-            </div>
-            <div>
-              <Button
-                value="Adicionar itens"
-                type="submit"
-                styleType="secondary"
-                onClick={() => {
-                  history.push('/');
-                }}
-              />
-            </div>
+            <TitleEmptyCart>
+              {'O seu carrinho está vazio'}
+            </TitleEmptyCart>
+            <Button
+              value="Adicionar itens"
+              type="submit"
+              styleType="secondary"
+              onClick={() => {
+                history.push('/');
+              }}
+            />
           </Grid>
         )}
       </Grid>
