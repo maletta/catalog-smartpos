@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { injectIntl, intlShape } from 'react-intl';
 import slug from 'utils/slug';
-
+import history from 'utils/history';
+import uuidv1 from 'uuid/v1';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import Grid from 'components/Grid';
+
+import getModifiersOfProduct from 'api/modifiersRequests';
 import NoImage from '../../assets/no-image.png';
 
 
@@ -68,10 +72,42 @@ const Price = styled.p`
 `;
 
 const Unavailable = styled.p`
-  color: #333;
+  color: gray;
   font-size: 0.8rem;
   text-align: left;
   margin: 0;
+`;
+
+const UnavailableBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  border: 1px solid gray;
+  padding: 5px;
+  margin-top: 20px;
+  border-radius: 2px;
+`;
+
+const Buy = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  padding: 8px;
+  margin: 0;
+  margin-top: 20px;
+  border-radius: 2px;
+  background-color: var(--color-primary);
+  cursor: pointer;
+`;
+
+const BuyText = styled.p`
+  color: white;
+  font-size: 0.8rem;
+  text-align: left;
+  margin: 0;
+  font-weight: 700;
 `;
 
 const GridItem = (props) => {
@@ -81,6 +117,8 @@ const GridItem = (props) => {
   } = props;
   const [image, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`;
+
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   let img;
   if (item.viewMode === 'IMAGE') {
@@ -92,6 +130,34 @@ const GridItem = (props) => {
     };
   }
 
+
+  const addCart = (product) => {
+    getModifiersOfProduct(product.tenant_id, product.id).then((response) => {
+      if (response.data.length === 0) {
+        const itemProduct = {
+          ...product,
+          quantity: 1,
+          uuid: uuidv1(),
+          variant: {},
+          pricing: { product: product.valorVenda, modifiers: 0 },
+          image: [],
+          modifiers: [[]],
+          note: '',
+        };
+
+        const merged = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+        const basketCount = merged.reduce((count, val) => (count + val.quantity), 0);
+        merged.push(itemProduct);
+        localStorage.setItem('cart', JSON.stringify(merged));
+        updateShoppingCart({
+          basketCount,
+          cardOverlay: true,
+        });
+      } else {
+        history.push(`item/${item.id}/${slug(item.descricao)}`);
+      }
+    });
+  };
   return (
     <>
       <Grid
@@ -105,20 +171,30 @@ const GridItem = (props) => {
             <div className="card-image">
               <Img src={image} title={item.descricao} alt="Produto" />
             </div>
-            <Cardcontent>
-              <div>
-                {(item.hasVariant === 1) && (<PriceFrom>a partir de </PriceFrom>)}
-                <Price>
-                  {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
-                </Price>
-              </div>
-              <Descricao>
-                <span>{item.descricao}</span>
-              </Descricao>
-              {(item.not_control_stock === 0 && item.stock <= 0)
-                && (<Unavailable>Produto indisponível</Unavailable>)}
-            </Cardcontent>
           </LinkToItem>
+          <Cardcontent>
+            <div>
+              {(item.hasVariant === 1) && (<PriceFrom>a partir de </PriceFrom>)}
+              <Price>
+                {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
+              </Price>
+            </div>
+            <Descricao>
+              <span>{item.descricao}</span>
+            </Descricao>
+            {(item.not_control_stock === 0 && item.stock <= 0)
+              ? (
+                <UnavailableBox>
+                  <Unavailable>PRODUTO INDISPONÍVEL</Unavailable>
+                </UnavailableBox>
+              ) : (
+                <LinkToItem to={item.hasVariant === 1 && `item/${item.id}/${slug(item.descricao)}`}>
+                  <Buy onClick={() => item.hasVariant !== 1 && addCart(item)}>
+                    <BuyText> COMPRAR</BuyText>
+                  </Buy>
+                </LinkToItem>
+              )}
+          </Cardcontent>
         </Container>
       </Grid>
     </>

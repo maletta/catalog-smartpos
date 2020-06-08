@@ -17,6 +17,7 @@ import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
 import SingleProduct from 'containers/SingleProduct';
 import OrderPlaced from 'containers/OrderPlaced';
+import CardShop from 'components/CardShop';
 
 import history from 'utils/history';
 
@@ -165,6 +166,7 @@ const App = () => {
     cleanCart();
   }, [false]);
 
+
   const { pathname } = history.location;
 
   const home = () => {
@@ -185,6 +187,7 @@ const App = () => {
     <>
       {store.found ? (
         <div>
+          <CardShop />
           <Header
             categories={categories}
             codigo={store.codigo}

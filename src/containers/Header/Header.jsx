@@ -143,6 +143,10 @@ const StoreNameArea = styled.div`
 const Fantasia = styled.span`
   font-size: 18px;
   letter-spacing: 1px;
+
+  @media (max-width: 376px) {
+    display: none;
+  }
 `;
 
 const Whatsapp = styled.span`
