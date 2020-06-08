@@ -188,7 +188,7 @@ const Footer = ({ storeInfo }) => {
         <div style={{ position: 'relative', top: '40px' }} className="container">
           <Row>
             <GridInfo
-              cols="12 12 2 2 2"
+              cols="10 10 2 2 2"
               className="pb-5"
             >
               <FooterInfoTitle>Endereço</FooterInfoTitle>
