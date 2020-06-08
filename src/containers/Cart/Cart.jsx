@@ -11,14 +11,9 @@ import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
+import Container from './components/Container';
 
 import ClosedStore from '../../assets/closed-store.svg';
-
-const Container = styled.div`
-  background: #fff;
-  border-radius: 5px;
-  padding-bottom: 15px;
-`;
 
 const TitleEmptyCar = styled.h2`
   font-size: 2rem;
