@@ -9,6 +9,7 @@ import uuidv1 from 'uuid/v1';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import Grid from 'components/Grid';
 
+import ShopContext from 'contexts/ShopContext';
 import getModifiersOfProduct from 'api/modifiersRequests';
 import NoImage from '../../assets/no-image.png';
 
@@ -132,7 +133,17 @@ const GridItem = (props) => {
   const [image, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`;
 
+  const { shop } = useContext(ShopContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
+
+  const enableOrderButton = () => {
+    const isEnable = true;
+
+    if (!shop.is_enableOrder) {
+      return false;
+    }
+    return isEnable;
+  };
 
   let img;
   if (item.viewMode === 'IMAGE') {
@@ -205,9 +216,11 @@ const GridItem = (props) => {
                 </UnavailableBox>
               ) : (
                 <LinkToItem to={item.hasVariant === 1 && `item/${item.id}/${slug(item.descricao)}`}>
+                  {enableOrderButton(item) && (
                   <Buy onClick={() => item.hasVariant !== 1 && addCart(item)}>
                     <BuyText> COMPRAR</BuyText>
                   </Buy>
+                  )}
                 </LinkToItem>
               )}
           </Cardcontent>
