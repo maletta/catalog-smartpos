@@ -45,23 +45,37 @@ const Cardcontent = styled.div`
   }
 `;
 
+
 const Descricao = styled.div`
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
   text-align: left;
   font-size: 1.2rem;
+  margin: 0;
+  height: 50px;
+  justify-content: flex-start;
+  justify-items: center;
+  align-items: center;
+  align-self: center;
+  text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     font-size: 1rem;
   }
 `;
 
+const TextArea = styled.div`
+  ${`display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;`}
+`;
+
 const PriceFrom = styled.p`
   font-size: 0.9rem;
   text-align: left;
-  margin-bottom: -8px;
+  margin-bottom: -4px;
   color: #333;
+  height: 20px;
 `;
 const Price = styled.p`
   color: #333;
@@ -174,13 +188,15 @@ const GridItem = (props) => {
           </LinkToItem>
           <Cardcontent>
             <div>
-              {(item.hasVariant === 1) && (<PriceFrom>a partir de </PriceFrom>)}
+              {<PriceFrom>{(item.hasVariant === 1) && ('A partir de ')}</PriceFrom>}
               <Price>
                 {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
               </Price>
             </div>
             <Descricao>
-              <span>{item.descricao}</span>
+              <TextArea>
+                <span>{item.descricao}</span>
+              </TextArea>
             </Descricao>
             {(item.not_control_stock === 0 && item.stock <= 0)
               ? (
