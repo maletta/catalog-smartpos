@@ -186,6 +186,8 @@ const Header = (props) => {
       const ddd = number.slice(0, 2);
       return `(${ddd}) ${number.substring(2)}`;
     }
+
+    return false;
   };
 
   const { pathname } = history.location;
