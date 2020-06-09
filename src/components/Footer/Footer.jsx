@@ -157,6 +157,12 @@ const GridItemHour = styled(Grid)`
   padding-left: 0;
 `;
 
+const GridInfo = styled(Grid)`
+  @media (max-width: 430px) {
+    margin-left: 15%;
+  }
+`;
+
 const Footer = ({ storeInfo }) => {
   let openHours = (storeInfo.openHours || []);
   openHours = openHours.map(day => ({
@@ -181,19 +187,19 @@ const Footer = ({ storeInfo }) => {
       <FullWidthFooterInfo>
         <div style={{ position: 'relative', top: '40px' }} className="container">
           <Row>
-            <Grid
-              cols="12 12 2 2 2"
+            <GridInfo
+              cols="10 10 2 2 2"
               className="pb-5"
             >
-              <FooterInfoTitle style={{ textAlign: 'center' }}>Endereço</FooterInfoTitle>
-              <AddressInfo style={{ textAlign: 'center' }}>{storeInfo.fantasia || ''}</AddressInfo>
-              <AddressInfo style={{ textAlign: 'center' }}>{`${storeInfo.tipoLogradouro || ''} ${storeInfo.endereco || ''}`}</AddressInfo>
-              <AddressInfo style={{ textAlign: 'center' }}>
+              <FooterInfoTitle>Endereço</FooterInfoTitle>
+              <AddressInfo>{storeInfo.fantasia || ''}</AddressInfo>
+              <AddressInfo>{`${storeInfo.tipoLogradouro || ''} ${storeInfo.endereco || ''}`}</AddressInfo>
+              <AddressInfo>
                 {storeInfo.numero && (`Número ${storeInfo.numero}`)}
                 {(storeInfo.complemento || '') && ` - ${storeInfo.complemento || ''}`}
               </AddressInfo>
-              <AddressInfo style={{ textAlign: 'center' }}>{`${storeInfo.cidade || ''} ${(storeInfo.uf ? ` - ${storeInfo.uf}` : '')}`}</AddressInfo>
-              <AddressInfo style={{ textAlign: 'center' }}>{storeInfo.cep && `CEP: ${storeInfo.cep}`}</AddressInfo>
+              <AddressInfo>{`${storeInfo.cidade || ''} ${(storeInfo.uf ? ` - ${storeInfo.uf}` : '')}`}</AddressInfo>
+              <AddressInfo>{storeInfo.cep && `CEP: ${storeInfo.cep}`}</AddressInfo>
               <br />
               <br />
               <div>
@@ -245,7 +251,7 @@ const Footer = ({ storeInfo }) => {
                   )}
                 </ul>
               </div>
-            </Grid>
+            </GridInfo>
             <Grid
               cols="12 9 6 6 7"
               className="pb-5"
