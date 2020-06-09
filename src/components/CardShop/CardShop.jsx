@@ -273,7 +273,7 @@ const CardShop = ({ intl }) => {
 
     const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
 
-    if (stateCart.length !== JSON.parse(localStorage.getItem('cart')).length) {
+    if (stateCart !== JSON.parse(localStorage.getItem('cart'))) {
       setStateCar(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
     }
 
@@ -353,7 +353,7 @@ const CardShop = ({ intl }) => {
           {stateCart.length > 0 ? (
             <>
               {stateCart.map(item => (
-                <>
+                <div key={item.codigo}>
                   <Item>
                     <Image onClick={() => setTimeout(() => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -395,7 +395,7 @@ const CardShop = ({ intl }) => {
                     <div />
                   </Item>
                   <hr />
-                </>
+                </div>
 
               ))}
               <span>
