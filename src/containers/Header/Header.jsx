@@ -129,17 +129,40 @@ const CartCounter = styled.div`
   }
 `;
 
+const StoreNameArea = styled.div`
+  color: white;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: 376px) {
+    display: none;
+  }
+`;
+
+const Fantasia = styled.span`
+  font-size: 18px;
+  letter-spacing: 1px;
+
+  @media (max-width: 376px) {
+    display: none;
+  }
+`;
+
+const Whatsapp = styled.span`
+  font-size: 12px;
+`;
+
 
 const Header = (props) => {
   const { updateFilter } = useContext(FilterContext);
   const {
-    codigo, goHome, categories, atualizacao,
+    codigo, goHome, categories, atualizacao, store,
   } = props;
   const [search, setSearch] = useState('');
   const { shoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${atualizacao}`;
-
   const submit = (e) => {
     e.preventDefault();
     if (search) {
@@ -156,6 +179,15 @@ const Header = (props) => {
     setSearch('');
     const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
     window.history.pushState({}, '', `${baseUrl}?search=${search}`);
+  };
+  const formatPhoneNumber = () => {
+    const number = store && store.whatsapp;
+    if (number !== null) {
+      const ddd = number.slice(0, 2);
+      return `(${ddd}) ${number.substring(2)}`;
+    }
+
+    return false;
   };
 
   const { pathname } = history.location;
@@ -175,6 +207,14 @@ const Header = (props) => {
             >
               <LogoImage src={imageBaseUrl} alt="Logo" />
             </Logo>
+            <StoreNameArea>
+              <Fantasia>
+                {store.storeName}
+              </Fantasia>
+              <Whatsapp>
+                {formatPhoneNumber()}
+              </Whatsapp>
+            </StoreNameArea>
           </Grid>
           <Grid
             cols="8 7 7 7 8"
@@ -232,6 +272,7 @@ Header.propTypes = {
   goHome: PropTypes.func.isRequired,
   categories: PropTypes.array.isRequired,
   atualizacao: PropTypes.string.isRequired,
+  store: PropTypes.object.isRequired,
 };
 
 export default Header;

@@ -142,7 +142,6 @@ const CartItem = (props) => {
   img.onload = () => {
     setImage(imageBaseUrl);
   };
-
   return (
     <ListItem>
       <>
@@ -157,7 +156,7 @@ const CartItem = (props) => {
           <div>
             <TitleItem>{`${product.descricao} ${(product.variant.name) ? `- ${product.variant.name}` : ''}`}</TitleItem>
             <ItemDescription>
-              {product.modifiers.map((modifier, modIndex) => (
+              {product.modifiers && product.modifiers.map((modifier, modIndex) => (
                 modifier.map((item, index) => ((modIndex || index) ? ` | ${item.name} ` : item.name))
               ))}
             </ItemDescription>

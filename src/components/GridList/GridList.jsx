@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
+import FilterContext from 'contexts/FilterContext';
 import Row from 'components/Row';
 import GridItem from 'components/GridItem';
 import ImgnotFound from 'assets/no_result_found.png';
@@ -17,6 +18,7 @@ const Text = styled.div`
 `;
 
 const GridList = (props) => {
+  const { filter } = useContext(FilterContext);
   const {
     itens,
     enableOrder,
@@ -39,11 +41,17 @@ const GridList = (props) => {
           </Container>
         </>
       ) : (
-        <Row
-          className="d-flex"
-        >
-          {items}
-        </Row>
+        <>
+          <h2>
+            {filter.categoryName !== 'Todas as categorias' && filter.categoryName }
+          </h2>
+          <hr />
+          <Row
+            className="d-flex"
+          >
+            {items}
+          </Row>
+        </>
       ) }
     </>
   );

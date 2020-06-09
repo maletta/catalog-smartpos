@@ -17,6 +17,7 @@ import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
 import SingleProduct from 'containers/SingleProduct';
 import OrderPlaced from 'containers/OrderPlaced';
+import CardShop from 'components/CardShop';
 
 import history from 'utils/history';
 
@@ -92,8 +93,30 @@ const App = () => {
   const getStore = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
+        const today = response.data.openHours[moment().day()];
+        const verifyIsClosed = () => {
+          const anyHour = response.data.allowOrderOutsideBusinessHours;
+          const { hours } = today;
+          const hourNow = moment().format('HH:mm');
+          let isClosed = true;
+          if (today.closed) {
+            return true;
+          }
+          if (anyHour === 1) {
+            return false;
+          }
+          hours.map((item) => {
+            if (item.openHour < hourNow && item.closeHour > hourNow) {
+              isClosed = false;
+            }
+
+            return !!isClosed;
+          });
+          return isClosed;
+        };
+        const closeNow = verifyIsClosed();
         document.title = response.data.fantasia;
-        updateShop(response.data);
+        updateShop({ ...response.data, today, closeNow });
         setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
       })
@@ -143,6 +166,7 @@ const App = () => {
     cleanCart();
   }, [false]);
 
+
   const { pathname } = history.location;
 
   const home = () => {
@@ -163,11 +187,13 @@ const App = () => {
     <>
       {store.found ? (
         <div>
+          <CardShop />
           <Header
             categories={categories}
             codigo={store.codigo}
             goHome={() => home()}
             atualizacao={store.atualizacao}
+            store={store}
           />
           <Content
             pathname={pathname}

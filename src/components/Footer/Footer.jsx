@@ -40,6 +40,21 @@ const LinkNetPOS = styled.a`
 
 const CardCreditImg = styled.img`
   margin-right: -30px;
+  width: 280px;
+  height: 120px;
+
+  @media (max-width: 1023px) {
+    width: 240px;
+  }
+
+  @media (max-width: 414px) {
+    margin-right: 1px;
+    width: 320px;
+  }
+
+  @media (max-width: 330px) {
+    width: 300px;
+  }
 `;
 const FullWidthFooter = styled.div`
   position: relative;
@@ -72,7 +87,7 @@ const AddressInfo = styled.h6`
   font-size: 0.9rem;
 `;
 
-const OpenHourItem = styled.div`
+const OpenHourItem = styled(Grid)`
   display: flex;
   justify-content: space-between;
   font-size: 0.9rem;
@@ -122,6 +137,31 @@ const SocialIcon = styled.span`
   min-width: 20px;
   display: inline-block;
 `;
+const GridHour = styled(Grid)`
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+  padding-right: 1px;
+`;
+const GridTitle = styled(Grid)`
+  display: flex;
+  justify-content: center;
+`;
+const GridDayOfWeek = styled(Grid)`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const GridItemHour = styled(Grid)`
+  padding-right: 0;
+  padding-left: 0;
+`;
+
+const GridInfo = styled(Grid)`
+  @media (max-width: 430px) {
+    margin-left: 15%;
+  }
+`;
 
 const Footer = ({ storeInfo }) => {
   let openHours = (storeInfo.openHours || []);
@@ -131,6 +171,7 @@ const Footer = ({ storeInfo }) => {
   }));
 
   const getIntOfDay = new Date().getDay();
+  const keyIndex = indexHour => `key${indexHour}`;
 
   return (
     <>
@@ -146,8 +187,8 @@ const Footer = ({ storeInfo }) => {
       <FullWidthFooterInfo>
         <div style={{ position: 'relative', top: '40px' }} className="container">
           <Row>
-            <Grid
-              cols="12 12 4 4 4"
+            <GridInfo
+              cols="10 10 2 2 2"
               className="pb-5"
             >
               <FooterInfoTitle>Endereço</FooterInfoTitle>
@@ -210,36 +251,44 @@ const Footer = ({ storeInfo }) => {
                   )}
                 </ul>
               </div>
-            </Grid>
+            </GridInfo>
             <Grid
-              cols="10 6 4 3 3"
+              cols="12 9 6 6 7"
               className="pb-5"
             >
               {(openHours.length > 0) && (
                 <>
-                  <FooterInfoTitle>Horário de funcionamento</FooterInfoTitle>
-                  <div>
+                  <Grid cols="12">
+                    <GridTitle cols="12" style={{ justifyContent: 'center' }}>
+                      <FooterInfoTitle>Horário de funcionamento</FooterInfoTitle>
+                    </GridTitle>
                     {openHours.map(day => (
                       <OpenHourItem
                         currentDay={getIntOfDay === day.position}
+                        cols="12 12"
                         key={day.name}
                       >
-                        <div>
+                        <GridDayOfWeek style={{ paddingLeft: '0px' }}>
                           {day.dayOfWeek}
-                        </div>
-                        <div>
-                          {(day.closed ? 'Fechado' : `${day.openHour} - ${day.closeHour}`)}
-                        </div>
+                        </GridDayOfWeek>
+                        <GridHour style={{ paddingRight: 'unset', paddingLeft: 'unset' }}>
+                          {day.hours.map((itemHour, indexHour) => (
+                            <GridItemHour key={keyIndex(indexHour)} className="ml-0">
+                              {(day.closed ? 'Fechado' : `${itemHour.openHour} às ${itemHour.closeHour}`)}
+                            </GridItemHour>
+                          ))}
+                        </GridHour>
                       </OpenHourItem>
                     ))}
-                  </div>
+                  </Grid>
                 </>
               )}
             </Grid>
             <Grid
               className="d-flex justify-content-md-end"
+              style={{ justifyContent: 'center' }}
             >
-              <CardCreditImg src={CardCredit} alt="bandeiras" width="280px" height="120px" />
+              <CardCreditImg src={CardCredit} alt="bandeiras" />
             </Grid>
           </Row>
         </div>
