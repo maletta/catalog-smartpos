@@ -182,8 +182,12 @@ const Header = (props) => {
   };
   const formatPhoneNumber = () => {
     const number = store && store.whatsapp;
-    const ddd = number.slice(0, 2);
-    return `(${ddd}) ${number.substring(2)}`;
+    if (number !== null) {
+      const ddd = number.slice(0, 2);
+      return `(${ddd}) ${number.substring(2)}`;
+    }
+
+    return false;
   };
 
   const { pathname } = history.location;
