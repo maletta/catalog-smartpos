@@ -195,7 +195,7 @@ const CartItem = (props) => {
             />
             <div>
               <ControlExclude
-                onClick={() => deleteItem(product)}
+                onClick={() => deleteItem(product.uuid)}
               >
                 { 'Excluir' }
               </ControlExclude>

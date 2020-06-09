@@ -1,7 +1,5 @@
 {
   "name": "smartpos-client-store-front",
-  "version": "0.1.0",
-  "private": true,
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -9,7 +7,6 @@
     "eslint-fix": "eslint --fix src/**/*.js src/**/*.jsx",
     "stylelint": "stylelint src/**/*.jsx",
     "lint": "yarn run eslint && yarn run stylelint",
-    "update-merge": "git fetch && git merge origin/develop",
     "test": "react-scripts test --env=jsdom --modulePaths=src",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
