@@ -4,16 +4,16 @@ import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
 import { injectIntl, intlShape } from 'react-intl';
 import slug from 'utils/slug';
+import isEmpty from 'lodash/isEmpty';
 import Trash from '../../assets/trash.svg';
 import EmptyCart from '../../assets/emptyCart.svg';
 import ArrowRight from '../../assets/arrow-right-cart.svg';
 import ArrowLeft from '../../assets/arrow-left-cart.svg';
 
-
 const CloseCard = styled.div`
   position: fixed;
   right: 350px;
-  background-color: lightgray;
+  background-color: #f38a00;
   width: 40px;
   height: 45px;
   z-index: 9999;
@@ -31,6 +31,7 @@ const CloseCard = styled.div`
 `;
 
 const CardOverlay = styled.div`
+  box-shadow: -10px 0 10px -8px #aaa;
   position: fixed;
   right: 0;
   background-color: white;
@@ -55,7 +56,7 @@ const CardOverlay = styled.div`
 
   ::-webkit-scrollbar
     {
-      width: 3px;
+      width: 6px;
       height: 2px;
       background-color: #F5F5F5;
     }
@@ -235,6 +236,17 @@ const Finish = styled.div`
   cursor: pointer;
 `;
 
+const BuyMore = styled.div`
+  background-color: white;
+  color: var(--color-primary);
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px;
+  cursor: pointer;
+`;
+
 const FinishText = styled.span`
   padding: 15px;
 `;
@@ -251,7 +263,6 @@ const CardShop = ({ intl }) => {
   const [stateCart, setStateCar] = useState(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
 
   useEffect(() => {
-    setStateCar(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
     setCardOverlay(shoppingCart.cardOverlay);
 
     const total = stateCart.reduce(
@@ -259,6 +270,18 @@ const CardShop = ({ intl }) => {
     );
 
     setTotalCart(total);
+
+    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
+
+    if (stateCart.length !== JSON.parse(localStorage.getItem('cart')).length) {
+      setStateCar(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
+    }
+
+    if (basketCount !== shoppingCart.basketCount) {
+      updateShoppingCart({
+        basketCount,
+      });
+    }
   }, [shoppingCart, stateCart]);
 
   const closeCard = () => {
@@ -287,7 +310,12 @@ const CardShop = ({ intl }) => {
       }
       return false;
     });
+    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
     localStorage.setItem('cart', JSON.stringify(cart));
+    setStateCar(cart);
+    updateShoppingCart({
+      basketCount,
+    });
   };
 
   const removeProduct = (item) => {
@@ -339,7 +367,7 @@ const CardShop = ({ intl }) => {
                     </Image>
                     <Info>
                       <Description>
-                        {item.descricao}
+                        {`${item.descricao}${!isEmpty(item.variant) ? ` (${item.variant.name})` : ('')}`}
                       </Description>
                       <Quantity>
                         <QuantityText> Quantidade </QuantityText>
@@ -392,6 +420,19 @@ const CardShop = ({ intl }) => {
                     </span>
                   </FinishText>
                 </Finish>
+
+                <BuyMore onClick={() => {
+                  setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    closeCard(false);
+                    history.push('/');
+                  }, 500);
+                }}
+                >
+                  <span>
+                       ADICIONAR MAIS PRODUTOS
+                  </span>
+                </BuyMore>
               </span>
             </>
           ) : (

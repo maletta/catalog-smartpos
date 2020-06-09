@@ -596,7 +596,7 @@ const SingleProduct = (props) => {
                             <>
                               <Title className="test-name-product">{product.descricao}</Title>
                               <CodCategory>
-                                {`Cód. ${product.codigo}`}
+                                {`Cód. ${product.codAlfa}`}
                               </CodCategory>
                               {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
                               <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
