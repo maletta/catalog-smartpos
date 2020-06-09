@@ -43,7 +43,6 @@ const verifyRedirect = (shop) => {
 };
 
 const CartFooter = ({intl,totalCart, updateFilter }) => {
-  console.log(totalCart)
   const { shop } = useContext(ShopContext);
 
   return (

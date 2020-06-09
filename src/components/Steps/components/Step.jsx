@@ -1,0 +1,42 @@
+import React from "react";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+const isActive = ({ isActive }) =>
+  isActive ? "var(--color-primary)" : "#b6b6b6";
+
+const StepCircle = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+  background-color: ${isActive};
+`;
+
+const StepText = styled.p`
+  margin-top: 7px;
+  width: 100px;
+  text-align: center;
+  color: ${isActive};
+`;
+
+const StepContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const Step = ({ icon, text, isActive }) => {
+  return (
+    <StepContainer>
+      <StepCircle isActive={isActive}>
+        <FontAwesomeIcon color="white" size="lg" icon={icon} />
+      </StepCircle>
+      <StepText isActive={isActive}>{text}</StepText>
+    </StepContainer>
+  );
+};
+
+export default Step;

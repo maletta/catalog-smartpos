@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
-import _ from "lodash";
+import lodash from "lodash";
 
 import CartItem from "components/CartItem";
 import Grid from "components/Grid";
+import Steps from "components/Steps";
 
 import FilterContext from "contexts/FilterContext";
 import ShoppingCartContext from "contexts/ShoppingCartContext";
@@ -31,7 +32,7 @@ const Cart = () => {
   };
 
   const updateAmount = (quantity, itemIndex) => {
-    const updateAmountCart = _.cloneDeep(stateCart);
+    const updateAmountCart = lodash.cloneDeep(stateCart);
     updateAmountCart[itemIndex].quantity = quantity;
 
     setStateCart(updateAmountCart);
@@ -63,10 +64,13 @@ const Cart = () => {
   }, [stateCart.length]);
 
   const hasItems = stateCart.length > 0;
-  const dontHaveItems = !hasItems
+  const dontHaveItems = !hasItems;
 
   return (
     <Container className="row">
+      <Grid cols="12 12 12 12 12">
+        <Steps />
+      </Grid>
       <Grid cols="12 12 12 12 12">
         <ul>
           {stateCart.map((product, prodIndex) => (
