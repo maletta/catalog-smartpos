@@ -68,9 +68,9 @@ const Cart = () => {
 
   return (
     <Container className="row">
-      <Grid cols="12 12 12 12 12">
+      <div style={{ width: "100%" }}>
         <Steps />
-      </Grid>
+      </div>
       <Grid cols="12 12 12 12 12">
         <ul>
           {stateCart.map((product, prodIndex) => (

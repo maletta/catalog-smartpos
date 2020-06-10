@@ -18,6 +18,11 @@ const Line = styled.hr`
   margin-bottom: -25px;
   border: 1px dashed #d6d6d6;
   width: 90%;
+
+  @media (max-width: 425px) {
+    width: 80%;
+    margin-bottom: -15px;
+  }
 `;
 
 const Cont = styled.div`
@@ -26,7 +31,7 @@ const Cont = styled.div`
 `;
 
 const stepsInfo = [
-  { icon: faShoppingBag, text: "Resumo de compra", isActive: false },
+  { icon: faShoppingBag, text: "Resumo de compra", isActive: true },
   { icon: faEdit, text: "Dados cadastrais", isActive: false },
   { icon: faHome, text: "Endereço", isActive: false },
   { icon: faDonate, text: "Pagamento", isActive: false },
@@ -34,7 +39,7 @@ const stepsInfo = [
 ];
 
 const steps = stepsInfo.map(({ icon, text, isActive }) => (
-  <Step icon={icon} text={text} isActive={isActive} />
+  <Step key={text} icon={icon} text={text} isActive={isActive} />
 ));
 
 const Steps = () => {

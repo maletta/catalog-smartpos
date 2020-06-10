@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const isActive = ({ isActive }) =>
+const isPrimaryColor = ({ isActive }) =>
   isActive ? "var(--color-primary)" : "#b6b6b6";
 
 const StepCircle = styled.div`
@@ -12,14 +12,28 @@ const StepCircle = styled.div`
   height: 50px;
   width: 50px;
   border-radius: 50%;
-  background-color: ${isActive};
+  background-color: ${isPrimaryColor};
+
+  @media (max-width: 425px) {
+    height: 25px;
+    width: 25px;
+  }
 `;
 
 const StepText = styled.p`
   margin-top: 7px;
   width: 100px;
   text-align: center;
-  color: ${isActive};
+  color: ${isPrimaryColor};
+
+  @media (max-width: 425px) {
+    font-size: 12px;
+    width: 70px;
+  }
+
+  @media (max-width: 425px) {
+    width: 50px;
+  }
 `;
 
 const StepContainer = styled.div`
@@ -30,9 +44,13 @@ const StepContainer = styled.div`
 
 const Step = ({ icon, text, isActive }) => {
   return (
-    <StepContainer>
+    <StepContainer isActive={isActive}>
       <StepCircle isActive={isActive}>
-        <FontAwesomeIcon color="white" size="lg" icon={icon} />
+        <FontAwesomeIcon
+          color="white"
+          size={window.outerWidth < 426 ? "xs" : "lg"}
+          icon={icon}
+        />
       </StepCircle>
       <StepText isActive={isActive}>{text}</StepText>
     </StepContainer>
