@@ -18,6 +18,16 @@ const Container = styled.div`
   padding-bottom: 15px;
 `;
 
+const StepsContainer = styled.div`
+  width: 100%;
+`;
+
+const Title = styled.h1`
+  color: #212121;
+  font-size: 24px;
+  margin-left: 20px;
+`;
+
 const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
@@ -68,9 +78,10 @@ const Cart = () => {
 
   return (
     <Container className="row">
-      <div style={{ width: "100%" }}>
+      <StepsContainer>
         <Steps />
-      </div>
+      </StepsContainer>
+      <Title>Resumo do pedido</Title>
       <Grid cols="12 12 12 12 12">
         <ul>
           {stateCart.map((product, prodIndex) => (

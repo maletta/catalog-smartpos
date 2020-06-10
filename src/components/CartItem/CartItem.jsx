@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import Counter from 'components/Form/Counter';
-import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
-import NoImage from '../../assets/no-image.png';
+import React, { useState } from "react";
+import styled from "styled-components";
+import PropTypes from "prop-types";
+import { injectIntl, intlShape } from "react-intl";
+
+import Counter from "components/Form/Counter";
+import NoImage from "assets/no-image.png";
+
+import DeleteButton from "./components/DeleteButton";
 
 const ListItem = styled.li`
   display: flex;
@@ -72,14 +75,6 @@ const ControlAmount = styled.div`
   }
 `;
 
-const ControlExclude = styled.button`
-  color: #00529b;
-  background: #fff;
-  border: 0;
-  padding: 0;
-  margin: 5px 0 0 0;
-`;
-
 const ItemPricing = styled.div`
   color: #333;
   font-size: 1.9rem;
@@ -124,14 +119,8 @@ const NoteContent = styled.div`
   z-index: 9999;
 `;
 
-const CartItem = (props) => {
-  const {
-    product,
-    intl,
-    deleteItem,
-    updateAmount,
-    prodIndex,
-  } = props;
+const CartItem = props => {
+  const { product, intl, deleteItem, updateAmount, prodIndex } = props;
   const [imageProduct, setImage] = useState(NoImage);
   const [showNote, setShowNote] = useState(false);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}?lastUpdate=${product.atualizacao}`;
@@ -146,25 +135,26 @@ const CartItem = (props) => {
   return (
     <ListItem>
       <>
-        <div
-          className="d-flex justify-content-start"
-        >
-          <div
-            className="mr-3"
-          >
+        <div className="d-flex justify-content-start">
+          <div className="mr-3">
             <Img src={imageProduct} alt="product" />
           </div>
           <div>
-            <TitleItem>{`${product.descricao} ${(product.variant.name) ? `- ${product.variant.name}` : ''}`}</TitleItem>
+            <TitleItem>{`${product.descricao} ${
+              product.variant.name ? `- ${product.variant.name}` : ""
+            }`}</TitleItem>
             <ItemDescription>
-              {product.modifiers.map((modifier, modIndex) => (
-                modifier.map((item, index) => ((modIndex || index) ? ` | ${item.name} ` : item.name))
-              ))}
+              {product.modifiers.map((modifier, modIndex) =>
+                modifier.map((item, index) =>
+                  modIndex || index ? ` | ${item.name} ` : item.name
+                )
+              )}
             </ItemDescription>
+            <DeleteButton onClick={() => deleteItem(product.uuid)} />
           </div>
         </div>
         <AreaControl>
-          {(product.note && product.note.length > 0) && (
+          {product.note && product.note.length > 0 && (
             <div>
               <NoteButton
                 className="far fa-comment"
@@ -177,10 +167,8 @@ const CartItem = (props) => {
                   setShowNote(false);
                 }}
               />
-              {(product.note.length > 0 && showNote) && (
-                <NoteContent>
-                  {`Observação: ${product.note}`}
-                </NoteContent>
+              {product.note.length > 0 && showNote && (
+                <NoteContent>{`Observação: ${product.note}`}</NoteContent>
               )}
             </div>
           )}
@@ -189,21 +177,18 @@ const CartItem = (props) => {
               limit={100}
               min={1}
               value={product.quantity}
-              counter={(amount) => {
+              counter={amount => {
                 updateAmount(amount, prodIndex);
               }}
             />
-            <div>
-              <ControlExclude
-                onClick={() => deleteItem(product.uuid)}
-              >
-                { 'Excluir' }
-              </ControlExclude>
-            </div>
           </ControlAmount>
           <div className="d-flex">
             <ItemPricing>
-              {intl.formatNumber((product.pricing.product + product.pricing.modifiers) * product.quantity, { style: 'currency', currency: 'BRL' })}
+              {intl.formatNumber(
+                (product.pricing.product + product.pricing.modifiers) *
+                  product.quantity,
+                { style: "currency", currency: "BRL" }
+              )}
             </ItemPricing>
           </div>
         </AreaControl>
@@ -217,7 +202,7 @@ CartItem.propTypes = {
   product: PropTypes.shape({}).isRequired,
   deleteItem: PropTypes.func.isRequired,
   updateAmount: PropTypes.func.isRequired,
-  prodIndex: PropTypes.number.isRequired,
+  prodIndex: PropTypes.number.isRequired
 };
 
 export default injectIntl(CartItem);
