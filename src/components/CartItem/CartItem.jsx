@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { injectIntl, intlShape } from "react-intl";
 
-import TextArea from "components/Form/TextArea";
 import Counter from "components/Form/Counter";
 
 import DeleteButton from "./components/DeleteButton";
 import ItemImage from "./components/ItemImage";
 import NoteButton from "./components/NoteButton";
+import ItemObservation from "./components/ItemObservation";
 
 const ListItem = styled.li`
   display: flex;
@@ -66,17 +66,6 @@ const AreaControl = styled.div`
   }
 `;
 
-const ControlAmount = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: start;
-  margin-right: 30px;
-
-  @media (max-width: 768px) {
-    margin-right: 0;
-  }
-`;
-
 const ItemPricing = styled.div`
   color: #333;
   font-size: 1.9rem;
@@ -92,15 +81,8 @@ const LabelItem = styled.p`
   margin: 0;
 `;
 
-const ObservationButton = styled.p`
-  cursor: pointer;
-  color: var(--color-primary);
-`;
-
 const CartItem = props => {
   const { product, intl, deleteItem, updateAmount, prodIndex } = props;
-
-  const [showObservation, setShowObservation] = useState(false);
 
   const variantName = product.variant.name ? `- ${product.variant.name}` : "";
   const productName = `${product.descricao} ${variantName}`;
@@ -108,52 +90,40 @@ const CartItem = props => {
     (product.pricing.product + product.pricing.modifiers) * product.quantity,
     { style: "currency", currency: "BRL" }
   );
+  const productDescription = product.modifiers.map((modifier, modIndex) =>
+    modifier.map((item, index) =>
+      modIndex || index ? ` | ${item.name} ` : item.name
+    )
+  );
 
   return (
     <ListItem>
       <>
-        <div className="d-flex justify-content-start">
+        <div>
           <ItemImage product={product} />
           <div>
-            <LabelItem>Produto</LabelItem>
+            <LabelItem>{"Produto"}</LabelItem>
             <TitleItem>{productName}</TitleItem>
-            <ItemDescription>
-              {product.modifiers.map((modifier, modIndex) =>
-                modifier.map((item, index) =>
-                  modIndex || index ? ` | ${item.name} ` : item.name
-                )
-              )}
-            </ItemDescription>
+            <ItemDescription>{productDescription}</ItemDescription>
           </div>
           <DeleteButton onClick={() => deleteItem(product.uuid)} />
         </div>
-        <ObservationButton onClick={() => setShowObservation(!showObservation)}>
-          {"Adicionar observação"}
-        </ObservationButton>
-        {showObservation && (
-          <TextArea
-            inputId={`obs-${product.uuid}`}
-            label="Observação"
-            rows={3}
-          />
-        )}
-        <AreaControl>
-          {product.note && product.note.length > 0 && (
+        {/* {product.note && product.note.length > 0 && (
             <NoteButton note={product.note} />
-          )}
-          <NoteButton note={product.note} />
-          <ControlAmount>
-            <Counter
-              limit={100}
-              min={1}
-              value={product.quantity}
-              counter={amount => {
-                updateAmount(amount, prodIndex);
-              }}
-            />
-          </ControlAmount>
+          )} */}
+        <NoteButton note={product.note} />
+        <ItemObservation id={product.uuid} />
+        <AreaControl>
+          <Counter
+            limit={100}
+            min={1}
+            value={product.quantity}
+            counter={amount => {
+              updateAmount(amount, prodIndex);
+            }}
+          />
           <div>
-            <LabelItem>Preço</LabelItem>
+            <LabelItem>{"Preço"}</LabelItem>
             <ItemPricing>{productPrice}</ItemPricing>
           </div>
         </AreaControl>
