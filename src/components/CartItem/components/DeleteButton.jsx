@@ -22,4 +22,8 @@ const DeleteButton = ({ onClick }) => {
   );
 };
 
+DeleteButton.propTypes = {
+  onClick: PropTypes.func.isRequired
+};
+
 export default DeleteButton;
