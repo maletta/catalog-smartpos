@@ -5,10 +5,9 @@ import { injectIntl, intlShape } from "react-intl";
 
 import Counter from "components/Form/Counter";
 
-import DeleteButton from "./components/DeleteButton";
-import ItemImage from "./components/ItemImage";
 import NoteButton from "./components/NoteButton";
 import ItemObservation from "./components/ItemObservation";
+import ItemInfo from "./components/ItemInfo";
 
 const ListItem = styled.li`
   display: flex;
@@ -24,45 +23,6 @@ const ListItem = styled.li`
     align-items: start;
     padding: 15px;
     border-bottom: 3px solid #eee;
-  }
-`;
-
-const TitleItem = styled.h2`
-  font-weight: 400;
-  color: #363636;
-  margin: 0;
-
-  @media (max-width: 992px) {
-    font-size: 1.5rem;
-  }
-
-  @media (max-width: 768px) {
-    font-weight: 600;
-    font-size: 1.2rem;
-  }
-`;
-
-const ItemDescription = styled.span`
-  color: #333;
-  font-size: 0.9rem;
-
-  @media (max-width: 992px) {
-    font-size: 0.8rem;
-  }
-
-  @media (max-width: 768px) {
-    font-size: 0.9rem;
-    line-height: 0.4rem;
-  }
-`;
-
-const AreaControl = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  @media (max-width: 768px) {
-    width: 100%;
   }
 `;
 
@@ -84,50 +44,28 @@ const LabelItem = styled.p`
 const CartItem = props => {
   const { product, intl, deleteItem, updateAmount, prodIndex } = props;
 
-  const variantName = product.variant.name ? `- ${product.variant.name}` : "";
-  const productName = `${product.descricao} ${variantName}`;
   const productPrice = intl.formatNumber(
     (product.pricing.product + product.pricing.modifiers) * product.quantity,
     { style: "currency", currency: "BRL" }
   );
-  const productDescription = product.modifiers.map((modifier, modIndex) =>
-    modifier.map((item, index) =>
-      modIndex || index ? ` | ${item.name} ` : item.name
-    )
-  );
+  const hasNote = product.note && product.note.length > 0;
 
   return (
     <ListItem>
-      <>
-        <div>
-          <ItemImage product={product} />
-          <div>
-            <LabelItem>{"Produto"}</LabelItem>
-            <TitleItem>{productName}</TitleItem>
-            <ItemDescription>{productDescription}</ItemDescription>
-          </div>
-          <DeleteButton onClick={() => deleteItem(product.uuid)} />
-        </div>
-        {/* {product.note && product.note.length > 0 && (
-            <NoteButton note={product.note} />
-          )} */}
-        <NoteButton note={product.note} />
-        <ItemObservation id={product.uuid} />
-        <AreaControl>
-          <Counter
-            limit={100}
-            min={1}
-            value={product.quantity}
-            counter={amount => {
-              updateAmount(amount, prodIndex);
-            }}
-          />
-          <div>
-            <LabelItem>{"Preço"}</LabelItem>
-            <ItemPricing>{productPrice}</ItemPricing>
-          </div>
-        </AreaControl>
-      </>
+      <ItemInfo product={product} deleteItem={deleteItem} />
+      {hasNote && <NoteButton note={product.note} />}
+      <NoteButton note={product.note} />
+      <ItemObservation id={product.uuid} />
+      <Counter
+        limit={100}
+        min={1}
+        value={product.quantity}
+        counter={amount => {
+          updateAmount(amount, prodIndex);
+        }}
+      />
+      <LabelItem>{"Preço"}</LabelItem>
+      <ItemPricing>{productPrice}</ItemPricing>
     </ListItem>
   );
 };
