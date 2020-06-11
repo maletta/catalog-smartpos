@@ -3,10 +3,12 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { injectIntl, intlShape } from "react-intl";
 
+import TextArea from "components/Form/TextArea";
 import Counter from "components/Form/Counter";
-import NoImage from "assets/no-image.png";
 
 import DeleteButton from "./components/DeleteButton";
+import ItemImage from "./components/ItemImage";
+import NoteButton from "./components/NoteButton";
 
 const ListItem = styled.li`
   display: flex;
@@ -86,63 +88,35 @@ const ItemPricing = styled.div`
   }
 `;
 
-const Img = styled.img`
-  height: 80px;
-  min-width: 80px;
-  border-radius: 3px;
-
-  @media (max-width: 992px) {
-    height: 65px;
-    min-width: 65px;
-  }
-
-  @media (max-width: 768px) {
-    height: 55px;
-    min-width: 55px;
-  }
+const LabelItem = styled.p`
+  margin: 0;
 `;
 
-const NoteButton = styled.span`
+const ObservationButton = styled.p`
   cursor: pointer;
-  font-size: 1.2rem;
-  margin-right: 15px;
-`;
-
-const NoteContent = styled.div`
-  position: absolute;
-  color: #fff;
-  background: #434343;
-  padding: 8px 15px;
-  margin-right: 10px;
-  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 4px;
-  z-index: 9999;
+  color: var(--color-primary);
 `;
 
 const CartItem = props => {
   const { product, intl, deleteItem, updateAmount, prodIndex } = props;
-  const [imageProduct, setImage] = useState(NoImage);
-  const [showNote, setShowNote] = useState(false);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}?lastUpdate=${product.atualizacao}`;
 
-  const img = new Image();
-  img.src = imageBaseUrl;
+  const [showObservation, setShowObservation] = useState(false);
 
-  img.onload = () => {
-    setImage(imageBaseUrl);
-  };
+  const variantName = product.variant.name ? `- ${product.variant.name}` : "";
+  const productName = `${product.descricao} ${variantName}`;
+  const productPrice = intl.formatNumber(
+    (product.pricing.product + product.pricing.modifiers) * product.quantity,
+    { style: "currency", currency: "BRL" }
+  );
 
   return (
     <ListItem>
       <>
         <div className="d-flex justify-content-start">
-          <div className="mr-3">
-            <Img src={imageProduct} alt="product" />
-          </div>
+          <ItemImage product={product} />
           <div>
-            <TitleItem>{`${product.descricao} ${
-              product.variant.name ? `- ${product.variant.name}` : ""
-            }`}</TitleItem>
+            <LabelItem>Produto</LabelItem>
+            <TitleItem>{productName}</TitleItem>
             <ItemDescription>
               {product.modifiers.map((modifier, modIndex) =>
                 modifier.map((item, index) =>
@@ -150,28 +124,24 @@ const CartItem = props => {
                 )
               )}
             </ItemDescription>
-            <DeleteButton onClick={() => deleteItem(product.uuid)} />
           </div>
+          <DeleteButton onClick={() => deleteItem(product.uuid)} />
         </div>
+        <ObservationButton onClick={() => setShowObservation(!showObservation)}>
+          {"Adicionar observação"}
+        </ObservationButton>
+        {showObservation && (
+          <TextArea
+            inputId={`obs-${product.uuid}`}
+            label="Observação"
+            rows={3}
+          />
+        )}
         <AreaControl>
           {product.note && product.note.length > 0 && (
-            <div>
-              <NoteButton
-                className="far fa-comment"
-                onFocus={() => {}}
-                onBlur={() => {}}
-                onMouseOver={() => {
-                  setShowNote(true);
-                }}
-                onMouseOut={() => {
-                  setShowNote(false);
-                }}
-              />
-              {product.note.length > 0 && showNote && (
-                <NoteContent>{`Observação: ${product.note}`}</NoteContent>
-              )}
-            </div>
+            <NoteButton note={product.note} />
           )}
+          <NoteButton note={product.note} />
           <ControlAmount>
             <Counter
               limit={100}
@@ -182,14 +152,9 @@ const CartItem = props => {
               }}
             />
           </ControlAmount>
-          <div className="d-flex">
-            <ItemPricing>
-              {intl.formatNumber(
-                (product.pricing.product + product.pricing.modifiers) *
-                  product.quantity,
-                { style: "currency", currency: "BRL" }
-              )}
-            </ItemPricing>
+          <div>
+            <LabelItem>Preço</LabelItem>
+            <ItemPricing>{productPrice}</ItemPricing>
           </div>
         </AreaControl>
       </>
