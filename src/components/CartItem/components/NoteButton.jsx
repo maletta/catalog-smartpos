@@ -18,9 +18,13 @@ const NoteContent = styled.div`
   z-index: 9999;
 `;
 
-const NoteButton = ({ note }) => {
+const NoteButton = ({ product }) => {
   const [showNote, setShowNote] = useState(false);
   const toggleNote = () => setShowNote(!showNote);
+
+  // const hasNote = product.note && product.note.length > 0;
+
+  // if (!hasNote) return null;
 
   return (
     <>
@@ -29,7 +33,7 @@ const NoteButton = ({ note }) => {
         onMouseOver={toggleNote}
         onMouseOut={toggleNote}
       />
-      {showNote && <NoteContent>{`Observação: ${note}`}</NoteContent>}
+      {showNote && <NoteContent>{`Observação: ${product.note}`}</NoteContent>}
     </>
   );
 };
