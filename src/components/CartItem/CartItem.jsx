@@ -3,11 +3,10 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { injectIntl, intlShape } from "react-intl";
 
-import Counter from "components/Form/Counter";
-
 import NoteButton from "./components/NoteButton";
 import ItemObservation from "./components/ItemObservation";
 import ItemInfo from "./components/ItemInfo";
+import ItemCounter from "./components/ItemCounter";
 
 const ListItem = styled.li`
   display: flex;
@@ -56,13 +55,10 @@ const CartItem = props => {
       {hasNote && <NoteButton note={product.note} />}
       <NoteButton note={product.note} />
       <ItemObservation id={product.uuid} />
-      <Counter
-        limit={100}
-        min={1}
-        value={product.quantity}
-        counter={amount => {
-          updateAmount(amount, prodIndex);
-        }}
+      <ItemCounter
+        quantity={product.quantity}
+        updateAmount={updateAmount}
+        prodIndex={prodIndex}
       />
       <LabelItem>{"Preço"}</LabelItem>
       <ItemPricing>{productPrice}</ItemPricing>
