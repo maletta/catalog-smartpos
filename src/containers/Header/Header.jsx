@@ -135,7 +135,7 @@ const StoreNameArea = styled.div`
   display: flex;
   flex-direction: column;
 
-  @media (max-width: 376px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
@@ -144,7 +144,7 @@ const Fantasia = styled.span`
   font-size: 18px;
   letter-spacing: 1px;
 
-  @media (max-width: 376px) {
+  @media (max-width: 768px) {
     display: none;
   }
 `;
