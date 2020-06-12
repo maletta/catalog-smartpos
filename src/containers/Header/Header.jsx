@@ -160,7 +160,7 @@ const Header = (props) => {
     codigo, goHome, categories, atualizacao, store,
   } = props;
   const [search, setSearch] = useState('');
-  const { shoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${atualizacao}`;
   const submit = (e) => {
@@ -239,7 +239,9 @@ const Header = (props) => {
               {(shop.is_enableOrder === 1) && (
                 <CartIcon
                   onClick={() => {
-                    history.push('/cart');
+                    updateShoppingCart({
+                      cardOverlay: true,
+                    });
                   }}
                   className="fa fa-shopping-cart"
                 >
