@@ -30,6 +30,18 @@ const CloseCard = styled.div`
   }
 `;
 
+
+const Overlay = styled.div`
+  position: fixed;
+  right: 0;
+  background-color: black;
+  opacity: 0.3;
+  width: 100%;
+  height: 100%;
+  z-index: 7777;
+  ${props => props.closeCardOverlay && ' display: flex;'}
+  ${props => !props.closeCardOverlay && 'display: none;'}
+`;
 const CardOverlay = styled.div`
   box-shadow: -10px 0 10px -8px #aaa;
   position: fixed;
@@ -337,6 +349,10 @@ const CardShop = ({ intl }) => {
 
   return (
     <>
+      <Overlay
+        onClick={() => closeCard()}
+        closeCardOverlay={closeCardOverlay}
+      />
       <CloseCard
         closeCardOverlay={closeCardOverlay}
         onClick={() => closeCard()}
