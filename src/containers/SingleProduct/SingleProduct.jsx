@@ -16,6 +16,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2';
 
+import Spinner from 'components/Spinner';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
 import TextArea from 'components/Form/TextArea';
@@ -40,6 +41,14 @@ import ClosedStore from '../../assets/closed-store.svg';
 import ArrowLeft from '../../assets/arrow-left.svg';
 import ArrowRight from '../../assets/arrow-right.svg';
 
+
+const LoadingConteiner = styled.div`
+  display: flex;
+  justify-self: center;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+`;
 const Img = styled.img`
   width: 100%;
   border-radius: 5px;
@@ -528,133 +537,135 @@ const SingleProduct = (props) => {
         <Grid
           cols="12 12 9 9 9"
         >
-          {(isProductFound) ? (
+          {isLoaded ? (
             <>
-              <Formik
-                onSubmit={submitItem}
-                initialValues={initialValues}
-                validationSchema={orderValidation(product.variants)}
-                enableReinitialize
-                render={propsForm => (
-                  <Form style={{ width: '100%' }}>
-                    <Container className="row d-flex">
-                      <Grid
-                        cols="12 6 6 6 6"
-                        className="d-none d-md-block"
-                      >
-                        <Row>
-                          <Grid cols="12" className="mb-3">
-                            {renderImage()}
-                            <SmallThumb>
-                              {product.images && (
+              {(isProductFound) ? (
+                <>
+                  <Formik
+                    onSubmit={submitItem}
+                    initialValues={initialValues}
+                    validationSchema={orderValidation(product.variants)}
+                    enableReinitialize
+                    render={propsForm => (
+                      <Form style={{ width: '100%' }}>
+                        <Container className="row d-flex">
+                          <Grid
+                            cols="12 6 6 6 6"
+                            className="d-none d-md-block"
+                          >
+                            <Row>
+                              <Grid cols="12" className="mb-3">
+                                {renderImage()}
+                                <SmallThumb>
+                                  {product.images && (
+                                  <>
+                                    {product.images !== 'notFound' && (
+                                    <Thumb IsActive={activeItemIndex === 0}>
+                                      <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
+                                    </Thumb>
+                                    )}
+                                    {product.images !== 'notFound' && ((product.images).map((img, index) => (
+                                      <Thumb IsActive={activeItemIndex === index + 1}>
+                                        <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+                                      </Thumb>
+                                    )))}
+                                  </>
+                                  )}
+
+                                </SmallThumb>
+                              </Grid>
+                              <Grid cols="12" className="mb-3">
+                                <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
+                                {renderSocialIcon()}
+                              </Grid>
+                              {(product.longDescription) && (
                               <>
-                                {product.images !== 'notFound' && (
-                                <Thumb IsActive={activeItemIndex === 0}>
-                                  <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
-                                </Thumb>
-                                )}
-                                {product.images !== 'notFound' && ((product.images).map((img, index) => (
-                                  <Thumb IsActive={activeItemIndex === index + 1}>
-                                    <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
-                                  </Thumb>
-                                )))}
+                                <Grid cols="12 mb-3">
+                                  <SubTitle>Descrição do item</SubTitle>
+                                </Grid>
+                                <Grid cols="12 mb-3">
+                                  <ReactQuill
+                                    readOnly
+                                    theme="snow"
+                                    value={product.longDescription}
+                                    enable={false}
+                                    modules={{
+                                      toolbar: [],
+                                    }}
+                                  />
+                                </Grid>
                               </>
                               )}
-
-                            </SmallThumb>
+                            </Row>
                           </Grid>
-                          <Grid cols="12" className="mb-3">
-                            <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
-                            {renderSocialIcon()}
-                          </Grid>
-                          {(product.longDescription) && (
-                            <>
-                              <Grid cols="12 mb-3">
-                                <SubTitle>Descrição do item</SubTitle>
+                          <Grid cols="12 12 6 6 6">
+                            <Row>
+                              <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
+                                {renderImage()}
                               </Grid>
-                              <Grid cols="12 mb-3">
-                                <ReactQuill
-                                  readOnly
-                                  theme="snow"
-                                  value={product.longDescription}
-                                  enable={false}
-                                  modules={{
-                                    toolbar: [],
-                                  }}
-                                />
+                              <Grid cols="7 6 12 12 12">
+                                <>
+                                  <Title className="test-name-product">{product.descricao}</Title>
+                                  <CodCategory>
+                                    {`Cód. ${product.codAlfa}`}
+                                  </CodCategory>
+                                  {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
+                                  <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                                  {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
+                                </>
                               </Grid>
-                            </>
-                          )}
-                        </Row>
-                      </Grid>
-                      <Grid cols="12 12 6 6 6">
-                        <Row>
-                          <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
-                            {renderImage()}
-                          </Grid>
-                          <Grid cols="7 6 12 12 12">
-                            <>
-                              <Title className="test-name-product">{product.descricao}</Title>
-                              <CodCategory>
-                                {`Cód. ${product.codAlfa}`}
-                              </CodCategory>
-                              {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
-                              <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
-                              {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
-                            </>
-                          </Grid>
-                        </Row>
-                        <Row>
-                          <Grid cols="12">
-                            {(product.variants.length > 0) && (
-                              <SelectDropDown
-                                id="variants"
-                                label="Variações"
-                                options={product.variants}
-                                value={variantSelected}
-                                getOptionLabel={label => renderOptionLabel(label)}
-                                onChange={(value) => {
-                                  if ((value.noStock === false
+                            </Row>
+                            <Row>
+                              <Grid cols="12">
+                                {(product.variants.length > 0) && (
+                                <SelectDropDown
+                                  id="variants"
+                                  label="Variações"
+                                  options={product.variants}
+                                  value={variantSelected}
+                                  getOptionLabel={label => renderOptionLabel(label)}
+                                  onChange={(value) => {
+                                    if ((value.noStock === false
                                     && value.Estoque && value.Estoque.quantidade > 0)
                                     || (value.noStock)) {
-                                    propsForm.setFieldValue('variant', value);
-                                    setVariantSelected({ name: value.name });
-                                    propsForm.setFieldTouched('variant', true);
-                                    setProductPricing(prevState => ({
-                                      ...prevState,
-                                      product: value.sellValue,
-                                    }));
-                                  }
-                                }}
-                                getOptionValue={option => option.id}
-                                isInvalid={propsForm.errors.variant}
-                                touched={propsForm.touched.variant}
-                                isRequired
-                              />
-                            )}
-                            {(isLoaded) && (
-                              <>
-                                <ModifiersArea>
-                                  {product.modifiers.map((mod, index) => {
-                                    const hasError = (mod.required
-                                      ? (modifierSelected[index].length > 0) : false);
-                                    return (
-                                      <div key={mod.id}>
-                                        <ModifierHeader>
-                                          <div>
-                                            <ModifierTitle>
-                                              {mod.name}
-                                            </ModifierTitle>
-                                            <ModifierAmountTitle>
-                                              {`Máximo ${mod.maxQuantity} `}
-                                              <FormattedPlural
-                                                value={mod.maxQuantity}
-                                                one="opção"
-                                                other="opções"
-                                              />
-                                            </ModifierAmountTitle>
-                                          </div>
-                                          {(mod.required) && (
+                                      propsForm.setFieldValue('variant', value);
+                                      setVariantSelected({ name: value.name });
+                                      propsForm.setFieldTouched('variant', true);
+                                      setProductPricing(prevState => ({
+                                        ...prevState,
+                                        product: value.sellValue,
+                                      }));
+                                    }
+                                  }}
+                                  getOptionValue={option => option.id}
+                                  isInvalid={propsForm.errors.variant}
+                                  touched={propsForm.touched.variant}
+                                  isRequired
+                                />
+                                )}
+                                {(isLoaded) && (
+                                <>
+                                  <ModifiersArea>
+                                    {product.modifiers.map((mod, index) => {
+                                      const hasError = (mod.required
+                                        ? (modifierSelected[index].length > 0) : false);
+                                      return (
+                                        <div key={mod.id}>
+                                          <ModifierHeader>
+                                            <div>
+                                              <ModifierTitle>
+                                                {mod.name}
+                                              </ModifierTitle>
+                                              <ModifierAmountTitle>
+                                                {`Máximo ${mod.maxQuantity} `}
+                                                <FormattedPlural
+                                                  value={mod.maxQuantity}
+                                                  one="opção"
+                                                  other="opções"
+                                                />
+                                              </ModifierAmountTitle>
+                                            </div>
+                                            {(mod.required) && (
                                             <div>
                                               <ModifierTitleRequired
                                                 hasError={!hasError}
@@ -662,110 +673,119 @@ const SingleProduct = (props) => {
                                                 {'Obrigatório'}
                                               </ModifierTitleRequired>
                                             </div>
-                                          )}
-                                        </ModifierHeader>
-                                        <ul>
-                                          <ItemModifiers
-                                            modifier={mod}
-                                            propsForm={propsForm}
-                                            index={index}
-                                            modifierSelected={modifierSelected}
-                                            setProductPricing={setProductPricing}
-                                            setModifierSelected={setModifierSelected}
-                                            setModifiersErrors={setModifiersErrors}
-                                            modifiersErrors={modifiersErrors}
-                                          />
-                                        </ul>
-                                      </div>
-                                    );
-                                  })}
-                                </ModifiersArea>
-                                {enableOrderButton() && (
-                                <div className="column is-mb-paddingless is-12 is-mb-paddingless">
-                                  <Field
-                                    name="note"
-                                    inputId="observacao"
-                                    component={TextArea}
-                                    label="Observação"
-                                    autoFocus={false}
-                                    rows={3}
-                                  />
-                                </div>
+                                            )}
+                                          </ModifierHeader>
+                                          <ul>
+                                            <ItemModifiers
+                                              modifier={mod}
+                                              propsForm={propsForm}
+                                              index={index}
+                                              modifierSelected={modifierSelected}
+                                              setProductPricing={setProductPricing}
+                                              setModifierSelected={setModifierSelected}
+                                              setModifiersErrors={setModifiersErrors}
+                                              modifiersErrors={modifiersErrors}
+                                            />
+                                          </ul>
+                                        </div>
+                                      );
+                                    })}
+                                  </ModifiersArea>
+                                  {enableOrderButton() && (
+                                  <div className="column is-mb-paddingless is-12 is-mb-paddingless">
+                                    <Field
+                                      name="note"
+                                      inputId="observacao"
+                                      component={TextArea}
+                                      label="Observação"
+                                      autoFocus={false}
+                                      rows={3}
+                                    />
+                                  </div>
+                                  )}
+                                </>
                                 )}
-                              </>
-                            )}
-                          </Grid>
-                          <Grid cols="12" className="d-md-none mb-3">
-                            <SubTitle>Compartilhe nas redes sociais</SubTitle>
-                            {renderSocialIcon()}
-                          </Grid>
-                          {(product.longDescription) && (
-                            <>
-                              <Grid cols="12" className="d-md-none">
-                                <SubTitle>Descrição do item</SubTitle>
                               </Grid>
                               <Grid cols="12" className="d-md-none mb-3">
-                                <ReactQuill
-                                  readOnly
-                                  theme="snow"
-                                  value={product.longDescription}
-                                  enable={false}
-                                  modules={{
-                                    toolbar: [],
-                                  }}
-                                />
+                                <SubTitle>Compartilhe nas redes sociais</SubTitle>
+                                {renderSocialIcon()}
                               </Grid>
-                            </>
+                              {(product.longDescription) && (
+                              <>
+                                <Grid cols="12" className="d-md-none">
+                                  <SubTitle>Descrição do item</SubTitle>
+                                </Grid>
+                                <Grid cols="12" className="d-md-none mb-3">
+                                  <ReactQuill
+                                    readOnly
+                                    theme="snow"
+                                    value={product.longDescription}
+                                    enable={false}
+                                    modules={{
+                                      toolbar: [],
+                                    }}
+                                  />
+                                </Grid>
+                              </>
+                              )}
+                            </Row>
+                          </Grid>
+                          {(enableOrderButton()) && (
+                          <FooterContainer>
+                            <div className="d-flex justify-content-end">
+                              <Grid cols="12 12 12 6 6">
+                                <Row>
+                                  <Grid
+                                    cols="5"
+                                    className="d-flex justify-content-center align-items-center"
+                                  >
+                                    <div>
+                                      <Counter
+                                        limit={100}
+                                        min={1}
+                                        value={1}
+                                        counter={(value) => {
+                                          propsForm.setFieldValue('quantity', value);
+                                        }}
+                                      />
+                                    </div>
+                                  </Grid>
+                                  <Grid
+                                    cols="7"
+                                    className="d-flex justify-content-center align-items-end"
+                                  >
+                                    <div>
+                                      <ButtonPrice
+                                        value="ADICIONAR"
+                                        price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
+                                        type="submit"
+                                        disabled={(hasModifiersErrors.length > 0 && isProductFound)}
+                                        isLoading={propsForm.isSubmitting}
+                                      />
+                                    </div>
+                                  </Grid>
+                                </Row>
+                              </Grid>
+                            </div>
+                          </FooterContainer>
                           )}
-                        </Row>
-                      </Grid>
-                      {(enableOrderButton()) && (
-                        <FooterContainer>
-                          <div className="d-flex justify-content-end">
-                            <Grid cols="12 12 12 6 6">
-                              <Row>
-                                <Grid
-                                  cols="5"
-                                  className="d-flex justify-content-center align-items-center"
-                                >
-                                  <div>
-                                    <Counter
-                                      limit={100}
-                                      min={1}
-                                      value={1}
-                                      counter={(value) => {
-                                        propsForm.setFieldValue('quantity', value);
-                                      }}
-                                    />
-                                  </div>
-                                </Grid>
-                                <Grid
-                                  cols="7"
-                                  className="d-flex justify-content-center align-items-end"
-                                >
-                                  <div>
-                                    <ButtonPrice
-                                      value="ADICIONAR"
-                                      price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
-                                      type="submit"
-                                      disabled={(hasModifiersErrors.length > 0 && isProductFound)}
-                                      isLoading={propsForm.isSubmitting}
-                                    />
-                                  </div>
-                                </Grid>
-                              </Row>
-                            </Grid>
-                          </div>
-                        </FooterContainer>
-                      )}
-                    </Container>
-                  </Form>
-                )}
-              />
+                        </Container>
+                      </Form>
+                    )}
+                  />
+                </>
+              ) : (
+                <div>O produto que você procura não foi encontrado!</div>
+              )}
             </>
           ) : (
-            <div>O produto que você procura não foi encontrado!</div>
+            <>
+              <LoadingConteiner>
+                <span><Spinner /></span>
+              </LoadingConteiner>
+            </>
           )}
+
         </Grid>
       </Row>
     </>
