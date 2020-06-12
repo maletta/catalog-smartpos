@@ -358,7 +358,8 @@ const CardShop = ({ intl }) => {
                     <ImageContainer onClick={() => setTimeout(() => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                       closeCard(false);
-                      history.push(`item/${item.id}/${slug(item.descricao)}`);
+                      history.push(`/item/${item.id}/${slug(item.descricao)}`);
+                      window.location.reload();
                     }, 500)}
                     >
 
