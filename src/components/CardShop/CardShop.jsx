@@ -7,31 +7,26 @@ import slug from 'utils/slug';
 import isEmpty from 'lodash/isEmpty';
 import Trash from '../../assets/trash.svg';
 import EmptyCart from '../../assets/emptyCart.svg';
-import ArrowRight from '../../assets/arrow-right-cart.svg';
-import ArrowLeft from '../../assets/arrow-left-cart.svg';
+import Close from '../../assets/close.svg';
+import ImageBox from './Image';
 
-const CloseCard = styled.div`
+const Overlay = styled.div`
   position: fixed;
-  right: 350px;
-  background-color: #f38a00;
-  width: 40px;
-  height: 45px;
-  z-index: 9999;
-  cursor: pointer;
-  ${props => !props.closeCardOverlay && 'right: 0;'}
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  right: 0;
+  background-color: black;
+  opacity: 0.5;
+  width: 100%;
+  height: 100%;
+  z-index: 7777;
+  ${props => props.closeCardOverlay && ' display: flex;'}
+  ${props => !props.closeCardOverlay && 'display: none;'}
 
   @media (max-width: 768px) {
-    right: 300px;
-    top: 0;
-    ${props => !props.closeCardOverlay && 'right: 0; top: 110px;'}
+    opacity: 0.8;
   }
 `;
-
 const CardOverlay = styled.div`
-  box-shadow: -10px 0 10px -8px #aaa;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: fixed;
   right: 0;
   background-color: white;
@@ -74,7 +69,7 @@ const HeaderCard = styled.div`
   color: white;
   background-color: var(--color-header);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   align-content: center;
@@ -84,12 +79,30 @@ const HeaderCard = styled.div`
   margin-bottom: 10px;
 `;
 
+const CloseCart = styled.span`
+  display: flex;
+  flex: 1;
+  padding-left: 80px;
+
+  @media (max-width: 768px) {
+    padding-left: 50px;
+  }
+`;
+
+const TitleCart = styled.span`
+  padding-left: 110px;
+
+  @media (max-width: 768px) {
+    padding-left: 90px;
+  }
+`;
+
 const Item = styled.div`
   display: flex;
   flex-direction: row;
 `;
 
-const Image = styled.div`
+const ImageContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   margin-bottom: 15px;
@@ -164,22 +177,6 @@ const Controls = styled.div`
   cursor: pointer;
 `;
 
-const Img = styled.img`
-  height: 100px;
-  min-width: 100px;
-  border-radius: 3px;
-
-  @media (max-width: 992px) {
-    height: 65px;
-    min-width: 65px;
-  }
-
-  @media (max-width: 768px) {
-    height: 55px;
-    min-width: 55px;
-  }
-`;
-
 const EmptyState = styled.div`
   display: flex;
   flex-direction: column;
@@ -224,7 +221,6 @@ const TextTotal = styled.div`
   flex: 1;
 `;
 
-
 const Finish = styled.div`
   background-color: var(--color-primary);
   color: white;
@@ -253,6 +249,10 @@ const FinishText = styled.span`
 
 const ControlButton = styled.span`
   color: black;
+`;
+
+const CloseIcon = styled.img`
+  cursor: pointer;
 `;
 
 
@@ -337,16 +337,16 @@ const CardShop = ({ intl }) => {
 
   return (
     <>
-      <CloseCard
-        closeCardOverlay={closeCardOverlay}
+      <Overlay
         onClick={() => closeCard()}
-      >
-        {closeCardOverlay && (<img alt="arrow" src={ArrowRight} />)}
-        {!closeCardOverlay && (<img alt="arrow" src={ArrowLeft} />)}
-      </CloseCard>
+        closeCardOverlay={closeCardOverlay}
+      />
       <CardOverlay closeCardOverlay={closeCardOverlay}>
         <HeaderCard>
-          {`Meu carrinho (${shoppingCart.basketCount})`}
+          <TitleCart>{`Meu carrinho (${shoppingCart.basketCount})`}</TitleCart>
+          <CloseCart>
+            <CloseIcon src={Close} width="15px;" alt="close" onClick={() => closeCard()} />
+          </CloseCart>
         </HeaderCard>
         <div>
 
@@ -355,16 +355,18 @@ const CardShop = ({ intl }) => {
               {stateCart.map(item => (
                 <div key={item.codigo}>
                   <Item>
-                    <Image onClick={() => setTimeout(() => {
+                    <ImageContainer onClick={() => setTimeout(() => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                       closeCard(false);
-                      history.push(`item/${item.id}/${slug(item.descricao)}`);
+                      history.push(`/item/${item.id}/${slug(item.descricao)}`);
+                      window.location.reload();
                     }, 500)}
                     >
+
                       <div className="card-image">
-                        <Img src={`${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`} title={item.descricao} alt="Produto" />
+                        {item && <ImageBox product={item} />}
                       </div>
-                    </Image>
+                    </ImageContainer>
                     <Info>
                       <Description>
                         {`${item.descricao}${!isEmpty(item.variant) ? ` (${item.variant.name})` : ('')}`}
