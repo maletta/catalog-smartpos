@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const MainContainerView = (props) => {
-  const { children } = props;
+const MainContainerView = ({ children }) => {
   return (
     <>
       {children}

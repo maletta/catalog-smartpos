@@ -25,20 +25,36 @@ const ListItem = styled.li`
   }
 `;
 
+const ObservationContainer = styled.div`
+  width: 100%;
+  display: flex;
+  margin: 15px;
+`;
+
+const ItemFooterContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`;
+
 const CartItem = props => {
   const { product, deleteItem, updateAmount, prodIndex } = props;
 
   return (
     <ListItem>
       <ItemInfo product={product} deleteItem={deleteItem} />
-      <NoteButton product={product} />
-      <ItemObservation id={product.uuid} />
-      <ItemCounter
-        quantity={product.quantity}
-        updateAmount={updateAmount}
-        prodIndex={prodIndex}
-      />
-      <ItemPrice product={product} />
+      <ObservationContainer>
+        <NoteButton product={product} />
+        <ItemObservation id={product.uuid} />
+      </ObservationContainer>
+      <ItemFooterContainer>
+        <ItemCounter
+          quantity={product.quantity}
+          updateAmount={updateAmount}
+          prodIndex={prodIndex}
+        />
+        <ItemPrice product={product} />
+      </ItemFooterContainer>
     </ListItem>
   );
 };

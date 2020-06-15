@@ -3,6 +3,11 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { injectIntl, intlShape } from "react-intl";
 
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const ItemPricing = styled.div`
   color: #333;
   font-size: 1.9rem;
@@ -25,10 +30,10 @@ const ItemPrice = ({ product, intl }) => {
   );
 
   return (
-    <>
+    <Container>
       <LabelItem>{"Preço"}</LabelItem>
       <ItemPricing>{productPrice}</ItemPricing>
-    </>
+    </Container>
   );
 };
 

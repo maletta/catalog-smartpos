@@ -11,11 +11,11 @@ import ShoppingCartContext from "contexts/ShoppingCartContext";
 
 import EmptyCart from "./components/EmptyCart";
 import CartFooter from "./components/CartFooter";
+import PurchasePrices from "./components/PurchasePrices";
 
 const Container = styled.div`
   background: #fff;
-  border-radius: 5px;
-  padding-bottom: 15px;
+  padding-right: 0;
 `;
 
 const StepsContainer = styled.div`
@@ -34,6 +34,7 @@ const Cart = () => {
 
   const [stateCart, setStateCart] = useState([]);
   const [totalCart, setTotalCart] = useState(0);
+  const [basketCountCart, setBasketCountCart] = useState(0);
 
   const deleteItem = uuid => {
     const newCart = stateCart.filter(item => item.uuid !== uuid);
@@ -71,6 +72,7 @@ const Cart = () => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
     setStateCart(cart);
     setTotalCart(total);
+    setBasketCountCart(basketCount);
   }, [stateCart.length]);
 
   const hasItems = stateCart.length > 0;
@@ -78,11 +80,11 @@ const Cart = () => {
 
   return (
     <Container className="row">
-      <StepsContainer>
-        <Steps />
-      </StepsContainer>
-      <Title>Resumo do pedido</Title>
-      <Grid cols="12 12 12 12 12">
+      <Grid cols="12 12 12 8 8">
+        <StepsContainer>
+          <Steps />
+        </StepsContainer>
+        <Title>Resumo do pedido</Title>
         <ul>
           {stateCart.map((product, prodIndex) => (
             <CartItem
@@ -95,10 +97,17 @@ const Cart = () => {
           ))}
         </ul>
         {dontHaveItems && <EmptyCart />}
+        {hasItems && (
+          <CartFooter totalCart={totalCart} updateFilter={updateFilter} />
+        )}
       </Grid>
-      {hasItems && (
-        <CartFooter totalCart={totalCart} updateFilter={updateFilter} />
-      )}
+      <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
+        <PurchasePrices
+          basketCountCart={basketCountCart}
+          totalCart={totalCart}
+          couponValue={-5}
+        />
+      </Grid>
     </Container>
   );
 };

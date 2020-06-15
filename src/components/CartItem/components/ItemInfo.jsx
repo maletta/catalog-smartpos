@@ -1,10 +1,16 @@
 import React from "react";
 import styled from "styled-components";
-// import PropTypes from "prop-types";
-// import { injectIntl, intlShape } from "react-intl";
+import PropTypes from "prop-types";
 
 import ItemImage from "./ItemImage";
 import DeleteButton from "./DeleteButton";
+
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+`;
 
 const TitleItem = styled.h2`
   font-weight: 400;
@@ -39,6 +45,10 @@ const LabelItem = styled.p`
   margin: 0;
 `;
 
+const ButtonContainer = styled.div`
+  flex-grow: 1;
+`;
+
 const ItemInfo = ({ product, deleteItem }) => {
   const variantName = product.variant.name ? `- ${product.variant.name}` : "";
   const productName = `${product.descricao} ${variantName}`;
@@ -49,16 +59,21 @@ const ItemInfo = ({ product, deleteItem }) => {
   );
 
   return (
-    <>
+    <Container>
       <ItemImage product={product} />
-      <div>
+      <ButtonContainer>
         <LabelItem>{"Produto"}</LabelItem>
         <TitleItem>{productName}</TitleItem>
         <ItemDescription>{productDescription}</ItemDescription>
-      </div>
+      </ButtonContainer>
       <DeleteButton onClick={() => deleteItem(product.uuid)} />
-    </>
+    </Container>
   );
+};
+
+ItemInfo.propTypes = {
+  product: PropTypes.shape({}).isRequired,
+  deleteItem: PropTypes.func.isRequired
 };
 
 export default ItemInfo;

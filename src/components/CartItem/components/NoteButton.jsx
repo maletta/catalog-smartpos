@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 const NoteIcon = styled.span`
   font-size: 1.2rem;
   margin-right: 15px;
+  width: 80px;
 `;
 
 const NoteContent = styled.div`
@@ -30,6 +31,7 @@ const NoteButton = ({ product }) => {
     <>
       <NoteIcon
         className="far fa-comment"
+        onClick={toggleNote}
         onMouseOver={toggleNote}
         onMouseOut={toggleNote}
       />

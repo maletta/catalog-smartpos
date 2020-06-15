@@ -1,39 +1,41 @@
-import React, { useContext } from 'react';
-import Swal from 'sweetalert2';
-import { injectIntl } from 'react-intl';
-import styled from 'styled-components';
+import React, { useContext } from "react";
+import Swal from "sweetalert2";
+import { injectIntl } from "react-intl";
+import styled from "styled-components";
 
-import Button from 'components/Form/Button';
-import Grid from 'components/Grid';
-import history from 'utils/history';
-import ShopContext from 'contexts/ShopContext';
-import ClosedStore from 'assets/closed-store.svg';
+import Button from "components/Form/Button";
+import Grid from "components/Grid";
+import history from "utils/history";
+import ShopContext from "contexts/ShopContext";
+import ClosedStore from "assets/closed-store.svg";
 
-const Total = styled.span`
-  font-size: 2rem;
-`;
+const redirectToCheckout = () => history.push("/checkout");
+const redirectToHome = () => history.push("/");
 
-const redirectToCheckout = () => history.push('/checkout');
-const redirectToHome = () => history.push('/');
-
-const showStoreIsClosedModal = (shop) => {
+const showStoreIsClosedModal = shop => {
   Swal.fire({
     html: `<div>
     <div><img src="${ClosedStore}"></div>
     <span class="foradohorario-titulo"> 
-    ${shop.today.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre:
-      ${shop.today.hours.map(itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`)}`}
+    ${
+      shop.today.closed
+        ? "Estabelecimento fechado!"
+        : `Este estabelecimento abre entre:
+      ${shop.today.hours.map(
+        itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`
+      )}`
+    }
     </span>
     <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
     </div>`,
     showConfirmButton: true,
-    confirmButtonColor: 'var(-color--primary)',
+    confirmButtonColor: "var(-color--primary)",
     showCloseButton: true,
-    onClose: redirectToHome,
+    onClose: redirectToHome
   });
-}
+};
 
-const verifyRedirect = (shop) => {
+const verifyRedirect = shop => {
   if (shop.allowOrderOutsideBusinessHours || !shop.closeNow) {
     redirectToCheckout();
     return;
@@ -42,26 +44,12 @@ const verifyRedirect = (shop) => {
   showStoreIsClosedModal(shop);
 };
 
-const CartFooter = ({intl,totalCart, updateFilter }) => {
+const CartFooter = ({ intl, totalCart, updateFilter }) => {
   const { shop } = useContext(ShopContext);
 
   return (
     <>
-      <Grid
-        cols="12 12 12 12 12"
-        className="d-flex justify-content-end align-items-center"
-      >
-        <div className="mb-2 mt-2">
-          <Total>
-            {"Total:"}
-            {intl.formatNumber(totalCart, {
-              style: "currency",
-              currency: "BRL"
-            })}
-          </Total>
-        </div>
-      </Grid>
-      <Grid cols="7 7 8 9 10" className="d-flex justify-content-end">
+      <Grid cols="12" className="d-flex justify-content-end">
         <Button
           className="d-none d-md-block"
           value="Adicionar mais itens"
@@ -78,9 +66,7 @@ const CartFooter = ({intl,totalCart, updateFilter }) => {
             redirectToHome();
           }}
         />
-      </Grid>
-      <Grid cols="5 5 4 3 2" className="d-flex justify-content-end">
-        <Button value="Finalizar pedido" onClick={()=>verifyRedirect(shop)} />
+        <Button value="Finalizar pedido" onClick={() => verifyRedirect(shop)} />
       </Grid>
     </>
   );
