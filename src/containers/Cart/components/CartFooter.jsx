@@ -1,13 +1,26 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import { injectIntl } from "react-intl";
 import styled from "styled-components";
+import NumberFormat from "react-number-format";
 
 import Button from "components/Form/Button";
+import Input from "components/Form/Input";
+// import Input from "components/Form/";
 import Grid from "components/Grid";
 import history from "utils/history";
 import ShopContext from "contexts/ShopContext";
 import ClosedStore from "assets/closed-store.svg";
+
+const DeliveryContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const CouponContainer = styled.div`
+  display: flex;
+  align-items: flex-start;
+`;
 
 const redirectToCheckout = () => history.push("/checkout");
 const redirectToHome = () => history.push("/");
@@ -46,12 +59,64 @@ const verifyRedirect = shop => {
 
 const CartFooter = ({ intl, totalCart, updateFilter }) => {
   const { shop } = useContext(ShopContext);
+  const [delivery, setDelivery] = useState("");
 
   return (
     <>
-      <Grid cols="12" className="d-flex justify-content-end">
+      <Grid cols="12" className="d-flex justify-content-between">
+        <DeliveryContainer>
+          <p>Entrega:</p>
+          <label>
+            <input
+              type="radio"
+              name="d"
+              value="retrieve"
+              checked={delivery === "retrieve"}
+              onChange={({ target }) => {
+                setDelivery(target.value);
+              }}
+            />
+            {"Retirar no local"}
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="d"
+              value="shipping-fee"
+              // checked={}
+              onChange={({ target }) => {
+                setDelivery(target.value);
+              }}
+            />
+            {"Calcular frete"}
+          </label>
+          <div style={{ display: "flex", alignItems: "flex-start" }}>
+            <div>
+              <NumberFormat
+                label=""
+                name="cep"
+                inputId="cep"
+                type="tel"
+                format="#####-###"
+                placeholder="Informe seu CEP"
+                customInput={Input}
+              />
+            </div>
+            <Button styleType="tertiary" value="Calcular" onClick={() => {}} />
+          </div>
+        </DeliveryContainer>
+        <CouponContainer>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div>
+              <Input label="Cupom de desconto:" />
+            </div>
+            <Button styleType="tertiary" value="Aplicar" onClick={() => {}} />
+          </div>
+        </CouponContainer>
+      </Grid>
+      <Grid cols="12" className="d-flex justify-content-end mb-4">
         <Button
-          className="d-none d-md-block"
+          className="d-none d-md-block mr-3"
           value="Adicionar mais itens"
           type="submit"
           styleType="secondary"
