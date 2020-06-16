@@ -80,7 +80,7 @@ const Cart = () => {
 
   return (
     <Container className="row">
-      <Grid cols="12 12 12 8 8">
+      <Grid cols="12 12 12 8 8" className="pt-3">
         <StepsContainer>
           <Steps />
         </StepsContainer>
