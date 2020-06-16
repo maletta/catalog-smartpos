@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-// import PropTypes from "prop-types";
-// import { injectIntl, intlShape } from "react-intl";
+import PropTypes from "prop-types";
 
 import TextArea from "components/Form/TextArea";
 
@@ -29,6 +28,10 @@ const ItemObservation = ({ id }) => {
       )}
     </Container>
   );
+};
+
+ItemObservation.propTypes = {
+  id: PropTypes.number
 };
 
 export default ItemObservation;

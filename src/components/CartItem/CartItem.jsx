@@ -2,17 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 
-import NoteButton from "./components/NoteButton";
-import ItemObservation from "./components/ItemObservation";
 import ItemInfo from "./components/ItemInfo";
 import ItemCounter from "./components/ItemCounter";
 import ItemPrice from "./components/ItemPrice";
+import DeleteButton from "./components/DeleteButton";
 
 const ListItem = styled.li`
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding: 15px 0 15px 0;
   height: 100%;
   border-bottom: 1px solid #eee;
@@ -23,12 +21,6 @@ const ListItem = styled.li`
     padding: 15px;
     border-bottom: 3px solid #eee;
   }
-`;
-
-const ObservationContainer = styled.div`
-  width: 100%;
-  display: flex;
-  margin: 15px;
 `;
 
 const ItemFooterContainer = styled.div`
@@ -42,19 +34,20 @@ const CartItem = props => {
 
   return (
     <ListItem>
-      <ItemInfo product={product} deleteItem={deleteItem} />
-      <ObservationContainer>
-        <NoteButton product={product} />
-        <ItemObservation id={product.uuid} />
-      </ObservationContainer>
-      <ItemFooterContainer>
-        <ItemCounter
-          quantity={product.quantity}
-          updateAmount={updateAmount}
-          prodIndex={prodIndex}
-        />
-        <ItemPrice product={product} />
-      </ItemFooterContainer>
+      <div style={{ width: "100%" }}>
+        <ItemInfo product={product} deleteItem={deleteItem} />
+      </div>
+      <div style={{ width: "100%" }}>
+        <ItemFooterContainer>
+          <ItemCounter
+            quantity={product.quantity}
+            updateAmount={updateAmount}
+            prodIndex={prodIndex}
+          />
+          <ItemPrice product={product} />
+          {window.outerWidth > 768 && <DeleteButton onClick={deleteItem} />}
+        </ItemFooterContainer>
+      </div>
     </ListItem>
   );
 };

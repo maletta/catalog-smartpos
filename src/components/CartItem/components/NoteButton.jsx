@@ -23,9 +23,9 @@ const NoteButton = ({ product }) => {
   const [showNote, setShowNote] = useState(false);
   const toggleNote = () => setShowNote(!showNote);
 
-  // const hasNote = product.note && product.note.length > 0;
+  const hasNote = product.note && product.note.length > 0;
 
-  // if (!hasNote) return null;
+  if (!hasNote) return null;
 
   return (
     <>
@@ -41,7 +41,7 @@ const NoteButton = ({ product }) => {
 };
 
 NoteButton.propTypes = {
-  note: PropTypes.string
+  product: PropTypes.object
 };
 
 export default NoteButton;

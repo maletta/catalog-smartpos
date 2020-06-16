@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 import ItemImage from "./ItemImage";
 import DeleteButton from "./DeleteButton";
+import ItemObservation from "./ItemObservation";
+import NoteButton from "./NoteButton";
 
 const Container = styled.div`
   width: 100%;
@@ -13,17 +15,13 @@ const Container = styled.div`
 `;
 
 const TitleItem = styled.h2`
-  font-weight: 400;
+  font-weight: bold;
   color: #363636;
   margin: 0;
-
-  @media (max-width: 992px) {
-    font-size: 1.5rem;
-  }
+  font-size: 1.2rem;
 
   @media (max-width: 768px) {
     font-weight: 600;
-    font-size: 1.2rem;
   }
 `;
 
@@ -65,8 +63,12 @@ const ItemInfo = ({ product, deleteItem }) => {
         <LabelItem>{"Produto"}</LabelItem>
         <TitleItem>{productName}</TitleItem>
         <ItemDescription>{productDescription}</ItemDescription>
+        <NoteButton product={product} />
+        <ItemObservation id={product.uuid} />
       </ButtonContainer>
-      <DeleteButton onClick={() => deleteItem(product.uuid)} />
+      {window.outerWidth <= 768 && (
+        <DeleteButton onClick={() => deleteItem(product.uuid)} />
+      )}
     </Container>
   );
 };

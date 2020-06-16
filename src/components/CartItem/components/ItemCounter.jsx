@@ -1,7 +1,5 @@
 import React from "react";
-// import styled from "styled-components";
-// import PropTypes from "prop-types";
-// import { injectIntl, intlShape } from "react-intl";
+import PropTypes from "prop-types";
 
 import Counter from "components/Form/Counter";
 
@@ -16,6 +14,12 @@ const ItemCounter = ({ quantity, updateAmount, prodIndex }) => {
       }}
     />
   );
+};
+
+ItemCounter.propTypes = {
+  quantity: PropTypes.number,
+  updateAmount: PropTypes.func,
+  prodIndex: PropTypes.number
 };
 
 export default ItemCounter;
