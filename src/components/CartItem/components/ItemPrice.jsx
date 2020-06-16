@@ -19,6 +19,7 @@ const ItemPricing = styled.div`
 `;
 
 const LabelItem = styled.p`
+  align-self: flex-start;
   margin: 0;
 `;
 
