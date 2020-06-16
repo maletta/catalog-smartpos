@@ -59,7 +59,7 @@ const verifyRedirect = shop => {
 
 const CartFooter = ({ intl, totalCart, updateFilter }) => {
   const { shop } = useContext(ShopContext);
-  const [delivery, setDelivery] = useState("");
+  const [delivery, setDelivery] = useState("retrieve");
 
   return (
     <>
@@ -68,8 +68,9 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
           <p>Entrega:</p>
           <label>
             <input
+              style={{ marginRight: "5px" }}
               type="radio"
-              name="d"
+              name="delivery"
               value="retrieve"
               checked={delivery === "retrieve"}
               onChange={({ target }) => {
@@ -80,30 +81,37 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
           </label>
           <label>
             <input
+              style={{ marginRight: "5px" }}
               type="radio"
-              name="d"
+              name="delivery"
               value="shipping-fee"
-              // checked={}
+              checked={delivery === "shipping-fee"}
               onChange={({ target }) => {
                 setDelivery(target.value);
               }}
             />
             {"Calcular frete"}
           </label>
-          <div style={{ display: "flex", alignItems: "flex-start" }}>
-            <div>
-              <NumberFormat
-                label=""
-                name="cep"
-                inputId="cep"
-                type="tel"
-                format="#####-###"
-                placeholder="Informe seu CEP"
-                customInput={Input}
+          {delivery === "shipping-fee" && (
+            <div style={{ display: "flex", alignItems: "flex-start" }}>
+              <div>
+                <NumberFormat
+                  label=""
+                  name="cep"
+                  inputId="cep"
+                  type="tel"
+                  format="#####-###"
+                  placeholder="Informe seu CEP"
+                  customInput={Input}
+                />
+              </div>
+              <Button
+                styleType="tertiary"
+                value="Calcular"
+                onClick={() => {}}
               />
             </div>
-            <Button styleType="tertiary" value="Calcular" onClick={() => {}} />
-          </div>
+          )}
         </DeliveryContainer>
         <CouponContainer>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -114,7 +122,7 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
           </div>
         </CouponContainer>
       </Grid>
-      <Grid cols="12" className="d-flex justify-content-end mb-4">
+      <Grid cols="12" className="d-flex justify-content-end mb-4 pt-5">
         <Button
           className="d-none d-md-block mr-3"
           value="Adicionar mais itens"
