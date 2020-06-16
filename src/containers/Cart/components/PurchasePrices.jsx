@@ -55,6 +55,10 @@ const PurchasePrices = ({ basketCountCart, totalCart, couponValue, intl }) => {
           <span>Produtos ({basketCountCart}):</span>
           <span>{formatValue(totalCart)}</span>
         </ProductRow>
+        <ProductRow>
+          <span>Frete:</span>
+          <span>{formatValue(totalCart)}</span>
+        </ProductRow>
         <CouponRow>
           <span>Cupom:</span>
           <span>{formatValue(couponValue)}</span>

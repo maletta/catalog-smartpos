@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import { injectIntl } from "react-intl";
 import styled from "styled-components";
 import NumberFormat from "react-number-format";
+import axios from "axios";
 
 import Button from "components/Form/Button";
 import Input from "components/Form/Input";
@@ -11,6 +12,11 @@ import Grid from "components/Grid";
 import history from "utils/history";
 import ShopContext from "contexts/ShopContext";
 import ClosedStore from "assets/closed-store.svg";
+
+const checkingDelivery = (locationCustomer, storeID) =>
+  axios.get(
+    `${process.env.REACT_APP_MAIN_API}/v1/loja/${storeID}/frete/${locationCustomer}`
+  );
 
 const DeliveryContainer = styled.div`
   display: flex;
@@ -77,9 +83,25 @@ const verifyRedirect = shop => {
   showStoreIsClosedModal(shop);
 };
 
+const costDeliveryApi = (cep, shopId, setDeliveryCost, propsForm) => {
+  checkingDelivery(cep, shopId).then(response => {
+    console.log(response);
+    setDeliveryCost(response.data);
+    // setCostDelivery({
+    //   ...response.data,
+    //   cost: shop.deliveryMode !== "PICKUP" ? response.data.cost : 0
+    // });
+    // propsForm.setFieldValue(
+    //   "pickup",
+    //   !response.data.isDeliverable && propsForm
+    // );
+  });
+};
+
 const CartFooter = ({ intl, totalCart, updateFilter }) => {
   const { shop } = useContext(ShopContext);
   const [delivery, setDelivery] = useState("retrieve");
+  const [deliveryCost, setDeliveryCost] = useState({});
 
   return (
     <>
@@ -124,11 +146,23 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
                   placeholder="Informe seu CEP"
                   customInput={Input}
                 />
+                {deliveryCost.isDeliverable
+                  ? "O frete custa " +
+                    intl.formatNumber(deliveryCost.cost, {
+                      style: "currency",
+                      currency: "BRL"
+                    })
+                  : "Não entrega na sua região"}
               </CEPContainer>
               <Button
                 styleType="tertiary"
                 value="Calcular"
-                onClick={() => {}}
+                onClick={() => {
+                  // costDeliveryApi("13090749", shop.id, setDeliveryCost);
+                  // costDeliveryApi("08226021", shop.id, setDeliveryCost);
+                  costDeliveryApi("08226020", shop.id, setDeliveryCost);
+                  // costDeliveryApi("04180112", shop.id, setDeliveryCost);
+                }}
               />
             </div>
           )}
