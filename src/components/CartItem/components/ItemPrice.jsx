@@ -6,16 +6,15 @@ import { injectIntl, intlShape } from "react-intl";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
 `;
 
 const ItemPricing = styled.div`
   color: #333;
   font-size: 1.9rem;
-  width: 170px;
 
   @media (max-width: 992px) {
     font-size: 1.5rem;
-    width: 145px;
   }
 `;
 
@@ -31,7 +30,7 @@ const ItemPrice = ({ product, intl }) => {
 
   return (
     <Container>
-      <LabelItem>{"Preço"}</LabelItem>
+      <LabelItem>{"Valor"}</LabelItem>
       <ItemPricing>{productPrice}</ItemPricing>
     </Container>
   );

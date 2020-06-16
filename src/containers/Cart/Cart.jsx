@@ -25,7 +25,10 @@ const StepsContainer = styled.div`
 const Title = styled.h1`
   color: #212121;
   font-size: 24px;
-  margin-left: 20px;
+`;
+
+const ItemsContainer = styled.div`
+  padding-left: 20px;
 `;
 
 const Cart = () => {
@@ -84,18 +87,20 @@ const Cart = () => {
         <StepsContainer>
           <Steps />
         </StepsContainer>
-        <Title>Resumo do pedido</Title>
-        <ul>
-          {stateCart.map((product, prodIndex) => (
-            <CartItem
-              key={product.uuid}
-              product={product}
-              prodIndex={prodIndex}
-              deleteItem={deleteItem}
-              updateAmount={updateAmount}
-            />
-          ))}
-        </ul>
+        <ItemsContainer>
+          <Title>Resumo do pedido</Title>
+          <ul>
+            {stateCart.map((product, prodIndex) => (
+              <CartItem
+                key={product.uuid}
+                product={product}
+                prodIndex={prodIndex}
+                deleteItem={deleteItem}
+                updateAmount={updateAmount}
+              />
+            ))}
+          </ul>
+        </ItemsContainer>
         {dontHaveItems && <EmptyCart />}
         {hasItems && (
           <CartFooter totalCart={totalCart} updateFilter={updateFilter} />

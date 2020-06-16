@@ -15,11 +15,31 @@ import ClosedStore from "assets/closed-store.svg";
 const DeliveryContainer = styled.div`
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 425px) {
+    width: 100%;
+  }
 `;
 
 const CouponContainer = styled.div`
   display: flex;
   align-items: flex-start;
+
+  @media (max-width: 425px) {
+    width: 100%;
+  }
+`;
+
+const CEPContainer = styled.div`
+  @media (max-width: 425px) {
+    width: 100%;
+  }
+`;
+
+const CouponInputContainer = styled.div`
+  @media (max-width: 425px) {
+    width: 100%;
+  }
 `;
 
 const redirectToCheckout = () => history.push("/checkout");
@@ -63,7 +83,7 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
 
   return (
     <>
-      <Grid cols="12" className="d-flex justify-content-between">
+      <Grid cols="12" className="d-flex justify-content-between flex-wrap">
         <DeliveryContainer>
           <p>Entrega:</p>
           <label>
@@ -94,7 +114,7 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
           </label>
           {delivery === "shipping-fee" && (
             <div style={{ display: "flex", alignItems: "flex-start" }}>
-              <div>
+              <CEPContainer>
                 <NumberFormat
                   label=""
                   name="cep"
@@ -104,7 +124,7 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
                   placeholder="Informe seu CEP"
                   customInput={Input}
                 />
-              </div>
+              </CEPContainer>
               <Button
                 styleType="tertiary"
                 value="Calcular"
@@ -114,10 +134,10 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
           )}
         </DeliveryContainer>
         <CouponContainer>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div>
+          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
+            <CouponInputContainer>
               <Input label="Cupom de desconto:" />
-            </div>
+            </CouponInputContainer>
             <Button styleType="tertiary" value="Aplicar" onClick={() => {}} />
           </div>
         </CouponContainer>
