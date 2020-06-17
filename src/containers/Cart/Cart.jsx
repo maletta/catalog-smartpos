@@ -86,7 +86,7 @@ const Cart = () => {
     <Container className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
         <StepsContainer>
-          <Steps />
+          <Steps activeIndex={0} />
         </StepsContainer>
         <ItemsContainer>
           <Title>Resumo do pedido</Title>

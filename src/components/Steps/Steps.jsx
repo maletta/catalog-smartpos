@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import lodash from "lodash";
 import {
   faShoppingBag,
   faEdit,
@@ -31,18 +32,26 @@ const Cont = styled.div`
 `;
 
 const stepsInfo = [
-  { icon: faShoppingBag, text: "Resumo de compra", isActive: true },
+  { icon: faShoppingBag, text: "Resumo de compra", isActive: false },
   { icon: faEdit, text: "Dados cadastrais", isActive: false },
   { icon: faHome, text: "Endereço", isActive: false },
   { icon: faDonate, text: "Pagamento", isActive: false },
   { icon: faThumbsUp, text: "Conclusão", isActive: false }
 ];
 
-const steps = stepsInfo.map(({ icon, text, isActive }) => (
-  <Step key={text} icon={icon} text={text} isActive={isActive} />
-));
+const Steps = ({ activeIndex }) => {
+  const [stateSteps, setStateStep] = useState(stepsInfo);
 
-const Steps = () => {
+  useEffect(() => {
+    const cloneSteps = lodash.cloneDeep(stateSteps);
+    cloneSteps[activeIndex].isActive = true;
+    setStateStep(cloneSteps);
+  }, []);
+
+  const steps = stateSteps.map(({ icon, text, isActive }) => (
+    <Step key={text} icon={icon} text={text} isActive={isActive} />
+  ));
+
   return (
     <StepsContainer>
       <Line />
