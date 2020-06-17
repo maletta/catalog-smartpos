@@ -48,7 +48,7 @@ const CouponInputContainer = styled.div`
   }
 `;
 
-const redirectToCheckout = () => history.push("/checkout");
+const redirectToRegisterData = () => history.push("/register-data");
 const redirectToHome = () => history.push("/");
 
 const showStoreIsClosedModal = shop => {
@@ -76,7 +76,7 @@ const showStoreIsClosedModal = shop => {
 
 const verifyRedirect = shop => {
   if (shop.allowOrderOutsideBusinessHours || !shop.closeNow) {
-    redirectToCheckout();
+    redirectToRegisterData();
     return;
   }
 
