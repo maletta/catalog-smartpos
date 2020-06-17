@@ -67,10 +67,13 @@ const PurchasePrices = ({
             <span>{formatValue(deliveryCost.cost)}</span>
           </ProductRow>
         )}
-        <CouponRow>
-          <span>Cupom:</span>
-          <span>{formatValue(couponValue)}</span>
-        </CouponRow>
+        {/* Precisa esperar a API do cupom ficar pronta */}
+        {process.env.NODE_ENV === "development" && (
+          <CouponRow>
+            <span>Cupom:</span>
+            <span>{formatValue(couponValue)}</span>
+          </CouponRow>
+        )}
         <TotalRow>
           <span>Total:</span>
           <span>{formatValue(positiveTotal)}</span>

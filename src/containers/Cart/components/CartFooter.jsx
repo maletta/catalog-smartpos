@@ -165,14 +165,19 @@ const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
             </div>
           )}
         </DeliveryContainer>
-        <CouponContainer>
-          <div style={{ display: "flex", alignItems: "center", width: "100%" }}>
-            <CouponInputContainer>
-              <Input label="Cupom de desconto:" />
-            </CouponInputContainer>
-            <Button styleType="tertiary" value="Aplicar" onClick={() => {}} />
-          </div>
-        </CouponContainer>
+        {/* Precisa esperar a API do cupom ficar pronta */}
+        {process.env.NODE_ENV === "development" && (
+          <CouponContainer>
+            <div
+              style={{ display: "flex", alignItems: "center", width: "100%" }}
+            >
+              <CouponInputContainer>
+                <Input label="Cupom de desconto:" />
+              </CouponInputContainer>
+              <Button styleType="tertiary" value="Aplicar" onClick={() => {}} />
+            </div>
+          </CouponContainer>
+        )}
       </Grid>
       <Grid cols="12" className="d-flex justify-content-end mb-4 pt-5">
         <Button
