@@ -191,7 +191,7 @@ const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
             redirectToHome();
           }}
         />
-        <Button value="Finalizar pedido" onClick={() => verifyRedirect(shop)} />
+        <Button value="Próximo" onClick={() => verifyRedirect(shop)} />
       </Grid>
     </>
   );
