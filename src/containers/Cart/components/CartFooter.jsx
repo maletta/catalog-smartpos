@@ -83,25 +83,12 @@ const verifyRedirect = shop => {
   showStoreIsClosedModal(shop);
 };
 
-const costDeliveryApi = (cep, shopId, setDeliveryCost, propsForm) => {
-  checkingDelivery(cep, shopId).then(response => {
-    console.log(response);
-    setDeliveryCost(response.data);
-    // setCostDelivery({
-    //   ...response.data,
-    //   cost: shop.deliveryMode !== "PICKUP" ? response.data.cost : 0
-    // });
-    // propsForm.setFieldValue(
-    //   "pickup",
-    //   !response.data.isDeliverable && propsForm
-    // );
-  });
-};
-
-const CartFooter = ({ intl, totalCart, updateFilter }) => {
+const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
   const { shop } = useContext(ShopContext);
   const [delivery, setDelivery] = useState("retrieve");
-  const [deliveryCost, setDeliveryCost] = useState({});
+  const [cep, setCEP] = useState("");
+  const [loadingDeliveryCost, setLoadingDeliveryCost] = useState(false);
+  const [flagDelivery, setFlagDelivery] = useState(false);
 
   return (
     <>
@@ -145,8 +132,15 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
                   format="#####-###"
                   placeholder="Informe seu CEP"
                   customInput={Input}
+                  onChange={({ target }) => {
+                    const cepWithoutDash = target.value.replace("-", "");
+                    const cepWithoutWhiteSpace = cepWithoutDash.trim();
+                    setCEP(cepWithoutWhiteSpace);
+                  }}
                 />
-                {deliveryCost.isDeliverable
+                {!flagDelivery
+                  ? ""
+                  : deliveryCost.isDeliverable
                   ? "O frete custa " +
                     intl.formatNumber(deliveryCost.cost, {
                       style: "currency",
@@ -157,11 +151,15 @@ const CartFooter = ({ intl, totalCart, updateFilter }) => {
               <Button
                 styleType="tertiary"
                 value="Calcular"
-                onClick={() => {
-                  // costDeliveryApi("13090749", shop.id, setDeliveryCost);
-                  // costDeliveryApi("08226021", shop.id, setDeliveryCost);
-                  costDeliveryApi("08226020", shop.id, setDeliveryCost);
-                  // costDeliveryApi("04180112", shop.id, setDeliveryCost);
+                isLoading={loadingDeliveryCost}
+                onClick={async () => {
+                  setLoadingDeliveryCost(true);
+
+                  const response = await checkingDelivery(cep, shop.id);
+
+                  setDeliveryCost(response.data);
+                  setLoadingDeliveryCost(false);
+                  setFlagDelivery(true);
                 }}
               />
             </div>

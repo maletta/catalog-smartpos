@@ -41,8 +41,14 @@ const TotalRow = styled(PurchaseReviewRow)`
   font-weight: bold;
 `;
 
-const PurchasePrices = ({ basketCountCart, totalCart, couponValue, intl }) => {
-  const total = totalCart + couponValue;
+const PurchasePrices = ({
+  basketCountCart,
+  totalCart,
+  deliveryCost,
+  couponValue,
+  intl
+}) => {
+  const total = totalCart + couponValue + (deliveryCost.cost || 0);
   const positiveTotal = total > 0 ? total : 0;
   const formatValue = value =>
     intl.formatNumber(value, { style: "currency", currency: "BRL" });
@@ -55,10 +61,12 @@ const PurchasePrices = ({ basketCountCart, totalCart, couponValue, intl }) => {
           <span>Produtos ({basketCountCart}):</span>
           <span>{formatValue(totalCart)}</span>
         </ProductRow>
-        <ProductRow>
-          <span>Frete:</span>
-          <span>{formatValue(totalCart)}</span>
-        </ProductRow>
+        {deliveryCost.isDeliverable && (
+          <ProductRow>
+            <span>Frete:</span>
+            <span>{formatValue(deliveryCost.cost)}</span>
+          </ProductRow>
+        )}
         <CouponRow>
           <span>Cupom:</span>
           <span>{formatValue(couponValue)}</span>

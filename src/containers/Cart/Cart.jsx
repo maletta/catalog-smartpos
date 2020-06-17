@@ -38,6 +38,7 @@ const Cart = () => {
   const [stateCart, setStateCart] = useState([]);
   const [totalCart, setTotalCart] = useState(0);
   const [basketCountCart, setBasketCountCart] = useState(0);
+  const [deliveryCost, setDeliveryCost] = useState({});
 
   const deleteItem = uuid => {
     const newCart = stateCart.filter(item => item.uuid !== uuid);
@@ -103,13 +104,19 @@ const Cart = () => {
         </ItemsContainer>
         {dontHaveItems && <EmptyCart />}
         {hasItems && (
-          <CartFooter totalCart={totalCart} updateFilter={updateFilter} />
+          <CartFooter
+            totalCart={totalCart}
+            updateFilter={updateFilter}
+            deliveryCost={deliveryCost}
+            setDeliveryCost={setDeliveryCost}
+          />
         )}
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={basketCountCart}
           totalCart={totalCart}
+          deliveryCost={deliveryCost}
           couponValue={-5}
         />
       </Grid>
