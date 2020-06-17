@@ -6,9 +6,9 @@ import Grid from "components/Grid";
 import Row from "components/Row";
 import Steps from "components/Steps";
 import SectionTitle from "components/SectionTitle";
-import SelectDropDown from "components/Form/SelectDropDown";
 import Input from "components/Form/Input";
 import MaskedNumberInput from "components/Form/MaskedNumberInput";
+import Button from "components/Form/Button";
 import PurchasePrices from "containers/Cart/components/PurchasePrices";
 
 const Container = styled.div`
@@ -20,19 +20,9 @@ const StepsContainer = styled.div`
   width: 100%;
 `;
 
-const personType = [
-  {
-    label: "Pessoa física",
-    value: "FISICA"
-  },
-  {
-    label: "Pessoa jurídica",
-    value: "JURIDICA"
-  }
-];
-
 const RegisterData = () => {
-  const [isNaturalPerson, setNaturalPerson] = useState(true);
+  const [personType, setPersonType] = useState("FISICA");
+  const isNaturalPerson = personType === "FISICA";
 
   return (
     <Container className="row">
@@ -56,11 +46,11 @@ const RegisterData = () => {
                     <input
                       style={{ marginRight: "5px" }}
                       type="radio"
-                      name="tipoCadastro"
+                      name="personType"
                       value="FISICA"
                       // checked={delivery === "retrieve"}
                       onChange={({ target }) => {
-                        // setDelivery(target.value);
+                        setPersonType(target.value);
                       }}
                     />
                     {"Física"}
@@ -70,11 +60,11 @@ const RegisterData = () => {
                     <input
                       style={{ marginRight: "5px" }}
                       type="radio"
-                      name="tipoCadastro"
+                      name="personType"
                       value="JURIDICA"
                       // checked={delivery === "shipping-fee"}
                       onChange={({ target }) => {
-                        // setDelivery(target.value);
+                        setPersonType(target.value);
                       }}
                     />
                     {"Jurídica"}
@@ -82,10 +72,7 @@ const RegisterData = () => {
                   {/* 
                   <SelectDropDown
                     id="tipoPessoa"
-                    options={personType}
                     defaultValue={propsForm.values.tipoPessoa}
-                    getOptionLabel={label => label.label}
-                    getOptionValue={option => option.value}
                     onChange={event => {
                       propsForm.setFieldValue("tipoPessoa", event);
                       setNaturalPerson(event.value === "FISICA");
@@ -184,6 +171,9 @@ const RegisterData = () => {
             </Form>
           )}
         />
+        <Row className="d-flex justify-content-end pb-4 pr-3">
+          <Button value="Próximo" />
+        </Row>
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
