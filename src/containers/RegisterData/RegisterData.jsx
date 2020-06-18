@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Formik, Form, Field } from "formik";
 
+import history from "utils/history";
 import Grid from "components/Grid";
 import Row from "components/Row";
 import Steps from "components/Steps";
@@ -172,7 +173,7 @@ const RegisterData = () => {
           )}
         />
         <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button value="Próximo" />
+          <Button value="Próximo" onClick={() => history.push("/address")} />
         </Row>
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
