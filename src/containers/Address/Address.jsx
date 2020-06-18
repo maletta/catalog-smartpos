@@ -192,7 +192,7 @@ const RegisterData = () => {
           )}
         />
         <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button value="Próximo" />
+          <Button value="Próximo" onClick={() => history.push("/payment")} />
         </Row>
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
