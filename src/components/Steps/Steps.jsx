@@ -44,8 +44,13 @@ const Steps = ({ activeIndex }) => {
 
   useEffect(() => {
     const cloneSteps = lodash.cloneDeep(stateSteps);
-    cloneSteps[activeIndex].isActive = true;
-    setStateStep(cloneSteps);
+    const activeSteps = cloneSteps.map((step, index) => {
+      if (index <= activeIndex) {
+        step.isActive = true;
+      }
+      return step;
+    });
+    setStateStep(activeSteps);
   }, []);
 
   const steps = stateSteps.map(({ icon, text, isActive }) => (

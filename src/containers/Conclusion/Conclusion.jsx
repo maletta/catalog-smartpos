@@ -77,10 +77,6 @@ const Footer = styled.div`
   gap: 50px;
 `;
 
-const FooterCard = styled.div`
-  width: 200px;
-`;
-
 const Conclusion = () => {
   return (
     <Container className="row">
