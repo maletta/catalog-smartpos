@@ -348,7 +348,7 @@ const RegisterData = ({ intl }) => {
     <Container className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
         <StepsContainer>
-          <Steps activeIndex={2} />
+          <Steps activeIndex={3} />
         </StepsContainer>
         <Formik
           onSubmit={submitCheckout}
@@ -850,7 +850,10 @@ const RegisterData = ({ intl }) => {
           )}
         />
         <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button value="Próximo" />
+          <Button
+            value="Finalizar compra"
+            onClick={() => history.push("/conclusion")}
+          />
         </Row>
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>

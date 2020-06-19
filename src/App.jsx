@@ -20,6 +20,7 @@ import OrderPlaced from "containers/OrderPlaced";
 import RegisterData from "containers/RegisterData";
 import Address from "containers/Address";
 import Payment from "containers/Payment";
+import Conclusion from "containers/Conclusion";
 
 import history from "utils/history";
 
@@ -242,7 +243,8 @@ const App = () => {
                   <Route path="/register-data" exact component={RegisterData} />
                   <Route path="/address" exact component={Address} />
                   <Route path="/payment" exact component={Payment} />
-                  <Route path="/checkout" exact component={Checkout} />
+                  <Route path="/conclusion" exact component={Conclusion} />
+                  {/* <Route path="/checkout" exact component={Checkout} /> */}
                   <Route
                     path="/pedido-realizado"
                     exact
