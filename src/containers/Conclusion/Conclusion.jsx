@@ -1,13 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
 import history from "utils/history";
 import Grid from "components/Grid";
 import Row from "components/Row";
 import Steps from "components/Steps";
-import SectionTitle from "components/SectionTitle";
 import Button from "components/Form/Button";
-import PurchasePrices from "containers/Cart/components/PurchasePrices";
 
 const Container = styled.div`
   background: #fff;
@@ -73,8 +71,14 @@ const Divider = styled.hr`
 `;
 
 const Footer = styled.div`
+  padding-top: 20px;
   display: flex;
   flex-wrap: wrap;
+  gap: 50px;
+`;
+
+const FooterCard = styled.div`
+  width: 200px;
 `;
 
 const Conclusion = () => {
@@ -128,24 +132,30 @@ const Conclusion = () => {
         <Footer>
           <div>
             <h4>{"Dados Pessoais:"}</h4>
-            <p>
-              {
-                "Danielle Peredelski CPF: 424.360.598-02 danielle@netpos.com.br Telefone: (11) 98028-2222"
-              }
-            </p>
+            <span>{"Danielle Peredelski"}</span>
+            <br />
+            <span>{"CPF: 424.360.598-02"}</span>
+            <br />
+            <span>{"danielle@netpos.com.br"}</span>
+            <br />
+            <span>{"Telefone: (11) 98028-2222"}</span>
           </div>
           <div>
-            <h4>{"Endereço::"}</h4>
-            <p>{"Rua Cavour, 399 Vila Prudente / SP CEP: 03136-010"}</p>
+            <h4>{"Endereço:"}</h4>
+            <span>{"Rua Cavour, 399"}</span>
+            <br />
+            <span>{"Vila Prudente / SP"}</span>
+            <br />
+            <span>{"CEP: 03136-010"}</span>
+            <br />
           </div>
           <div>
-            <h4>{"Pagamento::"}</h4>
+            <h4>{"Pagamento:"}</h4>
             <p>{"Cartão de crédito"}</p>
           </div>
         </Footer>
-
         <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button value="Próximo" onClick={() => history.push("/payment")} />
+          <Button value="Voltar" onClick={() => history.push("/payment")} />
         </Row>
       </Grid>
     </Container>
