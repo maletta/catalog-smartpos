@@ -9,7 +9,6 @@ import moment from "moment";
 import GridProducts from "containers/GridProducts";
 import MainContainer from "containers/mainContainer";
 import Cart from "containers/Cart";
-import Checkout from "containers/Checkout";
 import NotFound from "NotFound";
 import Spinner from "components/Spinner";
 import Footer from "components/Footer";

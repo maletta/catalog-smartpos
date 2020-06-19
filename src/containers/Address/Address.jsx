@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { Formik, Form, Field } from "formik";
 import axios from "axios";
@@ -11,7 +11,6 @@ import SectionTitle from "components/SectionTitle";
 import Input from "components/Form/Input";
 import MaskedNumberInput from "components/Form/MaskedNumberInput";
 import Button from "components/Form/Button";
-import TextArea from "components/Form/TextArea";
 import SelectDropDown from "components/Form/SelectDropDown";
 import PurchasePrices from "containers/Cart/components/PurchasePrices";
 
@@ -178,15 +177,6 @@ const RegisterData = () => {
                     disabled
                   />
                 </Grid>
-                {/* <Grid cols="12">
-                  <Field
-                    inputId="observacao"
-                    label="Observação"
-                    name="observacao"
-                    component={TextArea}
-                    rows={3}
-                  />
-                </Grid> */}
               </Row>
             </Form>
           )}

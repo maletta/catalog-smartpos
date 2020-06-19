@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import styled from "styled-components";
 import { Formik, Form, Field } from "formik";
-import { injectIntl, intlShape } from "react-intl";
+import { injectIntl } from "react-intl";
 import axios from "axios";
 import NumberFormat from "react-number-format";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -12,11 +12,11 @@ import history from "utils/history";
 import Grid from "components/Grid";
 import Row from "components/Row";
 import Steps from "components/Steps";
+import TextArea from "components/Form/TextArea";
 import SectionTitle from "components/SectionTitle";
 import Input from "components/Form/Input";
 import MaskedNumberInput from "components/Form/MaskedNumberInput";
 import Button from "components/Form/Button";
-import TextArea from "components/Form/TextArea";
 import SelectDropDown from "components/Form/SelectDropDown";
 import PurchasePrices from "containers/Cart/components/PurchasePrices";
 import ShopContext from "contexts/ShopContext";
@@ -450,6 +450,15 @@ const RegisterData = ({ intl }) => {
                         />
                       </Grid>
                     )}
+                    <Grid cols="12">
+                      <Field
+                        inputId="observacao"
+                        label="Observação"
+                        name="observacao"
+                        component={TextArea}
+                        rows={3}
+                      />
+                    </Grid>
                     {propsForm.values.gatwayPagseguro &&
                       shop.allowPayOnline === 1 &&
                       verifyMaxAndMinValue(
