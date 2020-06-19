@@ -21,7 +21,16 @@ const StepsContainer = styled.div`
 const FlexRow = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: flex-end;
   flex-wrap: wrap;
+`;
+
+const FlexRowCoupon = styled(FlexRow)`
+  color: #5bc057;
+`;
+
+const FlexRowFinal = styled(FlexRow)`
+  font-weight: bold;
 `;
 
 const SuccessMessage = styled.span`
@@ -44,10 +53,34 @@ const ThanksMessage = styled.p`
   font-weight: bold;
 `;
 
+const Receipt = styled.div`
+  background-color: hsla(0, 0%, 43%, 0.1);
+  padding: 7px 14px;
+`;
+
+const ReceiptNumber = styled.p`
+  margin-bottom: 0;
+`;
+
+const ReceiptObservation = styled(ReceiptNumber)`
+  margin-top: 15px;
+`;
+
+const ReceiptCode = styled.h3``;
+
+const Divider = styled.hr`
+  border: 1px solid #fff;
+`;
+
+const Footer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
 const Conclusion = () => {
   return (
     <Container className="row">
-      <Grid cols="12 12 12 8 8" className="pt-3">
+      <Grid cols="12 12 12 12 12" className="pt-3">
         <StepsContainer>
           <Steps activeIndex={4} />
         </StepsContainer>
@@ -62,57 +95,58 @@ const Conclusion = () => {
             "Obrigada pela compra! Você receberá todos os dados da sua contra no email: xxx@gmail.com"
           }
         </ThanksMessage>
-        <p>{"Número do pedido:"}</p>
-        <h2>{"PN-24"}</h2>
-        <div>
-          <span>{"Pascal o coelho"}</span>
-          <span>{"R$ 35,00"}</span>
-        </div>
-        <div>
-          <span>{"Cupom de desconto"}</span>
-          <span>{"R$ -5,00"}</span>
-        </div>
-        <hr />
-        <div>
-          <span>{"Total"}</span>
-          <span>{"R$ 30,00"}</span>
-        </div>
-        <div>
-          <span>{"Entrega"}</span>
-          <span>{"R$ 0,00"}</span>
-        </div>
-        <div>
-          <span>{"Final:"}</span>
-          <span>{"R$ 30,00"}</span>
-        </div>
-        <p>{"* Retirar no estabelecimento"}</p>
-        <div>
-          <h4>{"Dados Pessoais:"}</h4>
-          <p>
-            {
-              "Danielle Peredelski CPF: 424.360.598-02 danielle@netpos.com.br Telefone: (11) 98028-2222"
-            }
-          </p>
-          <h4>{"Endereço::"}</h4>
-          <p>{"Rua Cavour, 399 Vila Prudente / SP CEP: 03136-010"}</p>
-          <h4>{"Pagamento::"}</h4>
-          <p>{"Cartão de crédito"}</p>
-        </div>
+
+        <Receipt>
+          <ReceiptNumber>{"Número do pedido:"}</ReceiptNumber>
+          <ReceiptCode>{"PN-24"}</ReceiptCode>
+          <FlexRow>
+            <span>{"Pascal o coelho"}</span>
+            <span>{"R$ 35,00"}</span>
+          </FlexRow>
+          <FlexRowCoupon>
+            <span>{"Cupom de desconto"}</span>
+            <span>{"R$ -5,00"}</span>
+          </FlexRowCoupon>
+          <Divider />
+          <FlexRow>
+            <span>{"Total"}</span>
+            <span>{"R$ 30,00"}</span>
+          </FlexRow>
+          <FlexRow>
+            <span>{"Entrega"}</span>
+            <span>{"R$ 0,00"}</span>
+          </FlexRow>
+          <Divider />
+          <FlexRowFinal>
+            <span>{"Final:"}</span>
+            <span>{"R$ 30,00"}</span>
+          </FlexRowFinal>
+          <ReceiptObservation>
+            {"* Retirar no estabelecimento"}
+          </ReceiptObservation>
+        </Receipt>
+        <Footer>
+          <div>
+            <h4>{"Dados Pessoais:"}</h4>
+            <p>
+              {
+                "Danielle Peredelski CPF: 424.360.598-02 danielle@netpos.com.br Telefone: (11) 98028-2222"
+              }
+            </p>
+          </div>
+          <div>
+            <h4>{"Endereço::"}</h4>
+            <p>{"Rua Cavour, 399 Vila Prudente / SP CEP: 03136-010"}</p>
+          </div>
+          <div>
+            <h4>{"Pagamento::"}</h4>
+            <p>{"Cartão de crédito"}</p>
+          </div>
+        </Footer>
 
         <Row className="d-flex justify-content-end pb-4 pr-3">
           <Button value="Próximo" onClick={() => history.push("/payment")} />
         </Row>
-      </Grid>
-      <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
-        <PurchasePrices
-          // basketCountCart={basketCountCart}
-          // totalCart={totalCart}
-          // deliveryCost={deliveryCost}
-          basketCountCart={0}
-          totalCart={0}
-          deliveryCost={{}}
-          couponValue={-5}
-        />
       </Grid>
     </Container>
   );
