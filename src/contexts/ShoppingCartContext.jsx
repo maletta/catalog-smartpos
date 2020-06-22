@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 const ShoppingCartContext = createContext();
 
 export const ShoppingCartProvider = ({ children }) => {
-  const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+  const prevCart = JSON.parse(localStorage.getItem("cart") || "[]");
 
   const basketCount = prevCart.reduce((count, val) => (count + val.quantity), 0);
 

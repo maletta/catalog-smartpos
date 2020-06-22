@@ -811,7 +811,7 @@ const Checkout = ({ intl }) => {
                         )}
                       {propsForm.values.gatwayPagseguro &&
                         totalCar > shop.maxValuePayOnline &&
-                          shop.maxValuePayOnline !== 0 && (
+                        shop.maxValuePayOnline !== 0 && (
                           <Alert
                             text={`Valor máximo para pagamento on-line ${intl.formatNumber(
                               shop.maxValuePayOnline,

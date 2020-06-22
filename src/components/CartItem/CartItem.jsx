@@ -45,7 +45,9 @@ const CartItem = props => {
             prodIndex={prodIndex}
           />
           <ItemPrice product={product} />
-          {window.outerWidth > 768 && <DeleteButton onClick={deleteItem} />}
+          {window.outerWidth > 768 && (
+            <DeleteButton onClick={() => deleteItem(product.uuid)} />
+          )}
         </ItemFooterContainer>
       </div>
     </ListItem>

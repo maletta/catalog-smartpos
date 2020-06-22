@@ -33,7 +33,8 @@ const ItemsContainer = styled.div`
 
 const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
+  console.log({ shoppingCart });
 
   const [stateCart, setStateCart] = useState([]);
   const [totalCart, setTotalCart] = useState(0);
@@ -41,9 +42,12 @@ const Cart = () => {
   const [deliveryCost, setDeliveryCost] = useState({});
 
   const deleteItem = uuid => {
+    console.log({ uuid });
     const newCart = stateCart.filter(item => item.uuid !== uuid);
-    setStateCart(newCart);
+    console.log({ stateCart });
+    console.log({ newCart });
     localStorage.setItem("cart", JSON.stringify(newCart));
+    setStateCart(newCart);
   };
 
   const updateAmount = (quantity, itemIndex) => {
