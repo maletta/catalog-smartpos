@@ -42,10 +42,10 @@ const Cart = () => {
   const [deliveryCost, setDeliveryCost] = useState({});
 
   const deleteItem = uuid => {
-    console.log({ uuid });
+    // console.log({ uuid });
     const newCart = stateCart.filter(item => item.uuid !== uuid);
-    console.log({ stateCart });
-    console.log({ newCart });
+    // console.log({ stateCart });
+    // console.log({ newCart });
     localStorage.setItem("cart", JSON.stringify(newCart));
     setStateCart(newCart);
   };
@@ -53,9 +53,12 @@ const Cart = () => {
   const updateAmount = (quantity, itemIndex) => {
     const updateAmountCart = lodash.cloneDeep(stateCart);
     updateAmountCart[itemIndex].quantity = quantity;
+    // console.log(updateAmountCart[itemIndex]);
+    // console.log(updateAmountCart[itemIndex].quantity);
 
-    setStateCart(updateAmountCart);
     localStorage.setItem("cart", JSON.stringify(updateAmountCart));
+    setStateCart(updateAmountCart);
+    updateShoppingCart({ cart: updateAmountCart });
   };
 
   useEffect(() => {

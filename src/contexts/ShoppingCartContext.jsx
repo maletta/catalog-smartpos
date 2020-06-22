@@ -1,18 +1,23 @@
-import React, { createContext, useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { createContext, useState } from "react";
+import PropTypes from "prop-types";
 
 const ShoppingCartContext = createContext();
 
 export const ShoppingCartProvider = ({ children }) => {
   const prevCart = JSON.parse(localStorage.getItem("cart") || "[]");
+  // console.log({ prevCart });
 
-  const basketCount = prevCart.reduce((count, val) => (count + val.quantity), 0);
+  const basketCount = prevCart.reduce((count, val) => count + val.quantity, 0);
+  // console.log({ basketCount });
 
   const [shoppingCart, setShoppingCart] = useState({
-    basketCount,
+    cart: prevCart,
+    cep: "",
+    deliveryFee: null,
+    basketCount
   });
 
-  const updateShoppingCart = (newShop) => {
+  const updateShoppingCart = newShop => {
     setShoppingCart(prevState => ({ ...prevState, ...newShop }));
   };
 
@@ -26,8 +31,8 @@ export const ShoppingCartProvider = ({ children }) => {
 ShoppingCartProvider.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).isRequired,
+    PropTypes.node
+  ]).isRequired
 };
 
 export default ShoppingCartContext;

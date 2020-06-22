@@ -12,6 +12,8 @@ import MaskedNumberInput from "components/Form/MaskedNumberInput";
 import Button from "components/Form/Button";
 import PurchasePrices from "containers/Cart/components/PurchasePrices";
 
+import registerSchema from "./registerSchema";
+
 const Container = styled.div`
   background: #fff;
   padding-right: 0;
@@ -33,8 +35,7 @@ const RegisterData = () => {
         </StepsContainer>
         <Formik
           // onSubmit={submitCheckout}
-          // initialValues={initialValues}
-          // validationSchema={checkoutSchema(isNaturalPerson, offlinePayment)}
+          validationSchema={registerSchema(isNaturalPerson)}
           render={propsForm => (
             <Form>
               <Row>
@@ -49,7 +50,7 @@ const RegisterData = () => {
                       type="radio"
                       name="personType"
                       value="FISICA"
-                      // checked={delivery === "retrieve"}
+                      checked={personType === "FISICA"}
                       onChange={({ target }) => {
                         setPersonType(target.value);
                       }}
@@ -63,7 +64,7 @@ const RegisterData = () => {
                       type="radio"
                       name="personType"
                       value="JURIDICA"
-                      // checked={delivery === "shipping-fee"}
+                      checked={personType === "JURIDICA"}
                       onChange={({ target }) => {
                         setPersonType(target.value);
                       }}

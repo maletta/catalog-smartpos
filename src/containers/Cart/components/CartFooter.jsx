@@ -12,6 +12,7 @@ import Grid from "components/Grid";
 import history from "utils/history";
 import ShopContext from "contexts/ShopContext";
 import ClosedStore from "assets/closed-store.svg";
+import ShoppingCartContext from "contexts/ShoppingCartContext";
 
 const checkingDelivery = (locationCustomer, storeID) =>
   axios.get(
@@ -85,6 +86,7 @@ const verifyRedirect = shop => {
 
 const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
   const { shop } = useContext(ShopContext);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
   const [delivery, setDelivery] = useState("retrieve");
   const [cep, setCEP] = useState("");
   const [loadingDeliveryCost, setLoadingDeliveryCost] = useState(false);
@@ -136,6 +138,7 @@ const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
                     const cepWithoutDash = target.value.replace("-", "");
                     const cepWithoutWhiteSpace = cepWithoutDash.trim();
                     setCEP(cepWithoutWhiteSpace);
+                    updateShoppingCart({ cep: cepWithoutWhiteSpace });
                   }}
                 />
                 {!flagDelivery
@@ -158,6 +161,7 @@ const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
                   const response = await checkingDelivery(cep, shop.id);
 
                   setDeliveryCost(response.data);
+                  updateShoppingCart({ deliveryFee: response.data });
                   setLoadingDeliveryCost(false);
                   setFlagDelivery(true);
                 }}
