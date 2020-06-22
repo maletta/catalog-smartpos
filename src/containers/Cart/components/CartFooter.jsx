@@ -1,23 +1,22 @@
-import React, { useContext, useState } from "react";
-import Swal from "sweetalert2";
-import { injectIntl } from "react-intl";
-import styled from "styled-components";
-import NumberFormat from "react-number-format";
-import axios from "axios";
+import React, { useContext, useState } from 'react';
+import Swal from 'sweetalert2';
+import { injectIntl } from 'react-intl';
+import styled from 'styled-components';
+import NumberFormat from 'react-number-format';
+import axios from 'axios';
 
-import Button from "components/Form/Button";
-import Input from "components/Form/Input";
+import Button from 'components/Form/Button';
+import Input from 'components/Form/Input';
 // import Input from "components/Form/";
-import Grid from "components/Grid";
-import history from "utils/history";
-import ShopContext from "contexts/ShopContext";
-import ClosedStore from "assets/closed-store.svg";
-import ShoppingCartContext from "contexts/ShoppingCartContext";
+import Grid from 'components/Grid';
+import history from 'utils/history';
+import ShopContext from 'contexts/ShopContext';
+import ClosedStore from 'assets/closed-store.svg';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
-const checkingDelivery = (locationCustomer, storeID) =>
-  axios.get(
-    `${process.env.REACT_APP_MAIN_API}/v1/loja/${storeID}/frete/${locationCustomer}`
-  );
+const checkingDelivery = (locationCustomer, storeID) => axios.get(
+  `${process.env.REACT_APP_MAIN_API}/v1/loja/${storeID}/frete/${locationCustomer}`,
+);
 
 const DeliveryContainer = styled.div`
   display: flex;
@@ -49,33 +48,33 @@ const CouponInputContainer = styled.div`
   }
 `;
 
-const redirectToRegisterData = () => history.push("/register-data");
-const redirectToHome = () => history.push("/");
+const redirectToRegisterData = () => history.push('/register-data');
+const redirectToHome = () => history.push('/');
 
-const showStoreIsClosedModal = shop => {
+const showStoreIsClosedModal = (shop) => {
   Swal.fire({
     html: `<div>
     <div><img src="${ClosedStore}"></div>
     <span class="foradohorario-titulo"> 
     ${
-      shop.today.closed
-        ? "Estabelecimento fechado!"
-        : `Este estabelecimento abre entre:
+  shop.today.closed
+    ? 'Estabelecimento fechado!'
+    : `Este estabelecimento abre entre:
       ${shop.today.hours.map(
-        itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`
-      )}`
-    }
+    itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`,
+  )}`
+}
     </span>
     <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
     </div>`,
     showConfirmButton: true,
-    confirmButtonColor: "var(-color--primary)",
+    confirmButtonColor: 'var(-color--primary)',
     showCloseButton: true,
-    onClose: redirectToHome
+    onClose: redirectToHome,
   });
 };
 
-const verifyRedirect = shop => {
+const verifyRedirect = (shop) => {
   if (shop.allowOrderOutsideBusinessHours || !shop.closeNow) {
     redirectToRegisterData();
     return;
@@ -84,11 +83,13 @@ const verifyRedirect = shop => {
   showStoreIsClosedModal(shop);
 };
 
-const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
+const CartFooter = ({
+  intl, updateFilter, deliveryCost, setDeliveryCost,
+}) => {
   const { shop } = useContext(ShopContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
-  const [delivery, setDelivery] = useState("retrieve");
-  const [cep, setCEP] = useState("");
+  const [delivery, setDelivery] = useState('retrieve');
+  const [cep, setCEP] = useState('');
   const [loadingDeliveryCost, setLoadingDeliveryCost] = useState(false);
   const [flagDelivery, setFlagDelivery] = useState(false);
 
@@ -99,32 +100,32 @@ const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
           <p>Entrega:</p>
           <label>
             <input
-              style={{ marginRight: "5px" }}
+              style={{ marginRight: '5px' }}
               type="radio"
               name="delivery"
               value="retrieve"
-              checked={delivery === "retrieve"}
+              checked={delivery === 'retrieve'}
               onChange={({ target }) => {
                 setDelivery(target.value);
               }}
             />
-            {"Retirar no local"}
+            Retirar no local
           </label>
           <label>
             <input
-              style={{ marginRight: "5px" }}
+              style={{ marginRight: '5px' }}
               type="radio"
               name="delivery"
               value="shipping-fee"
-              checked={delivery === "shipping-fee"}
+              checked={delivery === 'shipping-fee'}
               onChange={({ target }) => {
                 setDelivery(target.value);
               }}
             />
-            {"Calcular frete"}
+            Calcular frete
           </label>
-          {delivery === "shipping-fee" && (
-            <div style={{ display: "flex", alignItems: "flex-start" }}>
+          {delivery === 'shipping-fee' && (
+            <div style={{ display: 'flex', alignItems: 'flex-start' }}>
               <CEPContainer>
                 <NumberFormat
                   label=""
@@ -135,21 +136,21 @@ const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
                   placeholder="Informe seu CEP"
                   customInput={Input}
                   onChange={({ target }) => {
-                    const cepWithoutDash = target.value.replace("-", "");
+                    const cepWithoutDash = target.value.replace('-', '');
                     const cepWithoutWhiteSpace = cepWithoutDash.trim();
                     setCEP(cepWithoutWhiteSpace);
                     updateShoppingCart({ cep: cepWithoutWhiteSpace });
                   }}
                 />
                 {!flagDelivery
-                  ? ""
+                  ? ''
                   : deliveryCost.isDeliverable
-                  ? "O frete custa " +
-                    intl.formatNumber(deliveryCost.cost, {
-                      style: "currency",
-                      currency: "BRL"
-                    })
-                  : "Não entrega na sua região"}
+                    ? `O frete custa ${
+                      intl.formatNumber(deliveryCost.cost, {
+                        style: 'currency',
+                        currency: 'BRL',
+                      })}`
+                    : 'Não entrega na sua região'}
               </CEPContainer>
               <Button
                 styleType="tertiary"
@@ -170,10 +171,10 @@ const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
           )}
         </DeliveryContainer>
         {/* Precisa esperar a API do cupom ficar pronta */}
-        {process.env.NODE_ENV === "development" && (
+        {process.env.NODE_ENV === 'development' && (
           <CouponContainer>
             <div
-              style={{ display: "flex", alignItems: "center", width: "100%" }}
+              style={{ display: 'flex', alignItems: 'center', width: '100%' }}
             >
               <CouponInputContainer>
                 <Input label="Cupom de desconto:" />
@@ -192,10 +193,10 @@ const CartFooter = ({ intl, updateFilter, deliveryCost, setDeliveryCost }) => {
           onClick={() => {
             updateFilter({
               categoria: 0,
-              label: "Todas as categorias",
+              label: 'Todas as categorias',
               page: 1,
-              search: "",
-              categoryName: ""
+              search: '',
+              categoryName: '',
             });
             redirectToHome();
           }}

@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import styled from "styled-components";
-import lodash from "lodash";
+import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
+import lodash from 'lodash';
 import {
   faShoppingBag,
   faEdit,
   faHome,
   faDonate,
-  faThumbsUp
-} from "@fortawesome/free-solid-svg-icons";
+  faThumbsUp,
+} from '@fortawesome/free-solid-svg-icons';
 
-import Step from "./components/Step";
+import Step from './components/Step';
 
 const StepsContainer = styled.div`
   padding: 10px;
@@ -32,11 +32,11 @@ const Cont = styled.div`
 `;
 
 const stepsInfo = [
-  { icon: faShoppingBag, text: "Resumo de compra", isActive: false },
-  { icon: faEdit, text: "Dados cadastrais", isActive: false },
-  { icon: faHome, text: "Endereço", isActive: false },
-  { icon: faDonate, text: "Pagamento", isActive: false },
-  { icon: faThumbsUp, text: "Conclusão", isActive: false }
+  { icon: faShoppingBag, text: 'Resumo de compra', isActive: false },
+  { icon: faEdit, text: 'Dados cadastrais', isActive: false },
+  { icon: faHome, text: 'Endereço', isActive: false },
+  { icon: faDonate, text: 'Pagamento', isActive: false },
+  { icon: faThumbsUp, text: 'Conclusão', isActive: false },
 ];
 
 const Steps = ({ activeIndex }) => {

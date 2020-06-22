@@ -101,7 +101,7 @@ const OrderPlaced = ({ intl }) => {
             cols="12 12 12 12 9"
           >
             <TitlePage>
-              {'Seu pedido foi realizado com sucesso'}
+              Seu pedido foi realizado com sucesso
             </TitlePage>
             <Acknowledgment>
               {`Obrigado pela compra! Você receberá todos os dados da sua compra no e-mail: ${orderPlaced.email}`}
@@ -112,7 +112,7 @@ const OrderPlaced = ({ intl }) => {
               href={linkWhatsApp}
               target="blank"
             >
-              {'Enviar confirmação por WhatsApp.'}
+              Enviar confirmação por WhatsApp.
             </LinkToWhatsApp>
           </Grid>
         </Row>
@@ -124,7 +124,7 @@ const OrderPlaced = ({ intl }) => {
             <div style={{ background: '#f0f0f0' }}>
               <div className="ml-2 ml-md-4 mr-2 pb-1">
                 <NumberOrder>
-                  {'Número do pedido:'}
+                  Número do pedido:
                 </NumberOrder>
                 <CodeOrder>
                   {orderPlaced.orderName}
@@ -156,7 +156,7 @@ const OrderPlaced = ({ intl }) => {
                 </Ul>
                 {(orderPlaced.withdraw) && (
                   <p>
-                    {'* Retirar no estabelecimento'}
+                    * Retirar no estabelecimento
                   </p>
                 )}
               </div>
@@ -169,7 +169,7 @@ const OrderPlaced = ({ intl }) => {
             className="mt-2 mt-md-0"
           >
             <TitleCustomer>
-              {'Dados Pessoais:'}
+              Dados Pessoais:
             </TitleCustomer>
             <div>{orderPlaced.name}</div>
             <div>{`CPF: ${orderPlaced.documento}`}</div>
@@ -181,7 +181,7 @@ const OrderPlaced = ({ intl }) => {
             className="mt-2 mt-md-0"
           >
             <TitleCustomer>
-              {'Endereço:'}
+              Endereço:
             </TitleCustomer>
             <div>{`${orderPlaced.tipoLogradouro} ${orderPlaced.endereco}, ${orderPlaced.numero}`}</div>
             <div>{`${orderPlaced.bairro} / ${orderPlaced.estado}`}</div>
@@ -192,7 +192,7 @@ const OrderPlaced = ({ intl }) => {
             className="mt-2 mt-md-0"
           >
             <TitleCustomer>
-              {'Pagamento:'}
+              Pagamento:
             </TitleCustomer>
             {(orderPlaced.gatwayPagseguro) && (<div>{`Cartão de crédito ${inCash}`}</div>)}
             {(orderPlaced.offlinePayment) && (<div>Diretamente com o vendedor</div>)}

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+import React, { useState } from 'react';
+import styled from 'styled-components';
 
-import NoImage from "assets/no-image.png";
+import NoImage from 'assets/no-image.png';
 
 const Img = styled.img`
   height: 80px;

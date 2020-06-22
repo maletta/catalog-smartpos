@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const NoteIcon = styled.span`
   font-size: 1.2rem;
@@ -41,7 +41,7 @@ const NoteButton = ({ product }) => {
 };
 
 NoteButton.propTypes = {
-  product: PropTypes.object
+  product: PropTypes.object,
 };
 
 export default NoteButton;

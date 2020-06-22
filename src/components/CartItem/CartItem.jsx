@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-import ItemInfo from "./components/ItemInfo";
-import ItemCounter from "./components/ItemCounter";
-import ItemPrice from "./components/ItemPrice";
-import DeleteButton from "./components/DeleteButton";
+import ItemInfo from './components/ItemInfo';
+import ItemCounter from './components/ItemCounter';
+import ItemPrice from './components/ItemPrice';
+import DeleteButton from './components/DeleteButton';
 
 const ListItem = styled.li`
   display: flex;
@@ -29,15 +29,17 @@ const ItemFooterContainer = styled.div`
   justify-content: space-between;
 `;
 
-const CartItem = props => {
-  const { product, deleteItem, updateAmount, prodIndex } = props;
+const CartItem = (props) => {
+  const {
+    product, deleteItem, updateAmount, prodIndex,
+  } = props;
 
   return (
     <ListItem>
-      <div style={{ width: "100%" }}>
+      <div style={{ width: '100%' }}>
         <ItemInfo product={product} deleteItem={deleteItem} />
       </div>
-      <div style={{ width: "100%" }}>
+      <div style={{ width: '100%' }}>
         <ItemFooterContainer>
           <ItemCounter
             quantity={product.quantity}
@@ -58,7 +60,7 @@ CartItem.propTypes = {
   product: PropTypes.shape({}).isRequired,
   deleteItem: PropTypes.func.isRequired,
   updateAmount: PropTypes.func.isRequired,
-  prodIndex: PropTypes.number.isRequired
+  prodIndex: PropTypes.number.isRequired,
 };
 
 export default CartItem;

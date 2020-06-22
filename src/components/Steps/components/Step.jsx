@@ -1,9 +1,8 @@
-import React from "react";
-import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React from 'react';
+import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const isPrimaryColor = ({ isActive }) =>
-  isActive ? "var(--color-primary)" : "#b6b6b6";
+const isPrimaryColor = ({ isActive }) => (isActive ? 'var(--color-primary)' : '#b6b6b6');
 
 const StepCircle = styled.div`
   display: flex;
@@ -42,19 +41,17 @@ const StepContainer = styled.div`
   align-items: center;
 `;
 
-const Step = ({ icon, text, isActive }) => {
-  return (
-    <StepContainer isActive={isActive}>
-      <StepCircle isActive={isActive}>
-        <FontAwesomeIcon
-          color="white"
-          size={window.outerWidth < 426 ? "xs" : "lg"}
-          icon={icon}
-        />
-      </StepCircle>
-      <StepText isActive={isActive}>{text}</StepText>
-    </StepContainer>
-  );
-};
+const Step = ({ icon, text, isActive }) => (
+  <StepContainer isActive={isActive}>
+    <StepCircle isActive={isActive}>
+      <FontAwesomeIcon
+        color="white"
+        size={window.outerWidth < 426 ? 'xs' : 'lg'}
+        icon={icon}
+      />
+    </StepCircle>
+    <StepText isActive={isActive}>{text}</StepText>
+  </StepContainer>
+);
 
 export default Step;

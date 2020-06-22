@@ -1,11 +1,11 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-import ItemImage from "./ItemImage";
-import DeleteButton from "./DeleteButton";
-import ItemObservation from "./ItemObservation";
-import NoteButton from "./NoteButton";
+import ItemImage from './ItemImage';
+import DeleteButton from './DeleteButton';
+import ItemObservation from './ItemObservation';
+import NoteButton from './NoteButton';
 
 const Container = styled.div`
   width: 100%;
@@ -48,19 +48,15 @@ const ButtonContainer = styled.div`
 `;
 
 const ItemInfo = ({ product, deleteItem }) => {
-  const variantName = product.variant.name ? `- ${product.variant.name}` : "";
+  const variantName = product.variant.name ? `- ${product.variant.name}` : '';
   const productName = `${product.descricao} ${variantName}`;
-  const productDescription = product.modifiers.map((modifier, modIndex) =>
-    modifier.map((item, index) =>
-      modIndex || index ? ` | ${item.name} ` : item.name
-    )
-  );
+  const productDescription = product.modifiers.map((modifier, modIndex) => modifier.map((item, index) => (modIndex || index ? ` | ${item.name} ` : item.name)));
 
   return (
     <Container>
       <ItemImage product={product} />
       <ButtonContainer>
-        <LabelItem>{"Produto"}</LabelItem>
+        <LabelItem>Produto</LabelItem>
         <TitleItem>{productName}</TitleItem>
         <ItemDescription>{productDescription}</ItemDescription>
         <NoteButton product={product} />
@@ -75,7 +71,7 @@ const ItemInfo = ({ product, deleteItem }) => {
 
 ItemInfo.propTypes = {
   product: PropTypes.shape({}).isRequired,
-  deleteItem: PropTypes.func.isRequired
+  deleteItem: PropTypes.func.isRequired,
 };
 
 export default ItemInfo;

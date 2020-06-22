@@ -1,1 +1,1 @@
-export {default} from './Conclusion'
+export { default } from './Conclusion';

@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { Formik, Form, Field } from "formik";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Formik, Form, Field } from 'formik';
 
-import history from "utils/history";
-import Grid from "components/Grid";
-import Row from "components/Row";
-import Steps from "components/Steps";
-import SectionTitle from "components/SectionTitle";
-import Input from "components/Form/Input";
-import MaskedNumberInput from "components/Form/MaskedNumberInput";
-import Button from "components/Form/Button";
-import PurchasePrices from "containers/Cart/components/PurchasePrices";
+import history from 'utils/history';
+import Grid from 'components/Grid';
+import Row from 'components/Row';
+import Steps from 'components/Steps';
+import SectionTitle from 'components/SectionTitle';
+import Input from 'components/Form/Input';
+import MaskedNumberInput from 'components/Form/MaskedNumberInput';
+import Button from 'components/Form/Button';
+import PurchasePrices from 'containers/Cart/components/PurchasePrices';
 
-import registerSchema from "./registerSchema";
+import registerSchema from './registerSchema';
 
 const Container = styled.div`
   background: #fff;
@@ -24,8 +24,8 @@ const StepsContainer = styled.div`
 `;
 
 const RegisterData = () => {
-  const [personType, setPersonType] = useState("FISICA");
-  const isNaturalPerson = personType === "FISICA";
+  const [personType, setPersonType] = useState('FISICA');
+  const isNaturalPerson = personType === 'FISICA';
 
   return (
     <Container className="row">
@@ -46,32 +46,32 @@ const RegisterData = () => {
                   <p>Cadastro de pessoa:</p>
                   <label>
                     <input
-                      style={{ marginRight: "5px" }}
+                      style={{ marginRight: '5px' }}
                       type="radio"
                       name="personType"
                       value="FISICA"
-                      checked={personType === "FISICA"}
+                      checked={personType === 'FISICA'}
                       onChange={({ target }) => {
                         setPersonType(target.value);
                       }}
                     />
-                    {"Física"}
+                    Física
                   </label>
                   {/* <br /> */}
-                  <label style={{ marginLeft: "20px" }}>
+                  <label style={{ marginLeft: '20px' }}>
                     <input
-                      style={{ marginRight: "5px" }}
+                      style={{ marginRight: '5px' }}
                       type="radio"
                       name="personType"
                       value="JURIDICA"
-                      checked={personType === "JURIDICA"}
+                      checked={personType === 'JURIDICA'}
                       onChange={({ target }) => {
                         setPersonType(target.value);
                       }}
                     />
-                    {"Jurídica"}
+                    Jurídica
                   </label>
-                  {/* 
+                  {/*
                   <SelectDropDown
                     id="tipoPessoa"
                     defaultValue={propsForm.values.tipoPessoa}
@@ -159,7 +159,7 @@ const RegisterData = () => {
                     component={MaskedNumberInput}
                     format="(##) #####-####"
                     mask=""
-                    onValueChange={value => {
+                    onValueChange={(value) => {
                       // propsForm.setFieldValue("fone", value.value);
                       // propsForm.setFieldValue(
                       //   "foneFormatted",
@@ -174,7 +174,7 @@ const RegisterData = () => {
           )}
         />
         <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button value="Próximo" onClick={() => history.push("/address")} />
+          <Button value="Próximo" onClick={() => history.push('/address')} />
         </Row>
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>

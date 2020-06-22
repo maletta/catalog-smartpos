@@ -658,7 +658,7 @@ const SingleProduct = (props) => {
                                               <ModifierTitleRequired
                                                 hasError={!hasError}
                                               >
-                                                {'Obrigatório'}
+                                                Obrigatório
                                               </ModifierTitleRequired>
                                             </div>
                                           )}

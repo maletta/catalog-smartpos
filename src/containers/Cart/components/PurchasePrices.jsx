@@ -1,6 +1,6 @@
-import React from "react";
-import styled from "styled-components";
-import { injectIntl } from "react-intl";
+import React from 'react';
+import styled from 'styled-components';
+import { injectIntl } from 'react-intl';
 
 const PurchasePriceTitle = styled.h2`
   color: #707070;
@@ -46,19 +46,22 @@ const PurchasePrices = ({
   totalCart,
   deliveryCost,
   couponValue,
-  intl
+  intl,
 }) => {
   const total = totalCart + couponValue + (deliveryCost.cost || 0);
   const positiveTotal = total > 0 ? total : 0;
-  const formatValue = value =>
-    intl.formatNumber(value, { style: "currency", currency: "BRL" });
+  const formatValue = value => intl.formatNumber(value, { style: 'currency', currency: 'BRL' });
 
   return (
     <PurchasePriceContainer>
       <PurchasePriceTitle>Resumo de compra</PurchasePriceTitle>
       <PurchaseReviewContainer>
         <ProductRow>
-          <span>Produtos ({basketCountCart}):</span>
+          <span>
+            Produtos (
+            {basketCountCart}
+            ):
+          </span>
           <span>{formatValue(totalCart)}</span>
         </ProductRow>
         {deliveryCost.isDeliverable && (
@@ -68,7 +71,7 @@ const PurchasePrices = ({
           </ProductRow>
         )}
         {/* Precisa esperar a API do cupom ficar pronta */}
-        {process.env.NODE_ENV === "development" && (
+        {process.env.NODE_ENV === 'development' && (
           <CouponRow>
             <span>Cupom:</span>
             <span>{formatValue(couponValue)}</span>

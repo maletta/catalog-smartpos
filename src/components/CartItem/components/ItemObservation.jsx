@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
-import TextArea from "components/Form/TextArea";
+import TextArea from 'components/Form/TextArea';
 
 const Container = styled.div`
   width: 100%;
@@ -21,7 +21,7 @@ const ItemObservation = ({ id }) => {
   return (
     <Container>
       <ObservationButton onClick={() => setShowObservation(!showObservation)}>
-        {"Adicionar observação"}
+        Adicionar observação
       </ObservationButton>
       {showObservation && (
         <TextArea inputId={`obs-${id}`} label="Observação" rows={3} />
@@ -31,7 +31,7 @@ const ItemObservation = ({ id }) => {
 };
 
 ItemObservation.propTypes = {
-  id: PropTypes.string
+  id: PropTypes.string,
 };
 
 export default ItemObservation;

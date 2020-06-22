@@ -1,35 +1,37 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
-import styled from "styled-components";
-import { Formik, Form, Field } from "formik";
-import { injectIntl } from "react-intl";
-import axios from "axios";
-import NumberFormat from "react-number-format";
-import ReCAPTCHA from "react-google-recaptcha";
-import Swal from "sweetalert2";
+import React, {
+  useState, useEffect, useContext, useRef,
+} from 'react';
+import styled from 'styled-components';
+import { Formik, Form, Field } from 'formik';
+import { injectIntl } from 'react-intl';
+import axios from 'axios';
+import NumberFormat from 'react-number-format';
+import ReCAPTCHA from 'react-google-recaptcha';
+import Swal from 'sweetalert2';
 
-import ShoppingCartContext from "contexts/ShoppingCartContext";
-import history from "utils/history";
-import Grid from "components/Grid";
-import Row from "components/Row";
-import Steps from "components/Steps";
-import TextArea from "components/Form/TextArea";
-import SectionTitle from "components/SectionTitle";
-import Input from "components/Form/Input";
-import MaskedNumberInput from "components/Form/MaskedNumberInput";
-import Button from "components/Form/Button";
-import SelectDropDown from "components/Form/SelectDropDown";
-import PurchasePrices from "containers/Cart/components/PurchasePrices";
-import ShopContext from "contexts/ShopContext";
-import RenderCheckbox from "components/Form/RenderCheckbox";
-import Alert from "components/Alert";
-import InputCrediCard from "components/Form/InputCreditCard";
-import MaskInput from "components/Form/MaskInput";
-import InputCvv from "components/Form/InputCvv";
-import IconeShield from "assets/lock.png";
-import FilterContext from "contexts/FilterContext";
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import history from 'utils/history';
+import Grid from 'components/Grid';
+import Row from 'components/Row';
+import Steps from 'components/Steps';
+import TextArea from 'components/Form/TextArea';
+import SectionTitle from 'components/SectionTitle';
+import Input from 'components/Form/Input';
+import MaskedNumberInput from 'components/Form/MaskedNumberInput';
+import Button from 'components/Form/Button';
+import SelectDropDown from 'components/Form/SelectDropDown';
+import PurchasePrices from 'containers/Cart/components/PurchasePrices';
+import ShopContext from 'contexts/ShopContext';
+import RenderCheckbox from 'components/Form/RenderCheckbox';
+import Alert from 'components/Alert';
+import InputCrediCard from 'components/Form/InputCreditCard';
+import MaskInput from 'components/Form/MaskInput';
+import InputCvv from 'components/Form/InputCvv';
+import IconeShield from 'assets/lock.png';
+import FilterContext from 'contexts/FilterContext';
 
-import checkoutSchema from "./checkoutSchema";
-import createOrder, { getPayments, getSessionPag } from "./requestCheckout";
+import checkoutSchema from './checkoutSchema';
+import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 
 const { PagSeguroDirectPayment } = window.window;
 
@@ -42,13 +44,13 @@ const AddressCreditCard = styled.span`
 
 const addressType = [
   {
-    label: "Residencial",
-    value: "RESIDENCIAL"
+    label: 'Residencial',
+    value: 'RESIDENCIAL',
   },
   {
-    label: "Comercial",
-    value: "COMERCIAL"
-  }
+    label: 'Comercial',
+    value: 'COMERCIAL',
+  },
 ];
 
 const getCep = cep => axios.get(`https://viacep.com.br/ws/${cep}/json/`);
@@ -67,29 +69,29 @@ const RegisterData = ({ intl }) => {
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
 
-  const cart = localStorage.getItem("cart")
-    ? JSON.parse(localStorage.getItem("cart"))
+  const cart = localStorage.getItem('cart')
+    ? JSON.parse(localStorage.getItem('cart'))
     : [];
 
   const [totalCar, setTotalCar] = useState(0);
   const [isNaturalPerson, setNaturalPerson] = useState(true);
   const [costDelivery, setCostDelivery] = useState({
     cost: 0,
-    isDeliverable: false
+    isDeliverable: false,
   });
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [offlinePayment, setOfflinePayment] = useState(
-    shop.allowPayOnline === 0
+    shop.allowPayOnline === 0,
   );
   const [paymentsType, setPaymentType] = useState([]);
   const [withdraw, setWithdraw] = useState(false);
   const [creditCardBrands, setCreditCardBrands] = useState([]);
   const [state, setState] = useState({
-    loadPagseguro: false
+    loadPagseguro: false,
   });
   const [creditCardBrand, setCreditCardBrand] = useState({
-    name: "none",
-    cvvSize: 0
+    name: 'none',
+    cvvSize: 0,
   });
   const [installments, setInstallments] = useState([]);
   const [stateCart] = useState(cart);
@@ -106,35 +108,34 @@ const RegisterData = ({ intl }) => {
 
   useEffect(() => {
     const total = stateCart.reduce(
-      (count, val) =>
-        count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-      0
+      (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
+      0,
     );
     setTotalCar(total);
     updateFilter({
-      label: "Finalizar o pedido",
-      categoryName: ""
+      label: 'Finalizar o pedido',
+      categoryName: '',
     });
     if (cart.length < 1) {
       updateFilter({
         categoria: 0,
-        label: "Todas as categorias",
+        label: 'Todas as categorias',
         page: 1,
-        search: "",
-        categoryName: ""
+        search: '',
+        categoryName: '',
       });
     }
-    getPayments(shop.id).then(response => {
+    getPayments(shop.id).then((response) => {
       setPaymentType(response.data);
     });
-    getSessionPag(shop.id).then(response => {
+    getSessionPag(shop.id).then((response) => {
       PagSeguroDirectPayment.setSessionId(response.data.session);
       handleLoadPaymentsPag();
     });
   }, []);
 
-  const getInstallments = cost => {
-    if (creditCardBrand.name && creditCardBrand.name !== "none") {
+  const getInstallments = (cost) => {
+    if (creditCardBrand.name && creditCardBrand.name !== 'none') {
       const withDelivery = cost
         ? cost + totalCar
         : costDelivery.cost + totalCar;
@@ -147,53 +148,53 @@ const RegisterData = ({ intl }) => {
           if (installment) {
             setInstallments(installment);
           }
-        }
+        },
       });
     }
   };
 
   const getHashReady = () => {
-    PagSeguroDirectPayment.onSenderHashReady(resPag => {
-      if (resPag.status === "error") {
+    PagSeguroDirectPayment.onSenderHashReady((resPag) => {
+      if (resPag.status === 'error') {
         return false;
       }
       return setState({
         ...state,
-        senderHash: resPag.senderHash
+        senderHash: resPag.senderHash,
       });
     });
   };
 
   const sendCheckout = (values, setSubmitting) => {
     createOrder(values)
-      .then(response => {
+      .then((response) => {
         cleanCart();
         updateOrderPlaced({
           ...values,
           costDelivery,
           withdraw,
-          orderName: response.data.orderName
+          orderName: response.data.orderName,
         });
-        history.push("/pedido-realizado");
+        history.push('/pedido-realizado');
       })
-      .catch(error => {
+      .catch((error) => {
         if (error.response && error.response.status === 406) {
           Swal.fire({
-            type: "warning",
-            title: "Divergência nos valores",
+            type: 'warning',
+            title: 'Divergência nos valores',
             text:
-              "Pedido com valores divergentes, faça o seu pedido novamente!",
+              'Pedido com valores divergentes, faça o seu pedido novamente!',
             onClose: () => {
               cleanCart();
-              history.push("/");
-            }
+              history.push('/');
+            },
           });
         } else {
           recaptchaRef.current.reset();
           Swal.fire({
-            type: "error",
-            title: "Oops...",
-            text: "Erro ao enviar o pedido"
+            type: 'error',
+            title: 'Oops...',
+            text: 'Erro ao enviar o pedido',
           });
         }
       })
@@ -203,10 +204,10 @@ const RegisterData = ({ intl }) => {
   };
 
   const cleanCart = () => {
-    localStorage.removeItem("cartInit");
-    localStorage.removeItem("cart");
+    localStorage.removeItem('cartInit');
+    localStorage.removeItem('cart');
     updateShoppingCart({
-      basketCount: 0
+      basketCount: 0,
     });
   };
 
@@ -215,22 +216,22 @@ const RegisterData = ({ intl }) => {
       amount: withdraw ? totalCar : costDelivery.cost + totalCar,
       success(response) {
         const creditCard = Object.keys(
-          response.paymentMethods.CREDIT_CARD.options
+          response.paymentMethods.CREDIT_CARD.options,
         );
         const creditCardBrandList = creditCard.map(
-          item => response.paymentMethods.CREDIT_CARD.options[item]
+          item => response.paymentMethods.CREDIT_CARD.options[item],
         );
         setCreditCardBrands(creditCardBrandList);
-      }
+      },
     });
   };
 
-  const verifyMaxAndMinValue = gatwayPagseguro => {
+  const verifyMaxAndMinValue = (gatwayPagseguro) => {
     if (gatwayPagseguro) {
       if (
-        shop.minValuePayOnline >= 0 &&
-        totalCar > shop.minValuePayOnline &&
-        (shop.maxValuePayOnline === 0 || totalCar <= shop.maxValuePayOnline)
+        shop.minValuePayOnline >= 0
+        && totalCar > shop.minValuePayOnline
+        && (shop.maxValuePayOnline === 0 || totalCar <= shop.maxValuePayOnline)
       ) {
         return true;
       }
@@ -239,14 +240,14 @@ const RegisterData = ({ intl }) => {
     return true;
   };
 
-  const verifyRecaptcha = value => {
+  const verifyRecaptcha = (value) => {
     setReCaptchaToken(value);
   };
 
   const enableSubmitButton = () => {
     if (
-      (shop.deliveryMode === "DELIVERY" && !costDelivery.isDeliverable) ||
-      !reCaptchaToken
+      (shop.deliveryMode === 'DELIVERY' && !costDelivery.isDeliverable)
+      || !reCaptchaToken
     ) {
       return true;
     }
@@ -261,9 +262,9 @@ const RegisterData = ({ intl }) => {
       ...formValues,
       tipoPessoa: formValues.tipoPessoa.value,
       tipoEndereco: formValues.tipoEndereco.value,
-      "g-recaptcha-response": reCaptchaToken,
+      'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
-      deliveryValue: formValues.pickup ? 0 : costDelivery.cost
+      deliveryValue: formValues.pickup ? 0 : costDelivery.cost,
     };
 
     // Pagamento pela pagseguro
@@ -272,26 +273,26 @@ const RegisterData = ({ intl }) => {
         cardNumber: formValues.cardNumber_unformatted, // Número do cartão de crédito
         brand: creditCardBrand.name, // Bandeira do cartão
         cvv: formValues.cvv, // CVV do cartão
-        expirationMonth: formValues.expiration.split("/")[0], // Mês da expiração do cartão
-        expirationYear: formValues.expiration.split("/")[1], // Ano da expiração do cartão, é necessário os 4 dígitos.
+        expirationMonth: formValues.expiration.split('/')[0], // Mês da expiração do cartão
+        expirationYear: formValues.expiration.split('/')[1], // Ano da expiração do cartão, é necessário os 4 dígitos.
         success(response) {
           const valuesPag = {
             ...values,
             senderHash: state.senderHash,
-            cardTokenPag: response.card.token
+            cardTokenPag: response.card.token,
           };
           sendCheckout(valuesPag, setSubmitting);
         },
         error() {
           Swal.fire({
-            type: "warning",
-            title: "Cartão inválido",
-            text: "Por favor verifique seu cartão de crédito!",
+            type: 'warning',
+            title: 'Cartão inválido',
+            text: 'Por favor verifique seu cartão de crédito!',
             showConfirmButton: true,
-            showCloseButton: true
+            showCloseButton: true,
           });
           setSubmitting(false);
-        }
+        },
       });
     } else {
       sendCheckout(values, setSubmitting);
@@ -299,49 +300,49 @@ const RegisterData = ({ intl }) => {
   };
 
   const initialValues = {
-    name: "",
-    email: "",
-    fone: "",
-    foneFormatted: "",
-    cep: "",
-    documento: "",
-    endereco: "",
-    tipoLogradouro: "",
+    name: '',
+    email: '',
+    fone: '',
+    foneFormatted: '',
+    cep: '',
+    documento: '',
+    endereco: '',
+    tipoLogradouro: '',
     tipoEndereco: addressType[0],
-    complemento: "",
-    numero: "",
-    bairro: "",
-    cidade: "",
-    codcidade: "",
-    estado: "",
-    pagamento: "",
+    complemento: '',
+    numero: '',
+    bairro: '',
+    cidade: '',
+    codcidade: '',
+    estado: '',
+    pagamento: '',
     tipoPessoa: [],
-    fantasia: "",
-    razaoSocial: "",
+    fantasia: '',
+    razaoSocial: '',
     pickup: false,
     catalog_id: shop.id,
     loja: shop.codigo,
     gatwayPagseguro: shop.allowPayOnline === 1,
     offlinePayment: shop.allowPayOnline === 0,
-    nameHolder: "",
-    cardNumber: "",
-    cardNumber_unformatted: "",
-    expiration: "",
-    expiration_unformatted: "",
+    nameHolder: '',
+    cardNumber: '',
+    cardNumber_unformatted: '',
+    expiration: '',
+    expiration_unformatted: '',
     allowedLimit: true,
-    cvv: "",
-    installments: "",
-    cpfHolder: "",
-    birthDateHolder: "",
-    cobrancaCep: "",
-    cobrancaBairro: "",
-    cobrancaEstado: "",
-    cobrancaComplemento: "",
-    cobrancaNumero: "",
-    cobrancaCodcidade: "",
-    cobrancaCidade: "",
-    cobrancaEndereco: "",
-    cobrancaTipoLogradouro: ""
+    cvv: '',
+    installments: '',
+    cpfHolder: '',
+    birthDateHolder: '',
+    cobrancaCep: '',
+    cobrancaBairro: '',
+    cobrancaEstado: '',
+    cobrancaComplemento: '',
+    cobrancaNumero: '',
+    cobrancaCodcidade: '',
+    cobrancaCidade: '',
+    cobrancaEndereco: '',
+    cobrancaTipoLogradouro: '',
   };
 
   return (
@@ -359,7 +360,7 @@ const RegisterData = ({ intl }) => {
               <Row>
                 <Grid cols="12">
                   <>
-                    <SectionTitle>{"Pagamento"}</SectionTitle>
+                    <SectionTitle>Pagamento</SectionTitle>
                     {shop.allowPayOnline === 1 && (
                       <>
                         <div className="d-flex align-items-center mt-3 mb-3">
@@ -367,15 +368,15 @@ const RegisterData = ({ intl }) => {
                             label="Pague na entrega ou retirada"
                             name="offlinePayment"
                             component={RenderCheckbox}
-                            onChange={event => {
+                            onChange={(event) => {
                               event.preventDefault();
                               propsForm.setFieldValue(
-                                "offlinePayment",
-                                !propsForm.values.offlinePayment
+                                'offlinePayment',
+                                !propsForm.values.offlinePayment,
                               );
                               propsForm.setFieldValue(
-                                "gatwayPagseguro",
-                                !propsForm.values.gatwayPagseguro
+                                'gatwayPagseguro',
+                                !propsForm.values.gatwayPagseguro,
                               );
                               setOfflinePayment(true);
                             }}
@@ -386,15 +387,15 @@ const RegisterData = ({ intl }) => {
                             label="Pague on-line com cartão de crédito"
                             name="gatwayPagseguro"
                             component={RenderCheckbox}
-                            onChange={event => {
+                            onChange={(event) => {
                               event.preventDefault();
                               propsForm.setFieldValue(
-                                "gatwayPagseguro",
-                                !propsForm.values.gatwayPagseguro
+                                'gatwayPagseguro',
+                                !propsForm.values.gatwayPagseguro,
                               );
                               propsForm.setFieldValue(
-                                "offlinePayment",
-                                !propsForm.values.offlinePayment
+                                'offlinePayment',
+                                !propsForm.values.offlinePayment,
                               );
                               setOfflinePayment(false);
                             }}
@@ -404,33 +405,33 @@ const RegisterData = ({ intl }) => {
                     )}
                     <Alert
                       text={
-                        propsForm.values.gatwayPagseguro &&
-                        shop.allowPayOnline === 1
-                          ? "Finalize a compra para realizar o pagamento pelo PagSeguro"
-                          : "Atenção: você irá realizar o pagamento diretamente com o vendedor!"
+                        propsForm.values.gatwayPagseguro
+                        && shop.allowPayOnline === 1
+                          ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
+                          : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
                       }
                     />
-                    {propsForm.values.gatwayPagseguro &&
-                      totalCar < shop.minValuePayOnline && (
+                    {propsForm.values.gatwayPagseguro
+                      && totalCar < shop.minValuePayOnline && (
                         <Alert
                           text={`Valor mínimo para pagamento on-line ${intl.formatNumber(
                             shop.minValuePayOnline,
-                            { style: "currency", currency: "BRL" }
+                            { style: 'currency', currency: 'BRL' },
                           )}`}
                           typeAlert="warning"
                         />
-                      )}
-                    {propsForm.values.gatwayPagseguro &&
-                      totalCar > shop.maxValuePayOnline &&
-                      shop.maxValuePayOnline !== 0 && (
+                    )}
+                    {propsForm.values.gatwayPagseguro
+                      && totalCar > shop.maxValuePayOnline
+                      && shop.maxValuePayOnline !== 0 && (
                         <Alert
                           text={`Valor máximo para pagamento on-line ${intl.formatNumber(
                             shop.maxValuePayOnline,
-                            { style: "currency", currency: "BRL" }
+                            { style: 'currency', currency: 'BRL' },
                           )}`}
                           typeAlert="warning"
                         />
-                      )}
+                    )}
 
                     {propsForm.values.offlinePayment && (
                       <Grid cols="12">
@@ -441,8 +442,7 @@ const RegisterData = ({ intl }) => {
                           options={paymentsType}
                           getOptionLabel={label => label.descricao}
                           getOptionValue={option => option.codigo}
-                          onChange={event =>
-                            propsForm.setFieldValue("pagamento", event)
+                          onChange={event => propsForm.setFieldValue('pagamento', event)
                           }
                           isInvalid={propsForm.errors.pagamento}
                           touched={propsForm.touched.pagamento}
@@ -459,10 +459,10 @@ const RegisterData = ({ intl }) => {
                         rows={3}
                       />
                     </Grid>
-                    {propsForm.values.gatwayPagseguro &&
-                      shop.allowPayOnline === 1 &&
-                      verifyMaxAndMinValue(
-                        propsForm.values.gatwayPagseguro
+                    {propsForm.values.gatwayPagseguro
+                      && shop.allowPayOnline === 1
+                      && verifyMaxAndMinValue(
+                        propsForm.values.gatwayPagseguro,
                       ) && (
                         <>
                           <Grid cols="12" className="mb-2">
@@ -502,10 +502,10 @@ const RegisterData = ({ intl }) => {
                               inputId="birthDateHolder"
                               format="##/##/####"
                               component={MaskedNumberInput}
-                              onValueChange={event => {
+                              onValueChange={(event) => {
                                 propsForm.setFieldValue(
-                                  "birthDateHolder",
-                                  event.formattedValue
+                                  'birthDateHolder',
+                                  event.formattedValue,
                                 );
                               }}
                               isRequired
@@ -521,21 +521,21 @@ const RegisterData = ({ intl }) => {
                               name="cardNumber_unformatted"
                               inputId="cardNumber_unformatted"
                               format={
-                                creditCardBrand.name === "amex"
-                                  ? "#### ###### ######"
-                                  : "#### #### #### ####"
+                                creditCardBrand.name === 'amex'
+                                  ? '#### ###### ######'
+                                  : '#### #### #### ####'
                               }
                               component={NumberFormat}
                               customInput={InputCrediCard}
                               brand={creditCardBrand.name}
-                              onValueChange={event => {
+                              onValueChange={(event) => {
                                 propsForm.setFieldValue(
-                                  "cardNumber",
-                                  event.formattedValue
+                                  'cardNumber',
+                                  event.formattedValue,
                                 );
                                 propsForm.setFieldValue(
-                                  "cardNumber_unformatted",
-                                  event.value
+                                  'cardNumber_unformatted',
+                                  event.value,
                                 );
                                 if (event.value.length >= 7) {
                                   const cardBin = event.value.substring(0, 7);
@@ -550,20 +550,19 @@ const RegisterData = ({ intl }) => {
                                           success(installmentsResponse) {
                                             if (reponse.brand.name) {
                                               // eslint-disable-next-line max-len
-                                              const installment =
-                                                installmentsResponse
-                                                  .installments[
+                                              const installment = installmentsResponse
+                                                .installments[
                                                   reponse.brand.name
                                                 ];
                                               propsForm.setFieldValue(
-                                                "installments",
-                                                installment[0]
+                                                'installments',
+                                                installment[0],
                                               );
                                             }
-                                          }
+                                          },
                                         });
                                       }, 500);
-                                    }
+                                    },
                                   });
                                 }
                               }}
@@ -580,10 +579,10 @@ const RegisterData = ({ intl }) => {
                               format="##/####"
                               component={MaskInput}
                               isRequired
-                              onValueChange={value => {
+                              onValueChange={(value) => {
                                 propsForm.setFieldValue(
-                                  "expiration",
-                                  value.formattedValue
+                                  'expiration',
+                                  value.formattedValue,
                                 );
                               }}
                               type="tel"
@@ -595,12 +594,12 @@ const RegisterData = ({ intl }) => {
                               name="cvv"
                               inputId="cvv"
                               format={
-                                creditCardBrand.name === "amex" ? "####" : "###"
+                                creditCardBrand.name === 'amex' ? '####' : '###'
                               }
                               component={NumberFormat}
                               customInput={InputCvv}
-                              onValueChange={value => {
-                                propsForm.setFieldValue("cvv", value.value);
+                              onValueChange={(value) => {
+                                propsForm.setFieldValue('cvv', value.value);
                               }}
                               isRequired
                               type="tel"
@@ -613,21 +612,20 @@ const RegisterData = ({ intl }) => {
                               value={propsForm.values.installments}
                               cacheOptions
                               options={installments}
-                              getOptionLabel={label =>
-                                label.totalAmount &&
-                                `${label.quantity} ${
-                                  label.quantity === 1 ? "parcela" : "parcelas"
+                              getOptionLabel={label => label.totalAmount
+                                && `${label.quantity} ${
+                                  label.quantity === 1 ? 'parcela' : 'parcelas'
                                 } de ${intl.formatNumber(
                                   label.installmentAmount,
-                                  { style: "currency", currency: "BRL" }
+                                  { style: 'currency', currency: 'BRL' },
                                 )} | Total: ${intl.formatNumber(
                                   label.totalAmount,
-                                  { style: "currency", currency: "BRL" }
+                                  { style: 'currency', currency: 'BRL' },
                                 )} `
                               }
                               getOptionValue={option => option.quantity}
-                              onChange={event => {
-                                propsForm.setFieldValue("installments", event);
+                              onChange={(event) => {
+                                propsForm.setFieldValue('installments', event);
                               }}
                               isInvalid={propsForm.errors.installments}
                               touched={propsForm.touched.installments}
@@ -639,46 +637,44 @@ const RegisterData = ({ intl }) => {
                             <AddressCreditCard
                               onClick={() => {
                                 propsForm.setFieldValue(
-                                  "cobrancaCep",
-                                  propsForm.values.cep
+                                  'cobrancaCep',
+                                  propsForm.values.cep,
                                 );
                                 propsForm.setFieldValue(
-                                  "cobrancaBairro",
-                                  propsForm.values.bairro
+                                  'cobrancaBairro',
+                                  propsForm.values.bairro,
                                 );
                                 propsForm.setFieldValue(
-                                  "cobrancaEstado",
-                                  propsForm.values.estado
+                                  'cobrancaEstado',
+                                  propsForm.values.estado,
                                 );
                                 propsForm.setFieldValue(
-                                  "cobrancaComplemento",
-                                  propsForm.values.complemento
+                                  'cobrancaComplemento',
+                                  propsForm.values.complemento,
                                 );
                                 propsForm.setFieldValue(
-                                  "cobrancaNumero",
-                                  propsForm.values.numero
+                                  'cobrancaNumero',
+                                  propsForm.values.numero,
                                 );
                                 propsForm.setFieldValue(
-                                  "cobrancaCodcidade",
-                                  propsForm.values.codcidade
+                                  'cobrancaCodcidade',
+                                  propsForm.values.codcidade,
                                 );
                                 propsForm.setFieldValue(
-                                  "cobrancaCidade",
-                                  propsForm.values.cidade
+                                  'cobrancaCidade',
+                                  propsForm.values.cidade,
                                 );
                                 propsForm.setFieldValue(
-                                  "cobrancaEndereco",
-                                  propsForm.values.endereco
+                                  'cobrancaEndereco',
+                                  propsForm.values.endereco,
                                 );
                                 propsForm.setFieldValue(
-                                  "cobrancaTipoLogradouro",
-                                  propsForm.values.tipoLogradouro
+                                  'cobrancaTipoLogradouro',
+                                  propsForm.values.tipoLogradouro,
                                 );
                               }}
                             >
-                              {
-                                "Clique aqui se o endereço do cartão é o mesmo da entrega"
-                              }
+                              Clique aqui se o endereço do cartão é o mesmo da entrega
                             </AddressCreditCard>
                           </Grid>
                           <Grid cols="12 6 6 3 3">
@@ -689,45 +685,45 @@ const RegisterData = ({ intl }) => {
                               type="tel"
                               format="#####-###"
                               component={MaskedNumberInput}
-                              onValueChange={values => {
+                              onValueChange={(values) => {
                                 propsForm.setFieldValue(
-                                  "cobrancaCep",
-                                  values.formattedValue
+                                  'cobrancaCep',
+                                  values.formattedValue,
                                 );
                                 if (values.value.length < 8) {
                                   return;
                                 }
-                                getCep(values.value).then(address => {
+                                getCep(values.value).then((address) => {
                                   const tipoLogradouro = address.data.logradouro.substring(
                                     0,
-                                    address.data.logradouro.indexOf(" ") + 1
+                                    address.data.logradouro.indexOf(' ') + 1,
                                   );
                                   const endereco = address.data.logradouro.substring(
-                                    address.data.logradouro.indexOf(" ") + 1
+                                    address.data.logradouro.indexOf(' ') + 1,
                                   );
                                   propsForm.setFieldValue(
-                                    "cobrancaBairro",
-                                    address.data.bairro
+                                    'cobrancaBairro',
+                                    address.data.bairro,
                                   );
                                   propsForm.setFieldValue(
-                                    "cobrancaEstado",
-                                    address.data.uf
+                                    'cobrancaEstado',
+                                    address.data.uf,
                                   );
                                   propsForm.setFieldValue(
-                                    "cobrancaCodcidade",
-                                    address.data.ibge
+                                    'cobrancaCodcidade',
+                                    address.data.ibge,
                                   );
                                   propsForm.setFieldValue(
-                                    "cobrancaCidade",
-                                    address.data.localidade
+                                    'cobrancaCidade',
+                                    address.data.localidade,
                                   );
                                   propsForm.setFieldValue(
-                                    "cobrancaEndereco",
-                                    endereco.trim()
+                                    'cobrancaEndereco',
+                                    endereco.trim(),
                                   );
                                   propsForm.setFieldValue(
-                                    "cobrancaTipoLogradouro",
-                                    tipoLogradouro.trim()
+                                    'cobrancaTipoLogradouro',
+                                    tipoLogradouro.trim(),
                                   );
                                 });
                               }}
@@ -810,15 +806,13 @@ const RegisterData = ({ intl }) => {
                                 height={20}
                                 alt="Você está em uma conexão segura"
                               />
-                              <span style={{ fontSize: "12px" }}>
+                              <span style={{ fontSize: '12px' }}>
                                 Você está em uma conexão segura
                               </span>
                             </div>
                             <div>
-                              <p style={{ fontSize: "12px", color: "#A6A6A6" }}>
-                                {
-                                  "Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam"
-                                }
+                              <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
+                                Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
                               </p>
                             </div>
                           </Grid>
@@ -841,8 +835,8 @@ const RegisterData = ({ intl }) => {
                               <Button
                                 value={
                                   propsForm.values.gatwayPagseguro
-                                    ? "Finalizar compra"
-                                    : "Enviar pedido"
+                                    ? 'Finalizar compra'
+                                    : 'Enviar pedido'
                                 }
                                 type="submit"
                                 isLoading={propsForm.isSubmitting}
@@ -851,7 +845,7 @@ const RegisterData = ({ intl }) => {
                             </div>
                           </Grid>
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>
@@ -861,7 +855,7 @@ const RegisterData = ({ intl }) => {
         <Row className="d-flex justify-content-end pb-4 pr-3">
           <Button
             value="Finalizar compra"
-            onClick={() => history.push("/conclusion")}
+            onClick={() => history.push('/conclusion')}
           />
         </Row>
       </Grid>

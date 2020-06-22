@@ -1,17 +1,17 @@
-import React, { useEffect, useState, useContext } from "react";
-import styled from "styled-components";
-import lodash from "lodash";
+import React, { useEffect, useState, useContext } from 'react';
+import styled from 'styled-components';
+import lodash from 'lodash';
 
-import CartItem from "components/CartItem";
-import Grid from "components/Grid";
-import Steps from "components/Steps";
+import CartItem from 'components/CartItem';
+import Grid from 'components/Grid';
+import Steps from 'components/Steps';
 
-import FilterContext from "contexts/FilterContext";
-import ShoppingCartContext from "contexts/ShoppingCartContext";
+import FilterContext from 'contexts/FilterContext';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
-import EmptyCart from "./components/EmptyCart";
-import CartFooter from "./components/CartFooter";
-import PurchasePrices from "./components/PurchasePrices";
+import EmptyCart from './components/EmptyCart';
+import CartFooter from './components/CartFooter';
+import PurchasePrices from './components/PurchasePrices';
 
 const Container = styled.div`
   background: #fff;
@@ -41,12 +41,12 @@ const Cart = () => {
   const [basketCountCart, setBasketCountCart] = useState(0);
   const [deliveryCost, setDeliveryCost] = useState({});
 
-  const deleteItem = uuid => {
+  const deleteItem = (uuid) => {
     // console.log({ uuid });
     const newCart = stateCart.filter(item => item.uuid !== uuid);
     // console.log({ stateCart });
     // console.log({ newCart });
-    localStorage.setItem("cart", JSON.stringify(newCart));
+    localStorage.setItem('cart', JSON.stringify(newCart));
     setStateCart(newCart);
   };
 
@@ -56,31 +56,30 @@ const Cart = () => {
     // console.log(updateAmountCart[itemIndex]);
     // console.log(updateAmountCart[itemIndex].quantity);
 
-    localStorage.setItem("cart", JSON.stringify(updateAmountCart));
+    localStorage.setItem('cart', JSON.stringify(updateAmountCart));
     setStateCart(updateAmountCart);
     updateShoppingCart({ cart: updateAmountCart });
   };
 
   useEffect(() => {
     const total = stateCart.reduce(
-      (count, val) =>
-        count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-      0
+      (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
+      0,
     );
     const basketCount = stateCart.reduce(
       (count, val) => count + val.quantity,
-      0
+      0,
     );
 
     updateFilter({
       categoria: 0,
-      label: "Carrinho",
+      label: 'Carrinho',
       page: 1,
-      search: ""
+      search: '',
     });
     updateShoppingCart({ basketCount });
 
-    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     setStateCart(cart);
     setTotalCart(total);
     setBasketCountCart(basketCount);
