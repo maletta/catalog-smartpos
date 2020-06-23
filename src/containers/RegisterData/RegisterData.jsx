@@ -34,7 +34,18 @@ const RegisterData = () => {
           <Steps activeIndex={1} />
         </StepsContainer>
         <Formik
-          // onSubmit={submitCheckout}
+          onSubmit={() => {
+            history.push('/address');
+          }}
+          initialValues={{
+            personType: 'FISICA',
+            name: '',
+            razaoSocial: '',
+            fantasia: '',
+            documento: '',
+            email: '',
+            foneFormatted: '',
+          }}
           validationSchema={registerSchema(isNaturalPerson)}
           render={propsForm => (
             <Form>
@@ -44,9 +55,10 @@ const RegisterData = () => {
                 </Grid>
                 <Grid cols="12">
                   <p>Cadastro de pessoa:</p>
-                  <label>
+                  <label htmlFor="naturalPerson">
                     <input
                       style={{ marginRight: '5px' }}
+                      id="naturalPerson"
                       type="radio"
                       name="personType"
                       value="FISICA"
@@ -57,10 +69,10 @@ const RegisterData = () => {
                     />
                     Física
                   </label>
-                  {/* <br /> */}
-                  <label style={{ marginLeft: '20px' }}>
+                  <label htmlFor="legalPerson" style={{ marginLeft: '20px' }}>
                     <input
                       style={{ marginRight: '5px' }}
+                      id="legalPerson"
                       type="radio"
                       name="personType"
                       value="JURIDICA"
@@ -71,16 +83,6 @@ const RegisterData = () => {
                     />
                     Jurídica
                   </label>
-                  {/*
-                  <SelectDropDown
-                    id="tipoPessoa"
-                    defaultValue={propsForm.values.tipoPessoa}
-                    onChange={event => {
-                      propsForm.setFieldValue("tipoPessoa", event);
-                      setNaturalPerson(event.value === "FISICA");
-                    }}
-                    isRequired
-                  /> */}
                 </Grid>
                 {isNaturalPerson && (
                   <Grid cols="12 6 6 6 6">
@@ -123,23 +125,21 @@ const RegisterData = () => {
                       inputId="documento"
                       format="###.###.###-##"
                       component={MaskedNumberInput}
-                      isRequired
                       type="tel"
                     />
                   </Grid>
                 ) : (
-                  <Grid cols="12 6 6 6 6">
-                    <Field
-                      label="CNPJ"
-                      name="documento"
-                      inputId="documento"
-                      format="##.###.###/####-##"
-                      component={MaskedNumberInput}
-                      isRequired
-                      type="tel"
-                    />
-                  </Grid>
-                )}
+                    <Grid cols="12 6 6 6 6">
+                      <Field
+                        label="CNPJ"
+                        name="documento"
+                        inputId="documento"
+                        format="##.###.###/####-##"
+                        component={MaskedNumberInput}
+                        type="tel"
+                      />
+                    </Grid>
+                  )}
                 <Grid cols="12 6 6 6 6">
                   <Field
                     label="E-mail"
@@ -160,22 +160,25 @@ const RegisterData = () => {
                     format="(##) #####-####"
                     mask=""
                     onValueChange={(value) => {
-                      // propsForm.setFieldValue("fone", value.value);
-                      // propsForm.setFieldValue(
-                      //   "foneFormatted",
-                      //   value.formattedValue
-                      // );
+                      // propsForm.setFieldValue('fone', value.value);
+                      propsForm.setFieldValue('foneFormatted', value.formattedValue);
                     }}
                     isRequired
                   />
                 </Grid>
               </Row>
+              <Row className="d-flex justify-content-end pb-4 pr-3">
+                <Button
+                  value="Próximo"
+                  type="submit"
+                  onClick={() => {
+                    propsForm.validateForm();
+                  }}
+                />
+              </Row>
             </Form>
           )}
         />
-        <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button value="Próximo" onClick={() => history.push('/address')} />
-        </Row>
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices

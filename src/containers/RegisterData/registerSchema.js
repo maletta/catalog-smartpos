@@ -4,14 +4,14 @@ import validateCnpj from 'utils/validation/validateCnpj';
 import validateCpf from 'utils/validation/validateCpf';
 
 const sharedPersonSchema = {
-  tipoPessoa: yup.object().required(),
+  // tipoPessoa: yup.object().required(),
   email: yup
     .string()
-    .required()
+    .required('E-mail é obrigatório')
     .email(),
-  fone: yup
+  foneFormatted: yup
     .string()
-    .required()
+    .required('Telefone é obrigatório')
     .max(20),
 };
 
@@ -19,7 +19,7 @@ const naturalPersonSchema = {
   ...sharedPersonSchema,
   name: yup
     .string()
-    .required()
+    .required('Nome é obrigatório')
     .max(150),
   documento: yup
     .string()
@@ -30,11 +30,11 @@ const legalPerson = {
   ...sharedPersonSchema,
   fantasia: yup
     .string()
-    .required()
+    .required('Nome fantasia é obrigatório')
     .max(150),
   razaoSocial: yup
     .string()
-    .required()
+    .required('Razão social é obrigatório')
     .max(150),
   documento: yup
     .string()
