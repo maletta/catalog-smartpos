@@ -14,6 +14,8 @@ import Button from 'components/Form/Button';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import PurchasePrices from 'containers/Cart/components/PurchasePrices';
 
+import addressSchema from './addressSchema';
+
 const addressType = [
   {
     label: 'Residencial',
@@ -43,9 +45,24 @@ const RegisterData = () => (
         <Steps activeIndex={2} />
       </StepsContainer>
       <Formik
-          // onSubmit={submitCheckout}
-          // initialValues={initialValues}
-          // validationSchema={checkoutSchema(isNaturalPerson, offlinePayment)}
+        onSubmit={() => {
+          console.log('submit');
+          return;
+          history.push('/payment');
+        }}
+        initialValues={{
+          cep: '',
+          endereco: '',
+          tipoLogradouro: '',
+          tipoEndereco: addressType[0],
+          complemento: '',
+          numero: '',
+          bairro: '',
+          cidade: '',
+          codcidade: '',
+          estado: '',
+        }}
+        validationSchema={addressSchema()}
         render={propsForm => (
           <Form>
             <Row>
@@ -61,35 +78,35 @@ const RegisterData = () => (
                   format="#####-###"
                   component={MaskedNumberInput}
                   onValueChange={(values) => {
-                      if (values.value.length < 8) return;
+                    if (values.value.length < 8) return;
 
-                      propsForm.setFieldValue('cep', values.formattedValue);
-                      getCep(values.value).then((address) => {
-                        if (address.data.logradouro) {
-                          const tipoLogradouro = address.data.logradouro.substring(
-                            0,
-                            address.data.logradouro.indexOf(' ') + 1,
-                          );
-                          const endereco = address.data.logradouro.substring(
-                            address.data.logradouro.indexOf(' ') + 1,
-                          );
-                          propsForm.setFieldValue('endereco', endereco.trim());
-                          propsForm.setFieldValue(
-                            'tipoLogradouro',
-                            tipoLogradouro.trim(),
-                          );
-                        }
-                        propsForm.setFieldValue('bairro', address.data.bairro);
-                        propsForm.setFieldValue('estado', address.data.uf);
-                        propsForm.setFieldValue('codcidade', address.data.ibge);
-                        propsForm.setFieldValue(
-                          'cidade',
-                          address.data.localidade,
+                    propsForm.setFieldValue('cep', values.formattedValue);
+                    getCep(values.value).then((address) => {
+                      if (address.data.logradouro) {
+                        const tipoLogradouro = address.data.logradouro.substring(
+                          0,
+                          address.data.logradouro.indexOf(' ') + 1,
                         );
-                      });
-                      propsForm.setFieldValue('installments', null);
-                      // costDeliveryApi(values.formattedValue, propsForm);
-                    }}
+                        const endereco = address.data.logradouro.substring(
+                          address.data.logradouro.indexOf(' ') + 1,
+                        );
+                        propsForm.setFieldValue('endereco', endereco.trim());
+                        propsForm.setFieldValue(
+                          'tipoLogradouro',
+                          tipoLogradouro.trim(),
+                        );
+                      }
+                      propsForm.setFieldValue('bairro', address.data.bairro);
+                      propsForm.setFieldValue('estado', address.data.uf);
+                      propsForm.setFieldValue('codcidade', address.data.ibge);
+                      propsForm.setFieldValue(
+                        'cidade',
+                        address.data.localidade,
+                      );
+                    });
+                    propsForm.setFieldValue('installments', null);
+                    // costDeliveryApi(values.formattedValue, propsForm);
+                  }}
                   isRequired
                 />
               </Grid>
@@ -149,11 +166,10 @@ const RegisterData = () => (
                   getOptionLabel={label => label.label}
                   getOptionValue={option => option.value}
                   onChange={(event) => {
-                      propsForm.setFieldValue('tipoEndereco', event);
-                    }}
+                    propsForm.setFieldValue('tipoEndereco', event);
+                  }}
                   isInvalid={propsForm.errors.tipoEndereco}
                   touched={propsForm.touched.tipoEndereco}
-                  isRequired
                 />
               </Grid>
               <Grid cols="12 6 6 6 6">
@@ -177,18 +193,18 @@ const RegisterData = () => (
                 />
               </Grid>
             </Row>
+            <Row className="d-flex justify-content-end pb-4 pr-3">
+              <Button value="Próximo" type="submit" />
+            </Row>
           </Form>
         )}
       />
-      <Row className="d-flex justify-content-end pb-4 pr-3">
-        <Button value="Próximo" onClick={() => history.push('/payment')} />
-      </Row>
     </Grid>
     <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
       <PurchasePrices
-          // basketCountCart={basketCountCart}
-          // totalCart={totalCart}
-          // deliveryCost={deliveryCost}
+        // basketCountCart={basketCountCart}
+        // totalCart={totalCart}
+        // deliveryCost={deliveryCost}
         basketCountCart={0}
         totalCart={0}
         deliveryCost={{}}

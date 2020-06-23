@@ -160,7 +160,6 @@ const RegisterData = () => {
                     format="(##) #####-####"
                     mask=""
                     onValueChange={(value) => {
-                      // propsForm.setFieldValue('fone', value.value);
                       propsForm.setFieldValue('foneFormatted', value.formattedValue);
                     }}
                     isRequired

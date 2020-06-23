@@ -4,7 +4,6 @@ import validateCnpj from 'utils/validation/validateCnpj';
 import validateCpf from 'utils/validation/validateCpf';
 
 const sharedPersonSchema = {
-  // tipoPessoa: yup.object().required(),
   email: yup
     .string()
     .required('E-mail é obrigatório')
