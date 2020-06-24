@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 
@@ -11,6 +11,7 @@ import Input from 'components/Form/Input';
 import MaskedNumberInput from 'components/Form/MaskedNumberInput';
 import Button from 'components/Form/Button';
 import PurchasePrices from 'containers/Cart/components/PurchasePrices';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 import registerSchema from './registerSchema';
 
@@ -26,6 +27,7 @@ const StepsContainer = styled.div`
 const RegisterData = () => {
   const [personType, setPersonType] = useState('FISICA');
   const isNaturalPerson = personType === 'FISICA';
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
 
   return (
     <Container className="row">
@@ -34,7 +36,8 @@ const RegisterData = () => {
           <Steps activeIndex={1} />
         </StepsContainer>
         <Formik
-          onSubmit={() => {
+          onSubmit={(values) => {
+            updateShoppingCart({ personData: values })
             history.push('/address');
           }}
           initialValues={{
@@ -65,6 +68,7 @@ const RegisterData = () => {
                       checked={personType === 'FISICA'}
                       onChange={({ target }) => {
                         setPersonType(target.value);
+                        propsForm.setFieldValue('personType', target.value);
                       }}
                     />
                     Física
@@ -79,6 +83,7 @@ const RegisterData = () => {
                       checked={personType === 'JURIDICA'}
                       onChange={({ target }) => {
                         setPersonType(target.value);
+                        propsForm.setFieldValue('personType', target.value);
                       }}
                     />
                     Jurídica
@@ -181,12 +186,10 @@ const RegisterData = () => {
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
-          // basketCountCart={basketCountCart}
-          // totalCart={totalCart}
-          // deliveryCost={deliveryCost}
-          basketCountCart={0}
-          totalCart={0}
-          deliveryCost={{}}
+          basketCountCart={shoppingCart.basketCount}
+          totalCart={shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
+            0)}
+          deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={-5}
         />
       </Grid>

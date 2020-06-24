@@ -54,23 +54,7 @@ const RegisterData = () => {
     estado: '',
   });
 
-  console.log('start-sp');
-  console.log(shoppingCart);
-  console.log('end-sp');
-
-  // data:
-  // bairro: "Cidade Antônio Estevão de Carvalho"
-  // cep: "08226-021"
-  // complemento: ""
-  // gia: "1004"
-  // ibge: "3550308"
-  // localidade: "São Paulo"
-  // logradouro: "Rua 18 de Abril"
-  // uf: "SP"
-  // unidade: ""
-
   useEffect(() => {
-    console.log('use effect');
     if (shoppingCart.cep.length > 0) {
       getCep(shoppingCart.cep).then((({ data }) => {
         const addressData = {
@@ -82,10 +66,8 @@ const RegisterData = () => {
           codcidade: data.ibge,
           estado: data.uf,
         };
-        console.log(addressData);
         setAddress(addressData);
       }));
-      getCep(shoppingCart.cep).then((console.log));
     }
   }, []);
 
@@ -97,7 +79,8 @@ const RegisterData = () => {
         </StepsContainer>
         <Formik
           enableReinitialize
-          onSubmit={() => {
+          onSubmit={(values) => {
+            updateShoppingCart({ address: values })
             history.push('/payment');
           }}
           initialValues={address}
@@ -239,13 +222,10 @@ const RegisterData = () => {
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
-          // basketCountCart={basketCountCart}
-          // totalCart={totalCart}
-          // deliveryCost={deliveryCost}
           basketCountCart={shoppingCart.basketCount}
           totalCart={shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
             0)}
-          deliveryCost={{}}
+          deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={-5}
         />
       </Grid>

@@ -64,9 +64,14 @@ const StepsContainer = styled.div`
   width: 100%;
 `;
 
+const RadioContainer = styled.div`
+  display: flex; 
+  flex-direction: column;
+`
+
 const RegisterData = ({ intl }) => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
 
   const cart = localStorage.getItem('cart')
@@ -97,6 +102,46 @@ const RegisterData = ({ intl }) => {
   const [stateCart] = useState(cart);
 
   const recaptchaRef = useRef();
+
+  const getInstallments = (cost) => {
+    if (creditCardBrand.name && creditCardBrand.name !== 'none') {
+      const withDelivery = cost
+        ? cost + totalCar
+        : costDelivery.cost + totalCar;
+      PagSeguroDirectPayment.getInstallments({
+        amount: withdraw ? totalCar : withDelivery,
+        // maxInstallmentNoInterest: 2,
+        brand: creditCardBrand.name,
+        success(response) {
+          const installment = response.installments[creditCardBrand.name];
+          if (installment) {
+            setInstallments(installment);
+          }
+        },
+      });
+    }
+  };
+
+  const handleLoadPaymentsPag = () => {
+    PagSeguroDirectPayment.getPaymentMethods({
+      amount: withdraw ? totalCar : costDelivery.cost + totalCar,
+      success(response) {
+        const creditCard = Object.keys(
+          response.paymentMethods.CREDIT_CARD.options,
+        );
+        const creditCardBrandList = creditCard.map(
+          item => response.paymentMethods.CREDIT_CARD.options[item],
+        );
+        setCreditCardBrands(creditCardBrandList);
+      },
+    });
+  };
+
+  const cleanCart = () => {
+    localStorage.removeItem('cartInit');
+    localStorage.removeItem('cart');
+    updateShoppingCart({ basketCount: 0 });
+  };
 
   useEffect(() => {
     getInstallments();
@@ -133,25 +178,6 @@ const RegisterData = ({ intl }) => {
       handleLoadPaymentsPag();
     });
   }, []);
-
-  const getInstallments = (cost) => {
-    if (creditCardBrand.name && creditCardBrand.name !== 'none') {
-      const withDelivery = cost
-        ? cost + totalCar
-        : costDelivery.cost + totalCar;
-      PagSeguroDirectPayment.getInstallments({
-        amount: withdraw ? totalCar : withDelivery,
-        // maxInstallmentNoInterest: 2,
-        brand: creditCardBrand.name,
-        success(response) {
-          const installment = response.installments[creditCardBrand.name];
-          if (installment) {
-            setInstallments(installment);
-          }
-        },
-      });
-    }
-  };
 
   const getHashReady = () => {
     PagSeguroDirectPayment.onSenderHashReady((resPag) => {
@@ -201,29 +227,6 @@ const RegisterData = ({ intl }) => {
       .finally(() => {
         setSubmitting(false);
       });
-  };
-
-  const cleanCart = () => {
-    localStorage.removeItem('cartInit');
-    localStorage.removeItem('cart');
-    updateShoppingCart({
-      basketCount: 0,
-    });
-  };
-
-  const handleLoadPaymentsPag = () => {
-    PagSeguroDirectPayment.getPaymentMethods({
-      amount: withdraw ? totalCar : costDelivery.cost + totalCar,
-      success(response) {
-        const creditCard = Object.keys(
-          response.paymentMethods.CREDIT_CARD.options,
-        );
-        const creditCardBrandList = creditCard.map(
-          item => response.paymentMethods.CREDIT_CARD.options[item],
-        );
-        setCreditCardBrands(creditCardBrandList);
-      },
-    });
   };
 
   const verifyMaxAndMinValue = (gatwayPagseguro) => {
@@ -361,52 +364,48 @@ const RegisterData = ({ intl }) => {
                 <Grid cols="12">
                   <>
                     <SectionTitle>Pagamento</SectionTitle>
-                    {shop.allowPayOnline === 1 && (
-                      <>
-                        <div className="d-flex align-items-center mt-3 mb-3">
-                          <Field
-                            label="Pague na entrega ou retirada"
-                            name="offlinePayment"
-                            component={RenderCheckbox}
-                            onChange={(event) => {
-                              event.preventDefault();
-                              propsForm.setFieldValue(
-                                'offlinePayment',
-                                !propsForm.values.offlinePayment,
-                              );
-                              propsForm.setFieldValue(
-                                'gatwayPagseguro',
-                                !propsForm.values.gatwayPagseguro,
-                              );
+                    {shop.allowPayOnline && (
+                      <RadioContainer>
+                        <label
+                          htmlFor="physicalPayment"
+                        >
+                          <input
+                            name="paymentType"
+                            type="radio"
+                            style={{ marginRight: '5px' }}
+                            id="physicalPayment"
+                            value="offlinePayment"
+                            checked={offlinePayment}
+                            onChange={() => {
+                              propsForm.setFieldValue('offlinePayment', true);
+                              propsForm.setFieldValue('gatwayPagseguro', false);
                               setOfflinePayment(true);
                             }}
                           />
-                        </div>
-                        <div className="d-flex align-items-center mt-3 mb-3">
-                          <Field
-                            label="Pague on-line com cartão de crédito"
-                            name="gatwayPagseguro"
-                            component={RenderCheckbox}
-                            onChange={(event) => {
-                              event.preventDefault();
-                              propsForm.setFieldValue(
-                                'gatwayPagseguro',
-                                !propsForm.values.gatwayPagseguro,
-                              );
-                              propsForm.setFieldValue(
-                                'offlinePayment',
-                                !propsForm.values.offlinePayment,
-                              );
+                          Pague na entrega ou retirada
+                        </label>
+                        <label htmlFor="onlinePayment">
+                          <input
+                            name="paymentType"
+                            type="radio"
+                            style={{ marginRight: '5px' }}
+                            id="onlinePayment"
+                            value="gatwayPagseguro"
+                            checked={!offlinePayment}
+                            onChange={() => {
+                              propsForm.setFieldValue('offlinePayment', false);
+                              propsForm.setFieldValue('gatwayPagseguro', true);
                               setOfflinePayment(false);
                             }}
                           />
-                        </div>
-                      </>
+                          Pague on-line com cartão de crédito
+                        </label>
+                      </RadioContainer>
                     )}
                     <Alert
                       text={
                         propsForm.values.gatwayPagseguro
-                        && shop.allowPayOnline === 1
+                          && shop.allowPayOnline
                           ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
                           : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
                       }
@@ -460,7 +459,7 @@ const RegisterData = ({ intl }) => {
                       />
                     </Grid>
                     {propsForm.values.gatwayPagseguro
-                      && shop.allowPayOnline === 1
+                      && shop.allowPayOnline
                       && verifyMaxAndMinValue(
                         propsForm.values.gatwayPagseguro,
                       ) && (
@@ -552,8 +551,8 @@ const RegisterData = ({ intl }) => {
                                               // eslint-disable-next-line max-len
                                               const installment = installmentsResponse
                                                 .installments[
-                                                  reponse.brand.name
-                                                ];
+                                                reponse.brand.name
+                                              ];
                                               propsForm.setFieldValue(
                                                 'installments',
                                                 installment[0],
@@ -614,7 +613,7 @@ const RegisterData = ({ intl }) => {
                               options={installments}
                               getOptionLabel={label => label.totalAmount
                                 && `${label.quantity} ${
-                                  label.quantity === 1 ? 'parcela' : 'parcelas'
+                                label.quantity === 1 ? 'parcela' : 'parcelas'
                                 } de ${intl.formatNumber(
                                   label.installmentAmount,
                                   { style: 'currency', currency: 'BRL' },
@@ -686,13 +685,14 @@ const RegisterData = ({ intl }) => {
                               format="#####-###"
                               component={MaskedNumberInput}
                               onValueChange={(values) => {
+                                if (values.value.length < 8) {
+                                  return;
+                                }
+
                                 propsForm.setFieldValue(
                                   'cobrancaCep',
                                   values.formattedValue,
                                 );
-                                if (values.value.length < 8) {
-                                  return;
-                                }
                                 getCep(values.value).then((address) => {
                                   const tipoLogradouro = address.data.logradouro.substring(
                                     0,
@@ -730,7 +730,7 @@ const RegisterData = ({ intl }) => {
                               isRequired
                             />
                           </Grid>
-                          <Grid cols="12 6 6 3 3">
+                          {/* <Grid cols="12 6 6 3 3">
                             <Field
                               label="Tipo logradouro"
                               name="cobrancaTipoLogradouro"
@@ -739,7 +739,7 @@ const RegisterData = ({ intl }) => {
                               component={Input}
                               isRequired
                             />
-                          </Grid>
+                          </Grid> */}
                           <Grid cols="12 12 6 6 6">
                             <Field
                               label="Endereço"
@@ -845,7 +845,7 @@ const RegisterData = ({ intl }) => {
                             </div>
                           </Grid>
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>
@@ -861,12 +861,10 @@ const RegisterData = ({ intl }) => {
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
-          // basketCountCart={basketCountCart}
-          // totalCart={totalCart}
-          // deliveryCost={deliveryCost}
-          basketCountCart={0}
-          totalCart={0}
-          deliveryCost={{}}
+          basketCountCart={shoppingCart.basketCount}
+          totalCart={shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
+            0)}
+          deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={-5}
         />
       </Grid>
