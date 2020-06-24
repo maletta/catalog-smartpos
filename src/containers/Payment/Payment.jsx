@@ -8,6 +8,7 @@ import axios from 'axios';
 import NumberFormat from 'react-number-format';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Swal from 'sweetalert2';
+import PropTypes from 'prop-types';
 
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
@@ -22,7 +23,6 @@ import Button from 'components/Form/Button';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import PurchasePrices from 'containers/Cart/components/PurchasePrices';
 import ShopContext from 'contexts/ShopContext';
-import RenderCheckbox from 'components/Form/RenderCheckbox';
 import Alert from 'components/Alert';
 import InputCrediCard from 'components/Form/InputCreditCard';
 import MaskInput from 'components/Form/MaskInput';
@@ -79,8 +79,8 @@ const RegisterData = ({ intl }) => {
     : [];
 
   const [totalCar, setTotalCar] = useState(0);
-  const [isNaturalPerson, setNaturalPerson] = useState(true);
-  const [costDelivery, setCostDelivery] = useState({
+  const [isNaturalPerson] = useState(true);
+  const [costDelivery] = useState({
     cost: 0,
     isDeliverable: false,
   });
@@ -419,7 +419,7 @@ const RegisterData = ({ intl }) => {
                           )}`}
                           typeAlert="warning"
                         />
-                    )}
+                      )}
                     {propsForm.values.gatwayPagseguro
                       && totalCar > shop.maxValuePayOnline
                       && shop.maxValuePayOnline !== 0 && (
@@ -430,7 +430,7 @@ const RegisterData = ({ intl }) => {
                           )}`}
                           typeAlert="warning"
                         />
-                    )}
+                      )}
 
                     {propsForm.values.offlinePayment && (
                       <Grid cols="12">
@@ -550,9 +550,7 @@ const RegisterData = ({ intl }) => {
                                             if (reponse.brand.name) {
                                               // eslint-disable-next-line max-len
                                               const installment = installmentsResponse
-                                                .installments[
-                                                reponse.brand.name
-                                              ];
+                                                .installments[reponse.brand.name];
                                               propsForm.setFieldValue(
                                                 'installments',
                                                 installment[0],
@@ -862,8 +860,7 @@ const RegisterData = ({ intl }) => {
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
-          totalCart={shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-            0)}
+          totalCart={shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product), 0)}
           deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={-5}
         />
@@ -871,5 +868,9 @@ const RegisterData = ({ intl }) => {
     </Container>
   );
 };
+
+RegisterData.propTypes = {
+  intl: PropTypes.object,
+}
 
 export default injectIntl(RegisterData);
