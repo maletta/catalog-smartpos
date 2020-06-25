@@ -145,11 +145,7 @@ const RegisterData = ({ intl }) => {
 
   useEffect(() => {
     getInstallments();
-  }, [costDelivery.cost]);
-
-  useEffect(() => {
-    getInstallments();
-  }, [creditCardBrand.name]);
+  }, [costDelivery.cost, creditCardBrand.name]);
 
   useEffect(() => {
     const total = stateCart.reduce(
@@ -157,10 +153,12 @@ const RegisterData = ({ intl }) => {
       0,
     );
     setTotalCar(total);
+
     updateFilter({
       label: 'Finalizar o pedido',
       categoryName: '',
     });
+
     if (cart.length < 1) {
       updateFilter({
         categoria: 0,
@@ -170,12 +168,23 @@ const RegisterData = ({ intl }) => {
         categoryName: '',
       });
     }
+
     getPayments(shop.id).then((response) => {
       setPaymentType(response.data);
-    });
+    })
+      .catch((error) => {
+        console.log('Get payments');
+        console.error(error);
+        // throw new Error(error);
+      });
+
     getSessionPag(shop.id).then((response) => {
       PagSeguroDirectPayment.setSessionId(response.data.session);
       handleLoadPaymentsPag();
+    }).catch((error) => {
+      console.log('Session pag');
+      console.error(error);
+      // throw new Error(error);
     });
   }, []);
 
@@ -398,10 +407,11 @@ const RegisterData = ({ intl }) => {
                               setOfflinePayment(false);
                             }}
                           />
-                          Pague on-line com cartão de crédito
+                          Pague on-line
                         </label>
                       </RadioContainer>
                     )}
+                    <br />
                     <Alert
                       text={
                         propsForm.values.gatwayPagseguro
@@ -433,67 +443,79 @@ const RegisterData = ({ intl }) => {
                       )}
 
                     {propsForm.values.offlinePayment && (
-                      <Grid cols="12">
-                        <SelectDropDown
-                          id="pagamento"
-                          label="Forma de pagamento"
-                          cacheOptions
-                          options={paymentsType}
-                          getOptionLabel={label => label.descricao}
-                          getOptionValue={option => option.codigo}
-                          onChange={event => propsForm.setFieldValue('pagamento', event)
-                          }
-                          isInvalid={propsForm.errors.pagamento}
-                          touched={propsForm.touched.pagamento}
-                          isRequired
-                        />
-                      </Grid>
+                      <Row>
+                        <Grid cols="6">
+                          <SelectDropDown
+                            id="pagamento"
+                            label="Forma de pagamento"
+                            cacheOptions
+                            options={paymentsType}
+                            getOptionLabel={label => label.descricao}
+                            getOptionValue={option => option.codigo}
+                            onChange={event => propsForm.setFieldValue('pagamento', event)
+                            }
+                            isInvalid={propsForm.errors.pagamento}
+                            touched={propsForm.touched.pagamento}
+                            isRequired
+                          />
+                        </Grid>
+                      </Row>
                     )}
-                    <Grid cols="12">
-                      <Field
-                        inputId="observacao"
-                        label="Observação"
-                        name="observacao"
-                        component={TextArea}
-                        rows={3}
-                      />
-                    </Grid>
+                    {offlinePayment && (
+                      <Row>
+                        <Grid cols="12">
+                          <Field
+                            inputId="observacao"
+                            label="Observação"
+                            name="observacao"
+                            component={TextArea}
+                            rows={3}
+                          />
+                        </Grid>
+                      </Row>
+                    )}
                     {propsForm.values.gatwayPagseguro
                       && shop.allowPayOnline
                       && verifyMaxAndMinValue(
                         propsForm.values.gatwayPagseguro,
                       ) && (
                         <>
-                          <Grid cols="12" className="mb-2">
-                            {creditCardBrands.map(item => (
-                              <img
-                                key={item.code}
-                                src={`https://stc.pagseguro.uol.com.br/${item.images.MEDIUM.path}`}
-                                title={item.displayName}
-                                alt={item.displayName}
+                          <Row>
+
+                            <Grid cols="12" className="mb-2" style={{ display: 'flex', flexWrap: 'wrap', gap: '17px' }}>
+                              {creditCardBrands.map(item => (
+                                <img
+                                  key={item.code}
+                                  src={`https://stc.pagseguro.uol.com.br/${item.images.MEDIUM.path}`}
+                                  title={item.displayName}
+                                  alt={item.displayName}
+                                  style={{ border: '1px solid #818181', borderRadius: '5px' }}
+                                />
+                              ))}
+                            </Grid>
+                          </Row>
+                          <Row>
+                            <Grid cols="12 6 6 6 6">
+                              <Field
+                                label="Nome do titular"
+                                name="nameHolder"
+                                inputId="nameHolder"
+                                component={Input}
+                                isRequired
                               />
-                            ))}
-                          </Grid>
-                          <Grid cols="12 6 6 6 6">
-                            <Field
-                              label="Nome do titular"
-                              name="nameHolder"
-                              inputId="nameHolder"
-                              component={Input}
-                              isRequired
-                            />
-                          </Grid>
-                          <Grid cols="12 6 6 6 3">
-                            <Field
-                              label="CPF do titular"
-                              name="cpfHolder"
-                              inputId="cpfHolder"
-                              format="###.###.###-##"
-                              component={MaskedNumberInput}
-                              isRequired
-                              type="tel"
-                            />
-                          </Grid>
+                            </Grid>
+                            <Grid cols="12 6 6 6 3">
+                              <Field
+                                label="CPF do titular"
+                                name="cpfHolder"
+                                inputId="cpfHolder"
+                                format="###.###.###-##"
+                                component={MaskedNumberInput}
+                                isRequired
+                                type="tel"
+                              />
+                            </Grid>
+                          </Row>
                           <Grid cols="12 6 6 6 3">
                             <Field
                               label="Data Nascimento"
@@ -548,7 +570,6 @@ const RegisterData = ({ intl }) => {
                                           brand: reponse.brand.name,
                                           success(installmentsResponse) {
                                             if (reponse.brand.name) {
-                                              // eslint-disable-next-line max-len
                                               const installment = installmentsResponse
                                                 .installments[reponse.brand.name];
                                               propsForm.setFieldValue(
@@ -728,16 +749,6 @@ const RegisterData = ({ intl }) => {
                               isRequired
                             />
                           </Grid>
-                          {/* <Grid cols="12 6 6 3 3">
-                            <Field
-                              label="Tipo logradouro"
-                              name="cobrancaTipoLogradouro"
-                              inputId="cobrancaTipoLogradouro"
-                              placeholder="Exemplo: Rua"
-                              component={Input}
-                              isRequired
-                            />
-                          </Grid> */}
                           <Grid cols="12 12 6 6 6">
                             <Field
                               label="Endereço"
@@ -850,9 +861,64 @@ const RegisterData = ({ intl }) => {
             </Form>
           )}
         />
+        {
+          offlinePayment && (
+            <Row>
+              <Grid
+                cols="12 4 6 6 6"
+                className="mt-0 d-flex flex-column"
+              >
+                <div className="mb-2">
+                  <img
+                    src={IconeShield}
+                    height={20}
+                    alt="Você está em uma conexão segura"
+                  />
+                  <span style={{ fontSize: '12px' }}>
+                    Você está em uma conexão segura
+                  </span>
+                </div>
+                <div>
+                  <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
+                    Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
+                  </p>
+                </div>
+              </Grid>
+              <Grid
+                cols="12 8 6 6 6"
+                className="d-flex justify-content-end mb-3"
+              >
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
+                  hl="pt-BR"
+                  onChange={verifyRecaptcha}
+                />
+              </Grid>
+              {/* <Grid
+                cols="12"
+                className="d-flex justify-content-end"
+              >
+                <div>
+                  <Button
+                    value={
+                      propsForm.values.gatwayPagseguro
+                        ? 'Finalizar compra'
+                        : 'Enviar pedido'
+                    }
+                    value="Enviar Pedido"
+                    type="submit"
+                    isLoading={propsForm.isSubmitting}
+                    disabled={enableSubmitButton()}
+                  />
+                </div>
+              </Grid> */}
+            </Row>
+          )
+        }
         <Row className="d-flex justify-content-end pb-4 pr-3">
           <Button
-            value="Finalizar compra"
+            value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
             onClick={() => history.push('/conclusion')}
           />
         </Row>
