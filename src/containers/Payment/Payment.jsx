@@ -100,6 +100,7 @@ const RegisterData = ({ intl }) => {
   });
   const [installments, setInstallments] = useState([]);
   const [stateCart] = useState(cart);
+  const [showAddress, setShowAddress] = useState(true);
 
   const recaptchaRef = useRef();
 
@@ -257,9 +258,15 @@ const RegisterData = ({ intl }) => {
   };
 
   const enableSubmitButton = () => {
+    console.log({ shop })
+    console.log({ costDelivery })
+    console.log({ reCaptchaToken })
+
     if (
-      (shop.deliveryMode === 'DELIVERY' && !costDelivery.isDeliverable)
-      || !reCaptchaToken
+      // ['DELIVERY', 'BOTH'].includes(shop.deliveryMode)
+      // && costDelivery.isDeliverable
+      // && 
+      reCaptchaToken
     ) {
       return true;
     }
@@ -481,7 +488,6 @@ const RegisterData = ({ intl }) => {
                       ) && (
                         <>
                           <Row>
-
                             <Grid cols="12" className="mb-2" style={{ display: 'flex', flexWrap: 'wrap', gap: '17px' }}>
                               {creditCardBrands.map(item => (
                                 <img
@@ -506,6 +512,26 @@ const RegisterData = ({ intl }) => {
                             </Grid>
                             <Grid cols="12 6 6 6 3">
                               <Field
+                                label="Data Nascimento"
+                                name="birthDateHolder"
+                                inputId="birthDateHolder"
+                                format="##/##/####"
+                                component={MaskedNumberInput}
+                                onValueChange={(event) => {
+                                  propsForm.setFieldValue(
+                                    'birthDateHolder',
+                                    event.formattedValue,
+                                  );
+                                }}
+                                isRequired
+                                onBlur={() => {
+                                  getHashReady();
+                                }}
+                                type="tel"
+                              />
+                            </Grid>
+                            <Grid cols="12 6 6 6 3">
+                              <Field
                                 label="CPF do titular"
                                 name="cpfHolder"
                                 inputId="cpfHolder"
@@ -516,343 +542,345 @@ const RegisterData = ({ intl }) => {
                               />
                             </Grid>
                           </Row>
-                          <Grid cols="12 6 6 6 3">
-                            <Field
-                              label="Data Nascimento"
-                              name="birthDateHolder"
-                              inputId="birthDateHolder"
-                              format="##/##/####"
-                              component={MaskedNumberInput}
-                              onValueChange={(event) => {
-                                propsForm.setFieldValue(
-                                  'birthDateHolder',
-                                  event.formattedValue,
-                                );
-                              }}
-                              isRequired
-                              onBlur={() => {
-                                getHashReady();
-                              }}
-                              type="tel"
-                            />
-                          </Grid>
-                          <Grid cols="12 6 6 6 9">
-                            <Field
-                              label="Número do cartão"
-                              name="cardNumber_unformatted"
-                              inputId="cardNumber_unformatted"
-                              format={
-                                creditCardBrand.name === 'amex'
-                                  ? '#### ###### ######'
-                                  : '#### #### #### ####'
-                              }
-                              component={NumberFormat}
-                              customInput={InputCrediCard}
-                              brand={creditCardBrand.name}
-                              onValueChange={(event) => {
-                                propsForm.setFieldValue(
-                                  'cardNumber',
-                                  event.formattedValue,
-                                );
-                                propsForm.setFieldValue(
-                                  'cardNumber_unformatted',
-                                  event.value,
-                                );
-                                if (event.value.length >= 7) {
-                                  const cardBin = event.value.substring(0, 7);
-                                  PagSeguroDirectPayment.getBrand({
-                                    cardBin,
-                                    success(reponse) {
-                                      setCreditCardBrand(reponse.brand);
-                                      setTimeout(() => {
-                                        PagSeguroDirectPayment.getInstallments({
-                                          amount: totalWithDelivery,
-                                          brand: reponse.brand.name,
-                                          success(installmentsResponse) {
-                                            if (reponse.brand.name) {
-                                              const installment = installmentsResponse
-                                                .installments[reponse.brand.name];
-                                              propsForm.setFieldValue(
-                                                'installments',
-                                                installment[0],
-                                              );
-                                            }
-                                          },
-                                        });
-                                      }, 500);
-                                    },
-                                  });
+                          <Row>
+                            <Grid cols="12 6 6 6 9">
+                              <Field
+                                label="Número do cartão"
+                                name="cardNumber_unformatted"
+                                inputId="cardNumber_unformatted"
+                                format={
+                                  creditCardBrand.name === 'amex'
+                                    ? '#### ###### ######'
+                                    : '#### #### #### ####'
                                 }
-                              }}
-                              isRequired
-                              type="tel"
-                            />
-                          </Grid>
-                          <Grid cols="12 6 6 6 3">
-                            <Field
-                              label="Validade"
-                              name="expiration"
-                              inputId="expiration"
-                              placeholder="MM/AAAA"
-                              format="##/####"
-                              component={MaskInput}
-                              isRequired
-                              onValueChange={(value) => {
-                                propsForm.setFieldValue(
-                                  'expiration',
-                                  value.formattedValue,
-                                );
-                              }}
-                              type="tel"
-                            />
-                          </Grid>
-                          <Grid cols="12 6 6 6 4">
-                            <Field
-                              label="Cód. de segurança"
-                              name="cvv"
-                              inputId="cvv"
-                              format={
-                                creditCardBrand.name === 'amex' ? '####' : '###'
-                              }
-                              component={NumberFormat}
-                              customInput={InputCvv}
-                              onValueChange={(value) => {
-                                propsForm.setFieldValue('cvv', value.value);
-                              }}
-                              isRequired
-                              type="tel"
-                            />
-                          </Grid>
-                          <Grid cols="12 12 12 12 8">
-                            <SelectDropDown
-                              id="installments"
-                              label="Parcelas"
-                              value={propsForm.values.installments}
-                              cacheOptions
-                              options={installments}
-                              getOptionLabel={label => label.totalAmount
-                                && `${label.quantity} ${
-                                label.quantity === 1 ? 'parcela' : 'parcelas'
-                                } de ${intl.formatNumber(
-                                  label.installmentAmount,
-                                  { style: 'currency', currency: 'BRL' },
-                                )} | Total: ${intl.formatNumber(
-                                  label.totalAmount,
-                                  { style: 'currency', currency: 'BRL' },
-                                )} `
-                              }
-                              getOptionValue={option => option.quantity}
-                              onChange={(event) => {
-                                propsForm.setFieldValue('installments', event);
-                              }}
-                              isInvalid={propsForm.errors.installments}
-                              touched={propsForm.touched.installments}
-                              placeholder="Preencha as informações do cartão para ver as opções de parcelamento"
-                              isRequired
-                            />
-                          </Grid>
-                          <Grid cols="12" className="mb-3">
-                            <AddressCreditCard
-                              onClick={() => {
-                                propsForm.setFieldValue(
-                                  'cobrancaCep',
-                                  propsForm.values.cep,
-                                );
-                                propsForm.setFieldValue(
-                                  'cobrancaBairro',
-                                  propsForm.values.bairro,
-                                );
-                                propsForm.setFieldValue(
-                                  'cobrancaEstado',
-                                  propsForm.values.estado,
-                                );
-                                propsForm.setFieldValue(
-                                  'cobrancaComplemento',
-                                  propsForm.values.complemento,
-                                );
-                                propsForm.setFieldValue(
-                                  'cobrancaNumero',
-                                  propsForm.values.numero,
-                                );
-                                propsForm.setFieldValue(
-                                  'cobrancaCodcidade',
-                                  propsForm.values.codcidade,
-                                );
-                                propsForm.setFieldValue(
-                                  'cobrancaCidade',
-                                  propsForm.values.cidade,
-                                );
-                                propsForm.setFieldValue(
-                                  'cobrancaEndereco',
-                                  propsForm.values.endereco,
-                                );
-                                propsForm.setFieldValue(
-                                  'cobrancaTipoLogradouro',
-                                  propsForm.values.tipoLogradouro,
-                                );
-                              }}
-                            >
-                              Clique aqui se o endereço do cartão é o mesmo da entrega
-                            </AddressCreditCard>
-                          </Grid>
-                          <Grid cols="12 6 6 3 3">
-                            <Field
-                              label="CEP"
-                              name="cobrancaCep"
-                              inputId="cobrancaCep"
-                              type="tel"
-                              format="#####-###"
-                              component={MaskedNumberInput}
-                              onValueChange={(values) => {
-                                if (values.value.length < 8) {
-                                  return;
-                                }
+                                component={NumberFormat}
+                                customInput={InputCrediCard}
+                                brand={creditCardBrand.name}
+                                onValueChange={(event) => {
+                                  propsForm.setFieldValue(
+                                    'cardNumber',
+                                    event.formattedValue,
+                                  );
+                                  propsForm.setFieldValue(
+                                    'cardNumber_unformatted',
+                                    event.value,
+                                  );
+                                  if (event.value.length >= 7) {
+                                    const cardBin = event.value.substring(0, 7);
+                                    PagSeguroDirectPayment.getBrand({
+                                      cardBin,
+                                      success(reponse) {
+                                        setCreditCardBrand(reponse.brand);
+                                        setTimeout(() => {
+                                          PagSeguroDirectPayment.getInstallments({
+                                            amount: totalWithDelivery,
+                                            brand: reponse.brand.name,
+                                            success(installmentsResponse) {
+                                              if (reponse.brand.name) {
+                                                const installment = installmentsResponse
+                                                  .installments[reponse.brand.name];
+                                                propsForm.setFieldValue(
+                                                  'installments',
+                                                  installment[0],
+                                                );
+                                              }
+                                            },
+                                          });
+                                        }, 500);
+                                      },
+                                    });
+                                  }
+                                }}
+                                isRequired
+                                type="tel"
+                              />
+                            </Grid>
+                            <Grid cols="12 6 6 6 3">
+                              <Field
+                                label="Validade"
+                                name="expiration"
+                                inputId="expiration"
+                                placeholder="MM/AAAA"
+                                format="##/####"
+                                component={MaskInput}
+                                isRequired
+                                onValueChange={(value) => {
+                                  propsForm.setFieldValue(
+                                    'expiration',
+                                    value.formattedValue,
+                                  );
+                                }}
+                                type="tel"
+                              />
+                            </Grid>
+                          </Row>
 
-                                propsForm.setFieldValue(
-                                  'cobrancaCep',
-                                  values.formattedValue,
-                                );
-                                getCep(values.value).then((address) => {
-                                  const tipoLogradouro = address.data.logradouro.substring(
-                                    0,
-                                    address.data.logradouro.indexOf(' ') + 1,
-                                  );
-                                  const endereco = address.data.logradouro.substring(
-                                    address.data.logradouro.indexOf(' ') + 1,
-                                  );
-                                  propsForm.setFieldValue(
-                                    'cobrancaBairro',
-                                    address.data.bairro,
-                                  );
-                                  propsForm.setFieldValue(
-                                    'cobrancaEstado',
-                                    address.data.uf,
-                                  );
-                                  propsForm.setFieldValue(
-                                    'cobrancaCodcidade',
-                                    address.data.ibge,
-                                  );
-                                  propsForm.setFieldValue(
-                                    'cobrancaCidade',
-                                    address.data.localidade,
-                                  );
-                                  propsForm.setFieldValue(
-                                    'cobrancaEndereco',
-                                    endereco.trim(),
-                                  );
-                                  propsForm.setFieldValue(
-                                    'cobrancaTipoLogradouro',
-                                    tipoLogradouro.trim(),
-                                  );
-                                });
-                              }}
-                              isRequired
-                            />
-                          </Grid>
-                          <Grid cols="12 12 6 6 6">
-                            <Field
-                              label="Endereço"
-                              name="cobrancaEndereco"
-                              inputId="cobrancaEndereco"
-                              component={Input}
-                              isRequired
-                            />
-                          </Grid>
-                          <Grid cols="12 6 6 6 4">
-                            <Field
-                              label="Número"
-                              name="cobrancaNumero"
-                              inputId="cobrancaNumero"
-                              component={Input}
-                              isRequired
-                              type="tel"
-                            />
-                          </Grid>
-                          <Grid cols="12 6 6 6 8">
-                            <Field
-                              label="Complemento"
-                              name="cobrancaComplemento"
-                              inputId="cobrancaComplemento"
-                              component={Input}
-                            />
-                          </Grid>
-                          <Grid cols="12 6 6 6 6">
-                            <Field
-                              label="Bairro"
-                              name="cobrancaBairro"
-                              inputId="cobrancaBairro"
-                              component={Input}
-                              isRequired
-                            />
-                          </Grid>
-                          <Grid cols="12 6 6 4 4">
-                            <Field
-                              label="Cidade"
-                              name="cobrancaCidade"
-                              inputId="cobrancaCidade"
-                              component={Input}
-                              isRequired
-                              disabled
-                            />
-                          </Grid>
-                          <Grid cols="12 12 6 2 2">
-                            <Field
-                              label="Estado"
-                              name="cobrancaEstado"
-                              inputId="cobrancaEstado"
-                              component={Input}
-                              isRequired
-                              disabled
-                            />
-                          </Grid>
-                          <Grid
-                            cols="12 4 6 6 6"
-                            className="mt-0 d-flex flex-column"
-                          >
-                            <div className="mb-2">
-                              <img
-                                src={IconeShield}
-                                height={20}
-                                alt="Você está em uma conexão segura"
-                              />
-                              <span style={{ fontSize: '12px' }}>
-                                Você está em uma conexão segura
-                              </span>
-                            </div>
-                            <div>
-                              <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                                Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
-                              </p>
-                            </div>
-                          </Grid>
-                          <Grid
-                            cols="12 8 6 6 6"
-                            className="d-flex justify-content-end mb-3"
-                          >
-                            <ReCAPTCHA
-                              ref={recaptchaRef}
-                              sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
-                              hl="pt-BR"
-                              onChange={verifyRecaptcha}
-                            />
-                          </Grid>
-                          <Grid
-                            cols="12"
-                            className="d-flex justify-content-end"
-                          >
-                            <div>
-                              <Button
-                                value={
-                                  propsForm.values.gatwayPagseguro
-                                    ? 'Finalizar compra'
-                                    : 'Enviar pedido'
+                          <Row>
+                            <Grid cols="12 6 6 6 4">
+                              <Field
+                                label="Cód. de segurança"
+                                name="cvv"
+                                inputId="cvv"
+                                format={
+                                  creditCardBrand.name === 'amex' ? '####' : '###'
                                 }
-                                type="submit"
-                                isLoading={propsForm.isSubmitting}
-                                disabled={enableSubmitButton()}
+                                component={NumberFormat}
+                                customInput={InputCvv}
+                                onValueChange={(value) => {
+                                  propsForm.setFieldValue('cvv', value.value);
+                                }}
+                                isRequired
+                                type="tel"
                               />
-                            </div>
-                          </Grid>
+                            </Grid>
+                            <Grid cols="12 12 12 12 8">
+                              <SelectDropDown
+                                id="installments"
+                                label="Parcelas"
+                                value={propsForm.values.installments}
+                                cacheOptions
+                                options={installments}
+                                getOptionLabel={label => label.totalAmount
+                                  && `${label.quantity} ${
+                                  label.quantity === 1 ? 'parcela' : 'parcelas'
+                                  } de ${intl.formatNumber(
+                                    label.installmentAmount,
+                                    { style: 'currency', currency: 'BRL' },
+                                  )} | Total: ${intl.formatNumber(
+                                    label.totalAmount,
+                                    { style: 'currency', currency: 'BRL' },
+                                  )} `
+                                }
+                                getOptionValue={option => option.quantity}
+                                onChange={(event) => {
+                                  propsForm.setFieldValue('installments', event);
+                                }}
+                                isInvalid={propsForm.errors.installments}
+                                touched={propsForm.touched.installments}
+                                placeholder="Preencha as informações do cartão para ver as opções de parcelamento"
+                                isRequired
+                              />
+                            </Grid>
+                          </Row>
+                          <Row>
+                            <Grid cols="12" className="mb-3">
+                              <AddressCreditCard
+                                onClick={() => {
+                                  setShowAddress(!showAddress);
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaCep',
+                                  //   propsForm.values.cep,
+                                  // );
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaBairro',
+                                  //   propsForm.values.bairro,
+                                  // );
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaEstado',
+                                  //   propsForm.values.estado,
+                                  // );
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaComplemento',
+                                  //   propsForm.values.complemento,
+                                  // );
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaNumero',
+                                  //   propsForm.values.numero,
+                                  // );
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaCodcidade',
+                                  //   propsForm.values.codcidade,
+                                  // );
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaCidade',
+                                  //   propsForm.values.cidade,
+                                  // );
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaEndereco',
+                                  //   propsForm.values.endereco,
+                                  // );
+                                  // propsForm.setFieldValue(
+                                  //   'cobrancaTipoLogradouro',
+                                  //   propsForm.values.tipoLogradouro,
+                                  // );
+                                }}
+                              >
+                                Endereço do cartão é diferente do endereço de entrega?
+                              </AddressCreditCard>
+                            </Grid>
+                          </Row>
+                          {showAddress && (
+                            <>
+                              <Row>
+                                <Grid cols="12 6 4 4 4">
+                                  <Field
+                                    label="CEP"
+                                    name="cobrancaCep"
+                                    inputId="cobrancaCep"
+                                    type="tel"
+                                    format="#####-###"
+                                    component={MaskedNumberInput}
+                                    onValueChange={(values) => {
+                                      if (values.value.length < 8) {
+                                        return;
+                                      }
+
+                                      propsForm.setFieldValue(
+                                        'cobrancaCep',
+                                        values.formattedValue,
+                                      );
+                                      getCep(values.value).then((address) => {
+                                        const tipoLogradouro = address.data.logradouro.substring(
+                                          0,
+                                          address.data.logradouro.indexOf(' ') + 1,
+                                        );
+                                        const endereco = address.data.logradouro.substring(
+                                          address.data.logradouro.indexOf(' ') + 1,
+                                        );
+                                        propsForm.setFieldValue(
+                                          'cobrancaBairro',
+                                          address.data.bairro,
+                                        );
+                                        propsForm.setFieldValue(
+                                          'cobrancaEstado',
+                                          address.data.uf,
+                                        );
+                                        propsForm.setFieldValue(
+                                          'cobrancaCodcidade',
+                                          address.data.ibge,
+                                        );
+                                        propsForm.setFieldValue(
+                                          'cobrancaCidade',
+                                          address.data.localidade,
+                                        );
+                                        propsForm.setFieldValue(
+                                          'cobrancaEndereco',
+                                          endereco.trim(),
+                                        );
+                                        propsForm.setFieldValue(
+                                          'cobrancaTipoLogradouro',
+                                          tipoLogradouro.trim(),
+                                        );
+                                      });
+                                    }}
+                                    isRequired
+                                  />
+                                </Grid>
+                                <Grid cols="12 6 8 8 8">
+                                  <Field
+                                    label="Endereço"
+                                    name="cobrancaEndereco"
+                                    inputId="cobrancaEndereco"
+                                    component={Input}
+                                    isRequired
+                                  />
+                                </Grid>
+                              </Row>
+                              <Row>
+                                <Grid cols="12 6 4 4 4">
+                                  <Field
+                                    label="Número"
+                                    name="cobrancaNumero"
+                                    inputId="cobrancaNumero"
+                                    component={Input}
+                                    isRequired
+                                    type="tel"
+                                  />
+                                </Grid>
+                                <Grid cols="12 6 8 8 8">
+                                  <Field
+                                    label="Complemento"
+                                    name="cobrancaComplemento"
+                                    inputId="cobrancaComplemento"
+                                    component={Input}
+                                  />
+                                </Grid>
+                              </Row>
+                              <Row>
+                                <Grid cols="12 12 12 12 12">
+                                  <Field
+                                    label="Bairro"
+                                    name="cobrancaBairro"
+                                    inputId="cobrancaBairro"
+                                    component={Input}
+                                    isRequired
+                                  />
+                                </Grid>
+                              </Row>
+                              <Row>
+                                <Grid cols="12 6 6 6 6">
+                                  <Field
+                                    label="Cidade"
+                                    name="cobrancaCidade"
+                                    inputId="cobrancaCidade"
+                                    component={Input}
+                                    isRequired
+                                    disabled
+                                  />
+                                </Grid>
+                                <Grid cols="12 6 6 6 6">
+                                  <Field
+                                    label="Estado"
+                                    name="cobrancaEstado"
+                                    inputId="cobrancaEstado"
+                                    component={Input}
+                                    isRequired
+                                    disabled
+                                  />
+                                </Grid>
+                              </Row>
+                            </>
+                          )}
+                          <Row>
+                            <Grid
+                              cols="12 4 6 6 6"
+                              className="mt-0 d-flex flex-column"
+                            >
+                              <div className="mb-2">
+                                <img
+                                  src={IconeShield}
+                                  height={20}
+                                  alt="Você está em uma conexão segura"
+                                />
+                                <span style={{ fontSize: '12px' }}>
+                                  Você está em uma conexão segura
+                              </span>
+                              </div>
+                              <div>
+                                <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
+                                  Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
+                              </p>
+                              </div>
+                            </Grid>
+                            <Grid
+                              cols="12 8 6 6 6"
+                              className="d-flex justify-content-end mb-3"
+                            >
+                              <ReCAPTCHA
+                                ref={recaptchaRef}
+                                sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
+                                hl="pt-BR"
+                                onChange={verifyRecaptcha}
+                              />
+                            </Grid>
+                            {/* <Grid
+                              cols="12"
+                              className="d-flex justify-content-end"
+                            >
+                              <div>
+                                <Button
+                                  value={
+                                    propsForm.values.gatwayPagseguro
+                                      ? 'Finalizar compra'
+                                      : 'Enviar pedido'
+                                  }
+                                  type="submit"
+                                  isLoading={propsForm.isSubmitting}
+                                  disabled={enableSubmitButton()}
+                                />
+                              </div>
+                            </Grid> */}
+                          </Row>
                         </>
                       )}
                   </>
@@ -918,6 +946,7 @@ const RegisterData = ({ intl }) => {
         }
         <Row className="d-flex justify-content-end pb-4 pr-3">
           <Button
+            disabled={enableSubmitButton()}
             value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
             onClick={() => history.push('/conclusion')}
           />
