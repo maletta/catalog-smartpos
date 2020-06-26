@@ -18,6 +18,7 @@ export const ShoppingCartProvider = ({ children }) => {
 
   const [shoppingCart, setShoppingCart] = useState({
     cart: prevCart,
+    withdraw: false,
     cep: '',
     deliveryFee: null,
     basketCount,

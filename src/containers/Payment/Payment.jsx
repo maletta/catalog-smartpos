@@ -67,7 +67,7 @@ const StepsContainer = styled.div`
 const RadioContainer = styled.div`
   display: flex; 
   flex-direction: column;
-`
+`;
 
 const RegisterData = ({ intl }) => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
@@ -89,7 +89,6 @@ const RegisterData = ({ intl }) => {
     shop.allowPayOnline === 0,
   );
   const [paymentsType, setPaymentType] = useState([]);
-  const [withdraw, setWithdraw] = useState(false);
   const [creditCardBrands, setCreditCardBrands] = useState([]);
   const [state, setState] = useState({
     loadPagseguro: false,
@@ -109,9 +108,9 @@ const RegisterData = ({ intl }) => {
       const withDelivery = cost
         ? cost + totalCar
         : costDelivery.cost + totalCar;
+
       PagSeguroDirectPayment.getInstallments({
-        amount: withdraw ? totalCar : withDelivery,
-        // maxInstallmentNoInterest: 2,
+        amount: shoppingCart.withdraw ? totalCar : withDelivery,
         brand: creditCardBrand.name,
         success(response) {
           const installment = response.installments[creditCardBrand.name];
@@ -125,7 +124,7 @@ const RegisterData = ({ intl }) => {
 
   const handleLoadPaymentsPag = () => {
     PagSeguroDirectPayment.getPaymentMethods({
-      amount: withdraw ? totalCar : costDelivery.cost + totalCar,
+      amount: shoppingCart.withdraw ? totalCar : costDelivery.cost + totalCar,
       success(response) {
         const creditCard = Object.keys(
           response.paymentMethods.CREDIT_CARD.options,
@@ -160,7 +159,7 @@ const RegisterData = ({ intl }) => {
       categoryName: '',
     });
 
-    if (cart.length < 1) {
+    if (cart.length === 0) {
       updateFilter({
         categoria: 0,
         label: 'Todas as categorias',
@@ -208,7 +207,7 @@ const RegisterData = ({ intl }) => {
         updateOrderPlaced({
           ...values,
           costDelivery,
-          withdraw,
+          withdraw: shoppingCart.withdraw,
           orderName: response.data.orderName,
         });
         history.push('/pedido-realizado');
@@ -225,14 +224,15 @@ const RegisterData = ({ intl }) => {
               history.push('/');
             },
           });
-        } else {
-          recaptchaRef.current.reset();
-          Swal.fire({
-            type: 'error',
-            title: 'Oops...',
-            text: 'Erro ao enviar o pedido',
-          });
+          return;
         }
+
+        recaptchaRef.current.reset();
+        Swal.fire({
+          type: 'error',
+          title: 'Oops...',
+          text: 'Erro ao enviar o pedido',
+        });
       })
       .finally(() => {
         setSubmitting(false);
@@ -240,33 +240,11 @@ const RegisterData = ({ intl }) => {
   };
 
   const verifyMaxAndMinValue = (gatwayPagseguro) => {
-    if (gatwayPagseguro) {
-      if (
-        shop.minValuePayOnline >= 0
-        && totalCar > shop.minValuePayOnline
-        && (shop.maxValuePayOnline === 0 || totalCar <= shop.maxValuePayOnline)
-      ) {
-        return true;
-      }
-      return false;
-    }
-    return true;
-  };
-
-  const verifyRecaptcha = (value) => {
-    setReCaptchaToken(value);
-  };
-
-  const enableSubmitButton = () => {
-    console.log({ shop })
-    console.log({ costDelivery })
-    console.log({ reCaptchaToken })
+    if (!gatwayPagseguro) return true;
 
     if (
-      // ['DELIVERY', 'BOTH'].includes(shop.deliveryMode)
-      // && costDelivery.isDeliverable
-      // && 
-      reCaptchaToken
+      totalCar > shop.minValuePayOnline
+      && (shop.maxValuePayOnline === 0 || totalCar <= shop.maxValuePayOnline)
     ) {
       return true;
     }
@@ -274,7 +252,7 @@ const RegisterData = ({ intl }) => {
     return false;
   };
 
-  const totalWithDelivery = withdraw ? totalCar : costDelivery.cost + totalCar;
+  const totalWithDelivery = shoppingCart.withdraw ? totalCar : costDelivery.cost + totalCar;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
     const values = {
@@ -285,6 +263,8 @@ const RegisterData = ({ intl }) => {
       orderProducts: stateCart,
       deliveryValue: formValues.pickup ? 0 : costDelivery.cost,
     };
+
+    return;
 
     // Pagamento pela pagseguro
     if (formValues.gatwayPagseguro && state.senderHash) {
@@ -860,7 +840,7 @@ const RegisterData = ({ intl }) => {
                                 ref={recaptchaRef}
                                 sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
                                 hl="pt-BR"
-                                onChange={verifyRecaptcha}
+                                onChange={setReCaptchaToken}
                               />
                             </Grid>
                             {/* <Grid
@@ -920,7 +900,7 @@ const RegisterData = ({ intl }) => {
                   ref={recaptchaRef}
                   sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
                   hl="pt-BR"
-                  onChange={verifyRecaptcha}
+                  onChange={setReCaptchaToken}
                 />
               </Grid>
               {/* <Grid
@@ -946,7 +926,7 @@ const RegisterData = ({ intl }) => {
         }
         <Row className="d-flex justify-content-end pb-4 pr-3">
           <Button
-            disabled={enableSubmitButton()}
+            disabled={!reCaptchaToken}
             value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
             onClick={() => history.push('/conclusion')}
           />
