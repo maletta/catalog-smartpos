@@ -4,10 +4,10 @@ import { injectIntl } from 'react-intl';
 import styled from 'styled-components';
 import NumberFormat from 'react-number-format';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 import Button from 'components/Form/Button';
 import Input from 'components/Form/Input';
-// import Input from "components/Form/";
 import Grid from 'components/Grid';
 import history from 'utils/history';
 import ShopContext from 'contexts/ShopContext';
@@ -52,18 +52,20 @@ const redirectToRegisterData = () => history.push('/register-data');
 const redirectToHome = () => history.push('/');
 
 const showStoreIsClosedModal = (shop) => {
+  const shopHoursOpen = shop.today.hours.map(
+    itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`,
+  );
+
+  const isShopClosed = shop.today.closed;
+  const title = isShopClosed
+    ? 'Estabelecimento fechado!'
+    : `Este estabelecimento abre entre: ${shopHoursOpen}`;
+
   Swal.fire({
     html: `<div>
     <div><img src="${ClosedStore}"></div>
     <span class="foradohorario-titulo"> 
-    ${
-  shop.today.closed
-    ? 'Estabelecimento fechado!'
-    : `Este estabelecimento abre entre:
-      ${shop.today.hours.map(
-    itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`,
-  )}`
-}
+    ${title}
     </span>
     <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
     </div>`,
@@ -93,13 +95,27 @@ const CartFooter = ({
   const [loadingDeliveryCost, setLoadingDeliveryCost] = useState(false);
   const [flagDelivery, setFlagDelivery] = useState(false);
 
+  const formatCurrency = price => intl.formatNumber(price, {
+    style: 'currency',
+    currency: 'BRL',
+  });
+
+  const deliveryFeeText = deliveryCost.isDeliverable
+    ? `O frete custa ${formatCurrency(deliveryCost.cost)}`
+    : 'Não entrega na sua região';
+
+  const deliveryText = (
+    flagDelivery ? deliveryFeeText : ''
+  );
+
   return (
     <>
       <Grid cols="12" className="d-flex justify-content-between flex-wrap">
         <DeliveryContainer>
           <p>Entrega:</p>
-          <label>
+          <label htmlFor="retirada">
             <input
+              id="retirada"
               style={{ marginRight: '5px' }}
               type="radio"
               name="delivery"
@@ -107,12 +123,14 @@ const CartFooter = ({
               checked={delivery === 'retrieve'}
               onChange={({ target }) => {
                 setDelivery(target.value);
+                updateShoppingCart({ withdraw: true });
               }}
             />
             Retirar no local
           </label>
-          <label>
+          <label htmlFor="entrega">
             <input
+              id="entrega"
               style={{ marginRight: '5px' }}
               type="radio"
               name="delivery"
@@ -120,6 +138,7 @@ const CartFooter = ({
               checked={delivery === 'shipping-fee'}
               onChange={({ target }) => {
                 setDelivery(target.value);
+                updateShoppingCart({ withdraw: false });
               }}
             />
             Calcular frete
@@ -142,15 +161,7 @@ const CartFooter = ({
                     updateShoppingCart({ cep: cepWithoutWhiteSpace });
                   }}
                 />
-                {!flagDelivery
-                  ? ''
-                  : deliveryCost.isDeliverable
-                    ? `O frete custa ${
-                      intl.formatNumber(deliveryCost.cost, {
-                        style: 'currency',
-                        currency: 'BRL',
-                      })}`
-                    : 'Não entrega na sua região'}
+                {deliveryText}
               </CEPContainer>
               <Button
                 styleType="tertiary"
@@ -179,7 +190,7 @@ const CartFooter = ({
               <CouponInputContainer>
                 <Input label="Cupom de desconto:" />
               </CouponInputContainer>
-              <Button styleType="tertiary" value="Aplicar" onClick={() => {}} />
+              <Button styleType="tertiary" value="Aplicar" onClick={() => { }} />
             </div>
           </CouponContainer>
         )}
@@ -205,6 +216,13 @@ const CartFooter = ({
       </Grid>
     </>
   );
+};
+
+CartFooter.propTypes = {
+  intl: PropTypes.object.isRequired,
+  updateFilter: PropTypes.func.isRequired,
+  deliveryCost: PropTypes.object.isRequired,
+  setDeliveryCost: PropTypes.func.isRequired,
 };
 
 export default injectIntl(CartFooter);
