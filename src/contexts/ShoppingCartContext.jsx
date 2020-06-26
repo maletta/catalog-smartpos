@@ -8,13 +8,13 @@ export const ShoppingCartProvider = ({ children }) => {
   console.log({ prevCart });
 
   const basketCount = prevCart.reduce((count, val) => count + val.quantity, 0);
-  console.log({ basketCount });
+  // console.log({ basketCount });
 
   const totalCart = prevCart.reduce(
     (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
     0,
   );
-  console.log({ totalCart });
+  // console.log({ totalCart });
 
   const [shoppingCart, setShoppingCart] = useState({
     cart: prevCart,

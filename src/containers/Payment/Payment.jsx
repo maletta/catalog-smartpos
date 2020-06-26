@@ -103,6 +103,10 @@ const RegisterData = ({ intl }) => {
 
   const recaptchaRef = useRef();
 
+  const formatCurrency = price => (
+    intl.formatNumber(price, { style: 'currency', currency: 'BRL' })
+  );
+
   const getInstallments = (cost) => {
     if (creditCardBrand.name && creditCardBrand.name !== 'none') {
       const withDelivery = cost
@@ -258,22 +262,24 @@ const RegisterData = ({ intl }) => {
     const values = {
       ...formValues,
       tipoPessoa: formValues.tipoPessoa.value,
-      tipoEndereco: formValues.tipoEndereco.value,
+      // tipoEndereco: formValues.tipoEndereco.value,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
-      deliveryValue: formValues.pickup ? 0 : costDelivery.cost,
+      deliveryValue: costDelivery.cost || 0,
     };
 
-    return;
+    console.log({ values });
+    // shoppingCart
 
-    // Pagamento pela pagseguro
     if (formValues.gatwayPagseguro && state.senderHash) {
+      const [expirationMonth, expirationYear] = formValues.expiration.split('/');
+
       PagSeguroDirectPayment.createCardToken({
-        cardNumber: formValues.cardNumber_unformatted, // Número do cartão de crédito
-        brand: creditCardBrand.name, // Bandeira do cartão
-        cvv: formValues.cvv, // CVV do cartão
-        expirationMonth: formValues.expiration.split('/')[0], // Mês da expiração do cartão
-        expirationYear: formValues.expiration.split('/')[1], // Ano da expiração do cartão, é necessário os 4 dígitos.
+        cardNumber: formValues.cardNumber_unformatted,
+        brand: creditCardBrand.name,
+        cvv: formValues.cvv,
+        expirationMonth,
+        expirationYear,
         success(response) {
           const valuesPag = {
             ...values,
@@ -293,9 +299,10 @@ const RegisterData = ({ intl }) => {
           setSubmitting(false);
         },
       });
-    } else {
-      sendCheckout(values, setSubmitting);
+      return;
     }
+
+    sendCheckout(values, setSubmitting);
   };
 
   const initialValues = {
@@ -407,28 +414,25 @@ const RegisterData = ({ intl }) => {
                           : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
                       }
                     />
-                    {propsForm.values.gatwayPagseguro
-                      && totalCar < shop.minValuePayOnline && (
-                        <Alert
-                          text={`Valor mínimo para pagamento on-line ${intl.formatNumber(
-                            shop.minValuePayOnline,
-                            { style: 'currency', currency: 'BRL' },
-                          )}`}
-                          typeAlert="warning"
-                        />
-                      )}
-                    {propsForm.values.gatwayPagseguro
+                    {propsForm.values.gatwayPagseguro && totalCar < shop.minValuePayOnline && (
+                      <Alert
+                        text={`Valor mínimo para pagamento on-line ${
+                          formatCurrency(shop.minValuePayOnline)}
+                        `}
+                        typeAlert="warning"
+                      />
+                    )}
+                    {
+                      propsForm.values.gatwayPagseguro
                       && totalCar > shop.maxValuePayOnline
                       && shop.maxValuePayOnline !== 0 && (
                         <Alert
-                          text={`Valor máximo para pagamento on-line ${intl.formatNumber(
-                            shop.maxValuePayOnline,
-                            { style: 'currency', currency: 'BRL' },
-                          )}`}
+                          text={`Valor máximo para pagamento on-line ${
+                            formatCurrency(shop.maxValuePayOnline)}
+                          `}
                           typeAlert="warning"
                         />
                       )}
-
                     {propsForm.values.offlinePayment && (
                       <Row>
                         <Grid cols="6">
@@ -621,15 +625,10 @@ const RegisterData = ({ intl }) => {
                                 cacheOptions
                                 options={installments}
                                 getOptionLabel={label => label.totalAmount
-                                  && `${label.quantity} ${
-                                  label.quantity === 1 ? 'parcela' : 'parcelas'
-                                  } de ${intl.formatNumber(
-                                    label.installmentAmount,
-                                    { style: 'currency', currency: 'BRL' },
-                                  )} | Total: ${intl.formatNumber(
-                                    label.totalAmount,
-                                    { style: 'currency', currency: 'BRL' },
-                                  )} `
+                                  && `${label.quantity} 
+                                  ${label.quantity === 1 ? 'parcela' : 'parcelas'} de 
+                                  ${formatCurrency(label.installmentAmount)} | Total: 
+                                  ${formatCurrency(label.totalAmount)}`
                                 }
                                 getOptionValue={option => option.quantity}
                                 onChange={(event) => {
@@ -824,12 +823,12 @@ const RegisterData = ({ intl }) => {
                                 />
                                 <span style={{ fontSize: '12px' }}>
                                   Você está em uma conexão segura
-                              </span>
+                                </span>
                               </div>
                               <div>
                                 <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
                                   Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
-                              </p>
+                                </p>
                               </div>
                             </Grid>
                             <Grid
@@ -935,7 +934,9 @@ const RegisterData = ({ intl }) => {
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
-          totalCart={shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product), 0)}
+          totalCart={
+            shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product), 0)
+          }
           deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={-5}
         />
@@ -945,7 +946,7 @@ const RegisterData = ({ intl }) => {
 };
 
 RegisterData.propTypes = {
-  intl: PropTypes.object,
-}
+  intl: PropTypes.object.isRequired,
+};
 
 export default injectIntl(RegisterData);
