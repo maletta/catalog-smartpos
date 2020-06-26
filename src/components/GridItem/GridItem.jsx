@@ -159,6 +159,7 @@ const GridItem = (props) => {
   const addCart = (product) => {
     getModifiersOfProduct(product.tenant_id, product.id).then((response) => {
       if (response.data.length === 0) {
+        localStorage.setItem('cartInit', new Date().getTime());
         const itemProduct = {
           ...product,
           quantity: 1,
