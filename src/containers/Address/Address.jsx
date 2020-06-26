@@ -80,7 +80,7 @@ const RegisterData = () => {
         <Formik
           enableReinitialize
           onSubmit={(values) => {
-            updateShoppingCart({ address: values })
+            updateShoppingCart({ address: values });
             history.push('/payment');
           }}
           initialValues={address}
@@ -103,14 +103,14 @@ const RegisterData = () => {
                       if (values.value.length < 8) return;
 
                       propsForm.setFieldValue('cep', values.formattedValue);
-                      getCep(values.value).then((address) => {
-                        if (address.data.logradouro) {
-                          const tipoLogradouro = address.data.logradouro.substring(
+                      getCep(values.value).then((responseAddress) => {
+                        if (responseAddress.data.logradouro) {
+                          const tipoLogradouro = responseAddress.data.logradouro.substring(
                             0,
-                            address.data.logradouro.indexOf(' ') + 1,
+                            responseAddress.data.logradouro.indexOf(' ') + 1,
                           );
-                          const endereco = address.data.logradouro.substring(
-                            address.data.logradouro.indexOf(' ') + 1,
+                          const endereco = responseAddress.data.logradouro.substring(
+                            responseAddress.data.logradouro.indexOf(' ') + 1,
                           );
                           propsForm.setFieldValue('endereco', endereco.trim());
                           propsForm.setFieldValue(
@@ -118,28 +118,18 @@ const RegisterData = () => {
                             tipoLogradouro.trim(),
                           );
                         }
-                        propsForm.setFieldValue('bairro', address.data.bairro);
-                        propsForm.setFieldValue('estado', address.data.uf);
-                        propsForm.setFieldValue('codcidade', address.data.ibge);
+                        propsForm.setFieldValue('bairro', responseAddress.data.bairro);
+                        propsForm.setFieldValue('estado', responseAddress.data.uf);
+                        propsForm.setFieldValue('codcidade', responseAddress.data.ibge);
                         propsForm.setFieldValue(
                           'cidade',
-                          address.data.localidade,
+                          responseAddress.data.localidade,
                         );
                       });
                     }}
                     isRequired
                   />
                 </Grid>
-                {/* <Grid cols="12 6 6 3 3">
-                  <Field
-                    label="Tipo logradouro"
-                    name="tipoLogradouro"
-                    inputId="tipoLogradouro"
-                    placeholder="Exemplo: Rua"
-                    component={Input}
-                    isRequired
-                  />
-                </Grid> */}
                 <Grid cols="12 6 6 8 8">
                   <Field
                     label="Endereço"
@@ -223,8 +213,12 @@ const RegisterData = () => {
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
-          totalCart={shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-            0)}
+          totalCart={
+            shoppingCart.cart.reduce(
+              (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
+              0,
+            )
+          }
           deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={-5}
         />

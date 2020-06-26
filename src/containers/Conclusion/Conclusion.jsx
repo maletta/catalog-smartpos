@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import history from 'utils/history';
@@ -6,6 +6,7 @@ import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
 import Button from 'components/Form/Button';
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 const Container = styled.div`
   background: #fff;
@@ -23,9 +24,10 @@ const FlexRow = styled.div`
   flex-wrap: wrap;
 `;
 
-const FlexRowCoupon = styled(FlexRow)`
-  color: #5bc057;
-`;
+// Precisa esperar ficar pronta a API do cupom
+// const FlexRowCoupon = styled(FlexRow)`
+//   color: #5bc057;
+// `;
 
 const FlexRowFinal = styled(FlexRow)`
   font-weight: bold;
@@ -77,81 +79,120 @@ const Footer = styled.div`
   gap: 50px;
 `;
 
-const Conclusion = () => (
-  <Container className="row">
-    <Grid cols="12 12 12 12 12" className="pt-3">
-      <StepsContainer>
-        <Steps activeIndex={4} />
-      </StepsContainer>
-      <FlexRow>
-        <SuccessMessage>
-          Seu pedido foi finalizado com sucesso
-        </SuccessMessage>
-        <SendWhatsapp>Enviar confirmação por Whatsapp</SendWhatsapp>
-      </FlexRow>
-      <ThanksMessage>
-        Obrigada pela compra! Você receberá todos os dados da sua contra no email: xxx@gmail.com
-      </ThanksMessage>
+const Conclusion = () => {
+  const { shoppingCart } = useContext(ShoppingCartContext);
+  console.log({ shoppingCart });
+  const { address, personData } = shoppingCart;
+  const {
+    email, name, phone, document,
+  } = personData;
+  const {
+    cep,
+    endereco,
+    tipo,
+    bairro,
+    cidade,
+    estado,
+    numero,
+  } = address;
 
-      <Receipt>
-        <ReceiptNumber>Número do pedido:</ReceiptNumber>
-        <ReceiptCode>PN-24</ReceiptCode>
+  return (
+    <Container className="row">
+      <Grid cols="12 12 12 12 12" className="pt-3">
+        <StepsContainer>
+          <Steps activeIndex={4} />
+        </StepsContainer>
         <FlexRow>
-          <span>Pascal o coelho</span>
-          <span>R$ 35,00</span>
+          <SuccessMessage>
+            Seu pedido foi finalizado com sucesso
+          </SuccessMessage>
+          <SendWhatsapp>Enviar confirmação por Whatsapp</SendWhatsapp>
         </FlexRow>
-        <FlexRowCoupon>
+        <ThanksMessage>
+          Obrigada pela compra! Você receberá todos os dados da sua contra no email: xxx@gmail.com
+        </ThanksMessage>
+
+        <Receipt>
+          <ReceiptNumber>Número do pedido:</ReceiptNumber>
+          <ReceiptCode>PN-24</ReceiptCode>
+          <FlexRow>
+            <span>Pascal o coelho</span>
+            <span>R$ 35,00</span>
+          </FlexRow>
+          {/* Precisa esperar a API de desconto ficar pronta */}
+          {/* <FlexRowCoupon>
           <span>Cupom de desconto</span>
           <span>R$ -5,00</span>
-        </FlexRowCoupon>
-        <Divider />
-        <FlexRow>
-          <span>Total</span>
-          <span>R$ 30,00</span>
-        </FlexRow>
-        <FlexRow>
-          <span>Entrega</span>
-          <span>R$ 0,00</span>
-        </FlexRow>
-        <Divider />
-        <FlexRowFinal>
-          <span>Final:</span>
-          <span>R$ 30,00</span>
-        </FlexRowFinal>
-        <ReceiptObservation>
-          * Retirar no estabelecimento
-        </ReceiptObservation>
-      </Receipt>
-      <Footer>
-        <div>
-          <h4>Dados Pessoais:</h4>
-          <span>Danielle Peredelski</span>
-          <br />
-          <span>CPF: 424.360.598-02</span>
-          <br />
-          <span>danielle@netpos.com.br</span>
-          <br />
-          <span>Telefone: (11) 98028-2222</span>
-        </div>
-        <div>
-          <h4>Endereço:</h4>
-          <span>Rua Cavour, 399</span>
-          <br />
-          <span>Vila Prudente / SP</span>
-          <br />
-          <span>CEP: 03136-010</span>
-          <br />
-        </div>
-        <div>
-          <h4>Pagamento:</h4>
-          <p>Cartão de crédito</p>
-        </div>
-      </Footer>
-      <Row className="d-flex justify-content-end pb-4 pr-3">
-        <Button value="Voltar" onClick={() => history.push('/payment')} />
-      </Row>
-    </Grid>
-  </Container>
-);
+        </FlexRowCoupon> */}
+          <Divider />
+          <FlexRow>
+            <span>Total</span>
+            <span>R$ 30,00</span>
+          </FlexRow>
+          <FlexRow>
+            <span>Entrega</span>
+            <span>R$ 0,00</span>
+          </FlexRow>
+          <Divider />
+          <FlexRowFinal>
+            <span>Final:</span>
+            <span>R$ 30,00</span>
+          </FlexRowFinal>
+          <ReceiptObservation>
+            * Retirar no estabelecimento
+          </ReceiptObservation>
+        </Receipt>
+        <Footer>
+          <div>
+            <h4>Dados Pessoais:</h4>
+            <span>{name}</span>
+            <br />
+            <span>
+              CPF:
+              {document}
+            </span>
+            <br />
+            <span>{email}</span>
+            <br />
+            <span>
+              Telefone:
+              {phone}
+            </span>
+          </div>
+          <div>
+            <h4>Endereço:</h4>
+            <span>
+              {tipo}
+              {endereco}
+              ,
+              {numero}
+              -
+              {bairro}
+            </span>
+            <br />
+            <span>
+              {cidade}
+              /
+              {estado}
+            </span>
+            <br />
+            <span>
+              CEP:
+              {cep}
+            </span>
+            <br />
+          </div>
+          <div>
+            <h4>Pagamento:</h4>
+            <p>Cartão de crédito</p>
+          </div>
+        </Footer>
+        <Row className="d-flex justify-content-end pb-4 pr-3">
+          <Button value="Voltar" onClick={() => history.push('/')} />
+        </Row>
+      </Grid>
+    </Container>
+  );
+};
 
 export default Conclusion;

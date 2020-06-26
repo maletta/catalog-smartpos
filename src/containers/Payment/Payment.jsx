@@ -69,7 +69,7 @@ const RadioContainer = styled.div`
   flex-direction: column;
 `;
 
-const RegisterData = ({ intl }) => {
+const Payment = ({ intl }) => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
@@ -79,7 +79,6 @@ const RegisterData = ({ intl }) => {
     : [];
 
   const [totalCar, setTotalCar] = useState(0);
-  const [isNaturalPerson] = useState(true);
   const [costDelivery] = useState({
     cost: 0,
     isDeliverable: false,
@@ -99,7 +98,7 @@ const RegisterData = ({ intl }) => {
   });
   const [installments, setInstallments] = useState([]);
   const [stateCart] = useState(cart);
-  const [showAddress, setShowAddress] = useState(true);
+  const [showAddress, setShowAddress] = useState(false);
 
   const recaptchaRef = useRef();
 
@@ -214,7 +213,8 @@ const RegisterData = ({ intl }) => {
           withdraw: shoppingCart.withdraw,
           orderName: response.data.orderName,
         });
-        history.push('/pedido-realizado');
+        // history.push('/pedido-realizado');
+        history.push('/conclusion');
       })
       .catch((error) => {
         if (error.response && error.response.status === 406) {
@@ -360,7 +360,7 @@ const RegisterData = ({ intl }) => {
         <Formik
           onSubmit={submitCheckout}
           initialValues={initialValues}
-          validationSchema={checkoutSchema(isNaturalPerson, offlinePayment)}
+          // validationSchema={checkoutSchema(isNaturalPerson, offlinePayment)}
           render={propsForm => (
             <Form>
               <Row>
@@ -842,6 +842,7 @@ const RegisterData = ({ intl }) => {
                                 onChange={setReCaptchaToken}
                               />
                             </Grid>
+
                             {/* <Grid
                               cols="12"
                               className="d-flex justify-content-end"
@@ -859,6 +860,14 @@ const RegisterData = ({ intl }) => {
                                 />
                               </div>
                             </Grid> */}
+                          </Row>
+                          <Row className="d-flex justify-content-end pb-4 pr-3">
+                            <Button
+                              // type="submit"
+                              onClick={() => history.push('/conclusion')}
+                              // disabled={!reCaptchaToken}
+                              value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
+                            />
                           </Row>
                         </>
                       )}
@@ -923,19 +932,22 @@ const RegisterData = ({ intl }) => {
             </Row>
           )
         }
-        <Row className="d-flex justify-content-end pb-4 pr-3">
+        {/* <Row className="d-flex justify-content-end pb-4 pr-3">
           <Button
-            disabled={!reCaptchaToken}
+            // disabled={!reCaptchaToken}
             value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
             onClick={() => history.push('/conclusion')}
           />
-        </Row>
+        </Row> */}
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
           totalCart={
-            shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product), 0)
+            shoppingCart.cart.reduce(
+              (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
+              0,
+            )
           }
           deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={-5}
@@ -945,8 +957,8 @@ const RegisterData = ({ intl }) => {
   );
 };
 
-RegisterData.propTypes = {
+Payment.propTypes = {
   intl: PropTypes.object.isRequired,
 };
 
-export default injectIntl(RegisterData);
+export default injectIntl(Payment);
