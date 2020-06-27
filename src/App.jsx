@@ -105,7 +105,6 @@ const App = () => {
             if (response.data.openHours === null || response.data.openHours.length === 0) {
               return false;
             }
-            console.log('ok');
             const anyHour = response.data.allowOrderOutsideBusinessHours;
             const { hours } = today();
             const hourNow = moment().format('HH:mm');
