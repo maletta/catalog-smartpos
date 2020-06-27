@@ -102,9 +102,10 @@ const App = () => {
         const verifyIsClosed = () => {
           let isClosed = true;
           if (response.data) {
-            if (response.data.openHours.length === 0 || response.data.openHours === null) {
+            if (response.data.openHours === null || response.data.openHours.length === 0) {
               return false;
             }
+            console.log('ok');
             const anyHour = response.data.allowOrderOutsideBusinessHours;
             const { hours } = today();
             const hourNow = moment().format('HH:mm');
