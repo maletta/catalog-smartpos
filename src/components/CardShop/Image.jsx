@@ -22,22 +22,20 @@ const Img = styled.img`
 
 
 const ImageBox = (props) => {
-  const { product } = props;
-  const { id, atualizacao } = product;
-
+  const { product, shoppingCart, url } = props;
+  const { id } = product;
   const [imageProduct, setImage] = useState(NoImage);
-  const [imageBaseUrl] = useState(`${process.env.REACT_APP_IMG_API}product/${id}?lastUpdate=${atualizacao}`);
-
   useEffect(() => {
-    if (product) {
-      const img = new Image();
-      img.src = imageBaseUrl;
+    const img = new Image();
+    img.src = url;
 
-      img.onload = () => {
-        setImage(imageBaseUrl);
-      };
-    }
-  }, [false]);
+    img.onload = () => {
+      setImage(url);
+    };
+    img.onError = () => {
+      setImage(NoImage);
+    };
+  }, [shoppingCart, id]);
   return (
     <Img src={imageProduct} alt="product" />
   );
@@ -45,10 +43,14 @@ const ImageBox = (props) => {
 
 ImageBox.propTypes = {
   product: PropTypes.object,
+  shoppingCart: PropTypes.object,
+  url: PropTypes.string,
 };
 
 ImageBox.defaultProps = {
   product: {},
+  shoppingCart: {},
+  url: '',
 };
 
 export default ImageBox;

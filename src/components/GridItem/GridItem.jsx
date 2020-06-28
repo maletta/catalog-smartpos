@@ -172,11 +172,10 @@ const GridItem = (props) => {
         };
 
         const merged = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-        const basketCount = merged.reduce((count, val) => (count + val.quantity), 0);
         merged.push(itemProduct);
         localStorage.setItem('cart', JSON.stringify(merged));
         updateShoppingCart({
-          basketCount,
+          basketCount: merged.reduce((count, val) => (count + val.quantity), 0),
           cardOverlay: true,
         });
       } else {

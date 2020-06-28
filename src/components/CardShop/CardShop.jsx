@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
@@ -260,44 +260,42 @@ const CardShop = ({ intl }) => {
   const [closeCardOverlay, setCardOverlay] = useState(false);
   const [totalCart, setTotalCart] = useState(0);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  const [stateCart, setStateCar] = useState(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
+  const [stateCart, setStateCart] = useState(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setCardOverlay(shoppingCart.cardOverlay);
+
+    setStateCart(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
+    if (stateCart.reduce((count, val) => (count + val.quantity), 0) !== shoppingCart.basketCount) {
+      updateShoppingCart({
+        basketCount: stateCart.reduce((count, val) => (count + val.quantity), 0),
+        cardOverlay: true,
+      });
+    }
 
     const total = stateCart.reduce(
       (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
     );
-
     setTotalCart(total);
-
-    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
-
-    if (stateCart !== JSON.parse(localStorage.getItem('cart'))) {
-      setStateCar(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
-    }
-
-    if (basketCount !== shoppingCart.basketCount) {
-      updateShoppingCart({
-        basketCount,
-      });
-    }
-  }, [shoppingCart, stateCart]);
+  }, [shoppingCart]);
 
   const closeCard = () => {
     setCardOverlay(!closeCardOverlay);
-
-    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
-    updateShoppingCart({
-      basketCount,
-      cardOverlay: !closeCardOverlay,
-    });
   };
 
   const deleteItem = (item) => {
     const newCart = stateCart.filter(del => (del.uuid !== item.uuid));
-    setStateCar(newCart);
+    setStateCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
+    updateShoppingCart({
+      basketCount: stateCart.length,
+      cardOverlay: true,
+    });
+
+    const total = stateCart.reduce(
+      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
+    );
+    setTotalCart(total);
   };
 
   const addProduct = (item) => {
@@ -310,9 +308,9 @@ const CardShop = ({ intl }) => {
       }
       return false;
     });
-    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
     localStorage.setItem('cart', JSON.stringify(cart));
-    setStateCar(cart);
+    setStateCart(cart);
+    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
     updateShoppingCart({
       basketCount,
     });
@@ -331,7 +329,13 @@ const CardShop = ({ intl }) => {
         }
         return false;
       });
+
       localStorage.setItem('cart', JSON.stringify(cart));
+      setStateCart(cart);
+      const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
+      updateShoppingCart({
+        basketCount,
+      });
     }
   };
 
@@ -364,7 +368,7 @@ const CardShop = ({ intl }) => {
                     >
 
                       <div className="card-image">
-                        {item && <ImageBox product={item} />}
+                        {item && <ImageBox url={`${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`} shoppingCart={shoppingCart} product={item} />}
                       </div>
                     </ImageContainer>
                     <Info>
@@ -411,7 +415,9 @@ const CardShop = ({ intl }) => {
                 <Finish onClick={() => {
                   setTimeout(() => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
-                    closeCard(false);
+                    updateShoppingCart({
+                      cardOverlay: false,
+                    });
                     history.push('/cart');
                   }, 500);
                 }}
