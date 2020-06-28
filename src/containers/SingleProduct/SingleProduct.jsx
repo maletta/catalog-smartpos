@@ -316,13 +316,12 @@ const SingleProduct = (props) => {
         newItem,
       ];
     }
-    const basketCount = newCart.reduce((count, val) => (count + val.quantity), 0);
-    updateShoppingCart({
-      basketCount,
-      cardOverlay: true,
-    });
     localStorage.setItem('cart', JSON.stringify(newCart));
     localStorage.setItem('cartInit', new Date().getTime());
+    updateShoppingCart({
+      basketCount: newCart.reduce((count, val) => (count + val.quantity), 0),
+      cardOverlay: true,
+    });
     setTimeout(() => {
       history.push('/');
       resetForm({ quantity: 1, variant: {} });
