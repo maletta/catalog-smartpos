@@ -39,7 +39,7 @@ const ItemPrice = ({ product, intl }) => {
 
 ItemPrice.propTypes = {
   intl: intlShape.isRequired,
-  product: PropTypes.shape({}).isRequired,
+  product: PropTypes.any.isRequired,
 };
 
 export default injectIntl(ItemPrice);

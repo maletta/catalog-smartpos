@@ -25,6 +25,7 @@ export const ShoppingCartProvider = ({ children }) => {
     totalCart,
     personData: {},
     address: {},
+    paymentType: '',
   });
 
   const updateShoppingCart = (newShop) => {

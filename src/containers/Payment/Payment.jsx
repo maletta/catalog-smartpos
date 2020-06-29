@@ -267,9 +267,12 @@ const Payment = ({ intl }) => {
       orderProducts: stateCart,
       deliveryValue: costDelivery.cost || 0,
     };
+    const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
+    updateShoppingCart({ paymentType });
 
     console.log({ values });
-    // shoppingCart
+    console.log({ gatePag: formValues.gatwayPagseguro });
+    console.log({ hash: state.senderHash });
 
     if (formValues.gatwayPagseguro && state.senderHash) {
       const [expirationMonth, expirationYear] = formValues.expiration.split('/');
