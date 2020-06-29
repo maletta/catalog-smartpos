@@ -99,6 +99,7 @@ const Payment = ({ intl }) => {
   const [installments, setInstallments] = useState([]);
   const [stateCart] = useState(cart);
   const [showAddress, setShowAddress] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const recaptchaRef = useRef();
 
@@ -214,7 +215,7 @@ const Payment = ({ intl }) => {
           orderName: response.data.orderName,
         });
         // history.push('/pedido-realizado');
-        history.push('/conclusion');
+        // history.push('/conclusion');
       })
       .catch((error) => {
         if (error.response && error.response.status === 406) {
@@ -239,6 +240,7 @@ const Payment = ({ intl }) => {
         });
       })
       .finally(() => {
+        setLoading(false);
         setSubmitting(false);
       });
   };
@@ -259,6 +261,8 @@ const Payment = ({ intl }) => {
   const totalWithDelivery = shoppingCart.withdraw ? totalCar : costDelivery.cost + totalCar;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
+    setLoading(true);
+
     const values = {
       ...formValues,
       tipoPessoa: formValues.tipoPessoa.value,
@@ -266,13 +270,14 @@ const Payment = ({ intl }) => {
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
       deliveryValue: costDelivery.cost || 0,
+      ...shoppingCart.personData,
+      ...shoppingCart.address,
     };
     const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
     updateShoppingCart({ paymentType });
 
     console.log({ values });
-    console.log({ gatePag: formValues.gatwayPagseguro });
-    console.log({ hash: state.senderHash });
+    console.log({ shoppingCart });
 
     if (formValues.gatwayPagseguro && state.senderHash) {
       const [expirationMonth, expirationYear] = formValues.expiration.split('/');
@@ -845,30 +850,12 @@ const Payment = ({ intl }) => {
                                 onChange={setReCaptchaToken}
                               />
                             </Grid>
-
-                            {/* <Grid
-                              cols="12"
-                              className="d-flex justify-content-end"
-                            >
-                              <div>
-                                <Button
-                                  value={
-                                    propsForm.values.gatwayPagseguro
-                                      ? 'Finalizar compra'
-                                      : 'Enviar pedido'
-                                  }
-                                  type="submit"
-                                  isLoading={propsForm.isSubmitting}
-                                  disabled={enableSubmitButton()}
-                                />
-                              </div>
-                            </Grid> */}
                           </Row>
                           <Row className="d-flex justify-content-end pb-4 pr-3">
                             <Button
-                              // type="submit"
-                              onClick={() => history.push('/conclusion')}
-                              // disabled={!reCaptchaToken}
+                              isLoading={loading}
+                              type="submit"
+                              disabled={!reCaptchaToken}
                               value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
                             />
                           </Row>
@@ -914,34 +901,9 @@ const Payment = ({ intl }) => {
                   onChange={setReCaptchaToken}
                 />
               </Grid>
-              {/* <Grid
-                cols="12"
-                className="d-flex justify-content-end"
-              >
-                <div>
-                  <Button
-                    value={
-                      propsForm.values.gatwayPagseguro
-                        ? 'Finalizar compra'
-                        : 'Enviar pedido'
-                    }
-                    value="Enviar Pedido"
-                    type="submit"
-                    isLoading={propsForm.isSubmitting}
-                    disabled={enableSubmitButton()}
-                  />
-                </div>
-              </Grid> */}
             </Row>
           )
         }
-        {/* <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button
-            // disabled={!reCaptchaToken}
-            value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
-            onClick={() => history.push('/conclusion')}
-          />
-        </Row> */}
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices

@@ -37,7 +37,9 @@ const RegisterData = () => {
         </StepsContainer>
         <Formik
           onSubmit={(values) => {
-            updateShoppingCart({ personData: values })
+            updateShoppingCart({
+              personData: { ...values, tipoPessoa: values.personType },
+            });
             history.push('/address');
           }}
           initialValues={{
@@ -122,8 +124,8 @@ const RegisterData = () => {
                     </Grid>
                   </>
                 )}
-                {isNaturalPerson ? (
-                  <Grid cols="12 6 6 6 6">
+                <Grid cols="12 6 6 6 6">
+                  {isNaturalPerson ? (
                     <Field
                       label="CPF"
                       name="documento"
@@ -132,9 +134,7 @@ const RegisterData = () => {
                       component={MaskedNumberInput}
                       type="tel"
                     />
-                  </Grid>
-                ) : (
-                    <Grid cols="12 6 6 6 6">
+                  ) : (
                       <Field
                         label="CNPJ"
                         name="documento"
@@ -143,8 +143,8 @@ const RegisterData = () => {
                         component={MaskedNumberInput}
                         type="tel"
                       />
-                    </Grid>
-                  )}
+                    )}
+                </Grid>
                 <Grid cols="12 6 6 6 6">
                   <Field
                     label="E-mail"
@@ -165,6 +165,7 @@ const RegisterData = () => {
                     format="(##) #####-####"
                     mask=""
                     onValueChange={(value) => {
+                      propsForm.setFieldValue('fone', value.value);
                       propsForm.setFieldValue('foneFormatted', value.formattedValue);
                     }}
                     isRequired
@@ -187,8 +188,11 @@ const RegisterData = () => {
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
-          totalCart={shoppingCart.cart.reduce((count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-            0)}
+          totalCart={
+            shoppingCart.cart.reduce(
+              (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
+              0,
+            )}
           deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={-5}
         />

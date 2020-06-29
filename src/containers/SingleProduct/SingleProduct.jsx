@@ -313,10 +313,7 @@ const SingleProduct = (props) => {
     });
     localStorage.setItem('cart', JSON.stringify(newCart));
     localStorage.setItem('cartInit', new Date().getTime());
-    setTimeout(() => {
-      history.push('/cart');
-      resetForm({ quantity: 1, variant: {} });
-    }, 1000);
+    history.push('/cart');
     return false;
   };
 
@@ -492,7 +489,7 @@ const SingleProduct = (props) => {
   );
   const renderImage = () => (
     <>
-      {product.images !== 'notFound' ? (
+      {product.images && product.images !== 'notFound' ? (
         <Carousel>
           <ItemsCarousel
             requestToChangeActive={setActiveItemIndex}
@@ -504,10 +501,9 @@ const SingleProduct = (props) => {
             chevronWidth={chevronWidth}
           >
             <Img src={image} title={product.descricao} alt="Produto" />
-            {product.images && (
-              product.images !== 'notFound' && ((product.images).map(img => (
-                <Img src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
-              )))
+            {product.images.map(img => (
+                <Img key={img.key} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+              )
             )}
           </ItemsCarousel>
         </Carousel>
@@ -553,7 +549,7 @@ const SingleProduct = (props) => {
                                 </Thumb>
                                 )}
                                 {product.images !== 'notFound' && ((product.images).map((img, index) => (
-                                  <Thumb IsActive={activeItemIndex === index + 1}>
+                                  <Thumb key={img.key} IsActive={activeItemIndex === index + 1}>
                                     <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
                                   </Thumb>
                                 )))}

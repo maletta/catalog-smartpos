@@ -121,10 +121,10 @@ const Conclusion = ({ intl }) => {
           <SuccessMessage>
             Seu pedido foi finalizado com sucesso
           </SuccessMessage>
-          <SendWhatsapp onClick={() => { console.log('Hi') }}>Enviar confirmação por Whatsapp</SendWhatsapp>
+          {/* <SendWhatsapp>Enviar confirmação por Whatsapp</SendWhatsapp> */}
         </FlexRow>
         <ThanksMessage>
-          {`Obrigada pela compra! Você receberá todos os dados da sua contra no email: ${email}`}
+          {`Obrigada pela compra! Você receberá todos os dados da sua conta no email: ${email}`}
         </ThanksMessage>
 
         <Receipt>
