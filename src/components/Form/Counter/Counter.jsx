@@ -42,24 +42,24 @@ const AreaCounter = styled.div`
   border-radius: 3px;
 `;
 
-const Counter = (props) => {
-  const [value, setValue] = useState(props.value);
+const Counter = ({
+  min, max, initialCount, setState,
+}) => {
+  const [count, setCount] = useState(initialCount);
 
-  const add = () => {
-    if (value <= props.limit) {
-      setValue((prevState) => {
-        props.counter(prevState + 1);
-        return (prevState + 1);
-      });
+  const decrement = () => {
+    if (count > min) {
+      const decremented = count - 1;
+      setCount(decremented);
+      setState(decremented);
     }
   };
 
-  const remove = () => {
-    if (value > props.min) {
-      setValue((prevState) => {
-        props.counter(prevState - 1);
-        return (prevState - 1);
-      });
+  const increment = () => {
+    if (count < max) {
+      const incremented = count + 1;
+      setCount(incremented);
+      setState(incremented);
     }
   };
 
@@ -69,12 +69,12 @@ const Counter = (props) => {
       <AreaCounter>
         <Button
           className="fa fa-minus"
-          onClick={remove}
+          onClick={decrement}
         />
-        <ValueNumber>{value}</ValueNumber>
+        <ValueNumber>{count}</ValueNumber>
         <Button
           className="fa fa-plus"
-          onClick={add}
+          onClick={increment}
         />
       </AreaCounter>
     </Area>
@@ -83,14 +83,14 @@ const Counter = (props) => {
 
 Counter.propTypes = {
   min: number,
-  limit: number,
-  counter: func.isRequired,
-  value: number.isRequired,
+  max: number,
+  initialCount: number.isRequired,
+  setState: func.isRequired,
 };
 
 Counter.defaultProps = {
-  min: 0,
-  limit: 1000,
+  min: 1,
+  max: 100,
 };
 
 export default Counter;

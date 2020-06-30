@@ -725,10 +725,8 @@ const SingleProduct = (props) => {
                                 >
                                   <div>
                                     <Counter
-                                      limit={100}
-                                      min={1}
-                                      value={1}
-                                      counter={(value) => {
+                                      initialCount={1}
+                                      setState={(value) => {
                                         propsForm.setFieldValue('quantity', value);
                                       }}
                                     />

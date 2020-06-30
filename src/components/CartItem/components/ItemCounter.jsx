@@ -5,19 +5,17 @@ import Counter from 'components/Form/Counter';
 
 const ItemCounter = ({ quantity, updateAmount, prodIndex }) => (
   <Counter
-    limit={100}
-    min={1}
-    value={quantity}
-    counter={(amount) => {
+    initialCount={quantity}
+    setState={(amount) => {
       updateAmount(amount, prodIndex);
     }}
   />
 );
 
 ItemCounter.propTypes = {
-  quantity: PropTypes.number,
-  updateAmount: PropTypes.func,
-  prodIndex: PropTypes.number,
+  quantity: PropTypes.number.isRequired,
+  updateAmount: PropTypes.func.isRequired,
+  prodIndex: PropTypes.number.isRequired,
 };
 
 export default ItemCounter;
