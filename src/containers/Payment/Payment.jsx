@@ -30,7 +30,7 @@ import InputCvv from 'components/Form/InputCvv';
 import IconeShield from 'assets/lock.png';
 import FilterContext from 'contexts/FilterContext';
 
-import checkoutSchema from './checkoutSchema';
+import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 
 const { PagSeguroDirectPayment } = window.window;
@@ -368,7 +368,7 @@ const Payment = ({ intl }) => {
         <Formik
           onSubmit={submitCheckout}
           initialValues={initialValues}
-          // validationSchema={checkoutSchema(isNaturalPerson, offlinePayment)}
+          validationSchema={paymentSchema}
           render={propsForm => (
             <Form>
               <Row>
@@ -549,6 +549,8 @@ const Payment = ({ intl }) => {
                                 customInput={InputCrediCard}
                                 brand={creditCardBrand.name}
                                 onValueChange={(event) => {
+                                  console.log({ card: event.value });
+
                                   propsForm.setFieldValue(
                                     'cardNumber',
                                     event.formattedValue,
