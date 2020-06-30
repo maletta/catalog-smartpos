@@ -501,9 +501,8 @@ const SingleProduct = (props) => {
             chevronWidth={chevronWidth}
           >
             <Img src={image} title={product.descricao} alt="Produto" />
-            {product.images.map(img => (
-                <Img key={img.key} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
-              )
+            {product.images.map(
+              img => <Img key={img.key} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />,
             )}
           </ItemsCarousel>
         </Carousel>

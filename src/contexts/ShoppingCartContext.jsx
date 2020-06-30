@@ -29,7 +29,8 @@ export const ShoppingCartProvider = ({ children }) => {
   });
 
   const updateShoppingCart = (newShop) => {
-    setShoppingCart(prevState => ({ ...prevState, ...newShop }));
+    // setShoppingCart(prevState => ({ ...prevState, ...newShop }));
+    setShoppingCart(({ ...shoppingCart, ...newShop }));
   };
 
   return (
