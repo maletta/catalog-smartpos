@@ -33,8 +33,7 @@ const ItemsContainer = styled.div`
 
 const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
-  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  console.log({ shoppingCart });
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const [stateCart, setStateCart] = useState([]);
   const [totalCart, setTotalCart] = useState(0);

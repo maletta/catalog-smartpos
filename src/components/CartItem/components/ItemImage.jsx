@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import NoImage from 'assets/no-image.png';
 
@@ -37,6 +38,10 @@ const ItemImage = ({ product }) => {
       </div>
     </>
   );
+};
+
+ItemImage.propTypes = {
+  product: PropTypes.any.isRequired,
 };
 
 export default ItemImage;

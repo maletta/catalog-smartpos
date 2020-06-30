@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import PropTypes from 'prop-types';
 
 const isPrimaryColor = ({ isActive }) => (isActive ? 'var(--color-primary)' : '#b6b6b6');
 
@@ -53,5 +54,11 @@ const Step = ({ icon, text, isActive }) => (
     <StepText isActive={isActive}>{text}</StepText>
   </StepContainer>
 );
+
+Step.propTypes = {
+  icon: PropTypes.any.isRequired,
+  text: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+};
 
 export default Step;

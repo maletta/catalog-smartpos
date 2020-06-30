@@ -41,7 +41,6 @@ const StepsContainer = styled.div`
 
 const RegisterData = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  console.log({ shoppingCart });
   const [address, setAddress] = useState({
     cep: '',
     endereco: '',

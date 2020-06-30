@@ -175,20 +175,11 @@ const Payment = ({ intl }) => {
 
     getPayments(shop.id).then((response) => {
       setPaymentType(response.data);
-    })
-      .catch((error) => {
-        console.log('Get payments');
-        console.error(error);
-        // throw new Error(error);
-      });
+    });
 
     getSessionPag(shop.id).then((response) => {
       PagSeguroDirectPayment.setSessionId(response.data.session);
       handleLoadPaymentsPag();
-    }).catch((error) => {
-      console.log('Session pag');
-      console.error(error);
-      // throw new Error(error);
     });
   }, []);
 
@@ -214,7 +205,6 @@ const Payment = ({ intl }) => {
           withdraw: shoppingCart.withdraw,
           orderName: response.data.orderName,
         });
-        // history.push('/pedido-realizado');
         // history.push('/conclusion');
       })
       .catch((error) => {
@@ -276,9 +266,6 @@ const Payment = ({ intl }) => {
     const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
     updateShoppingCart({ paymentType });
 
-    console.log({ values });
-    console.log({ shoppingCart });
-
     if (formValues.gatwayPagseguro && state.senderHash) {
       const [expirationMonth, expirationYear] = formValues.expiration.split('/');
 
@@ -305,6 +292,7 @@ const Payment = ({ intl }) => {
             showCloseButton: true,
           });
           setSubmitting(false);
+          setLoading(false);
         },
       });
       return;
@@ -549,8 +537,6 @@ const Payment = ({ intl }) => {
                                 customInput={InputCrediCard}
                                 brand={creditCardBrand.name}
                                 onValueChange={(event) => {
-                                  console.log({ card: event.value });
-
                                   propsForm.setFieldValue(
                                     'cardNumber',
                                     event.formattedValue,
@@ -837,7 +823,8 @@ const Payment = ({ intl }) => {
                               </div>
                               <div>
                                 <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                                  Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
+                                  {'Esse site é protegido por reCAPTCHA'}
+                                  {' e os Termos de Serviço e Política do Google se aplicam'}
                                 </p>
                               </div>
                             </Grid>
@@ -862,7 +849,7 @@ const Payment = ({ intl }) => {
                             />
                           </Row>
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>
@@ -888,7 +875,8 @@ const Payment = ({ intl }) => {
                 </div>
                 <div>
                   <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                    Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
+                    {'Esse site é protegido por reCAPTCHA'}
+                    {' e os Termos de Serviço e Política do Google se aplicam'}
                   </p>
                 </div>
               </Grid>

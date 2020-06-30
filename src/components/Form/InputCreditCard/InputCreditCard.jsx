@@ -124,7 +124,7 @@ const InputCreditCard = ({
 };
 
 InputCreditCard.propTypes = {
-  field: PropTypes.shape({}),
+  field: PropTypes.any,
   form: PropTypes.shape({
     touched: PropTypes.shape({}),
     errors: PropTypes.shape({}),

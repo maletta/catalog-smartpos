@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
-import PropTypes from 'prop-types';
 
 import history from 'utils/history';
 import formatCurrency from 'utils/formatCurrency';
@@ -42,14 +41,16 @@ const SuccessMessage = styled.span`
   font-size: 20px;
 `;
 
-const SendWhatsapp = styled.span`
-  color: #006195;
-  cursor: pointer;
+// Precisa esperar pra ver como fazer a integração com
+// a API do Whatsapp
+// const SendWhatsapp = styled.span`
+//   color: #006195;
+//   cursor: pointer;
 
-  :hover {
-    text-decoration: underline #006195;
-  }
-`;
+//   :hover {
+//     text-decoration: underline #006195;
+//   }
+// `;
 
 const ThanksMessage = styled.p`
   color: #212121;
@@ -84,7 +85,6 @@ const Footer = styled.div`
 
 const Conclusion = ({ intl }) => {
   const { shoppingCart } = useContext(ShoppingCartContext);
-  console.log({ shoppingCart });
   const {
     address, personData,
     paymentType, withdraw,
@@ -210,7 +210,6 @@ const Conclusion = ({ intl }) => {
 
 Conclusion.propTypes = {
   intl: intlShape.isRequired,
-  // product: PropTypes.any.isRequired,
 };
 
 

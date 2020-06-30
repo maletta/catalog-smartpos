@@ -70,7 +70,7 @@ const ItemInfo = ({ product, deleteItem }) => {
 };
 
 ItemInfo.propTypes = {
-  product: PropTypes.shape({}).isRequired,
+  product: PropTypes.any.isRequired,
   deleteItem: PropTypes.func.isRequired,
 };
 

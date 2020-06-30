@@ -257,7 +257,7 @@ const SingleProduct = (props) => {
   const completeURL = window.location.href;
 
   const sumProductPricing = (productPricing.product + productPricing.modifiers);
-  const submitItem = (values, { resetForm, setSubmitting }) => {
+  const submitItem = (values, { setSubmitting }) => {
     updateFilter({
       ...filter,
       categoryName: '',
@@ -765,7 +765,7 @@ const SingleProduct = (props) => {
 };
 
 SingleProduct.propTypes = {
-  match: PropTypes.shape({}).isRequired,
+  match: PropTypes.any.isRequired,
   intl: intlShape.isRequired,
 };
 

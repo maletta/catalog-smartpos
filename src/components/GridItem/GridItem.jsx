@@ -130,6 +130,11 @@ GridItem.propTypes = {
     id: PropTypes.number.isRequired,
     descricao: PropTypes.string.isRequired,
     valorVenda: PropTypes.number.isRequired,
+    atualizacao: PropTypes.any.isRequired,
+    viewMode: PropTypes.any.isRequired,
+    hasVariant: PropTypes.any.isRequired,
+    not_control_stock: PropTypes.any.isRequired,
+    stock: PropTypes.any.isRequired,
   }).isRequired,
   intl: intlShape.isRequired,
 };

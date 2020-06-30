@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 import lodash from 'lodash';
 import {
   faShoppingBag,
@@ -45,11 +46,15 @@ const Steps = ({ activeIndex }) => {
   useEffect(() => {
     const cloneSteps = lodash.cloneDeep(stateSteps);
     const activeSteps = cloneSteps.map((step, index) => {
+      const cloneStep = lodash.cloneDeep(step);
+
       if (index <= activeIndex) {
-        step.isActive = true;
+        cloneStep.isActive = true;
       }
-      return step;
+
+      return cloneStep;
     });
+
     setStateStep(activeSteps);
   }, []);
 
@@ -63,6 +68,10 @@ const Steps = ({ activeIndex }) => {
       <Cont>{steps}</Cont>
     </StepsContainer>
   );
+};
+
+Steps.propTypes = {
+  activeIndex: PropTypes.any.isRequired,
 };
 
 export default Steps;

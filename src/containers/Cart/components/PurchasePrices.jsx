@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { injectIntl } from 'react-intl';
+import { injectIntl, intlShape } from 'react-intl';
+import PropTypes from 'prop-types';
 
 const PurchasePriceTitle = styled.h2`
   color: #707070;
@@ -84,6 +85,14 @@ const PurchasePrices = ({
       </PurchaseReviewContainer>
     </PurchasePriceContainer>
   );
+};
+
+PurchasePrices.propTypes = {
+  basketCountCart: PropTypes.number.isRequired,
+  totalCart: PropTypes.number.isRequired,
+  deliveryCost: PropTypes.any.isRequired,
+  couponValue: PropTypes.number.isRequired,
+  intl: intlShape.isRequired,
 };
 
 export default injectIntl(PurchasePrices);

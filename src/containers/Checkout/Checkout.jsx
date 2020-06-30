@@ -78,6 +78,26 @@ const addressType = [
   },
 ];
 
+const SecureConnection = () => (
+  <Grid cols="12 4 6 6 6" className="mt-0 d-flex flex-column">
+    <div className="mb-2">
+      <img
+        src={IconeShield}
+        height={20}
+        alt="Você está em uma conexão segura"
+      />
+      <span style={{ fontSize: '12px' }}>
+        Você está em uma conexão segura
+      </span>
+    </div>
+    <div>
+      <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
+        Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
+      </p>
+    </div>
+  </Grid>
+);
+
 const Checkout = ({ intl }) => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
   const cart = localStorage.getItem('cart')
@@ -651,20 +671,20 @@ const Checkout = ({ intl }) => {
                             <Grid cols="12">
                               {(shop.deliveryMode === 'DELIVERY'
                                 || shop.deliveryMode === 'BOTH') && (
-                                <>
-                                  <span>Taxa de entrega</span>
-                                  <ValueDelivery>
-                                    {intl.formatNumber(costDelivery.cost, {
-                                      style: 'currency',
-                                      currency: 'BRL',
-                                    })}
-                                  </ValueDelivery>
-                                  {costDelivery.isDeliverable || (
+                                  <>
+                                    <span>Taxa de entrega</span>
                                     <ValueDelivery>
-                                      Não faz entrega nesta região
+                                      {intl.formatNumber(costDelivery.cost, {
+                                        style: 'currency',
+                                        currency: 'BRL',
+                                      })}
                                     </ValueDelivery>
-                                  )}
-                                </>
+                                    {costDelivery.isDeliverable || (
+                                      <ValueDelivery>
+                                        Não faz entrega nesta região
+                                      </ValueDelivery>
+                                    )}
+                                  </>
                               )}
                               {shop.deliveryMode === 'PICKUP' && (
                                 <>
@@ -793,7 +813,7 @@ const Checkout = ({ intl }) => {
                       <Alert
                         text={
                           propsForm.values.gatwayPagseguro
-                          && shop.allowPayOnline === 1
+                            && shop.allowPayOnline === 1
                             ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
                             : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
                         }
@@ -1183,23 +1203,7 @@ const Checkout = ({ intl }) => {
                         />
                       </Grid>
                   )}
-                  <Grid cols="12 4 6 6 6" className="mt-0 d-flex flex-column">
-                    <div className="mb-2">
-                      <img
-                        src={IconeShield}
-                        height={20}
-                        alt="Você está em uma conexão segura"
-                      />
-                      <span style={{ fontSize: '12px' }}>
-                        Você está em uma conexão segura
-                      </span>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                        Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
-                      </p>
-                    </div>
-                  </Grid>
+                  <SecureConnection />
                   <Grid
                     cols="12 8 6 6 6"
                     className="d-flex justify-content-end mb-3"

@@ -31,7 +31,7 @@ const ItemObservation = ({ id }) => {
 };
 
 ItemObservation.propTypes = {
-  id: PropTypes.string,
+  id: PropTypes.string.isRequired,
 };
 
 export default ItemObservation;

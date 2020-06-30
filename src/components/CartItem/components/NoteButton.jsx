@@ -34,6 +34,8 @@ const NoteButton = ({ product }) => {
         onClick={toggleNote}
         onMouseOver={toggleNote}
         onMouseOut={toggleNote}
+        onFocus={() => { }}
+        onBlur={() => { }}
       />
       {showNote && <NoteContent>{`Observação: ${product.note}`}</NoteContent>}
     </>
@@ -41,7 +43,7 @@ const NoteButton = ({ product }) => {
 };
 
 NoteButton.propTypes = {
-  product: PropTypes.object,
+  product: PropTypes.any.isRequired,
 };
 
 export default NoteButton;
