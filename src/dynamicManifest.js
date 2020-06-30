@@ -16,7 +16,7 @@ const ManifestJson = () => {
         theme_color: '#0f4a73',
         icons: [{
           src: `${process.env.REACT_APP_IMG_API}store/${response.data.codigo}?lastUpdate=${response.data.atualizacao}`,
-          sizes: '256x256',
+          sizes: '123x123',
           type: 'image/png',
         }],
       };
