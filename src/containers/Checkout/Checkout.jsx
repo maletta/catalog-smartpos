@@ -282,8 +282,10 @@ const Checkout = ({ intl }) => {
     checkingDelivery(cep, shop.id).then((response) => {
       setCostDelivery({
         ...response.data,
-        isDeliverable: shop.deliveryFeeRates[0].anyDistance || false,
-        cost: (shop.deliveryMode !== 'PICKUP' ? response.data.cost : 0),
+        isDeliverable: response.data.isDeliverable === false
+          ? shop.deliveryFeeRates[0].anyDistance : false,
+        cost: (shop.allowDeliveryOutOfRange === 1
+          ? shop.deliveryFeeRates[0].feeRate : response.data.cost),
       });
       if (!response.data.isDeliverable && propsForm) {
         propsForm.setFieldValue('pickup', true);
