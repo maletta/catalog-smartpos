@@ -282,6 +282,7 @@ const Checkout = ({ intl }) => {
     checkingDelivery(cep, shop.id).then((response) => {
       setCostDelivery({
         ...response.data,
+        isDeliverable: shop.deliveryFeeRates[0].anyDistance || false,
         cost: (shop.deliveryMode !== 'PICKUP' ? response.data.cost : 0),
       });
       if (!response.data.isDeliverable && propsForm) {
@@ -676,7 +677,7 @@ const Checkout = ({ intl }) => {
                       <SectionTitle>
                         {'Pagamento'}
                       </SectionTitle>
-                      {(shop.allowPayOnline === 1) && (
+                      {(shop.allowPayOnline === 1 || shop.deliveryMode === 'BOTH') && (
                         <>
                           <div className="d-flex align-items-center mt-3 mb-3">
                             <Field
