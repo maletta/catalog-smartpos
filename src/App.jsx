@@ -20,6 +20,7 @@ import RegisterData from 'containers/RegisterData';
 import Address from 'containers/Address';
 import Payment from 'containers/Payment';
 import Conclusion from 'containers/Conclusion';
+import CardShop from 'components/CardShop';
 
 import history from 'utils/history';
 
@@ -48,8 +49,11 @@ import {
 } from '@fortawesome/free-brands-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
-import { getStoreInfo, getCategories } from 'requests';
-
+import {
+  getStoreInfo,
+  getCategories,
+} from 'requests';
+import daysOfWeek from 'utils/daysOfWeek';
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
@@ -121,30 +125,50 @@ const App = () => {
   const getStore = () => {
     getStoreInfo(getStoreName())
       .then((response) => {
-        const today = response.data.openHours[moment().day()];
+        const today = () => {
+          if (response.data.openHours) {
+            return response.data.openHours[moment().day()];
+          }
+          return daysOfWeek[moment().day()];
+        };
         const verifyIsClosed = () => {
-          const anyHour = response.data.allowOrderOutsideBusinessHours;
-          const { hours } = today;
-          const hourNow = moment().format('HH:mm');
           let isClosed = true;
-          if (today.closed) {
-            return true;
-          }
-          if (anyHour === 1) {
-            return false;
-          }
-          hours.map((item) => {
-            if (item.openHour < hourNow && item.closeHour > hourNow) {
-              isClosed = false;
+          if (response.data) {
+            if (response.data.openHours === null || response.data.openHours.length === 0) {
+              return false;
             }
+            const anyHour = response.data.allowOrderOutsideBusinessHours;
+            const { hours } = today();
+            const hourNow = moment().format('HH:mm');
+            if (today.closed) {
+              return true;
+            }
+            if (anyHour === 1) {
+              return false;
+            }
+            hours.map((item) => {
+              if (item.openHour < hourNow && item.closeHour > hourNow) {
+                isClosed = false;
+              }
 
-            return !!isClosed;
-          });
+              return !!isClosed;
+            });
+          }
           return isClosed;
         };
         const closeNow = verifyIsClosed();
         document.title = response.data.fantasia;
-        updateShop({ ...response.data, today, closeNow });
+        if (closeNow === true && response.data.allowOrderOutsideBusinessHours === 0) {
+          updateShop({
+            ...response.data, today, closeNow, is_enableOrder: 0,
+          });
+        } else if (closeNow === false && response.data.allowOrderOutsideBusinessHours === 1) {
+          updateShop({
+            ...response.data, today, closeNow, is_enableOrder: 1,
+          });
+        } else {
+          updateShop({ ...response.data, today, closeNow });
+        }
         setStore({ ...response.data, found: true, storeName: getStoreName() });
         getCategoryList(response.data);
       })
@@ -194,6 +218,7 @@ const App = () => {
     cleanCart();
   }, [false]);
 
+
   const { pathname } = history.location;
 
   const home = () => {
@@ -224,6 +249,7 @@ const App = () => {
     <>
       {store.found ? (
         <div>
+          <CardShop />
           <Header
             categories={categories}
             codigo={store.codigo}

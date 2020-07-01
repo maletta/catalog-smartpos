@@ -139,12 +139,27 @@ const SocialIcon = styled.span`
 `;
 const GridHour = styled(Grid)`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  padding-bottom: 8px;
+  padding-right: 1px;
+`;
+const GridTitle = styled(Grid)`
+  display: flex;
+  justify-content: center;
+`;
+const GridDayOfWeek = styled(Grid)`
+  display: flex;
+  justify-content: flex-end;
+`;
 
-  @media (max-width: 1200px) {
-    flex-direction: column;
-    flex: 100%;
-    margin-bottom: 5px;
+const GridItemHour = styled(Grid)`
+  padding-right: 0;
+  padding-left: 0;
+`;
+
+const GridInfo = styled(Grid)`
+  @media (max-width: 430px) {
+    margin-left: 15%;
   }
 `;
 
@@ -172,8 +187,8 @@ const Footer = ({ storeInfo }) => {
       <FullWidthFooterInfo>
         <div style={{ position: 'relative', top: '40px' }} className="container">
           <Row>
-            <Grid
-              cols="12 12 2 2 2"
+            <GridInfo
+              cols="10 10 2 2 2"
               className="pb-5"
             >
               <FooterInfoTitle>Endereço</FooterInfoTitle>
@@ -236,7 +251,7 @@ const Footer = ({ storeInfo }) => {
                   )}
                 </ul>
               </div>
-            </Grid>
+            </GridInfo>
             <Grid
               cols="12 9 6 6 7"
               className="pb-5"
@@ -244,23 +259,23 @@ const Footer = ({ storeInfo }) => {
               {(openHours.length > 0) && (
                 <>
                   <Grid cols="12">
-                    <Grid cols="12">
+                    <GridTitle cols="12" style={{ justifyContent: 'center' }}>
                       <FooterInfoTitle>Horário de funcionamento</FooterInfoTitle>
-                    </Grid>
+                    </GridTitle>
                     {openHours.map(day => (
                       <OpenHourItem
                         currentDay={getIntOfDay === day.position}
-                        cols="12"
+                        cols="12 12"
                         key={day.name}
                       >
-                        <Grid cols="5 3" style={{ paddingLeft: '0px' }}>
+                        <GridDayOfWeek style={{ paddingLeft: '0px' }}>
                           {day.dayOfWeek}
-                        </Grid>
-                        <GridHour cols="7 9">
+                        </GridDayOfWeek>
+                        <GridHour style={{ paddingRight: 'unset', paddingLeft: 'unset' }}>
                           {day.hours.map((itemHour, indexHour) => (
-                            <Grid key={keyIndex(indexHour)} cols="12 10 9 6 4" style={{ display: 'flex', flex: '100%', padding: '0' }}>
+                            <GridItemHour key={keyIndex(indexHour)} className="ml-0">
                               {(day.closed ? 'Fechado' : `${itemHour.openHour} às ${itemHour.closeHour}`)}
-                            </Grid>
+                            </GridItemHour>
                           ))}
                         </GridHour>
                       </OpenHourItem>
