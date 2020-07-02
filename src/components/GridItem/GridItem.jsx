@@ -215,7 +215,7 @@ const GridItem = (props) => {
                   <Unavailable>PRODUTO INDISPONÍVEL</Unavailable>
                 </UnavailableBox>
               ) : (
-                <LinkToItem to={item.hasVariant === 1 && `item/${item.id}/${slug(item.descricao)}`}>
+                <LinkToItem to={item.hasVariant === 1 ? `item/${item.id}/${slug(item.descricao)}` : '/'}>
                   {enableOrderButton(item) && (
                   <Buy onClick={() => item.hasVariant !== 1 && addCart(item)}>
                     <BuyText> COMPRAR</BuyText>
