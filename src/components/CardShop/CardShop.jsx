@@ -357,7 +357,7 @@ const CardShop = ({ intl }) => {
           {stateCart.length > 0 ? (
             <>
               {stateCart.map(item => (
-                <div key={item.codigo}>
+                <div key={item.codigo + item.descricao}>
                   <Item>
                     <ImageContainer onClick={() => setTimeout(() => {
                       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -424,7 +424,7 @@ const CardShop = ({ intl }) => {
                 >
                   <FinishText>
                     <span>
-                       FINALIZAR COMPRA
+                      FINALIZAR COMPRA
                     </span>
                   </FinishText>
                 </Finish>
@@ -438,7 +438,7 @@ const CardShop = ({ intl }) => {
                 }}
                 >
                   <span>
-                       ADICIONAR MAIS PRODUTOS
+                    ADICIONAR MAIS PRODUTOS
                   </span>
                 </BuyMore>
               </span>
