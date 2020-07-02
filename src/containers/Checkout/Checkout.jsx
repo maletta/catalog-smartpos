@@ -1021,7 +1021,7 @@ const Checkout = ({ intl }) => {
                     </div>
                     <div>
                       <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                        Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
+                        {'Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam'}
                       </p>
                     </div>
                   </Grid>
