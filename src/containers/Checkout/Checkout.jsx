@@ -353,6 +353,10 @@ const Checkout = ({ intl }) => {
 
   const totalWithDelivery = (withdraw ? totalCar : (costDelivery.cost + totalCar));
 
+  if (shop.closeNow) {
+    history.push('/');
+    return false;
+  }
   return (
     <ContainerCheckout>
       <Row className="d-flex">
