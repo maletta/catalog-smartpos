@@ -849,51 +849,13 @@ const Payment = ({ intl }) => {
                             />
                           </Row>
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>
             </Form>
           )}
         />
-        {
-          offlinePayment && (
-            <Row>
-              <Grid
-                cols="12 4 6 6 6"
-                className="mt-0 d-flex flex-column"
-              >
-                <div className="mb-2">
-                  <img
-                    src={IconeShield}
-                    height={20}
-                    alt="Você está em uma conexão segura"
-                  />
-                  <span style={{ fontSize: '12px' }}>
-                    Você está em uma conexão segura
-                  </span>
-                </div>
-                <div>
-                  <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                    {'Esse site é protegido por reCAPTCHA'}
-                    {' e os Termos de Serviço e Política do Google se aplicam'}
-                  </p>
-                </div>
-              </Grid>
-              <Grid
-                cols="12 8 6 6 6"
-                className="d-flex justify-content-end mb-3"
-              >
-                <ReCAPTCHA
-                  ref={recaptchaRef}
-                  sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
-                  hl="pt-BR"
-                  onChange={setReCaptchaToken}
-                />
-              </Grid>
-            </Row>
-          )
-        }
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
