@@ -199,7 +199,7 @@ const GridItem = (props) => {
           </LinkToItem>
           <Cardcontent>
             <div>
-              {<PriceFrom>{(item.hasVariant === 1) && ('A partir de ')}</PriceFrom>}
+              <PriceFrom>{(item.hasVariant === 1) && ('A partir de ')}</PriceFrom>
               <Price>
                 {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
               </Price>
@@ -238,8 +238,8 @@ GridItem.propTypes = {
     atualizacao: PropTypes.any.isRequired,
     viewMode: PropTypes.any.isRequired,
     hasVariant: PropTypes.any.isRequired,
-    not_control_stock: PropTypes.any.isRequired,
-    stock: PropTypes.any.isRequired,
+    not_control_stock: PropTypes.any,
+    stock: PropTypes.any,
   }).isRequired,
   intl: intlShape.isRequired,
 };
