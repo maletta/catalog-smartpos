@@ -7,6 +7,7 @@ import { Formik, Form, Field } from 'formik';
 import Swal from 'sweetalert2';
 import NumberFormat from 'react-number-format';
 import ReCAPTCHA from 'react-google-recaptcha';
+import lodash from 'lodash';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
@@ -280,12 +281,18 @@ const Checkout = ({ intl }) => {
 
   const costDeliveryApi = (cep, propsForm) => {
     checkingDelivery(cep, shop.id).then((response) => {
+      const verifyPrice = () => {
+        if (lodash.has(response.data, 'distance') && response.data.distance.text === '1 m') {
+          return shop.deliveryFeeRates[1].feeRate;
+        }
+        return response.data.cost;
+      };
       setCostDelivery({
         ...response.data,
         isDeliverable: response.data.isDeliverable === false
-          ? shop.deliveryFeeRates[0].anyDistance : false,
+          ? shop.deliveryFeeRates[0].anyDistance : response.data.isDeliverable,
         cost: (shop.allowDeliveryOutOfRange === 1
-          ? shop.deliveryFeeRates[0].feeRate : response.data.cost),
+          ? shop.deliveryFeeRates[0].feeRate : verifyPrice()),
       });
       if (!response.data.isDeliverable && propsForm) {
         propsForm.setFieldValue('pickup', true);
@@ -610,7 +617,7 @@ const Checkout = ({ intl }) => {
                       <Grid cols="12 6 6 6 6">
                         <>
                           <SectionTitle>
-                            {'Entrega'}
+                            Entrega
                           </SectionTitle>
                           <Row>
                             <Grid cols="12">
@@ -626,7 +633,7 @@ const Checkout = ({ intl }) => {
                                 <>
                                   <span>Entrega</span>
                                   <ValueDelivery>
-                                    {'Você irá retirar o pedido no estabelecimento do vendedor'}
+                                    Você irá retirar o pedido no estabelecimento do vendedor
                                   </ValueDelivery>
                                 </>
                               )}
@@ -681,7 +688,7 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12">
                     <>
                       <SectionTitle>
-                        {'Pagamento'}
+                        Pagamento
                       </SectionTitle>
                       {(shop.allowPayOnline === 1 || shop.deliveryMode === 'BOTH') && (
                         <>
@@ -897,7 +904,7 @@ const Checkout = ({ intl }) => {
                             propsForm.setFieldValue('cobrancaTipoLogradouro', propsForm.values.tipoLogradouro);
                           }}
                         >
-                          {'Clique aqui se o endereço do cartão é o mesmo da entrega'}
+                          Clique aqui se o endereço do cartão é o mesmo da entrega
                         </AddressCreditCard>
                       </Grid>
                       <Grid cols="12 6 6 3 3">
@@ -1014,7 +1021,7 @@ const Checkout = ({ intl }) => {
                     </div>
                     <div>
                       <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                        {'Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam'}
+                        Esse site é protegido por reCAPTCHA e os Termos de Serviço e Política do Google se aplicam
                       </p>
                     </div>
                   </Grid>
