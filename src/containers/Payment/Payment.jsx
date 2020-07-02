@@ -32,15 +32,9 @@ import FilterContext from 'contexts/FilterContext';
 
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
+import AddressCreditCard from './components/AddressCreditCard';
 
 const { PagSeguroDirectPayment } = window.window;
-
-const AddressCreditCard = styled.span`
-  color: #00529b;
-  text-decoration: underline;
-  font-weight: 500;
-  cursor: pointer;
-`;
 
 const addressType = [
   {
@@ -639,49 +633,7 @@ const Payment = ({ intl }) => {
                           </Row>
                           <Row>
                             <Grid cols="12" className="mb-3">
-                              <AddressCreditCard
-                                onClick={() => {
-                                  setShowAddress(!showAddress);
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaCep',
-                                  //   propsForm.values.cep,
-                                  // );
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaBairro',
-                                  //   propsForm.values.bairro,
-                                  // );
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaEstado',
-                                  //   propsForm.values.estado,
-                                  // );
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaComplemento',
-                                  //   propsForm.values.complemento,
-                                  // );
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaNumero',
-                                  //   propsForm.values.numero,
-                                  // );
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaCodcidade',
-                                  //   propsForm.values.codcidade,
-                                  // );
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaCidade',
-                                  //   propsForm.values.cidade,
-                                  // );
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaEndereco',
-                                  //   propsForm.values.endereco,
-                                  // );
-                                  // propsForm.setFieldValue(
-                                  //   'cobrancaTipoLogradouro',
-                                  //   propsForm.values.tipoLogradouro,
-                                  // );
-                                }}
-                              >
-                                Endereço do cartão é diferente do endereço de entrega?
-                              </AddressCreditCard>
+                              <AddressCreditCard onClick={() => setShowAddress(!showAddress)} />
                             </Grid>
                           </Row>
                           {showAddress && (
