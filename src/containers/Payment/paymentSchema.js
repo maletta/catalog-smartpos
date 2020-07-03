@@ -34,7 +34,7 @@ const paymentSchema = yup.object().shape({
     .required('Código de segurança é obrigatório')
     .min(3)
     .max(4),
-  installments: yup.object().required(),
+  installments: yup.object().required('As parcelas são obrigatórias'),
 });
 
 export default paymentSchema;
