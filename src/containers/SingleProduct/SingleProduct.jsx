@@ -324,6 +324,7 @@ const SingleProduct = (props) => {
     });
 
     history.push('/cart');
+    return true;
   };
 
 

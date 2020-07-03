@@ -8,7 +8,6 @@ import axios from 'axios';
 import NumberFormat from 'react-number-format';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Swal from 'sweetalert2';
-import PropTypes from 'prop-types';
 
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
@@ -756,7 +755,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>
@@ -822,9 +821,5 @@ const Payment = () => {
     </Container>
   );
 };
-
-// Payment.propTypes = {
-// intl: PropTypes.object.isRequired,
-// };
 
 export default injectIntl(Payment);

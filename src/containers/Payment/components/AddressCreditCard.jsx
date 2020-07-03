@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 const StyleSpan = styled.span`
   color: #00529b;
@@ -8,14 +9,16 @@ const StyleSpan = styled.span`
   cursor: pointer;
 `;
 
-const AddressCreditCard = ({ onClick }) => {
-  return (
-    <>
-      <StyleSpan onClick={onClick}>
-        Endereço do cartão é diferente do endereço de entrega?
-      </StyleSpan>
-    </>
-  );
+const AddressCreditCard = ({ onClick }) => (
+  <>
+    <StyleSpan onClick={onClick}>
+      Endereço do cartão é diferente do endereço de entrega?
+    </StyleSpan>
+  </>
+);
+
+AddressCreditCard.propTypes = {
+  onClick: PropTypes.func.isRequired,
 };
 
 export default AddressCreditCard;
