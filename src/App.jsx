@@ -130,7 +130,9 @@ const App = () => {
           updateShop({
             ...response.data, today, closeNow, is_enableOrder: 0,
           });
-        } else if (closeNow === false && response.data.allowOrderOutsideBusinessHours === 1) {
+        } else if (closeNow === false
+          && response.data.is_enableOrder === 1
+          && response.data.allowOrderOutsideBusinessHours === 1) {
           updateShop({
             ...response.data, today, closeNow, is_enableOrder: 1,
           });
