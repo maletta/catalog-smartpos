@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
+import formatCurrency from 'utils/formatCurrency';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
@@ -63,7 +64,7 @@ const RadioContainer = styled.div`
   flex-direction: column;
 `;
 
-const Payment = ({ intl }) => {
+const Payment = () => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
@@ -96,10 +97,6 @@ const Payment = ({ intl }) => {
   const [loading, setLoading] = useState(false);
 
   const recaptchaRef = useRef();
-
-  const formatCurrency = price => (
-    intl.formatNumber(price, { style: 'currency', currency: 'BRL' })
-  );
 
   const getInstallments = (cost) => {
     if (creditCardBrand.name && creditCardBrand.name !== 'none') {
@@ -758,52 +755,52 @@ const Payment = ({ intl }) => {
                               </Row>
                             </>
                           )}
-                          <Row>
-                            <Grid
-                              cols="12 4 6 6 6"
-                              className="mt-0 d-flex flex-column"
-                            >
-                              <div className="mb-2">
-                                <img
-                                  src={IconeShield}
-                                  height={20}
-                                  alt="Você está em uma conexão segura"
-                                />
-                                <span style={{ fontSize: '12px' }}>
-                                  Você está em uma conexão segura
-                                </span>
-                              </div>
-                              <div>
-                                <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                                  {'Esse site é protegido por reCAPTCHA'}
-                                  {' e os Termos de Serviço e Política do Google se aplicam'}
-                                </p>
-                              </div>
-                            </Grid>
-                            <Grid
-                              cols="12 8 6 6 6"
-                              className="d-flex justify-content-end mb-3"
-                            >
-                              <ReCAPTCHA
-                                ref={recaptchaRef}
-                                sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
-                                hl="pt-BR"
-                                onChange={setReCaptchaToken}
-                              />
-                            </Grid>
-                          </Row>
-                          <Row className="d-flex justify-content-end pb-4 pr-3">
-                            <Button
-                              isLoading={loading}
-                              type="submit"
-                              disabled={!reCaptchaToken}
-                              value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
-                            />
-                          </Row>
                         </>
                       )}
                   </>
                 </Grid>
+              </Row>
+              <Row>
+                <Grid
+                  cols="12 4 6 6 6"
+                  className="mt-0 d-flex flex-column"
+                >
+                  <div className="mb-2">
+                    <img
+                      src={IconeShield}
+                      height={20}
+                      alt="Você está em uma conexão segura"
+                    />
+                    <span style={{ fontSize: '12px' }}>
+                      Você está em uma conexão segura
+                    </span>
+                  </div>
+                  <div>
+                    <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
+                      {'Esse site é protegido por reCAPTCHA'}
+                      {' e os Termos de Serviço e Política do Google se aplicam'}
+                    </p>
+                  </div>
+                </Grid>
+                <Grid
+                  cols="12 8 6 6 6"
+                  className="d-flex justify-content-end mb-3"
+                >
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
+                    hl="pt-BR"
+                    onChange={setReCaptchaToken}
+                  />
+                </Grid>
+              </Row>
+              <Row className="d-flex justify-content-end pb-4 pr-3">
+                <Button
+                  isLoading={loading}
+                  type="submit"
+                  disabled={!reCaptchaToken}
+                  value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
+                />
               </Row>
             </Form>
           )}
@@ -826,8 +823,8 @@ const Payment = ({ intl }) => {
   );
 };
 
-Payment.propTypes = {
-  intl: PropTypes.object.isRequired,
-};
+// Payment.propTypes = {
+// intl: PropTypes.object.isRequired,
+// };
 
 export default injectIntl(Payment);
