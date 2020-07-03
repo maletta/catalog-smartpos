@@ -214,7 +214,7 @@ const App = () => {
   useEffect(() => {
     yup.setLocale(formatFormErrors());
     window.scrollTo(0, 0);
-    initGA();
+    initGA(history);
     cleanCart();
   }, [false]);
 

@@ -7,6 +7,7 @@ import { Formik, Form, Field } from 'formik';
 import Swal from 'sweetalert2';
 import NumberFormat from 'react-number-format';
 import ReCAPTCHA from 'react-google-recaptcha';
+import lodash from 'lodash';
 
 import SelectDropDown from 'components/Form/SelectDropDown';
 import RenderCheckbox from 'components/Form/RenderCheckbox';
@@ -316,9 +317,18 @@ const Checkout = ({ intl }) => {
 
   const costDeliveryApi = (cep, propsForm) => {
     checkingDelivery(cep, shop.id).then((response) => {
+      const verifyPrice = () => {
+        if (lodash.has(response.data, 'distance') && response.data.distance.text === '1 m') {
+          return shop.deliveryFeeRates[1].feeRate;
+        }
+        return response.data.cost;
+      };
       setCostDelivery({
         ...response.data,
-        cost: shop.deliveryMode !== 'PICKUP' ? response.data.cost : 0,
+        isDeliverable: response.data.isDeliverable === false
+          ? shop.deliveryFeeRates[0].anyDistance : response.data.isDeliverable,
+        cost: (shop.allowDeliveryOutOfRange === 1
+          ? shop.deliveryFeeRates[0].feeRate : verifyPrice()),
       });
 
       propsForm.setFieldValue(
@@ -391,6 +401,10 @@ const Checkout = ({ intl }) => {
 
   const totalWithDelivery = withdraw ? totalCar : costDelivery.cost + totalCar;
 
+  if (shop.closeNow) {
+    history.push('/');
+    return false;
+  }
   return (
     <ContainerCheckout>
       <Row className="d-flex">
@@ -666,7 +680,9 @@ const Checkout = ({ intl }) => {
                     <Row>
                       <Grid cols="12 6 6 6 6">
                         <>
-                          <SectionTitle>Entrega</SectionTitle>
+                          <SectionTitle>
+                            Entrega
+                          </SectionTitle>
                           <Row>
                             <Grid cols="12">
                               {(shop.deliveryMode === 'DELIVERY'
@@ -767,8 +783,10 @@ const Checkout = ({ intl }) => {
                   </Grid>
                   <Grid cols="12">
                     <>
-                      <SectionTitle>Pagamento</SectionTitle>
-                      {shop.allowPayOnline === 1 && (
+                      <SectionTitle>
+                        Pagamento
+                      </SectionTitle>
+                      {(shop.allowPayOnline === 1 || shop.deliveryMode === 'BOTH') && (
                         <>
                           <div className="d-flex align-items-center mt-3 mb-3">
                             <Field
