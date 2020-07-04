@@ -126,11 +126,15 @@ const App = () => {
         };
         const closeNow = verifyIsClosed();
         document.title = response.data.fantasia;
-        if (closeNow === true && response.data.allowOrderOutsideBusinessHours === 0) {
+        // criar uma função para refazer essa etapa abaixo até setStore
+        if (closeNow === true
+          && response.data.allowOrderOutsideBusinessHours === 0) {
           updateShop({
             ...response.data, today, closeNow, is_enableOrder: 0,
           });
-        } else if (closeNow === false && response.data.allowOrderOutsideBusinessHours === 1) {
+        } else if (closeNow === false
+          && response.data.is_enableOrder === 1
+          && response.data.allowOrderOutsideBusinessHours === 1) {
           updateShop({
             ...response.data, today, closeNow, is_enableOrder: 1,
           });
@@ -182,7 +186,7 @@ const App = () => {
   useEffect(() => {
     yup.setLocale(formatFormErrors());
     window.scrollTo(0, 0);
-    initGA();
+    initGA(history);
     cleanCart();
   }, [false]);
 
