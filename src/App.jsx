@@ -127,7 +127,8 @@ const App = () => {
         const closeNow = verifyIsClosed();
         document.title = response.data.fantasia;
         // criar uma função para refazer essa etapa abaixo até setStore
-        if (closeNow === true && response.data.allowOrderOutsideBusinessHours === 0) {
+        if (closeNow === true
+          && response.data.allowOrderOutsideBusinessHours === 0) {
           updateShop({
             ...response.data, today, closeNow, is_enableOrder: 0,
           });
