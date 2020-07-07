@@ -1,6 +1,7 @@
 import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
+import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import { injectIntl } from 'react-intl';
@@ -17,6 +18,7 @@ import Row from 'components/Row';
 import Steps from 'components/Steps';
 import TextArea from 'components/Form/TextArea';
 import SectionTitle from 'components/SectionTitle';
+import CurrencyInput from 'components/CurrencyInput';
 import Input from 'components/Form/Input';
 import MaskedNumberInput from 'components/Form/MaskedNumberInput';
 import Button from 'components/Form/Button';
@@ -63,6 +65,25 @@ const RadioContainer = styled.div`
   flex-direction: column;
 `;
 
+const Change = ({ value }) => (
+  <>
+    <small>Troco</small>
+    <p style={{ marginTop: '10px' }}>{value}</p>
+  </>
+);
+
+Change.propTypes = {
+  value: PropTypes.number.isRequired,
+};
+
+const calculateMoneyChange = ({ purchaseTotalValue, receivedValue }) => {
+  if (receivedValue > purchaseTotalValue) {
+    return receivedValue - purchaseTotalValue;
+  }
+
+  return 0;
+};
+
 const Payment = () => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
@@ -94,6 +115,8 @@ const Payment = () => {
   const [stateCart] = useState(cart);
   const [showAddress, setShowAddress] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isMoneyPayment, setIsMoneyPayment] = useState(false);
+  const [moneyChange, setMoneyChange] = useState(0);
 
   const recaptchaRef = useRef();
 
@@ -251,6 +274,8 @@ const Payment = () => {
       deliveryValue: costDelivery.cost || 0,
       ...shoppingCart.personData,
       ...shoppingCart.address,
+      changeReceivedValue: formValues.valorRecebido,
+      change: moneyChange,
     };
     const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
     updateShoppingCart({ paymentType });
@@ -428,13 +453,51 @@ const Payment = () => {
                             options={paymentsType}
                             getOptionLabel={label => label.descricao}
                             getOptionValue={option => option.codigo}
-                            onChange={event => propsForm.setFieldValue('pagamento', event)
-                            }
+                            onChange={(event) => {
+                              propsForm.setFieldValue('pagamento', event);
+                              setIsMoneyPayment(event.descricao === 'Dinheiro');
+                            }}
                             isInvalid={propsForm.errors.pagamento}
                             touched={propsForm.touched.pagamento}
                             isRequired
                           />
                         </Grid>
+                        {isMoneyPayment
+                          && (
+                            <>
+                              <Grid cols="3">
+                                <Field
+                                  inputId="valorRecebido"
+                                  name="valorRecebido"
+                                  label="Valor recebido"
+                                  component={CurrencyInput}
+                                  onValueChange={(value) => {
+                                    propsForm.setFieldValue('valorRecebido', value.floatValue);
+                                    const totalValue = shoppingCart.cart.reduce(
+                                      (count, val) => count
+                                        + val.quantity
+                                        * (val.pricing.modifiers + val.pricing.product),
+                                      0,
+                                    );
+                                    const changeValue = calculateMoneyChange({
+                                      purchaseTotalValue: totalValue,
+                                      receivedValue: value.floatValue,
+                                    });
+                                    setMoneyChange(changeValue);
+                                  }}
+                                />
+                              </Grid>
+                              <Grid cols="3">
+                                <Field
+                                  inputId="troco"
+                                  name="troco"
+                                  label="Troco"
+                                  component={Change}
+                                  value={formatCurrency(moneyChange)}
+                                />
+                              </Grid>
+                            </>
+                          )}
                       </Row>
                     )}
                     {offlinePayment && (
