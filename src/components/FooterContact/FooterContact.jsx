@@ -60,7 +60,7 @@ const AreaButton = styled.div`
 `;
 
 const FooterContact = ({ storeInfo }) => (
-  <div style={{ width: '100%' }}>
+  <div style={{ width: '100%', position: 'relative' }}>
     <p className="mt-2 mb-2">Está com dúvidas? Entre em contato com o vendedor!</p>
     <AreaContent>
       <AreaButton>
