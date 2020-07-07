@@ -23,6 +23,7 @@ export const ShoppingCartProvider = ({ children }) => {
     personData: {},
     address: {},
     paymentType: '',
+    cardOverlay: false,
   });
 
   const updateShoppingCart = (newShop) => {

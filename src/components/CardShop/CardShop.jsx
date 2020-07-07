@@ -269,7 +269,6 @@ const CardShop = ({ intl }) => {
     if (stateCart.reduce((count, val) => (count + val.quantity), 0) !== shoppingCart.basketCount) {
       updateShoppingCart({
         basketCount: stateCart.reduce((count, val) => (count + val.quantity), 0),
-        cardOverlay: true,
       });
     }
 
@@ -410,7 +409,7 @@ const CardShop = ({ intl }) => {
                 </TotalTitle>
                 <SubTotalTitle>
                   <TextTotal>SubTotal: </TextTotal>
-                  <Value>{ intl.formatNumber((totalCart), { style: 'currency', currency: 'BRL' }) }</Value>
+                  <Value>{intl.formatNumber((totalCart), { style: 'currency', currency: 'BRL' })}</Value>
                 </SubTotalTitle>
                 <Finish onClick={() => {
                   setTimeout(() => {
@@ -452,7 +451,7 @@ const CardShop = ({ intl }) => {
                 produtos desejados para adicionar em seu carrinho de compras.
               </EmptySubTitle>
             </EmptyState>
-          ) }
+          )}
         </div>
       </CardOverlay>
     </>
