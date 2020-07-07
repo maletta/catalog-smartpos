@@ -218,7 +218,7 @@ const Payment = () => {
           withdraw: shoppingCart.withdraw,
           orderName: response.data.orderName,
         });
-        // history.push('/conclusion');
+        history.push('/conclusion');
       })
       .catch((error) => {
         if (error.response && error.response.status === 406) {
