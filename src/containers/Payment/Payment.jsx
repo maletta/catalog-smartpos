@@ -246,7 +246,6 @@ const Payment = () => {
     const values = {
       ...formValues,
       tipoPessoa: formValues.tipoPessoa.value,
-      // tipoEndereco: formValues.tipoEndereco.value,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
       deliveryValue: costDelivery.cost || 0,
