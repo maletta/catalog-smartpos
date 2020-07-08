@@ -39,6 +39,7 @@ const LinkNetPOS = styled.a`
 `;
 
 const CardCreditImg = styled.img`
+    display: block;
     width: auto;
     height: 110px;
 
@@ -48,12 +49,17 @@ const CardCreditImg = styled.img`
 
   @media (max-width: 414px) {
     margin-right: 1px;
-    width: 320px;
+    width: 240px;
   }
 
-  @media (max-width: 330px) {
-    width: 300px;
+  @media (max-width: 350px) {
+    width: 240px;
   }
+
+  @media (max-width: 270px) {
+    width: 180px;
+  }
+
 `;
 const FullWidthFooter = styled.div`
   position: relative;
@@ -83,7 +89,7 @@ const FooterInfoTitle = styled.h5`
   font-size: 1.1rem;
   margin-bottom: 5px;
  `;
-const FlagCaption = styled.div`
+const CaptionFlag = styled.div`
   font-size: 0.9rem;
   margin-bottom: 5px;
  `;
@@ -156,7 +162,6 @@ const GridHour = styled.div`
   padding-right: 1px;
   width: 100%;
 `;
-
 
 const GridDayOfWeek = styled.div`
   display: flex;
@@ -282,7 +287,7 @@ const Footer = ({ storeInfo }) => {
                           <GridDayOfWeek style={{ paddingLeft: '0px' }}>
                             {day.dayOfWeek}
                           </GridDayOfWeek>
-                          <GridHour style={{ paddingRight: 'unset', paddingLeft: 'unset' }}>
+                          <GridHour style={{ paddingRight: '1.1em ', paddingLeft: '1.1em ' }}>
                             {day.hours.map((itemHour, indexHour) => (
                               <div key={keyIndex(indexHour)}>
                                 {(day.closed ? 'Fechado' : `${itemHour.openHour} às ${itemHour.closeHour}`)}
@@ -298,13 +303,9 @@ const Footer = ({ storeInfo }) => {
             </Grid>
             <Grid
               cols="12 11 4 4 4"
-              className="d-flex align-items-end flex-column" >
-              <div>
+              className="d-flex flex-column text-center align-items-center align-items-md-end">
                 <CardCreditImg src={CardCredit} alt="bandeiras" />
-              </div>
-              <div>
-                <FlagCaption>Bandeiras aceitas apenas para pagamento online</FlagCaption>
-              </div>
+                <CaptionFlag>Bandeiras aceitas apenas para pagamento online</CaptionFlag>
             </Grid>
           </Row>
         </div>
