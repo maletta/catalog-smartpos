@@ -103,14 +103,6 @@ const App = () => {
   const { filter, updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
-  const notFoundHandle = () => (loading ? (
-    <Container>
-      <Spinner />
-    </Container>
-  ) : (
-      <NotFound />
-    ));
-
   const getCategoryList = (data) => {
     getCategories(data.id)
       .then((response) => {
@@ -246,49 +238,55 @@ const App = () => {
     );
   };
 
+  if (loading) {
+    return (
+      <Container>
+        <Spinner />
+      </Container>
+    );
+  }
+
   if (!store.found) {
     return (
-      notFoundHandle()
+      <NotFound />
     );
   }
 
   return (
     <>
-      <div>
-        <CardShop />
-        <Header
-          categories={categories}
-          codigo={store.codigo}
-          goHome={() => home()}
-          atualizacao={store.atualizacao}
-          store={store}
-        />
-        <Content pathname={pathname} className="container mb-5">
-          <Breadcrumb goHome={() => home()} />
-          <MainContainer>
-            <Router history={history}>
-              <Switch>
-                <Route path="/" exact component={GridProducts} />
-                <Route path="/carrinho" exact component={Cart} />
-                <Route path="/dados-cadastrais" exact component={RegisterData} />
-                <Route path="/endereco" exact component={Address} />
-                <Route path="/pagamento" exact component={Payment} />
-                <Route path="/conclusao" exact component={Conclusion} />
-                <Route
-                  path="/pedido-realizado"
-                  exact
-                  component={OrderPlaced}
-                />
-                <Route
-                  path="/item/:id/:descricao?"
-                  component={SingleProduct}
-                />
-              </Switch>
-            </Router>
-          </MainContainer>
-        </Content>
-        <Footer storeInfo={store} />
-      </div>
+      <CardShop />
+      <Header
+        categories={categories}
+        codigo={store.codigo}
+        goHome={() => home()}
+        atualizacao={store.atualizacao}
+        store={store}
+      />
+      <Content pathname={pathname} className="container mb-5">
+        <Breadcrumb goHome={() => home()} />
+        <MainContainer>
+          <Router history={history}>
+            <Switch>
+              <Route path="/" exact component={GridProducts} />
+              <Route path="/carrinho" exact component={Cart} />
+              <Route path="/dados-cadastrais" exact component={RegisterData} />
+              <Route path="/endereco" exact component={Address} />
+              <Route path="/pagamento" exact component={Payment} />
+              <Route path="/conclusao" exact component={Conclusion} />
+              <Route
+                path="/pedido-realizado"
+                exact
+                component={OrderPlaced}
+              />
+              <Route
+                path="/item/:id/:descricao?"
+                component={SingleProduct}
+              />
+            </Switch>
+          </Router>
+        </MainContainer>
+      </Content>
+      <Footer storeInfo={store} />
     </>
   );
 };
