@@ -108,6 +108,8 @@ const CartFooter = ({
     flagDelivery ? deliveryFeeText : ''
   );
 
+  const isNotDeliverable = delivery === 'retrieve' ? false : !deliveryCost.isDeliverable;
+
   return (
     <>
       <Grid cols="12" className="d-flex justify-content-between flex-wrap">
@@ -212,7 +214,11 @@ const CartFooter = ({
             redirectToHome();
           }}
         />
-        <Button value="Próximo" onClick={() => verifyRedirect(shop)} />
+        <Button
+          value="Próximo"
+          onClick={() => verifyRedirect(shop)}
+          disabled={isNotDeliverable}
+        />
       </Grid>
     </>
   );
