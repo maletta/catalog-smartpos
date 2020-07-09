@@ -70,6 +70,15 @@ const GridProducts = () => {
     });
   }, []);
 
+  const ProductsSpinner = () => (
+    <Grid
+      cols="12 9 9 9 9"
+      className="d-flex align-items-center justify-content-center"
+    >
+      <Spinner />
+    </Grid>
+  );
+
   return (
     <>
       <Row>
@@ -82,7 +91,7 @@ const GridProducts = () => {
             storeInfo={store}
           />
         </Grid>
-        {(!loading) ? (
+        {!loading ? (
           <Grid cols="12 12 9 9 9">
             <GridList
               itens={prodArray}
@@ -108,14 +117,7 @@ const GridProducts = () => {
               </Row>
             )}
           </Grid>
-        ) : (
-          <Grid
-            cols="12 9 9 9 9"
-            className="d-flex align-items-center justify-content-center"
-          >
-            <Spinner />
-          </Grid>
-        )}
+        ) : <ProductsSpinner />}
       </Row>
       <ModalOrderItem
         productOnModal={productOnModal}
