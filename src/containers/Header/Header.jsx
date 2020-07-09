@@ -154,39 +154,53 @@ const Whatsapp = styled.span`
 `;
 
 
-const Header = (props) => {
-  const { updateFilter } = useContext(FilterContext);
-  const {
-    codigo, goHome, categories, atualizacao, store,
-  } = props;
-  const [search, setSearch] = useState('');
+const Header = ({
+  codigo, goHome, categories, atualizacao, store,
+}) => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
+  const { updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
+
+  const [search, setSearch] = useState('');
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${atualizacao}`;
-  const submit = (e) => {
+
+  const onSubmit = (e) => {
     e.preventDefault();
+
     if (search) {
       ReactGA.event({
         category: 'HEADER',
         action: 'SEARCH',
         label: search,
       });
+
       history.push('/');
       updateFilter({
         search, page: 1, categoria: 0, label: '', categoryName: '',
       });
     }
+
     setSearch('');
-    const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-    window.history.pushState({}, '', `${baseUrl}?search=${search}`);
-  };
-  const formatPhoneNumber = () => {
-    const number = store && store.whatsapp;
-    const ddd = (number || '').slice(0, 2);
-    return `(${ddd}) ${(number || '').substring(2)}`;
+    const { origin, pathname } = window.location;
+    window.history.pushState({}, '', `${origin}${pathname}?search=${search}`);
   };
 
-  const { pathname } = history.location;
+  const formatPhoneNumber = (number = '') => {
+    if (number === '') return '';
+    const ddd = number.slice(0, 2);
+    const phone = number.slice(2);
+    return `(${ddd}) ${phone}`;
+  };
+
+  const onClickCartIcon = () => {
+    updateShoppingCart({ cardOverlay: true });
+  };
+
+  const onChangeSearch = ({ target }) => {
+    setSearch(target.value);
+  };
+
+  const cartBasketCount = shoppingCart.basketCount;
 
   return (
     <Container className="fixed-top">
@@ -198,9 +212,7 @@ const Header = (props) => {
             cols="2 3 3 3 3"
             className="d-flex align-items-center justify-content-center"
           >
-            <Logo
-              onClick={() => goHome()}
-            >
+            <Logo onClick={goHome}>
               <LogoImage src={imageBaseUrl} alt="Logo" />
             </Logo>
             <StoreNameArea>
@@ -208,7 +220,7 @@ const Header = (props) => {
                 {store.storeName}
               </Fantasia>
               <Whatsapp>
-                {formatPhoneNumber()}
+                {formatPhoneNumber(store ? store.whatsapp : '')}
               </Whatsapp>
             </StoreNameArea>
           </Grid>
@@ -217,16 +229,17 @@ const Header = (props) => {
             className="d-flex justify-content-center align-items-center"
           >
             <Field>
-              <form onSubmit={e => submit(e)}>
+              <form onSubmit={onSubmit}>
                 <Search>
                   <SearchInput
                     value={search}
-                    onChange={e => setSearch(e.target.value)}
+                    onChange={onChangeSearch}
                     placeholder="Buscar produtos, marcas e muito mais…"
-                    type="text"
                     name="search"
                   />
-                  <SearchButton type="submit"><i className="fa fa-search" /></SearchButton>
+                  <SearchButton type="submit">
+                    <i className="fa fa-search" />
+                  </SearchButton>
                 </Search>
               </form>
             </Field>
@@ -236,19 +249,13 @@ const Header = (props) => {
             cols="2 2 2 2 1"
           >
             <div>
-              {(shop.is_enableOrder === 1) && (
+              {shop.is_enableOrder && (
                 <CartIcon
-                  onClick={() => {
-                    updateShoppingCart({
-                      cardOverlay: true,
-                    });
-                  }}
+                  onClick={onClickCartIcon}
                   className="fa fa-shopping-cart"
                 >
-                  <CartCounter
-                    count={shoppingCart.basketCount}
-                  >
-                    {shoppingCart.basketCount}
+                  <CartCounter count={cartBasketCount}>
+                    {cartBasketCount}
                   </CartCounter>
                 </CartIcon>
               )}
@@ -256,11 +263,11 @@ const Header = (props) => {
           </Grid>
         </Row>
       </AreaMenu>
-      {(pathname !== '/checkout' && (
+      {history.location.pathname !== '/checkout' && (
         <FiltersMobile
           categories={categories}
         />
-      ))}
+      )}
     </Container>
   );
 };
