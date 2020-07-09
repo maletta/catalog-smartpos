@@ -111,59 +111,54 @@ const App = () => {
       .catch(() => updateCategory([]))
       .finally(() => setLoading(false));
   };
-  const getStore = () => {
-    getStoreInfo(getStoreName())
-      .then((response) => {
-        const today = () => {
-          if (response.data.openHours) {
-            return response.data.openHours[moment().day()];
-          }
-          return daysOfWeek[moment().day()];
-        };
-        const verifyIsClosed = () => {
-          let isClosed = true;
-          if (response.data) {
-            if (response.data.openHours === null || response.data.openHours.length === 0) {
-              return false;
-            }
-            const anyHour = response.data.allowOrderOutsideBusinessHours;
-            const { hours } = today();
-            const hourNow = moment().format('HH:mm');
-            if (today.closed) {
-              return true;
-            }
-            if (anyHour === 1) {
-              return false;
-            }
-            hours.map((item) => {
-              if (item.openHour < hourNow && item.closeHour > hourNow) {
-                isClosed = false;
-              }
 
-              return !!isClosed;
-            });
-          }
-          return isClosed;
-        };
-        const closeNow = verifyIsClosed();
-        document.title = response.data.fantasia;
-        // criar uma função para refazer essa etapa abaixo até setStore
-        if (closeNow === true
-          && response.data.allowOrderOutsideBusinessHours === 0) {
-          updateShop({
-            ...response.data, today, closeNow, is_enableOrder: 0,
-          });
-        } else if (closeNow === false
-          && response.data.is_enableOrder === 1
-          && response.data.allowOrderOutsideBusinessHours === 1) {
-          updateShop({
-            ...response.data, today, closeNow, is_enableOrder: 1,
-          });
-        } else {
-          updateShop({ ...response.data, today, closeNow });
-        }
-        setStore({ ...response.data, found: true, storeName: getStoreName() });
-        getCategoryList(response.data);
+  const today = openHours => (openHours || daysOfWeek)[moment().day()];
+
+  const isShopClosed = (data) => {
+    if (!data) {
+      return true;
+    }
+
+    const { openHours, allowOrderOutsideBusinessHours } = data;
+
+    if (openHours === null || openHours.length === 0) {
+      return false;
+    }
+
+    if (allowOrderOutsideBusinessHours) {
+      return false;
+    }
+
+    const { hours } = today(openHours);
+    const currentHour = moment().format('HH:mm');
+    const isCurrentTimeWithinTimeRange = ({ openHour, closeHour }) => openHour < currentHour
+      && closeHour > currentHour;
+
+    return !hours.some(isCurrentTimeWithinTimeRange);
+  };
+
+  const getStore = () => {
+    const storeName = getStoreName();
+
+    getStoreInfo(storeName)
+      .then((response) => {
+        const { data } = response;
+        const {
+          allowOrderOutsideBusinessHours,
+          is_enableOrder: isEnableOrder,
+        } = data;
+
+        document.title = data.fantasia;
+
+        setStore({ ...data, found: true, storeName });
+        getCategoryList(data);
+
+        const closeNow = isShopClosed(data);
+        const isOrderEnabled = !closeNow && allowOrderOutsideBusinessHours && isEnableOrder;
+
+        updateShop({
+          ...data, today, closeNow, is_enableOrder: Number(isOrderEnabled),
+        });
       })
       .catch(() => {
         setStore({ found: false });
@@ -171,14 +166,11 @@ const App = () => {
       });
   };
 
-  const BusinessHour = () => {
-    if (!store.allowOrderOutsideBusinessHours) {
-      const date = moment().format();
-      const timezone = date.substr(date.length - 6);
-      getBusinessHour(store.id, store.codigo, timezone).then((openStore) => {
-        updateShop(openStore.data);
-      });
-    }
+  const businessHourRequest = async () => {
+    const date = moment().format();
+    const timezone = date.substr(date.length - 6);
+    const openStore = await getBusinessHour(store.id, store.codigo, timezone);
+    updateShop(openStore.data);
   };
 
   const cleanCart = () => {
@@ -199,8 +191,8 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (store.id) {
-      BusinessHour();
+    if (store.id && !store.allowOrderOutsideBusinessHours) {
+      businessHourRequest();
     }
   }, [loading]);
 
@@ -211,11 +203,9 @@ const App = () => {
     cleanCart();
   }, []);
 
-
-  const { pathname } = history.location;
-
-  const home = () => {
+  const goHome = () => {
     history.push('/');
+
     updateFilter({
       categoria: 0,
       label: '',
@@ -224,17 +214,12 @@ const App = () => {
       categoryName: 'Todas as categorias',
       redirect: true,
     });
-    const baseUrl = [
-      window.location.protocol,
-      '//',
-      window.location.host,
-      '/',
-      window.location.pathname.split('/')[1],
-    ].join('');
+
+    const { origin, pathname } = window.location;
     window.history.pushState(
       {},
       '',
-      `${baseUrl}?categoria=${filter.categoria}&nome=Todas as categorias`,
+      `${origin}${pathname}?categoria=${filter.categoria}&nome=Todas as categorias`,
     );
   };
 
@@ -258,28 +243,28 @@ const App = () => {
       <Header
         categories={categories}
         codigo={store.codigo}
-        goHome={() => home()}
+        goHome={goHome}
         atualizacao={store.atualizacao}
         store={store}
       />
-      <Content pathname={pathname} className="container mb-5">
-        <Breadcrumb goHome={() => home()} />
+      <Content pathname={history.location.pathname} className="container mb-5">
+        <Breadcrumb goHome={() => goHome()} />
         <MainContainer>
           <Router history={history}>
             <Switch>
               <Route path="/" exact component={GridProducts} />
-              <Route path="/carrinho" exact component={Cart} />
-              <Route path="/dados-cadastrais" exact component={RegisterData} />
-              <Route path="/endereco" exact component={Address} />
-              <Route path="/pagamento" exact component={Payment} />
-              <Route path="/conclusao" exact component={Conclusion} />
+              <Route path={paths.cart} exact component={Cart} />
+              <Route path={paths.registerData} exact component={RegisterData} />
+              <Route path={paths.address} exact component={Address} />
+              <Route path={paths.payment} exact component={Payment} />
+              <Route path={paths.conclusion} exact component={Conclusion} />
               <Route
-                path="/pedido-realizado"
+                path={paths.orderPlaced}
                 exact
                 component={OrderPlaced}
               />
               <Route
-                path="/item/:id/:descricao?"
+                path={paths.singleProduct}
                 component={SingleProduct}
               />
             </Switch>
