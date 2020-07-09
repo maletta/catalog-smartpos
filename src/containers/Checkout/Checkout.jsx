@@ -807,6 +807,8 @@ const Checkout = ({ intl }) => {
                               }}
                             />
                           </div>
+
+                          {shop.allowPayOnline !== 0 && (
                           <div className="d-flex align-items-center mt-3 mb-3">
                             <Field
                               label="Pague on-line com cartão de crédito"
@@ -826,6 +828,7 @@ const Checkout = ({ intl }) => {
                               }}
                             />
                           </div>
+                          )}
                         </>
                       )}
                       <Alert
