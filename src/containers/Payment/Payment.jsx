@@ -218,7 +218,7 @@ const Payment = () => {
           withdraw: shoppingCart.withdraw,
           orderName: response.data.orderName,
         });
-        history.push('/conclusion');
+        history.push('/conclusao');
       })
       .catch((error) => {
         if (error.response && error.response.status === 406) {
@@ -817,7 +817,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>

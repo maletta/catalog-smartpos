@@ -81,7 +81,7 @@ const RegisterData = () => {
           enableReinitialize
           onSubmit={(values) => {
             updateShoppingCart({ address: values });
-            history.push('/payment');
+            history.push('/pagamento');
           }}
           initialValues={address}
           validationSchema={addressSchema()}

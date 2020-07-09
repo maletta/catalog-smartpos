@@ -33,11 +33,21 @@ const Cont = styled.div`
 `;
 
 const stepsInfo = [
-  { icon: faShoppingBag, text: 'Resumo de compra', isActive: false },
-  { icon: faEdit, text: 'Dados cadastrais', isActive: false },
-  { icon: faHome, text: 'Endereço', isActive: false },
-  { icon: faDonate, text: 'Pagamento', isActive: false },
-  { icon: faThumbsUp, text: 'Conclusão', isActive: false },
+  {
+    icon: faShoppingBag, text: 'Resumo de compra', isActive: false, path: '/carrinho',
+  },
+  {
+    icon: faEdit, text: 'Dados cadastrais', isActive: false, path: '/dados-cadastrais',
+  },
+  {
+    icon: faHome, text: 'Endereço', isActive: false, path: '/endereco',
+  },
+  {
+    icon: faDonate, text: 'Pagamento', isActive: false, path: '/pagamento',
+  },
+  {
+    icon: faThumbsUp, text: 'Conclusão', isActive: false, path: '/conclusao',
+  },
 ];
 
 const Steps = ({ activeIndex }) => {

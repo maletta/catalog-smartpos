@@ -21,6 +21,7 @@ import Address from 'containers/Address';
 import Payment from 'containers/Payment';
 import Conclusion from 'containers/Conclusion';
 import CardShop from 'components/CardShop';
+import paths from 'paths';
 
 import history from 'utils/history';
 
@@ -93,10 +94,6 @@ const Content = styled.div`
   position: relative;
   top: 80px;
   padding-bottom: 80px;
-
-  @media (max-width: 768px) {
-    ${props => (props.pathname !== '/checkout' ? 'top: 105px' : 'top: 70px')};
-  }
 `;
 
 const App = () => {
@@ -111,8 +108,8 @@ const App = () => {
       <Spinner />
     </Container>
   ) : (
-    <NotFound />
-  ));
+      <NotFound />
+    ));
 
   const getCategoryList = (data) => {
     getCategories(data.id)
@@ -203,7 +200,7 @@ const App = () => {
 
   useEffect(() => {
     getStore();
-  }, [false]);
+  }, []);
 
   useEffect(() => {
     if (store.id) {
@@ -216,7 +213,7 @@ const App = () => {
     window.scrollTo(0, 0);
     initGA(history);
     cleanCart();
-  }, [false]);
+  }, []);
 
 
   const { pathname } = history.location;
@@ -245,48 +242,49 @@ const App = () => {
     );
   };
 
+  if (!store.found) {
+    return (
+      notFoundHandle()
+    );
+  }
+
   return (
     <>
-      {store.found ? (
-        <div>
-          <CardShop />
-          <Header
-            categories={categories}
-            codigo={store.codigo}
-            goHome={() => home()}
-            atualizacao={store.atualizacao}
-            store={store}
-          />
-          <Content pathname={pathname} className="container mb-5">
-            <Breadcrumb goHome={() => home()} />
-            <MainContainer>
-              <Router history={history}>
-                <Switch>
-                  <Route path="/" exact component={GridProducts} />
-                  <Route path="/cart" exact component={Cart} />
-                  <Route path="/register-data" exact component={RegisterData} />
-                  <Route path="/address" exact component={Address} />
-                  <Route path="/payment" exact component={Payment} />
-                  <Route path="/conclusion" exact component={Conclusion} />
-                  {/* <Route path="/checkout" exact component={Checkout} /> */}
-                  <Route
-                    path="/pedido-realizado"
-                    exact
-                    component={OrderPlaced}
-                  />
-                  <Route
-                    path="/item/:id/:descricao?"
-                    component={SingleProduct}
-                  />
-                </Switch>
-              </Router>
-            </MainContainer>
-          </Content>
-          <Footer storeInfo={store} />
-        </div>
-      ) : (
-        notFoundHandle()
-      )}
+      <div>
+        <CardShop />
+        <Header
+          categories={categories}
+          codigo={store.codigo}
+          goHome={() => home()}
+          atualizacao={store.atualizacao}
+          store={store}
+        />
+        <Content pathname={pathname} className="container mb-5">
+          <Breadcrumb goHome={() => home()} />
+          <MainContainer>
+            <Router history={history}>
+              <Switch>
+                <Route path="/" exact component={GridProducts} />
+                <Route path="/carrinho" exact component={Cart} />
+                <Route path="/dados-cadastrais" exact component={RegisterData} />
+                <Route path="/endereco" exact component={Address} />
+                <Route path="/pagamento" exact component={Payment} />
+                <Route path="/conclusao" exact component={Conclusion} />
+                <Route
+                  path="/pedido-realizado"
+                  exact
+                  component={OrderPlaced}
+                />
+                <Route
+                  path="/item/:id/:descricao?"
+                  component={SingleProduct}
+                />
+              </Switch>
+            </Router>
+          </MainContainer>
+        </Content>
+        <Footer storeInfo={store} />
+      </div>
     </>
   );
 };

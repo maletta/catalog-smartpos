@@ -323,7 +323,7 @@ const SingleProduct = (props) => {
       cardOverlay: true,
     });
 
-    history.push('/cart');
+    history.push('/carrinho');
     return true;
   };
 
@@ -455,17 +455,17 @@ const SingleProduct = (props) => {
           <LabelVariantValues>
             <div>{values.name}</div>
             {(values.sellValue)
-            && (
-              <div style={{
-                fontWeight: '600',
-                display: 'flex',
-                flexDirection: 'col',
-              }}
-              >
-                {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
-                {(haveStockVariant(values)) || (<div style={{ width: 'auto', marginLeft: '10px' }}>Item indisponível</div>)}
-              </div>
-            )}
+              && (
+                <div style={{
+                  fontWeight: '600',
+                  display: 'flex',
+                  flexDirection: 'col',
+                }}
+                >
+                  {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
+                  {(haveStockVariant(values)) || (<div style={{ width: 'auto', marginLeft: '10px' }}>Item indisponível</div>)}
+                </div>
+              )}
           </LabelVariantValues>
         </LabelVariant>
       );
@@ -476,16 +476,16 @@ const SingleProduct = (props) => {
         <LabelVariantValues>
           <div>{values.name}</div>
           {(values.sellValue)
-          && (
-            <div style={{
-              fontWeight: '600',
-              display: 'flex',
-              flexDirection: 'col',
-            }}
-            >
-              {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
-            </div>
-          )}
+            && (
+              <div style={{
+                fontWeight: '600',
+                display: 'flex',
+                flexDirection: 'col',
+              }}
+              >
+                {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
+              </div>
+            )}
         </LabelVariantValues>
       </LabelVariant>
     );
@@ -553,18 +553,18 @@ const SingleProduct = (props) => {
                                 {renderImage()}
                                 <SmallThumb>
                                   {product.images && (
-                                  <>
-                                    {product.images !== 'notFound' && (
-                                    <Thumb IsActive={activeItemIndex === 0}>
-                                      <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
-                                    </Thumb>
-                                    )}
-                                    {product.images !== 'notFound' && ((product.images).map((img, index) => (
-                                      <Thumb IsActive={activeItemIndex === index + 1}>
-                                        <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
-                                      </Thumb>
-                                    )))}
-                                  </>
+                                    <>
+                                      {product.images !== 'notFound' && (
+                                        <Thumb IsActive={activeItemIndex === 0}>
+                                          <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
+                                        </Thumb>
+                                      )}
+                                      {product.images !== 'notFound' && ((product.images).map((img, index) => (
+                                        <Thumb IsActive={activeItemIndex === index + 1}>
+                                          <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+                                        </Thumb>
+                                      )))}
+                                    </>
                                   )}
 
                                 </SmallThumb>
@@ -574,22 +574,22 @@ const SingleProduct = (props) => {
                                 {renderSocialIcon()}
                               </Grid>
                               {(product.longDescription) && (
-                              <>
-                                <Grid cols="12 mb-3">
-                                  <SubTitle>Descrição do item</SubTitle>
-                                </Grid>
-                                <Grid cols="12 mb-3">
-                                  <ReactQuill
-                                    readOnly
-                                    theme="snow"
-                                    value={product.longDescription}
-                                    enable={false}
-                                    modules={{
-                                      toolbar: [],
-                                    }}
-                                  />
-                                </Grid>
-                              </>
+                                <>
+                                  <Grid cols="12 mb-3">
+                                    <SubTitle>Descrição do item</SubTitle>
+                                  </Grid>
+                                  <Grid cols="12 mb-3">
+                                    <ReactQuill
+                                      readOnly
+                                      theme="snow"
+                                      value={product.longDescription}
+                                      enable={false}
+                                      modules={{
+                                        toolbar: [],
+                                      }}
+                                    />
+                                  </Grid>
+                                </>
                               )}
                             </Row>
                           </Grid>
@@ -613,92 +613,92 @@ const SingleProduct = (props) => {
                             <Row>
                               <Grid cols="12">
                                 {(product.variants.length > 0) && (
-                                <SelectDropDown
-                                  id="variants"
-                                  label="Variações"
-                                  options={product.variants}
-                                  value={variantSelected}
-                                  getOptionLabel={label => renderOptionLabel(label)}
-                                  onChange={(value) => {
-                                    if ((value.noStock === false
-                                    && value.Estoque && value.Estoque.quantidade > 0)
-                                    || (value.noStock)) {
-                                      propsForm.setFieldValue('variant', value);
-                                      setVariantSelected({ name: value.name });
-                                      propsForm.setFieldTouched('variant', true);
-                                      setProductPricing(prevState => ({
-                                        ...prevState,
-                                        product: value.sellValue,
-                                      }));
-                                    }
-                                  }}
-                                  getOptionValue={option => option.id}
-                                  isInvalid={propsForm.errors.variant}
-                                  touched={propsForm.touched.variant}
-                                  isRequired
-                                />
+                                  <SelectDropDown
+                                    id="variants"
+                                    label="Variações"
+                                    options={product.variants}
+                                    value={variantSelected}
+                                    getOptionLabel={label => renderOptionLabel(label)}
+                                    onChange={(value) => {
+                                      if ((value.noStock === false
+                                        && value.Estoque && value.Estoque.quantidade > 0)
+                                        || (value.noStock)) {
+                                        propsForm.setFieldValue('variant', value);
+                                        setVariantSelected({ name: value.name });
+                                        propsForm.setFieldTouched('variant', true);
+                                        setProductPricing(prevState => ({
+                                          ...prevState,
+                                          product: value.sellValue,
+                                        }));
+                                      }
+                                    }}
+                                    getOptionValue={option => option.id}
+                                    isInvalid={propsForm.errors.variant}
+                                    touched={propsForm.touched.variant}
+                                    isRequired
+                                  />
                                 )}
                                 {(isLoaded) && (
-                                <>
-                                  <ModifiersArea>
-                                    {product.modifiers.map((mod, index) => {
-                                      const hasError = (mod.required
-                                        ? (modifierSelected[index].length > 0) : false);
-                                      return (
-                                        <div key={mod.id}>
-                                          <ModifierHeader>
-                                            <div>
-                                              <ModifierTitle>
-                                                {mod.name}
-                                              </ModifierTitle>
-                                              <ModifierAmountTitle>
-                                                {`Máximo ${mod.maxQuantity} `}
-                                                <FormattedPlural
-                                                  value={mod.maxQuantity}
-                                                  one="opção"
-                                                  other="opções"
-                                                />
-                                              </ModifierAmountTitle>
-                                            </div>
-                                            {(mod.required) && (
-                                            <div>
-                                              <ModifierTitleRequired
-                                                hasError={!hasError}
-                                              >
-                                                Obrigatório
+                                  <>
+                                    <ModifiersArea>
+                                      {product.modifiers.map((mod, index) => {
+                                        const hasError = (mod.required
+                                          ? (modifierSelected[index].length > 0) : false);
+                                        return (
+                                          <div key={mod.id}>
+                                            <ModifierHeader>
+                                              <div>
+                                                <ModifierTitle>
+                                                  {mod.name}
+                                                </ModifierTitle>
+                                                <ModifierAmountTitle>
+                                                  {`Máximo ${mod.maxQuantity} `}
+                                                  <FormattedPlural
+                                                    value={mod.maxQuantity}
+                                                    one="opção"
+                                                    other="opções"
+                                                  />
+                                                </ModifierAmountTitle>
+                                              </div>
+                                              {(mod.required) && (
+                                                <div>
+                                                  <ModifierTitleRequired
+                                                    hasError={!hasError}
+                                                  >
+                                                    Obrigatório
                                               </ModifierTitleRequired>
-                                            </div>
-                                            )}
-                                          </ModifierHeader>
-                                          <ul>
-                                            <ItemModifiers
-                                              modifier={mod}
-                                              propsForm={propsForm}
-                                              index={index}
-                                              modifierSelected={modifierSelected}
-                                              setProductPricing={setProductPricing}
-                                              setModifierSelected={setModifierSelected}
-                                              setModifiersErrors={setModifiersErrors}
-                                              modifiersErrors={modifiersErrors}
-                                            />
-                                          </ul>
-                                        </div>
-                                      );
-                                    })}
-                                  </ModifiersArea>
-                                  {enableOrderButton() && (
-                                  <div className="column is-mb-paddingless is-12 is-mb-paddingless">
-                                    <Field
-                                      name="note"
-                                      inputId="observacao"
-                                      component={TextArea}
-                                      label="Observação"
-                                      autoFocus={false}
-                                      rows={3}
-                                    />
-                                  </div>
-                                  )}
-                                </>
+                                                </div>
+                                              )}
+                                            </ModifierHeader>
+                                            <ul>
+                                              <ItemModifiers
+                                                modifier={mod}
+                                                propsForm={propsForm}
+                                                index={index}
+                                                modifierSelected={modifierSelected}
+                                                setProductPricing={setProductPricing}
+                                                setModifierSelected={setModifierSelected}
+                                                setModifiersErrors={setModifiersErrors}
+                                                modifiersErrors={modifiersErrors}
+                                              />
+                                            </ul>
+                                          </div>
+                                        );
+                                      })}
+                                    </ModifiersArea>
+                                    {enableOrderButton() && (
+                                      <div className="column is-mb-paddingless is-12 is-mb-paddingless">
+                                        <Field
+                                          name="note"
+                                          inputId="observacao"
+                                          component={TextArea}
+                                          label="Observação"
+                                          autoFocus={false}
+                                          rows={3}
+                                        />
+                                      </div>
+                                    )}
+                                  </>
                                 )}
                               </Grid>
                               <Grid cols="12" className="d-md-none mb-3">
@@ -706,61 +706,61 @@ const SingleProduct = (props) => {
                                 {renderSocialIcon()}
                               </Grid>
                               {(product.longDescription) && (
-                              <>
-                                <Grid cols="12" className="d-md-none">
-                                  <SubTitle>Descrição do item</SubTitle>
-                                </Grid>
-                                <Grid cols="12" className="d-md-none mb-3">
-                                  <ReactQuill
-                                    readOnly
-                                    theme="snow"
-                                    value={product.longDescription}
-                                    enable={false}
-                                    modules={{
-                                      toolbar: [],
-                                    }}
-                                  />
-                                </Grid>
-                              </>
+                                <>
+                                  <Grid cols="12" className="d-md-none">
+                                    <SubTitle>Descrição do item</SubTitle>
+                                  </Grid>
+                                  <Grid cols="12" className="d-md-none mb-3">
+                                    <ReactQuill
+                                      readOnly
+                                      theme="snow"
+                                      value={product.longDescription}
+                                      enable={false}
+                                      modules={{
+                                        toolbar: [],
+                                      }}
+                                    />
+                                  </Grid>
+                                </>
                               )}
                             </Row>
                           </Grid>
                           {(enableOrderButton()) && (
-                          <FooterContainer>
-                            <div className="d-flex justify-content-end">
-                              <Grid cols="12 12 12 6 6">
-                                <Row>
-                                  <Grid
-                                    cols="5"
-                                    className="d-flex justify-content-center align-items-center"
-                                  >
-                                    <div>
-                                      <Counter
-                                        initialCount={1}
-                                        setState={(value) => {
-                                          propsForm.setFieldValue('quantity', value);
-                                        }}
-                                      />
-                                    </div>
-                                  </Grid>
-                                  <Grid
-                                    cols="7"
-                                    className="d-flex justify-content-center align-items-end"
-                                  >
-                                    <div>
-                                      <ButtonPrice
-                                        value="ADICIONAR"
-                                        price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
-                                        type="submit"
-                                        disabled={(hasModifiersErrors.length > 0 && isProductFound)}
-                                        isLoading={propsForm.isSubmitting}
-                                      />
-                                    </div>
-                                  </Grid>
-                                </Row>
-                              </Grid>
-                            </div>
-                          </FooterContainer>
+                            <FooterContainer>
+                              <div className="d-flex justify-content-end">
+                                <Grid cols="12 12 12 6 6">
+                                  <Row>
+                                    <Grid
+                                      cols="5"
+                                      className="d-flex justify-content-center align-items-center"
+                                    >
+                                      <div>
+                                        <Counter
+                                          initialCount={1}
+                                          setState={(value) => {
+                                            propsForm.setFieldValue('quantity', value);
+                                          }}
+                                        />
+                                      </div>
+                                    </Grid>
+                                    <Grid
+                                      cols="7"
+                                      className="d-flex justify-content-center align-items-end"
+                                    >
+                                      <div>
+                                        <ButtonPrice
+                                          value="ADICIONAR"
+                                          price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
+                                          type="submit"
+                                          disabled={(hasModifiersErrors.length > 0 && isProductFound)}
+                                          isLoading={propsForm.isSubmitting}
+                                        />
+                                      </div>
+                                    </Grid>
+                                  </Row>
+                                </Grid>
+                              </div>
+                            </FooterContainer>
                           )}
                         </Container>
                       </Form>
@@ -768,16 +768,16 @@ const SingleProduct = (props) => {
                   />
                 </>
               ) : (
-                <div>O produto que você procura não foi encontrado!</div>
-              )}
+                  <div>O produto que você procura não foi encontrado!</div>
+                )}
             </>
           ) : (
-            <>
-              <LoadingConteiner>
-                <span><Spinner /></span>
-              </LoadingConteiner>
-            </>
-          )}
+              <>
+                <LoadingConteiner>
+                  <span><Spinner /></span>
+                </LoadingConteiner>
+              </>
+            )}
 
         </Grid>
       </Row>

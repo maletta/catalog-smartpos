@@ -2,10 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
+import history from 'utils/history';
 
 const isPrimaryColor = ({ isActive }) => (isActive ? 'var(--color-primary)' : '#b6b6b6');
+const isPointerCursor = ({ isActive }) => (isActive ? 'pointer' : 'auto');
 
 const StepCircle = styled.div`
+  cursor: ${isPointerCursor};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,8 +45,13 @@ const StepContainer = styled.div`
   align-items: center;
 `;
 
-const Step = ({ icon, text, isActive }) => (
-  <StepContainer isActive={isActive}>
+const noop = () => { };
+const redirectToPage = path => () => {
+  history.push(path);
+};
+
+const Step = ({ icon, text, isActive, path }) => (
+  <StepContainer isActive={isActive} onClick={isActive ? redirectToPage(path) : noop}>
     <StepCircle isActive={isActive}>
       <FontAwesomeIcon
         color="white"
@@ -59,6 +67,7 @@ Step.propTypes = {
   icon: PropTypes.any.isRequired,
   text: PropTypes.string.isRequired,
   isActive: PropTypes.bool.isRequired,
+  path: PropTypes.string.isRequired,
 };
 
 export default Step;

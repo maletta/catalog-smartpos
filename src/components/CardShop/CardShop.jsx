@@ -417,7 +417,7 @@ const CardShop = ({ intl }) => {
                     updateShoppingCart({
                       cardOverlay: false,
                     });
-                    history.push('/cart');
+                    history.push('/carrinho');
                   }, 500);
                 }}
                 >

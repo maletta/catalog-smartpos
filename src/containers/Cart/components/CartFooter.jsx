@@ -48,7 +48,7 @@ const CouponInputContainer = styled.div`
   }
 `;
 
-const redirectToRegisterData = () => history.push('/register-data');
+const redirectToRegisterData = () => history.push('/dados-cadastrais');
 const redirectToHome = () => history.push('/');
 
 const showStoreIsClosedModal = (shop) => {
