@@ -39,9 +39,9 @@ const LinkNetPOS = styled.a`
 `;
 
 const CardCreditImg = styled.img`
-    display: block;
-    width: auto;
-    height: 110px;
+  display: block;
+  width: auto;
+  height: 110px;
 
   @media (max-width: 1023px) {
     width: 240px;
@@ -90,6 +90,7 @@ const FooterInfoTitle = styled.h5`
   margin-bottom: 5px;
  `;
 const CaptionFlag = styled.div`
+  margin-top: 5px;
   font-size: 0.9rem;
   margin-bottom: 5px;
  `;
@@ -398,3 +399,5 @@ Footer.propTypes = {
 Footer.defaultProps = {};
 
 export default Footer;
+
+
