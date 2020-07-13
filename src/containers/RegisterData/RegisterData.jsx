@@ -194,7 +194,7 @@ const RegisterData = () => {
               0,
             )}
           deliveryCost={shoppingCart.deliveryFee || {}}
-          couponValue={-5}
+          couponValue={0}
         />
       </Grid>
     </Container>

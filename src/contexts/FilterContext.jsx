@@ -22,8 +22,8 @@ export const FilterProvider = ({ children }) => {
   const updateFilter = (newFilter) => {
     if (newFilter.redirect) {
       history.push('/');
-      const baseUrl2 = [window.location.protocol, '//', window.location.host, '/', window.location.pathname.split('/')[1]].join('');
-      window.history.pushState({}, '', `${baseUrl2}?categoria=${newFilter.categoria}&nome=${newFilter.categoryName}`);
+      const { origin, pathname } = window.location;
+      window.history.pushState({}, '', `${origin}${pathname}?categoria=${newFilter.categoria}&nome=${newFilter.categoryName}`);
     }
     setFilter(state => ({ ...state, ...newFilter }));
   };

@@ -81,7 +81,7 @@ const calculateMoneyChange = ({ purchaseTotalValue, receivedValue }) => {
     return receivedValue - purchaseTotalValue;
   }
 
-  return 0;
+  return 'Troco não pode ser menor que o valor de compra!';
 };
 
 const Payment = () => {
@@ -264,6 +264,10 @@ const Payment = () => {
   const totalWithDelivery = shoppingCart.withdraw ? totalCar : costDelivery.cost + totalCar;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
+    if (typeof moneyChange === 'string') {
+      return;
+    }
+
     setLoading(true);
 
     const values = {
@@ -469,20 +473,23 @@ const Payment = () => {
                                 <Field
                                   inputId="valorRecebido"
                                   name="valorRecebido"
-                                  label="Valor recebido"
+                                  label="Troco para quanto?"
                                   component={CurrencyInput}
                                   onValueChange={(value) => {
                                     propsForm.setFieldValue('valorRecebido', value.floatValue);
-                                    const totalValue = shoppingCart.cart.reduce(
+                                    const totalCartValue = shoppingCart.cart.reduce(
                                       (count, val) => count
                                         + val.quantity
                                         * (val.pricing.modifiers + val.pricing.product),
                                       0,
                                     );
+
+                                    const totalValue = totalCartValue + (shoppingCart.deliveryFee ? shoppingCart.deliveryFee.cost : 0);
                                     const changeValue = calculateMoneyChange({
                                       purchaseTotalValue: totalValue,
                                       receivedValue: value.floatValue,
                                     });
+
                                     setMoneyChange(changeValue);
                                   }}
                                 />
@@ -877,7 +884,7 @@ const Payment = () => {
             )
           }
           deliveryCost={shoppingCart.deliveryFee || {}}
-          couponValue={-5}
+          couponValue={0}
         />
       </Grid>
     </Container>
