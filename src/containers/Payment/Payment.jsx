@@ -484,7 +484,11 @@ const Payment = () => {
                                       0,
                                     );
 
-                                    const totalValue = totalCartValue + (shoppingCart.deliveryFee ? shoppingCart.deliveryFee.cost : 0);
+                                    const totalValue = totalCartValue + (
+                                      shoppingCart.deliveryFee
+                                        ? shoppingCart.deliveryFee.cost
+                                        : 0
+                                    );
                                     const changeValue = calculateMoneyChange({
                                       purchaseTotalValue: totalValue,
                                       receivedValue: value.floatValue,
@@ -824,7 +828,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>

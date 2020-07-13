@@ -50,7 +50,9 @@ const redirectToPage = path => () => {
   history.push(path);
 };
 
-const Step = ({ icon, text, isActive, path }) => (
+const Step = ({
+  icon, text, isActive, path,
+}) => (
   <StepContainer isActive={isActive} onClick={isActive ? redirectToPage(path) : noop}>
     <StepCircle isActive={isActive}>
       <FontAwesomeIcon

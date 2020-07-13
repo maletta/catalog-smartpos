@@ -135,15 +135,15 @@ const RegisterData = () => {
                       type="tel"
                     />
                   ) : (
-                      <Field
-                        label="CNPJ"
-                        name="documento"
-                        inputId="documento"
-                        format="##.###.###/####-##"
-                        component={MaskedNumberInput}
-                        type="tel"
-                      />
-                    )}
+                    <Field
+                      label="CNPJ"
+                      name="documento"
+                      inputId="documento"
+                      format="##.###.###/####-##"
+                      component={MaskedNumberInput}
+                      type="tel"
+                    />
+                  )}
                 </Grid>
                 <Grid cols="12 6 6 6 6">
                   <Field

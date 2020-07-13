@@ -666,7 +666,7 @@ const SingleProduct = (props) => {
                                                     hasError={!hasError}
                                                   >
                                                     Obrigatório
-                                              </ModifierTitleRequired>
+                                                  </ModifierTitleRequired>
                                                 </div>
                                               )}
                                             </ModifierHeader>
@@ -752,7 +752,9 @@ const SingleProduct = (props) => {
                                           value="ADICIONAR"
                                           price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
                                           type="submit"
-                                          disabled={(hasModifiersErrors.length > 0 && isProductFound)}
+                                          disabled={
+                                            hasModifiersErrors.length > 0 && isProductFound
+                                          }
                                           isLoading={propsForm.isSubmitting}
                                         />
                                       </div>
@@ -768,16 +770,16 @@ const SingleProduct = (props) => {
                   />
                 </>
               ) : (
-                  <div>O produto que você procura não foi encontrado!</div>
-                )}
+                <div>O produto que você procura não foi encontrado!</div>
+              )}
             </>
           ) : (
-              <>
-                <LoadingConteiner>
-                  <span><Spinner /></span>
-                </LoadingConteiner>
-              </>
-            )}
+            <>
+              <LoadingConteiner>
+                <span><Spinner /></span>
+              </LoadingConteiner>
+            </>
+          )}
 
         </Grid>
       </Row>
