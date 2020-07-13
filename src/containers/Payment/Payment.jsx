@@ -381,7 +381,7 @@ const Payment = () => {
                 <Grid cols="12">
                   <>
                     <SectionTitle>Pagamento</SectionTitle>
-                    {shop.allowPayOnline && (
+                    {shop.allowPayOnline ? (
                       <RadioContainer>
                         <label
                           htmlFor="physicalPayment"
@@ -418,7 +418,7 @@ const Payment = () => {
                           Pague on-line
                         </label>
                       </RadioContainer>
-                    )}
+                    ) : null}
                     <br />
                     <Alert
                       text={
@@ -828,7 +828,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>
