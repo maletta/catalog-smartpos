@@ -73,7 +73,7 @@ const Change = ({ value }) => (
 );
 
 Change.propTypes = {
-  value: PropTypes.number.isRequired,
+  value: PropTypes.string.isRequired,
 };
 
 const calculateMoneyChange = ({ purchaseTotalValue, receivedValue }) => {
@@ -117,6 +117,7 @@ const Payment = () => {
   const [loading, setLoading] = useState(false);
   const [isMoneyPayment, setIsMoneyPayment] = useState(false);
   const [moneyChange, setMoneyChange] = useState(0);
+  const [changeError, setChangeError] = useState('');
 
   const recaptchaRef = useRef();
 
@@ -264,7 +265,7 @@ const Payment = () => {
   const totalWithDelivery = shoppingCart.withdraw ? totalCar : costDelivery.cost + totalCar;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
-    if (typeof moneyChange === 'string') {
+    if (changeError) {
       return;
     }
 
@@ -374,7 +375,7 @@ const Payment = () => {
         <Formik
           onSubmit={submitCheckout}
           initialValues={initialValues}
-          validationSchema={paymentSchema}
+          validationSchema={offlinePayment ? {} : paymentSchema}
           render={propsForm => (
             <Form>
               <Row>
@@ -493,6 +494,11 @@ const Payment = () => {
                                       purchaseTotalValue: totalValue,
                                       receivedValue: value.floatValue,
                                     });
+
+                                    if (typeof changeValue === 'string') {
+                                      setChangeError(changeValue);
+                                      return;
+                                    }
 
                                     setMoneyChange(changeValue);
                                   }}
@@ -828,7 +834,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>

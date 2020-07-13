@@ -68,9 +68,9 @@ const Steps = ({ activeIndex }) => {
     setStateStep(activeSteps);
   }, []);
 
-  const steps = stateSteps.map(({ icon, text, isActive }) => (
-    <Step key={text} icon={icon} text={text} isActive={isActive} />
-  ));
+  const steps = stateSteps.map(({
+    icon, text, isActive, path,
+  }) => <Step key={text} icon={icon} text={text} isActive={isActive} path={path} />);
 
   return (
     <StepsContainer>
