@@ -302,12 +302,17 @@ const Footer = ({ storeInfo }) => {
                 </>
               )}
             </Grid>
-            <Grid
-              cols="12 11 4 4 4"
-              className="d-flex flex-column text-center align-items-center align-items-md-end">
+            {storeInfo.allowPayOnline === 1
+              && (
+              <Grid
+                cols="12 11 4 4 4"
+                className="d-flex flex-column text-center align-items-center align-items-md-end"
+              >
                 <CardCreditImg src={CardCredit} alt="bandeiras" />
                 <CaptionFlag>Bandeiras aceitas apenas para pagamento online</CaptionFlag>
-            </Grid>
+              </Grid>
+              )
+            }
           </Row>
         </div>
       </FullWidthFooterInfo>
@@ -351,14 +356,14 @@ const Footer = ({ storeInfo }) => {
             <Grid cols="12">
               <FooterCopyright>
                 <span>
-                  {'Todos os direitos reservados - Built with love by'}
+                  Todos os direitos reservados - Built with love by
                   <LinkNetPOS
                     href="https://www.smartpos.net.br"
                     rel="noopener noreferrer"
                     target="_blank"
                     title="SmartPOS"
                   >
-                    {'SmartPOS'}
+                    SmartPOS
                   </LinkNetPOS>
                 </span>
                 <FontAwesomeIcon icon={['far', 'heart']} color="red" size="sm" />
@@ -399,5 +404,3 @@ Footer.propTypes = {
 Footer.defaultProps = {};
 
 export default Footer;
-
-
