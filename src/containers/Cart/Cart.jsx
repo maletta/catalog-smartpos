@@ -7,6 +7,8 @@ import Steps from 'components/Steps';
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
+import storage from './storage';
+
 import EmptyCart from './components/EmptyCart';
 import CartFooter from './components/CartFooter';
 import PurchasePrices from './components/PurchasePrices';
@@ -24,7 +26,7 @@ const Cart = () => {
 
   const deleteItem = (uuid) => {
     const newCart = stateCart.filter(item => item.uuid !== uuid);
-    localStorage.setItem('cart', JSON.stringify(newCart));
+    storage.updateLocalCart(newCart);
     setStateCart(newCart);
   };
 
@@ -33,7 +35,7 @@ const Cart = () => {
     updateAmountCart[itemIndex].quantity = quantity;
     const basketCount = updateAmountCart.reduce((count, val) => count + val.quantity, 0);
 
-    localStorage.setItem('cart', JSON.stringify(updateAmountCart));
+    storage.updateLocalCart(updateAmountCart);
     setStateCart(updateAmountCart);
     updateShoppingCart({ cart: updateAmountCart, basketCount });
   };
@@ -56,8 +58,7 @@ const Cart = () => {
     });
     updateShoppingCart({ basketCount });
 
-    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    setStateCart(cart);
+    setStateCart(storage.getLocalCart());
     setTotalCart(total);
     setBasketCountCart(basketCount);
   }, [stateCart.length]);
