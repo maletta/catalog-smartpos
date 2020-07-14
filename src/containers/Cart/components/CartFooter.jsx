@@ -10,6 +10,7 @@ import Button from 'components/Form/Button';
 import Input from 'components/Form/Input';
 import Grid from 'components/Grid';
 import history from 'utils/history';
+import formatCurrency from 'utils/formatCurrency';
 import ShopContext from 'contexts/ShopContext';
 import ClosedStore from 'assets/closed-store.svg';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
@@ -27,22 +28,7 @@ const DeliveryContainer = styled.div`
   }
 `;
 
-const CouponContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-
-  @media (max-width: 425px) {
-    width: 100%;
-  }
-`;
-
 const CEPContainer = styled.div`
-  @media (max-width: 425px) {
-    width: 100%;
-  }
-`;
-
-const CouponInputContainer = styled.div`
   @media (max-width: 425px) {
     width: 100%;
   }
@@ -86,7 +72,7 @@ const verifyRedirect = (shop) => {
 };
 
 const CartFooter = ({
-  intl, updateFilter, deliveryCost, setDeliveryCost,
+  updateFilter, deliveryCost, setDeliveryCost,
 }) => {
   const { shop } = useContext(ShopContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
@@ -95,20 +81,51 @@ const CartFooter = ({
   const [loadingDeliveryCost, setLoadingDeliveryCost] = useState(false);
   const [flagDelivery, setFlagDelivery] = useState(false);
 
-  const formatCurrency = price => intl.formatNumber(price, {
-    style: 'currency',
-    currency: 'BRL',
-  });
-
   const deliveryFeeText = deliveryCost.isDeliverable
     ? `O frete custa ${formatCurrency(deliveryCost.cost)}`
     : 'Não entrega na sua região';
 
-  const deliveryText = (
-    flagDelivery ? deliveryFeeText : ''
-  );
-
+  const deliveryText = flagDelivery ? deliveryFeeText : '';
   const isNotDeliverable = delivery === 'retrieve' ? false : !deliveryCost.isDeliverable;
+
+  const calculateDeliveryCost = async () => {
+    setLoadingDeliveryCost(true);
+
+    const { data } = await checkingDelivery(cep, shop.id);
+
+    updateShoppingCart({ deliveryFee: data });
+    setDeliveryCost(data);
+    setFlagDelivery(true);
+    setLoadingDeliveryCost(false);
+  };
+
+  const handleClickAddMoreItems = () => {
+    updateFilter({
+      categoria: 0,
+      label: 'Todas as categorias',
+      page: 1,
+      search: '',
+      categoryName: '',
+    });
+    redirectToHome();
+  };
+
+  const handleChangeCEP = ({ target }) => {
+    const cepWithoutDash = target.value.replace('-', '');
+    const cepWithoutWhiteSpace = cepWithoutDash.trim();
+    setCEP(cepWithoutWhiteSpace);
+    updateShoppingCart({ cep: cepWithoutWhiteSpace });
+  };
+
+  const handleChangeDeliveryFee = ({ target }) => {
+    setDelivery(target.value);
+    updateShoppingCart({ withdraw: false });
+  };
+
+  const handleChangeRetrieve = ({ target }) => {
+    setDelivery(target.value);
+    updateShoppingCart({ withdraw: true });
+  };
 
   return (
     <>
@@ -123,10 +140,7 @@ const CartFooter = ({
               name="delivery"
               value="retrieve"
               checked={delivery === 'retrieve'}
-              onChange={({ target }) => {
-                setDelivery(target.value);
-                updateShoppingCart({ withdraw: true });
-              }}
+              onChange={handleChangeRetrieve}
             />
             Retirar no local
           </label>
@@ -138,10 +152,7 @@ const CartFooter = ({
               name="delivery"
               value="shipping-fee"
               checked={delivery === 'shipping-fee'}
-              onChange={({ target }) => {
-                setDelivery(target.value);
-                updateShoppingCart({ withdraw: false });
-              }}
+              onChange={handleChangeDeliveryFee}
             />
             Calcular frete
           </label>
@@ -156,12 +167,7 @@ const CartFooter = ({
                   format="#####-###"
                   placeholder="Informe seu CEP"
                   customInput={Input}
-                  onChange={({ target }) => {
-                    const cepWithoutDash = target.value.replace('-', '');
-                    const cepWithoutWhiteSpace = cepWithoutDash.trim();
-                    setCEP(cepWithoutWhiteSpace);
-                    updateShoppingCart({ cep: cepWithoutWhiteSpace });
-                  }}
+                  onChange={handleChangeCEP}
                 />
                 {deliveryText}
               </CEPContainer>
@@ -169,33 +175,11 @@ const CartFooter = ({
                 styleType="tertiary"
                 value="Calcular"
                 isLoading={loadingDeliveryCost}
-                onClick={async () => {
-                  setLoadingDeliveryCost(true);
-
-                  const response = await checkingDelivery(cep, shop.id);
-
-                  setDeliveryCost(response.data);
-                  updateShoppingCart({ deliveryFee: response.data });
-                  setLoadingDeliveryCost(false);
-                  setFlagDelivery(true);
-                }}
+                onClick={calculateDeliveryCost}
               />
             </div>
           )}
         </DeliveryContainer>
-        {/* Precisa esperar a API do cupom ficar pronta */}
-        {process.env.NODE_ENV === 'development' && (
-          <CouponContainer>
-            <div
-              style={{ display: 'flex', alignItems: 'center', width: '100%' }}
-            >
-              <CouponInputContainer>
-                <Input label="Cupom de desconto:" />
-              </CouponInputContainer>
-              <Button styleType="tertiary" value="Aplicar" onClick={() => { }} />
-            </div>
-          </CouponContainer>
-        )}
       </Grid>
       <Grid cols="12" className="d-flex justify-content-end mb-4 pt-5">
         <Button
@@ -203,16 +187,7 @@ const CartFooter = ({
           value="Adicionar mais itens"
           type="submit"
           styleType="secondary"
-          onClick={() => {
-            updateFilter({
-              categoria: 0,
-              label: 'Todas as categorias',
-              page: 1,
-              search: '',
-              categoryName: '',
-            });
-            redirectToHome();
-          }}
+          onClick={handleClickAddMoreItems}
         />
         <Button
           value="Próximo"
@@ -225,7 +200,6 @@ const CartFooter = ({
 };
 
 CartFooter.propTypes = {
-  intl: PropTypes.object.isRequired,
   updateFilter: PropTypes.func.isRequired,
   deliveryCost: PropTypes.object.isRequired,
   setDeliveryCost: PropTypes.func.isRequired,
