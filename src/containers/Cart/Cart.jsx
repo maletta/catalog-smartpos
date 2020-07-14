@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
-import styled from 'styled-components';
 import lodash from 'lodash';
 
-import CartItem from 'components/CartItem';
 import Grid from 'components/Grid';
 import Steps from 'components/Steps';
 
@@ -13,11 +11,7 @@ import EmptyCart from './components/EmptyCart';
 import CartFooter from './components/CartFooter';
 import PurchasePrices from './components/PurchasePrices';
 import CartContainer from './components/CartContainer';
-import CardTitle from './components/CartTitle';
-
-const ItemsContainer = styled.div`
-  padding-left: 20px;
-`;
+import ItemsContainer from './components/ItemsContainer';
 
 const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
@@ -69,35 +63,24 @@ const Cart = () => {
   }, [stateCart.length]);
 
   const hasItems = stateCart.length > 0;
-  const dontHaveItems = !hasItems;
 
   return (
     <CartContainer className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
         <Steps activeIndex={0} />
-        <ItemsContainer>
-          <CardTitle>Resumo do pedido</CardTitle>
-          <ul>
-            {stateCart.map((product, prodIndex) => (
-              <CartItem
-                key={product.uuid}
-                product={product}
-                prodIndex={prodIndex}
-                deleteItem={deleteItem}
-                updateAmount={updateAmount}
-              />
-            ))}
-          </ul>
-        </ItemsContainer>
-        {dontHaveItems && <EmptyCart />}
-        {hasItems && (
+        <ItemsContainer
+          cartItems={stateCart}
+          deleteItem={deleteItem}
+          updateAmount={updateAmount}
+        />
+        {hasItems ? (
           <CartFooter
             totalCart={totalCart}
             updateFilter={updateFilter}
             deliveryCost={deliveryCost}
             setDeliveryCost={setDeliveryCost}
           />
-        )}
+        ) : <EmptyCart />}
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
