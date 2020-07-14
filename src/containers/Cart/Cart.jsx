@@ -3,6 +3,7 @@ import lodash from 'lodash';
 
 import Grid from 'components/Grid';
 import Steps from 'components/Steps';
+import utilsCart from 'utils/cart';
 
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
@@ -24,12 +25,6 @@ const Cart = () => {
   const [basketCountCart, setBasketCountCart] = useState(0);
   const [deliveryCost, setDeliveryCost] = useState({});
 
-  const sumCartQuantity = cartItems => cartItems.reduce((total, item) => total + item.quantity, 0);
-  const sumCartTotalPrice = cartItems => cartItems.reduce(
-    (total, item) => total + item.quantity * (item.pricing.modifiers + item.pricing.product),
-    0,
-  );
-
   const removeItemFromCart = (uuid) => {
     const newCart = stateCart.filter(item => item.uuid !== uuid);
     storage.updateLocalCart(newCart);
@@ -39,7 +34,7 @@ const Cart = () => {
   const updateAmount = (quantity, itemIndex) => {
     const stateCartClone = lodash.cloneDeep(stateCart);
     stateCartClone[itemIndex].quantity = quantity;
-    const basketCount = sumCartQuantity(stateCartClone);
+    const basketCount = utilsCart.sumCartQuantity(stateCartClone);
 
     storage.updateLocalCart(stateCartClone);
     setStateCart(stateCartClone);
@@ -56,8 +51,8 @@ const Cart = () => {
   }, []);
 
   useEffect(() => {
-    const total = sumCartTotalPrice(stateCart);
-    const basketCount = sumCartQuantity(stateCart);
+    const total = utilsCart.sumCartTotalPrice(stateCart);
+    const basketCount = utilsCart.sumCartQuantity(stateCart);
 
     updateShoppingCart({ basketCount });
 

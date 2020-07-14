@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 
 import history from 'utils/history';
+import utilsCart from 'utils/cart';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
@@ -182,11 +183,7 @@ const RegisterData = () => {
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
-          totalCart={
-            shoppingCart.cart.reduce(
-              (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-              0,
-            )}
+          totalCart={utilsCart.sumCartTotalPrice(shoppingCart.cart)}
           deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={0}
         />
