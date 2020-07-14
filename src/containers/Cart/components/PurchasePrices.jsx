@@ -55,9 +55,7 @@ const PurchasePrices = ({
       <PurchaseReviewContainer>
         <ProductRow>
           <span>
-            Produtos (
-            {basketCountCart}
-            ):
+            {`Produtos (${basketCountCart})`}
           </span>
           <span>{formatCurrency(totalCart)}</span>
         </ProductRow>
