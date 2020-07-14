@@ -24,6 +24,7 @@ import CardShop from 'components/CardShop';
 import paths from 'paths';
 
 import history from 'utils/history';
+import storage from 'utils/storage';
 
 import getStoreName from 'utils/getStoreName';
 import formatFormErrors from 'utils/formatFormErrors';
@@ -179,7 +180,7 @@ const App = () => {
     const hourDiff = Math.abs(date1 - date2) / 36e5;
     if (hourDiff > 1) {
       localStorage.removeItem('cartInit');
-      localStorage.removeItem('cart');
+      storage.removeLocalCart();
       updateShoppingCart({
         basketCount: 0,
       });

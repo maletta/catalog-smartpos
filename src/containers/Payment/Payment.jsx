@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
-import { injectIntl } from 'react-intl';
 import axios from 'axios';
 import NumberFormat from 'react-number-format';
 import Swal from 'sweetalert2';
@@ -12,6 +11,7 @@ import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
 import utilsCart from 'utils/cart';
+import storage from 'utils/storage';
 import formatCurrency from 'utils/formatCurrency';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
@@ -65,11 +65,9 @@ const Payment = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
 
-  const cart = localStorage.getItem('cart')
-    ? JSON.parse(localStorage.getItem('cart'))
-    : [];
+  const [stateCart] = useState(storage.getLocalCart());
+  const totalCar = utilsCart.sumCartTotalPrice(stateCart);
 
-  const [totalCar, setTotalCar] = useState(0);
   const [costDelivery] = useState({
     cost: 0,
     isDeliverable: false,
@@ -88,7 +86,7 @@ const Payment = () => {
     cvvSize: 0,
   });
   const [installments, setInstallments] = useState([]);
-  const [stateCart] = useState(cart);
+
   const [showAddress, setShowAddress] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isMoneyPayment, setIsMoneyPayment] = useState(false);
@@ -97,17 +95,17 @@ const Payment = () => {
 
   const recaptchaRef = useRef();
 
-  const getInstallments = (cost) => {
-    if (creditCardBrand.name && creditCardBrand.name !== 'none') {
-      const withDelivery = cost
-        ? cost + totalCar
-        : costDelivery.cost + totalCar;
+  // console.log({ PagSeguroDirectPayment });
+
+  const getInstallments = (brand) => {
+    if (brand !== 'none') {
+      const amount = totalCar + costDelivery.cost;
 
       PagSeguroDirectPayment.getInstallments({
-        amount: shoppingCart.withdraw ? totalCar : withDelivery,
-        brand: creditCardBrand.name,
+        amount,
+        brand,
         success(response) {
-          const installment = response.installments[creditCardBrand.name];
+          const installment = response.installments[brand];
           if (installment) {
             setInstallments(installment);
           }
@@ -117,15 +115,14 @@ const Payment = () => {
   };
 
   const handleLoadPaymentsPag = () => {
+    const amount = totalCar + costDelivery.cost;
+
     PagSeguroDirectPayment.getPaymentMethods({
-      amount: shoppingCart.withdraw ? totalCar : costDelivery.cost + totalCar,
-      success(response) {
-        const creditCard = Object.keys(
-          response.paymentMethods.CREDIT_CARD.options,
-        );
-        const creditCardBrandList = creditCard.map(
-          item => response.paymentMethods.CREDIT_CARD.options[item],
-        );
+      amount,
+      success({ paymentMethods }) {
+        const { CREDIT_CARD } = paymentMethods;
+        const creditCardBrandList = Object.values(CREDIT_CARD.options);
+
         setCreditCardBrands(creditCardBrandList);
       },
     });
@@ -133,35 +130,19 @@ const Payment = () => {
 
   const cleanCart = () => {
     localStorage.removeItem('cartInit');
-    localStorage.removeItem('cart');
+    storage.removeLocalCart();
     updateShoppingCart({ basketCount: 0 });
   };
 
   useEffect(() => {
-    getInstallments();
+    getInstallments(creditCardBrand.name);
   }, [costDelivery.cost, creditCardBrand.name]);
 
   useEffect(() => {
-    const total = stateCart.reduce(
-      (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-      0,
-    );
-    setTotalCar(total);
-
     updateFilter({
       label: 'Finalizar o pedido',
       categoryName: '',
     });
-
-    if (cart.length === 0) {
-      updateFilter({
-        categoria: 0,
-        label: 'Todas as categorias',
-        page: 1,
-        search: '',
-        categoryName: '',
-      });
-    }
 
     getPayments(shop.id).then((response) => {
       setPaymentType(response.data);
@@ -173,77 +154,82 @@ const Payment = () => {
     });
   }, []);
 
+  const handleSenderHashReady = ({ status, senderHash }) => {
+    if (status === 'error') return false;
+    return setState({ ...state, senderHash });
+  };
+
   const getHashReady = () => {
-    PagSeguroDirectPayment.onSenderHashReady((resPag) => {
-      if (resPag.status === 'error') {
-        return false;
-      }
-      return setState({
-        ...state,
-        senderHash: resPag.senderHash,
-      });
+    PagSeguroDirectPayment.onSenderHashReady(handleSenderHashReady);
+  };
+
+  const differenceBetweenValuesErrorModal = () => {
+    Swal.fire({
+      type: 'warning',
+      title: 'Divergência nos valores',
+      text:
+        'Pedido com valores divergentes, faça o seu pedido novamente!',
+      onClose: () => {
+        history.push(paths.home);
+      },
     });
   };
 
-  const sendCheckout = (values, setSubmitting) => {
-    createOrder(values)
-      .then((response) => {
-        cleanCart();
-        updateOrderPlaced({
-          ...values,
-          costDelivery,
-          withdraw: shoppingCart.withdraw,
-          orderName: response.data.orderName,
-        });
-        history.push(paths.conclusion);
-      })
-      .catch((error) => {
-        if (error.response && error.response.status === 406) {
-          Swal.fire({
-            type: 'warning',
-            title: 'Divergência nos valores',
-            text:
-              'Pedido com valores divergentes, faça o seu pedido novamente!',
-            onClose: () => {
-              cleanCart();
-              history.push(paths.home);
-            },
-          });
-          return;
-        }
+  const genericErrorModal = () => {
+    Swal.fire({
+      type: 'error',
+      title: 'Oops...',
+      text: 'Erro ao enviar o pedido',
+    });
+  };
 
-        recaptchaRef.current.reset();
-        Swal.fire({
-          type: 'error',
-          title: 'Oops...',
-          text: 'Erro ao enviar o pedido',
-        });
-      })
-      .finally(() => {
-        setLoading(false);
-        setSubmitting(false);
+  const sendCheckoutCatch = (response) => {
+    const errorFn = response && response.status === 406
+      ? differenceBetweenValuesErrorModal
+      : genericErrorModal;
+
+    errorFn();
+  };
+
+  const sendCheckout = async (values, setSubmitting) => {
+    try {
+      const { data } = await createOrder(values);
+      updateOrderPlaced({
+        ...values,
+        costDelivery,
+        withdraw: shoppingCart.withdraw,
+        orderName: data.orderName,
       });
-  };
 
-  const verifyMaxAndMinValue = (gatwayPagseguro) => {
-    if (!gatwayPagseguro) return true;
-
-    if (
-      totalCar > shop.minValuePayOnline
-      && (shop.maxValuePayOnline === 0 || totalCar <= shop.maxValuePayOnline)
-    ) {
-      return true;
+      history.push(paths.conclusion);
+    } catch ({ response }) {
+      sendCheckoutCatch(response);
+    } finally {
+      recaptchaRef.current.reset();
+      cleanCart();
+      setLoading(false);
+      setSubmitting(false);
     }
-
-    return false;
   };
 
-  const totalWithDelivery = shoppingCart.withdraw ? totalCar : costDelivery.cost + totalCar;
+  const verifyMaxAndMinValue = (isGatewayPagseguro) => {
+    if (!isGatewayPagseguro) return true;
+
+    const hasMaxValue = shop.maxValuePayOnline > 0;
+    const isLessThanMax = totalCar <= shop.maxValuePayOnline;
+    const isGreaterThanMin = totalCar >= shop.minValuePayOnline;
+    const isWithinMinMax = isGreaterThanMin && isLessThanMax;
+
+    if (hasMaxValue) {
+      return isWithinMinMax;
+    }
+    return isGreaterThanMin;
+  };
+
+  const totalWithDelivery = costDelivery.cost + totalCar;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
-    if (changeError) {
-      return;
-    }
+    if (changeError) return;
 
     setLoading(true);
 
@@ -261,7 +247,7 @@ const Payment = () => {
     const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
     updateShoppingCart({ paymentType });
 
-    if (formValues.gatwayPagseguro && state.senderHash) {
+    if (formValues.gatewayPagseguro && state.senderHash) {
       const [expirationMonth, expirationYear] = formValues.expiration.split('/');
 
       PagSeguroDirectPayment.createCardToken({
@@ -319,7 +305,7 @@ const Payment = () => {
     pickup: false,
     catalog_id: shop.id,
     loja: shop.codigo,
-    gatwayPagseguro: shop.allowPayOnline === 1,
+    gatewayPagseguro: shop.allowPayOnline === 1,
     offlinePayment: shop.allowPayOnline === 0,
     nameHolder: '',
     cardNumber: '',
@@ -340,6 +326,36 @@ const Payment = () => {
     cobrancaCidade: '',
     cobrancaEndereco: '',
     cobrancaTipoLogradouro: '',
+  };
+
+  const MinimumPriceAlert = () => (
+    <Alert
+      typeAlert="warning"
+      text={`Valor mínimo para pagamento on-line ${
+        formatCurrency(shop.minValuePayOnline)}
+      `}
+    />
+  );
+
+  const MaximumPriceAlert = () => (
+    <Alert
+      typeAlert="warning"
+      text={`Valor máximo para pagamento on-line ${
+        formatCurrency(shop.maxValuePayOnline)}
+      `}
+    />
+  );
+
+  const handleChangePhysicalPayment = (propsForm) => {
+    propsForm.setFieldValue('offlinePayment', true);
+    propsForm.setFieldValue('gatewayPagseguro', false);
+    setOfflinePayment(true);
+  };
+
+  const handleChangeOnlinePayment = (propsForm) => {
+    propsForm.setFieldValue('offlinePayment', false);
+    propsForm.setFieldValue('gatewayPagseguro', true);
+    setOfflinePayment(false);
   };
 
   return (
@@ -368,11 +384,7 @@ const Payment = () => {
                             id="physicalPayment"
                             value="offlinePayment"
                             checked={offlinePayment}
-                            onChange={() => {
-                              propsForm.setFieldValue('offlinePayment', true);
-                              propsForm.setFieldValue('gatwayPagseguro', false);
-                              setOfflinePayment(true);
-                            }}
+                            onChange={handleChangePhysicalPayment}
                           />
                           Pague na entrega ou retirada
                         </label>
@@ -382,13 +394,9 @@ const Payment = () => {
                             type="radio"
                             style={{ marginRight: '5px' }}
                             id="onlinePayment"
-                            value="gatwayPagseguro"
+                            value="gatewayPagseguro"
                             checked={!offlinePayment}
-                            onChange={() => {
-                              propsForm.setFieldValue('offlinePayment', false);
-                              propsForm.setFieldValue('gatwayPagseguro', true);
-                              setOfflinePayment(false);
-                            }}
+                            onChange={handleChangeOnlinePayment}
                           />
                           Pague on-line
                         </label>
@@ -397,31 +405,19 @@ const Payment = () => {
                     <br />
                     <Alert
                       text={
-                        propsForm.values.gatwayPagseguro
+                        propsForm.values.gatewayPagseguro
                           && shop.allowPayOnline
                           ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
                           : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
                       }
                     />
-                    {propsForm.values.gatwayPagseguro && totalCar < shop.minValuePayOnline && (
-                      <Alert
-                        text={`Valor mínimo para pagamento on-line ${
-                          formatCurrency(shop.minValuePayOnline)}
-                        `}
-                        typeAlert="warning"
-                      />
+                    {propsForm.values.gatewayPagseguro && totalCar < shop.minValuePayOnline && (
+                      <MinimumPriceAlert />
                     )}
                     {
-                      propsForm.values.gatwayPagseguro
+                      propsForm.values.gatewayPagseguro
                       && totalCar > shop.maxValuePayOnline
-                      && shop.maxValuePayOnline !== 0 && (
-                        <Alert
-                          text={`Valor máximo para pagamento on-line ${
-                            formatCurrency(shop.maxValuePayOnline)}
-                          `}
-                          typeAlert="warning"
-                        />
-                      )}
+                      && shop.maxValuePayOnline !== 0 && <MaximumPriceAlert />}
                     {propsForm.values.offlinePayment && (
                       <Row>
                         <Grid cols="6">
@@ -504,10 +500,10 @@ const Payment = () => {
                         </Grid>
                       </Row>
                     )}
-                    {propsForm.values.gatwayPagseguro
+                    {propsForm.values.gatewayPagseguro
                       && shop.allowPayOnline
                       && verifyMaxAndMinValue(
-                        propsForm.values.gatwayPagseguro,
+                        propsForm.values.gatewayPagseguro,
                       ) && (
                         <>
                           <Row>
@@ -547,9 +543,7 @@ const Payment = () => {
                                   );
                                 }}
                                 isRequired
-                                onBlur={() => {
-                                  getHashReady();
-                                }}
+                                onBlur={getHashReady}
                                 type="tel"
                               />
                             </Grid>
@@ -592,16 +586,16 @@ const Payment = () => {
                                     const cardBin = event.value.substring(0, 7);
                                     PagSeguroDirectPayment.getBrand({
                                       cardBin,
-                                      success(reponse) {
-                                        setCreditCardBrand(reponse.brand);
+                                      success(response) {
+                                        setCreditCardBrand(response.brand);
                                         setTimeout(() => {
                                           PagSeguroDirectPayment.getInstallments({
                                             amount: totalWithDelivery,
-                                            brand: reponse.brand.name,
+                                            brand: response.brand.name,
                                             success(installmentsResponse) {
-                                              if (reponse.brand.name) {
+                                              if (response.brand.name) {
                                                 const installment = installmentsResponse
-                                                  .installments[reponse.brand.name];
+                                                  .installments[response.brand.name];
                                                 propsForm.setFieldValue(
                                                   'installments',
                                                   installment[0],
@@ -838,4 +832,4 @@ const Payment = () => {
   );
 };
 
-export default injectIntl(Payment);
+export default Payment;

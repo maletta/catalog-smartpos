@@ -4,11 +4,10 @@ import lodash from 'lodash';
 import Grid from 'components/Grid';
 import Steps from 'components/Steps';
 import utilsCart from 'utils/cart';
+import storage from 'utils/storage';
 
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
-
-import storage from './storage';
 
 import EmptyCart from './components/EmptyCart';
 import CartFooter from './components/CartFooter';

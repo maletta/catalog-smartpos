@@ -133,7 +133,6 @@ const Checkout = ({ intl }) => {
 
   const cleanCart = () => {
     localStorage.removeItem('cartInit');
-    localStorage.removeItem('cart');
     updateShoppingCart({
       basketCount: 0,
     });
