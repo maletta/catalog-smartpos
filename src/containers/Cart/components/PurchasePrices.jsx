@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { injectIntl, intlShape } from 'react-intl';
 import PropTypes from 'prop-types';
+
+import formatCurrency from 'utils/formatCurrency';
 
 const PurchasePriceTitle = styled.h2`
   color: #707070;
@@ -16,6 +17,7 @@ const PurchasePriceContainer = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+
 const PurchaseReviewContainer = styled.div`
   width: 100%;
   padding: 10px 20px;
@@ -33,10 +35,6 @@ const ProductRow = styled(PurchaseReviewRow)`
   color: #707070;
 `;
 
-const CouponRow = styled(PurchaseReviewRow)`
-  color: #5bc057;
-`;
-
 const TotalRow = styled(PurchaseReviewRow)`
   color: #707070;
   font-weight: bold;
@@ -47,11 +45,9 @@ const PurchasePrices = ({
   totalCart,
   deliveryCost,
   couponValue,
-  intl,
 }) => {
   const total = totalCart + couponValue + (deliveryCost.cost || 0);
   const positiveTotal = total > 0 ? total : 0;
-  const formatValue = value => intl.formatNumber(value, { style: 'currency', currency: 'BRL' });
 
   return (
     <PurchasePriceContainer>
@@ -63,24 +59,17 @@ const PurchasePrices = ({
             {basketCountCart}
             ):
           </span>
-          <span>{formatValue(totalCart)}</span>
+          <span>{formatCurrency(totalCart)}</span>
         </ProductRow>
         {deliveryCost.isDeliverable && (
           <ProductRow>
             <span>Frete:</span>
-            <span>{formatValue(deliveryCost.cost)}</span>
+            <span>{formatCurrency(deliveryCost.cost)}</span>
           </ProductRow>
-        )}
-        {/* Precisa esperar a API do cupom ficar pronta */}
-        {process.env.NODE_ENV === 'development' && (
-          <CouponRow>
-            <span>Cupom:</span>
-            <span>{formatValue(couponValue)}</span>
-          </CouponRow>
         )}
         <TotalRow>
           <span>Total:</span>
-          <span>{formatValue(positiveTotal)}</span>
+          <span>{formatCurrency(positiveTotal)}</span>
         </TotalRow>
       </PurchaseReviewContainer>
     </PurchasePriceContainer>
@@ -92,7 +81,6 @@ PurchasePrices.propTypes = {
   totalCart: PropTypes.number.isRequired,
   deliveryCost: PropTypes.any.isRequired,
   couponValue: PropTypes.number.isRequired,
-  intl: intlShape.isRequired,
 };
 
-export default injectIntl(PurchasePrices);
+export default PurchasePrices;
