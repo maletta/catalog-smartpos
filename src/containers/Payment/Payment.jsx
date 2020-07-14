@@ -28,6 +28,7 @@ import Alert from 'components/Alert';
 import InputCrediCard from 'components/Form/InputCreditCard';
 import MaskInput from 'components/Form/MaskInput';
 import InputCvv from 'components/Form/InputCvv';
+// import RadioGroup from 'components/RadioGroup';
 import IconeShield from 'assets/lock.png';
 import FilterContext from 'contexts/FilterContext';
 
@@ -823,7 +824,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>
