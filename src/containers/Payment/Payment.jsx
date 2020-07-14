@@ -9,6 +9,7 @@ import NumberFormat from 'react-number-format';
 import ReCAPTCHA from 'react-google-recaptcha';
 import Swal from 'sweetalert2';
 
+import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
 import utilsCart from 'utils/cart';
@@ -29,7 +30,6 @@ import Alert from 'components/Alert';
 import InputCrediCard from 'components/Form/InputCreditCard';
 import MaskInput from 'components/Form/MaskInput';
 import InputCvv from 'components/Form/InputCvv';
-// import RadioGroup from 'components/RadioGroup';
 import IconeShield from 'assets/lock.png';
 import FilterContext from 'contexts/FilterContext';
 
@@ -206,7 +206,7 @@ const Payment = () => {
           withdraw: shoppingCart.withdraw,
           orderName: response.data.orderName,
         });
-        history.push('/conclusao');
+        history.push(paths.conclusion);
       })
       .catch((error) => {
         if (error.response && error.response.status === 406) {
@@ -217,7 +217,7 @@ const Payment = () => {
               'Pedido com valores divergentes, faça o seu pedido novamente!',
             onClose: () => {
               cleanCart();
-              history.push('/');
+              history.push(paths.home);
             },
           });
           return;

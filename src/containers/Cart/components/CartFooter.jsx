@@ -5,6 +5,7 @@ import NumberFormat from 'react-number-format';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
+import paths from 'paths';
 import Button from 'components/Form/Button';
 import Input from 'components/Form/Input';
 import Grid from 'components/Grid';
@@ -33,8 +34,8 @@ const CEPContainer = styled.div`
   }
 `;
 
-const redirectToRegisterData = () => history.push('/dados-cadastrais');
-const redirectToHome = () => history.push('/');
+const redirectToRegisterData = () => history.push(paths.registerData);
+const redirectToHome = () => history.push(paths.home);
 
 const showStoreIsClosedModal = (shop) => {
   const shopHoursOpen = shop.today.hours.map(

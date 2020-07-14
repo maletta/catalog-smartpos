@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
-import axios from 'axios';
 
+import paths from 'paths';
 import history from 'utils/history';
 import utilsCart from 'utils/cart';
 import Grid from 'components/Grid';
@@ -17,6 +17,12 @@ import PurchasePrices from 'containers/Cart/components/PurchasePrices';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 import addressSchema from './addressSchema';
+import utilsCEP from './cep';
+
+const Container = styled.div`
+  background: #fff;
+  padding-right: 0;
+`;
 
 const addressType = [
   {
@@ -29,44 +35,53 @@ const addressType = [
   },
 ];
 
-const getCep = cep => axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-
-const Container = styled.div`
-  background: #fff;
-  padding-right: 0;
-`;
+const initialValue = {
+  cep: '',
+  endereco: '',
+  tipoLogradouro: '',
+  tipoEndereco: addressType[0],
+  complemento: '',
+  numero: '',
+  bairro: '',
+  cidade: '',
+  codcidade: '',
+  estado: '',
+};
 
 const RegisterData = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  const [address, setAddress] = useState({
-    cep: '',
-    endereco: '',
-    tipoLogradouro: '',
-    tipoEndereco: addressType[0],
-    complemento: '',
-    numero: '',
-    bairro: '',
-    cidade: '',
-    codcidade: '',
-    estado: '',
-  });
+  const [address, setAddress] = useState(initialValue);
 
   useEffect(() => {
-    if (shoppingCart.cep.length > 0) {
-      getCep(shoppingCart.cep).then((({ data }) => {
-        const addressData = {
-          cep: shoppingCart.cep,
-          endereco: data.logradouro,
-          tipoLogradouro: data.logradouro.split(' ')[0],
-          bairro: data.bairro,
-          cidade: data.localidade,
-          codcidade: data.ibge,
-          estado: data.uf,
-        };
-        setAddress(addressData);
-      }));
+    if (shoppingCart.cep) {
+      setAddress(utilsCEP.getAddressByCEP(shoppingCart.cep));
     }
   }, []);
+
+  const handleSubmit = (values) => {
+    updateShoppingCart({ address: values });
+    history.push(paths.payment);
+  };
+
+  const handleChangeCEP = propsForm => async ({ cep, formattedCEP }) => {
+    if (cep.length < 8) return;
+
+    propsForm.setFieldValue('cep', formattedCEP);
+
+    const { data } = await utilsCEP.requestCEP(cep);
+
+    propsForm.setFieldValue('bairro', data.bairro);
+    propsForm.setFieldValue('estado', data.uf);
+    propsForm.setFieldValue('codcidade', data.ibge);
+    propsForm.setFieldValue('cidade', data.localidade);
+
+    if (data.logradouro) {
+      const [tipoLogradouro] = data.logradouro.split(' ');
+
+      propsForm.setFieldValue('endereco', data.logradouro);
+      propsForm.setFieldValue('tipoLogradouro', tipoLogradouro);
+    }
+  };
 
   return (
     <Container className="row">
@@ -74,10 +89,7 @@ const RegisterData = () => {
         <Steps activeIndex={2} />
         <Formik
           enableReinitialize
-          onSubmit={(values) => {
-            updateShoppingCart({ address: values });
-            history.push('/pagamento');
-          }}
+          onSubmit={handleSubmit}
           initialValues={address}
           validationSchema={addressSchema()}
           render={propsForm => (
@@ -86,7 +98,7 @@ const RegisterData = () => {
                 <Grid cols="12">
                   <SectionTitle>Endereço da entrega</SectionTitle>
                 </Grid>
-                <Grid cols="12 6 6 4 4">
+                <Grid cols="12 4 4 4 4">
                   <Field
                     label="CEP"
                     name="cep"
@@ -94,38 +106,11 @@ const RegisterData = () => {
                     type="tel"
                     format="#####-###"
                     component={MaskedNumberInput}
-                    onValueChange={(values) => {
-                      if (values.value.length < 8) return;
-
-                      propsForm.setFieldValue('cep', values.formattedValue);
-                      getCep(values.value).then((responseAddress) => {
-                        if (responseAddress.data.logradouro) {
-                          const tipoLogradouro = responseAddress.data.logradouro.substring(
-                            0,
-                            responseAddress.data.logradouro.indexOf(' ') + 1,
-                          );
-                          const endereco = responseAddress.data.logradouro.substring(
-                            responseAddress.data.logradouro.indexOf(' ') + 1,
-                          );
-                          propsForm.setFieldValue('endereco', endereco.trim());
-                          propsForm.setFieldValue(
-                            'tipoLogradouro',
-                            tipoLogradouro.trim(),
-                          );
-                        }
-                        propsForm.setFieldValue('bairro', responseAddress.data.bairro);
-                        propsForm.setFieldValue('estado', responseAddress.data.uf);
-                        propsForm.setFieldValue('codcidade', responseAddress.data.ibge);
-                        propsForm.setFieldValue(
-                          'cidade',
-                          responseAddress.data.localidade,
-                        );
-                      });
-                    }}
+                    onValueChange={handleChangeCEP(propsForm)}
                     isRequired
                   />
                 </Grid>
-                <Grid cols="12 6 6 8 8">
+                <Grid cols="12 8 8 8 8">
                   <Field
                     label="Endereço"
                     name="endereco"
@@ -134,7 +119,7 @@ const RegisterData = () => {
                     isRequired
                   />
                 </Grid>
-                <Grid cols="12 6 6 6 4">
+                <Grid cols="12 4 4 4 4">
                   <Field
                     label="Número"
                     name="numero"
@@ -144,7 +129,7 @@ const RegisterData = () => {
                     type="tel"
                   />
                 </Grid>
-                <Grid cols="12 6 6 6 8">
+                <Grid cols="12 8 8 8 8">
                   <Field
                     label="Complemento"
                     name="complemento"

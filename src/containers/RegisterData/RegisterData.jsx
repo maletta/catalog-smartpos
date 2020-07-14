@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 
+import paths from 'paths';
 import history from 'utils/history';
 import utilsCart from 'utils/cart';
 
@@ -36,7 +37,7 @@ const RegisterData = () => {
     updateShoppingCart({
       personData: { ...values, tipoPessoa: values.personType },
     });
-    history.push('/endereco');
+    history.push(paths.address);
   };
 
   const initialValues = {
