@@ -1,7 +1,6 @@
 import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import { injectIntl } from 'react-intl';
@@ -35,6 +34,7 @@ import FilterContext from 'contexts/FilterContext';
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
+import Change from './components/Change';
 
 const { PagSeguroDirectPayment } = window.window;
 
@@ -64,17 +64,6 @@ const RadioContainer = styled.div`
   display: flex; 
   flex-direction: column;
 `;
-
-const Change = ({ value }) => (
-  <>
-    <small>Troco</small>
-    <p style={{ marginTop: '10px' }}>{value}</p>
-  </>
-);
-
-Change.propTypes = {
-  value: PropTypes.string.isRequired,
-};
 
 const calculateMoneyChange = ({ purchaseTotalValue, receivedValue }) => {
   if (receivedValue > purchaseTotalValue) {
