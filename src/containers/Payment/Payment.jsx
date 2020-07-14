@@ -6,7 +6,6 @@ import { Formik, Form, Field } from 'formik';
 import { injectIntl } from 'react-intl';
 import axios from 'axios';
 import NumberFormat from 'react-number-format';
-import ReCAPTCHA from 'react-google-recaptcha';
 import Swal from 'sweetalert2';
 
 import paths from 'paths';
@@ -27,16 +26,19 @@ import SelectDropDown from 'components/Form/SelectDropDown';
 import PurchasePrices from 'containers/Cart/components/PurchasePrices';
 import ShopContext from 'contexts/ShopContext';
 import Alert from 'components/Alert';
-import InputCrediCard from 'components/Form/InputCreditCard';
+import InputCreditCard from 'components/Form/InputCreditCard';
 import MaskInput from 'components/Form/MaskInput';
 import InputCvv from 'components/Form/InputCvv';
-import IconeShield from 'assets/lock.png';
+
 import FilterContext from 'contexts/FilterContext';
 
+import paymentUtils from './payment-utils';
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
 import Change from './components/Change';
+import Captcha from './components/Captcha';
+import Container from './components/PaymentContainer';
 
 const { PagSeguroDirectPayment } = window.window;
 
@@ -53,23 +55,10 @@ const addressType = [
 
 const getCep = cep => axios.get(`https://viacep.com.br/ws/${cep}/json/`);
 
-const Container = styled.div`
-  background: #fff;
-  padding-right: 0;
-`;
-
 const RadioContainer = styled.div`
   display: flex; 
   flex-direction: column;
 `;
-
-const calculateMoneyChange = ({ purchaseTotalValue, receivedValue }) => {
-  if (receivedValue > purchaseTotalValue) {
-    return receivedValue - purchaseTotalValue;
-  }
-
-  return 'Troco não pode ser menor que o valor de compra!';
-};
 
 const Payment = () => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
@@ -475,7 +464,7 @@ const Payment = () => {
                                         ? shoppingCart.deliveryFee.cost
                                         : 0
                                     );
-                                    const changeValue = calculateMoneyChange({
+                                    const changeValue = paymentUtils.calculateMoneyChange({
                                       purchaseTotalValue: totalValue,
                                       receivedValue: value.floatValue,
                                     });
@@ -588,7 +577,7 @@ const Payment = () => {
                                     : '#### #### #### ####'
                                 }
                                 component={NumberFormat}
-                                customInput={InputCrediCard}
+                                customInput={InputCreditCard}
                                 brand={creditCardBrand.name}
                                 onValueChange={(event) => {
                                   propsForm.setFieldValue(
@@ -708,9 +697,7 @@ const Payment = () => {
                                     format="#####-###"
                                     component={MaskedNumberInput}
                                     onValueChange={(values) => {
-                                      if (values.value.length < 8) {
-                                        return;
-                                      }
+                                      if (values.value.length < 8) return;
 
                                       propsForm.setFieldValue(
                                         'cobrancaCep',
@@ -823,44 +810,14 @@ const Payment = () => {
                   </>
                 </Grid>
               </Row>
-              <Row>
-                <Grid
-                  cols="12 4 6 6 6"
-                  className="mt-0 d-flex flex-column"
-                >
-                  <div className="mb-2">
-                    <img
-                      src={IconeShield}
-                      height={20}
-                      alt="Você está em uma conexão segura"
-                    />
-                    <span style={{ fontSize: '12px' }}>
-                      Você está em uma conexão segura
-                    </span>
-                  </div>
-                  <div>
-                    <p style={{ fontSize: '12px', color: '#A6A6A6' }}>
-                      {'Esse site é protegido por reCAPTCHA'}
-                      {' e os Termos de Serviço e Política do Google se aplicam'}
-                    </p>
-                  </div>
-                </Grid>
-                <Grid
-                  cols="12 8 6 6 6"
-                  className="d-flex justify-content-end mb-3"
-                >
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
-                    hl="pt-BR"
-                    onChange={setReCaptchaToken}
-                  />
-                </Grid>
-              </Row>
+              <Captcha
+                setReCaptchaToken={setReCaptchaToken}
+                recaptchaRef={recaptchaRef}
+              />
               <Row className="d-flex justify-content-end pb-4 pr-3">
                 <Button
-                  isLoading={loading}
                   type="submit"
+                  isLoading={loading}
                   disabled={!reCaptchaToken}
                   value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
                 />
