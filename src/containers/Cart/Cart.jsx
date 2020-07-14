@@ -24,38 +24,40 @@ const Cart = () => {
   const [basketCountCart, setBasketCountCart] = useState(0);
   const [deliveryCost, setDeliveryCost] = useState({});
 
-  const deleteItem = (uuid) => {
+  const sumCartQuantity = cartItems => cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  const removeItemFromCart = (uuid) => {
     const newCart = stateCart.filter(item => item.uuid !== uuid);
     storage.updateLocalCart(newCart);
     setStateCart(newCart);
   };
 
   const updateAmount = (quantity, itemIndex) => {
-    const updateAmountCart = lodash.cloneDeep(stateCart);
-    updateAmountCart[itemIndex].quantity = quantity;
-    const basketCount = updateAmountCart.reduce((count, val) => count + val.quantity, 0);
+    const stateCartClone = lodash.cloneDeep(stateCart);
+    stateCartClone[itemIndex].quantity = quantity;
+    const basketCount = sumCartQuantity(stateCartClone);
 
-    storage.updateLocalCart(updateAmountCart);
-    setStateCart(updateAmountCart);
-    updateShoppingCart({ cart: updateAmountCart, basketCount });
+    storage.updateLocalCart(stateCartClone);
+    setStateCart(stateCartClone);
+    updateShoppingCart({ cart: stateCartClone, basketCount });
   };
 
   useEffect(() => {
-    const total = stateCart.reduce(
-      (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-      0,
-    );
-    const basketCount = stateCart.reduce(
-      (count, val) => count + val.quantity,
-      0,
-    );
-
     updateFilter({
       categoria: 0,
       label: 'Carrinho',
       page: 1,
       search: '',
     });
+  }, []);
+
+  useEffect(() => {
+    const total = stateCart.reduce(
+      (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
+      0,
+    );
+    const basketCount = sumCartQuantity(stateCart);
+
     updateShoppingCart({ basketCount });
 
     setStateCart(storage.getLocalCart());
@@ -71,7 +73,7 @@ const Cart = () => {
         <Steps activeIndex={0} />
         <ItemsContainer
           cartItems={stateCart}
-          deleteItem={deleteItem}
+          deleteItem={removeItemFromCart}
           updateAmount={updateAmount}
         />
         {hasItems ? (
