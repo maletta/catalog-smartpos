@@ -12,15 +12,7 @@ import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import EmptyCart from './components/EmptyCart';
 import CartFooter from './components/CartFooter';
 import PurchasePrices from './components/PurchasePrices';
-
-const Container = styled.div`
-  background: #fff;
-  padding-right: 0;
-`;
-
-const StepsContainer = styled.div`
-  width: 100%;
-`;
+import Container from './components/CartContainer';
 
 const Title = styled.h1`
   color: #212121;
@@ -86,9 +78,7 @@ const Cart = () => {
   return (
     <Container className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
-        <StepsContainer>
-          <Steps activeIndex={0} />
-        </StepsContainer>
+        <Steps activeIndex={0} />
         <ItemsContainer>
           <Title>Resumo do pedido</Title>
           <ul>

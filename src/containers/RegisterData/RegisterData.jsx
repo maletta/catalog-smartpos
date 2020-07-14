@@ -20,10 +20,6 @@ const Container = styled.div`
   padding-right: 0;
 `;
 
-const StepsContainer = styled.div`
-  width: 100%;
-`;
-
 const RegisterData = () => {
   const [personType, setPersonType] = useState('FISICA');
   const isNaturalPerson = personType === 'FISICA';
@@ -32,9 +28,7 @@ const RegisterData = () => {
   return (
     <Container className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
-        <StepsContainer>
-          <Steps activeIndex={1} />
-        </StepsContainer>
+        <Steps activeIndex={1} />
         <Formik
           onSubmit={(values) => {
             updateShoppingCart({
@@ -135,15 +129,15 @@ const RegisterData = () => {
                       type="tel"
                     />
                   ) : (
-                    <Field
-                      label="CNPJ"
-                      name="documento"
-                      inputId="documento"
-                      format="##.###.###/####-##"
-                      component={MaskedNumberInput}
-                      type="tel"
-                    />
-                  )}
+                      <Field
+                        label="CNPJ"
+                        name="documento"
+                        inputId="documento"
+                        format="##.###.###/####-##"
+                        component={MaskedNumberInput}
+                        type="tel"
+                      />
+                    )}
                 </Grid>
                 <Grid cols="12 6 6 6 6">
                   <Field

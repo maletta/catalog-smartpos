@@ -57,10 +57,6 @@ const Container = styled.div`
   padding-right: 0;
 `;
 
-const StepsContainer = styled.div`
-  width: 100%;
-`;
-
 const RadioContainer = styled.div`
   display: flex; 
   flex-direction: column;
@@ -359,9 +355,7 @@ const Payment = () => {
   return (
     <Container className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
-        <StepsContainer>
-          <Steps activeIndex={3} />
-        </StepsContainer>
+        <Steps activeIndex={3} />
         <Formik
           onSubmit={submitCheckout}
           initialValues={initialValues}

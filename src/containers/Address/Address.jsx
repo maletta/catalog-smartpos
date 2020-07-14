@@ -35,10 +35,6 @@ const Container = styled.div`
   padding-right: 0;
 `;
 
-const StepsContainer = styled.div`
-  width: 100%;
-`;
-
 const RegisterData = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const [address, setAddress] = useState({
@@ -74,9 +70,7 @@ const RegisterData = () => {
   return (
     <Container className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
-        <StepsContainer>
-          <Steps activeIndex={2} />
-        </StepsContainer>
+        <Steps activeIndex={2} />
         <Formik
           enableReinitialize
           onSubmit={(values) => {

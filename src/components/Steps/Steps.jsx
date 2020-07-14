@@ -14,6 +14,7 @@ import Step from './components/Step';
 
 const StepsContainer = styled.div`
   padding: 10px;
+  width: 100%;
 `;
 
 const Line = styled.hr`
