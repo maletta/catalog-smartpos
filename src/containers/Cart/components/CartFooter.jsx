@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import Swal from 'sweetalert2';
-import { injectIntl } from 'react-intl';
 import styled from 'styled-components';
 import NumberFormat from 'react-number-format';
 import axios from 'axios';
@@ -205,4 +204,4 @@ CartFooter.propTypes = {
   setDeliveryCost: PropTypes.func.isRequired,
 };
 
-export default injectIntl(CartFooter);
+export default CartFooter;
