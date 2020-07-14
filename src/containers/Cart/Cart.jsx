@@ -21,25 +21,10 @@ const Cart = () => {
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const [stateCart, setStateCart] = useState([]);
-  const [totalCart, setTotalCart] = useState(0);
-  const [basketCountCart, setBasketCountCart] = useState(0);
   const [deliveryCost, setDeliveryCost] = useState({});
 
-  const removeItemFromCart = (uuid) => {
-    const newCart = stateCart.filter(item => item.uuid !== uuid);
-    storage.updateLocalCart(newCart);
-    setStateCart(newCart);
-  };
-
-  const updateAmount = (quantity, itemIndex) => {
-    const stateCartClone = lodash.cloneDeep(stateCart);
-    stateCartClone[itemIndex].quantity = quantity;
-    const basketCount = utilsCart.sumCartQuantity(stateCartClone);
-
-    storage.updateLocalCart(stateCartClone);
-    setStateCart(stateCartClone);
-    updateShoppingCart({ cart: stateCartClone, basketCount });
-  };
+  const totalCart = utilsCart.sumCartTotalPrice(stateCart);
+  const basketCountCart = utilsCart.sumCartQuantity(stateCart);
 
   useEffect(() => {
     updateFilter({
@@ -48,18 +33,24 @@ const Cart = () => {
       page: 1,
       search: '',
     });
+    setStateCart(storage.getLocalCart());
   }, []);
 
-  useEffect(() => {
-    const total = utilsCart.sumCartTotalPrice(stateCart);
-    const basketCount = utilsCart.sumCartQuantity(stateCart);
+  const removeItemFromCart = (uuid) => {
+    const newCart = stateCart.filter(item => item.uuid !== uuid);
+    storage.updateLocalCart(newCart);
+    setStateCart(newCart);
+  };
 
-    updateShoppingCart({ basketCount });
+  const updateCartPrice = (quantity, itemIndex) => {
+    const stateCartClone = lodash.cloneDeep(stateCart);
+    stateCartClone[itemIndex].quantity = quantity;
+    const basketCount = utilsCart.sumCartQuantity(stateCartClone);
 
-    setStateCart(storage.getLocalCart());
-    setTotalCart(total);
-    setBasketCountCart(basketCount);
-  }, [stateCart.length]);
+    storage.updateLocalCart(stateCartClone);
+    setStateCart(stateCartClone);
+    updateShoppingCart({ cart: stateCartClone, basketCount });
+  };
 
   const hasItems = stateCart.length > 0;
 
@@ -70,7 +61,7 @@ const Cart = () => {
         <ItemsContainer
           cartItems={stateCart}
           deleteItem={removeItemFromCart}
-          updateAmount={updateAmount}
+          updateAmount={updateCartPrice}
         />
         {hasItems ? (
           <CartFooter
