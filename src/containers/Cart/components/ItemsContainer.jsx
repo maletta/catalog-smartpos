@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
 
 import CartItem from 'components/CartItem';
 
@@ -31,6 +32,12 @@ const CartItems = (props) => {
       </ul>
     </Container>
   );
+};
+
+CartItems.propTypes = {
+  cartItems: PropTypes.array.isRequired,
+  deleteItem: PropTypes.func.isRequired,
+  updateAmount: PropTypes.func.isRequired,
 };
 
 export default CartItems;
