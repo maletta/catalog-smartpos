@@ -12,12 +12,8 @@ import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import EmptyCart from './components/EmptyCart';
 import CartFooter from './components/CartFooter';
 import PurchasePrices from './components/PurchasePrices';
-import Container from './components/CartContainer';
-
-const Title = styled.h1`
-  color: #212121;
-  font-size: 24px;
-`;
+import CartContainer from './components/CartContainer';
+import CardTitle from './components/CartTitle';
 
 const ItemsContainer = styled.div`
   padding-left: 20px;
@@ -76,11 +72,11 @@ const Cart = () => {
   const dontHaveItems = !hasItems;
 
   return (
-    <Container className="row">
+    <CartContainer className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
         <Steps activeIndex={0} />
         <ItemsContainer>
-          <Title>Resumo do pedido</Title>
+          <CardTitle>Resumo do pedido</CardTitle>
           <ul>
             {stateCart.map((product, prodIndex) => (
               <CartItem
@@ -111,7 +107,7 @@ const Cart = () => {
           couponValue={0}
         />
       </Grid>
-    </Container>
+    </CartContainer>
   );
 };
 
