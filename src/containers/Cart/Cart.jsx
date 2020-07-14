@@ -25,6 +25,10 @@ const Cart = () => {
   const [deliveryCost, setDeliveryCost] = useState({});
 
   const sumCartQuantity = cartItems => cartItems.reduce((total, item) => total + item.quantity, 0);
+  const sumCartTotalPrice = cartItems => cartItems.reduce(
+    (total, item) => total + item.quantity * (item.pricing.modifiers + item.pricing.product),
+    0,
+  );
 
   const removeItemFromCart = (uuid) => {
     const newCart = stateCart.filter(item => item.uuid !== uuid);
@@ -52,10 +56,7 @@ const Cart = () => {
   }, []);
 
   useEffect(() => {
-    const total = stateCart.reduce(
-      (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-      0,
-    );
+    const total = sumCartTotalPrice(stateCart);
     const basketCount = sumCartQuantity(stateCart);
 
     updateShoppingCart({ basketCount });
