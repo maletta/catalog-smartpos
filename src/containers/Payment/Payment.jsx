@@ -6,6 +6,7 @@ import { Formik, Form, Field } from 'formik';
 import axios from 'axios';
 import NumberFormat from 'react-number-format';
 import Swal from 'sweetalert2';
+import PropTypes from 'prop-types';
 
 import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
@@ -60,6 +61,11 @@ const RadioContainer = styled.div`
   flex-direction: column;
 `;
 
+const CreditCardImg = styled.img`
+  border: 1px solid #818181;
+  border-radius: 5px;
+`;
+
 const Payment = () => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
@@ -94,8 +100,6 @@ const Payment = () => {
   const [changeError, setChangeError] = useState('');
 
   const recaptchaRef = useRef();
-
-  // console.log({ PagSeguroDirectPayment });
 
   const getInstallments = (brand) => {
     if (brand !== 'none') {
@@ -346,6 +350,21 @@ const Payment = () => {
     />
   );
 
+  const AlertPaymentType = ({ propsForm }) => (
+    <Alert
+      text={
+        propsForm.values.gatewayPagseguro
+          && shop.allowPayOnline
+          ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
+          : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
+      }
+    />
+  );
+
+  AlertPaymentType.propTypes = {
+    propsForm: PropTypes.any.isRequired,
+  };
+
   const handleChangePhysicalPayment = (propsForm) => {
     propsForm.setFieldValue('offlinePayment', true);
     propsForm.setFieldValue('gatewayPagseguro', false);
@@ -356,6 +375,58 @@ const Payment = () => {
     propsForm.setFieldValue('offlinePayment', false);
     propsForm.setFieldValue('gatewayPagseguro', true);
     setOfflinePayment(false);
+  };
+
+  const handleChangePaymentType = propsForm => (event) => {
+    propsForm.setFieldValue('pagamento', event);
+    setIsMoneyPayment(event.descricao === 'Dinheiro');
+  };
+
+  const handleChangeMoney = propsForm => (value) => {
+    propsForm.setFieldValue('valorRecebido', value.floatValue);
+    const totalCartValue = utilsCart.sumCartTotalPrice(shoppingCart.cart);
+
+    const totalValue = totalCartValue + (
+      shoppingCart.deliveryFee
+        ? shoppingCart.deliveryFee.cost
+        : 0
+    );
+    const changeValue = paymentUtils.calculateMoneyChange({
+      purchaseTotalValue: totalValue,
+      receivedValue: value.floatValue,
+    });
+
+    if (typeof changeValue === 'string') {
+      setChangeError(changeValue);
+      return;
+    }
+
+    setMoneyChange(changeValue);
+  };
+
+  const handleChangeCreditCard = propsForm => ({ value, formattedValue }) => {
+    propsForm.setFieldValue('cardNumber', formattedValue);
+    propsForm.setFieldValue('cardNumber_unformatted', value);
+
+    if (value.length < 7) return;
+
+    PagSeguroDirectPayment.getBrand({
+      cardBin: value.substring(0, 7),
+      success({ brand }) {
+        setCreditCardBrand(brand);
+
+        const installmentSuccess = (resp) => {
+          const [firstInstallments] = resp.installments[brand.name];
+          propsForm.setFieldValue('installments', firstInstallments);
+        };
+
+        PagSeguroDirectPayment.getInstallments({
+          amount: totalWithDelivery,
+          brand: brand.name,
+          success: installmentSuccess,
+        });
+      },
+    });
   };
 
   return (
@@ -403,14 +474,7 @@ const Payment = () => {
                       </RadioContainer>
                     ) : null}
                     <br />
-                    <Alert
-                      text={
-                        propsForm.values.gatewayPagseguro
-                          && shop.allowPayOnline
-                          ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
-                          : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
-                      }
-                    />
+                    <AlertPaymentType propsForm={propsForm} />
                     {propsForm.values.gatewayPagseguro && totalCar < shop.minValuePayOnline && (
                       <MinimumPriceAlert />
                     )}
@@ -428,10 +492,7 @@ const Payment = () => {
                             options={paymentsType}
                             getOptionLabel={label => label.descricao}
                             getOptionValue={option => option.codigo}
-                            onChange={(event) => {
-                              propsForm.setFieldValue('pagamento', event);
-                              setIsMoneyPayment(event.descricao === 'Dinheiro');
-                            }}
+                            onChange={handleChangePaymentType(propsForm)}
                             isInvalid={propsForm.errors.pagamento}
                             touched={propsForm.touched.pagamento}
                             isRequired
@@ -446,32 +507,7 @@ const Payment = () => {
                                   name="valorRecebido"
                                   label="Troco para quanto?"
                                   component={CurrencyInput}
-                                  onValueChange={(value) => {
-                                    propsForm.setFieldValue('valorRecebido', value.floatValue);
-                                    const totalCartValue = shoppingCart.cart.reduce(
-                                      (count, val) => count
-                                        + val.quantity
-                                        * (val.pricing.modifiers + val.pricing.product),
-                                      0,
-                                    );
-
-                                    const totalValue = totalCartValue + (
-                                      shoppingCart.deliveryFee
-                                        ? shoppingCart.deliveryFee.cost
-                                        : 0
-                                    );
-                                    const changeValue = paymentUtils.calculateMoneyChange({
-                                      purchaseTotalValue: totalValue,
-                                      receivedValue: value.floatValue,
-                                    });
-
-                                    if (typeof changeValue === 'string') {
-                                      setChangeError(changeValue);
-                                      return;
-                                    }
-
-                                    setMoneyChange(changeValue);
-                                  }}
+                                  onValueChange={handleChangeMoney(propsForm)}
                                 />
                               </Grid>
                               <Grid cols="3">
@@ -509,12 +545,11 @@ const Payment = () => {
                           <Row>
                             <Grid cols="12" className="mb-2" style={{ display: 'flex', flexWrap: 'wrap', gap: '17px' }}>
                               {creditCardBrands.map(item => (
-                                <img
+                                <CreditCardImg
                                   key={item.code}
                                   src={`https://stc.pagseguro.uol.com.br/${item.images.MEDIUM.path}`}
                                   title={item.displayName}
                                   alt={item.displayName}
-                                  style={{ border: '1px solid #818181', borderRadius: '5px' }}
                                 />
                               ))}
                             </Grid>
@@ -573,41 +608,7 @@ const Payment = () => {
                                 component={NumberFormat}
                                 customInput={InputCreditCard}
                                 brand={creditCardBrand.name}
-                                onValueChange={(event) => {
-                                  propsForm.setFieldValue(
-                                    'cardNumber',
-                                    event.formattedValue,
-                                  );
-                                  propsForm.setFieldValue(
-                                    'cardNumber_unformatted',
-                                    event.value,
-                                  );
-                                  if (event.value.length >= 7) {
-                                    const cardBin = event.value.substring(0, 7);
-                                    PagSeguroDirectPayment.getBrand({
-                                      cardBin,
-                                      success(response) {
-                                        setCreditCardBrand(response.brand);
-                                        setTimeout(() => {
-                                          PagSeguroDirectPayment.getInstallments({
-                                            amount: totalWithDelivery,
-                                            brand: response.brand.name,
-                                            success(installmentsResponse) {
-                                              if (response.brand.name) {
-                                                const installment = installmentsResponse
-                                                  .installments[response.brand.name];
-                                                propsForm.setFieldValue(
-                                                  'installments',
-                                                  installment[0],
-                                                );
-                                              }
-                                            },
-                                          });
-                                        }, 500);
-                                      },
-                                    });
-                                  }
-                                }}
+                                onValueChange={handleChangeCreditCard(propsForm)}
                                 isRequired
                                 type="tel"
                               />
@@ -800,7 +801,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>

@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 
 import RadioButton from './RadioButton';
 
-const mapRadio = name => (props) => {
-  return (
-    <RadioButton {...props} name={name} />
-  );
-};
+const mapRadio = name => props => (
+  <RadioButton {...props} name={name} />
+);
 
 const RadioGroup = (props) => {
   const { radiosProps, name } = props;

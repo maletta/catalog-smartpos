@@ -63,12 +63,12 @@ const RegisterData = () => {
     history.push(paths.payment);
   };
 
-  const handleChangeCEP = propsForm => async ({ cep, formattedCEP }) => {
-    if (cep.length < 8) return;
+  const handleChangeCEP = propsForm => async ({ value, formattedValue }) => {
+    if (value.length < 8) return;
 
-    propsForm.setFieldValue('cep', formattedCEP);
+    propsForm.setFieldValue('cep', formattedValue);
 
-    const { data } = await utilsCEP.requestCEP(cep);
+    const { data } = await utilsCEP.requestCEP(value);
 
     propsForm.setFieldValue('bairro', data.bairro);
     propsForm.setFieldValue('estado', data.uf);
