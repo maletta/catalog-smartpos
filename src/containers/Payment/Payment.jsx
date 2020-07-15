@@ -239,7 +239,8 @@ const Payment = () => {
 
     const values = {
       ...formValues,
-      tipoPessoa: formValues.tipoPessoa.value,
+      installments: formValues.installments || '',
+      tipoPessoa: formValues.tipoPessoa,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
       deliveryValue: costDelivery.cost || 0,
@@ -801,7 +802,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>
