@@ -302,13 +302,17 @@ const Footer = ({ storeInfo }) => {
                 </>
               )}
             </Grid>
-            <Grid
-              cols="12 11 4 4 4"
-              className="d-flex flex-column text-center align-items-center align-items-md-end"
-            >
-              <CardCreditImg src={CardCredit} alt="bandeiras" />
-              <CaptionFlag>Bandeiras aceitas apenas para pagamento online</CaptionFlag>
-            </Grid>
+            {storeInfo.allowPayOnline === 1
+              && (
+              <Grid
+                cols="12 11 4 4 4"
+                className="d-flex flex-column text-center align-items-center align-items-md-end"
+              >
+                <CardCreditImg src={CardCredit} alt="bandeiras" />
+                <CaptionFlag>Bandeiras aceitas apenas para pagamento online</CaptionFlag>
+              </Grid>
+              )
+            }
           </Row>
         </div>
       </FullWidthFooterInfo>
