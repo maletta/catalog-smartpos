@@ -455,7 +455,7 @@ const Payment = () => {
                             id="physicalPayment"
                             value="offlinePayment"
                             checked={offlinePayment}
-                            onChange={handleChangePhysicalPayment}
+                            onChange={handleChangePhysicalPayment(propsForm)}
                           />
                           Pague na entrega ou retirada
                         </label>
@@ -467,7 +467,7 @@ const Payment = () => {
                             id="onlinePayment"
                             value="gatewayPagseguro"
                             checked={!offlinePayment}
-                            onChange={handleChangeOnlinePayment}
+                            onChange={handleChangeOnlinePayment(propsForm)}
                           />
                           Pague on-line
                         </label>
