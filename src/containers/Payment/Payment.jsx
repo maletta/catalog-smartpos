@@ -365,13 +365,13 @@ const Payment = () => {
     propsForm: PropTypes.any.isRequired,
   };
 
-  const handleChangePhysicalPayment = (propsForm) => {
+  const handleChangePhysicalPayment = propsForm => () => {
     propsForm.setFieldValue('offlinePayment', true);
     propsForm.setFieldValue('gatewayPagseguro', false);
     setOfflinePayment(true);
   };
 
-  const handleChangeOnlinePayment = (propsForm) => {
+  const handleChangeOnlinePayment = propsForm => () => {
     propsForm.setFieldValue('offlinePayment', false);
     propsForm.setFieldValue('gatewayPagseguro', true);
     setOfflinePayment(false);
