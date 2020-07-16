@@ -14,6 +14,7 @@ import history from 'utils/history';
 import utilsCart from 'utils/cart';
 import storage from 'utils/storage';
 import formatCurrency from 'utils/formatCurrency';
+// import RenderCheckbox from 'components/Form/RenderCheckbox';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
@@ -78,6 +79,7 @@ const Payment = () => {
     cost: 0,
     isDeliverable: false,
   });
+  // const [withdraw, setWithdraw] = useState(false);
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [offlinePayment, setOfflinePayment] = useState(
     shop.allowPayOnline === 0,
@@ -239,16 +241,20 @@ const Payment = () => {
 
     const values = {
       ...formValues,
-      installments: formValues.installments || '',
+      installments: formValues.installments || null,
       tipoPessoa: formValues.tipoPessoa,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
       deliveryValue: costDelivery.cost || 0,
       ...shoppingCart.personData,
       ...shoppingCart.address,
-      changeReceivedValue: formValues.valorRecebido,
+      changeReceivedValue: formValues.valorRecebido || 0,
       change: moneyChange,
+      tipoEndereco: formValues.tipoEndereco.value,
     };
+
+    delete values.personType;
+
     const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
     updateShoppingCart({ paymentType });
 
@@ -443,6 +449,24 @@ const Payment = () => {
               <Row>
                 <Grid cols="12">
                   <>
+                    {/* {shop.deliveryMode === 'BOTH' && (
+                      <>
+                        <div className="d-flex align-items-center mt-3 mb-3">
+                          <Field
+                            label="Retirar no estabelecimento"
+                            name="pickup"
+                            component={RenderCheckbox}
+                            onClick={() => {
+                              propsForm.setFieldValue(
+                                'pickup',
+                                !propsForm.values.pickup,
+                              );
+                              setWithdraw(!propsForm.values.pickup);
+                            }}
+                          />
+                        </div>
+                      </>
+                    )} */}
                     <SectionTitle>Pagamento</SectionTitle>
                     {shop.allowPayOnline ? (
                       <RadioContainer>
@@ -802,7 +826,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>

@@ -15,7 +15,6 @@ import Footer from 'components/Footer';
 import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
 import SingleProduct from 'containers/SingleProduct';
-import OrderPlaced from 'containers/OrderPlaced';
 import RegisterData from 'containers/RegisterData';
 import Address from 'containers/Address';
 import Payment from 'containers/Payment';
@@ -259,11 +258,6 @@ const App = () => {
               <Route path={paths.address} exact component={Address} />
               <Route path={paths.payment} exact component={Payment} />
               <Route path={paths.conclusion} exact component={Conclusion} />
-              <Route
-                path={paths.orderPlaced}
-                exact
-                component={OrderPlaced}
-              />
               <Route
                 path={paths.singleProduct}
                 component={SingleProduct}

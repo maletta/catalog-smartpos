@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { injectIntl, intlShape } from 'react-intl';
 
+import paths from 'paths';
 import history from 'utils/history';
 import formatCurrency from 'utils/formatCurrency';
 import Grid from 'components/Grid';
@@ -9,6 +10,7 @@ import Row from 'components/Row';
 import Steps from 'components/Steps';
 import Button from 'components/Form/Button';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import ShopContext from 'contexts/ShopContext';
 
 const Container = styled.div`
   background: #fff;
@@ -41,16 +43,13 @@ const SuccessMessage = styled.span`
   font-size: 20px;
 `;
 
-// Precisa esperar pra ver como fazer a integração com
-// a API do Whatsapp
-// const SendWhatsapp = styled.span`
-//   color: #006195;
-//   cursor: pointer;
+const SendWhatsapp = styled.a`
+  color: #006195;
 
-//   :hover {
-//     text-decoration: underline #006195;
-//   }
-// `;
+  :hover {
+    text-decoration: underline #006195;
+  }
+`;
 
 const ThanksMessage = styled.p`
   color: #212121;
@@ -84,6 +83,7 @@ const Footer = styled.div`
 `;
 
 const Conclusion = ({ intl }) => {
+  const { shop } = useContext(ShopContext);
   const { shoppingCart } = useContext(ShoppingCartContext);
   const {
     address, personData,
@@ -111,6 +111,9 @@ const Conclusion = ({ intl }) => {
     { style: 'currency', currency: 'BRL' },
   );
 
+  const msg = `Você acabou de receber o pedido ${orderId} do seu catálogo on-line SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
+  const linkWhatsApp = `https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}`;
+
   return (
     <Container className="row">
       <Grid cols="12 12 12 12 12" className="pt-3">
@@ -121,7 +124,12 @@ const Conclusion = ({ intl }) => {
           <SuccessMessage>
             Seu pedido foi finalizado com sucesso
           </SuccessMessage>
-          {/* <SendWhatsapp>Enviar confirmação por Whatsapp</SendWhatsapp> */}
+          <SendWhatsapp
+            href={linkWhatsApp}
+            target="_blank"
+          >
+            Enviar confirmação por Whatsapp
+          </SendWhatsapp>
         </FlexRow>
         <ThanksMessage>
           {`Obrigada pela compra! Você receberá todos os dados da sua conta no email: ${email}`}
@@ -197,11 +205,11 @@ const Conclusion = ({ intl }) => {
           </div>
           <div>
             <h4>Pagamento:</h4>
-            <p>{paymentType}</p>
+            <p>{paymentType.descricao}</p>
           </div>
         </Footer>
         <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button value="Voltar" onClick={() => history.push('/')} />
+          <Button value="Voltar" onClick={() => history.push(paths.home)} />
         </Row>
       </Grid>
     </Container>
