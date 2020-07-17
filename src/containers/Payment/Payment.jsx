@@ -210,8 +210,8 @@ const Payment = () => {
       history.push(paths.conclusion);
     } catch ({ response }) {
       sendCheckoutCatch(response);
-    } finally {
       recaptchaRef.current.reset();
+    } finally {
       cleanCart();
       setLoading(false);
       setSubmitting(false);
