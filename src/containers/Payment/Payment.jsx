@@ -232,7 +232,6 @@ const Payment = () => {
   const totalWithDelivery = costDelivery.cost + totalCar;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
-    console.log({ changeError });
     if (changeError) return;
 
     setLoading(true);
@@ -799,7 +798,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>
