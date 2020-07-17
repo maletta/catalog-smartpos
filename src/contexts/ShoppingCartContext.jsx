@@ -15,7 +15,9 @@ export const ShoppingCartProvider = ({ children }) => {
     cart: previousCart,
     withdraw: false,
     cep: '',
-    deliveryFee: null,
+    deliveryFee: {
+      cost: 0,
+    },
     basketCount,
     totalCart,
     personData: {},

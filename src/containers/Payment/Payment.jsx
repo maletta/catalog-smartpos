@@ -33,7 +33,6 @@ import InputCvv from 'components/Form/InputCvv';
 
 import FilterContext from 'contexts/FilterContext';
 
-import paymentUtils from './payment-utils';
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
@@ -233,6 +232,7 @@ const Payment = () => {
   const totalWithDelivery = costDelivery.cost + totalCar;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
+    console.log({ changeError });
     if (changeError) return;
 
     setLoading(true);
@@ -389,20 +389,13 @@ const Payment = () => {
 
   const handleChangeMoney = propsForm => (value) => {
     propsForm.setFieldValue('valorRecebido', value.floatValue);
-    const totalCartValue = utilsCart.sumCartTotalPrice(shoppingCart.cart);
+    const totalCartValue = shoppingCart.totalCart;
+    const fee = shoppingCart.deliveryFee.cost;
+    const totalValue = totalCartValue + fee;
+    const changeValue = value.floatValue - totalValue;
 
-    const totalValue = totalCartValue + (
-      shoppingCart.deliveryFee
-        ? shoppingCart.deliveryFee.cost
-        : 0
-    );
-    const changeValue = paymentUtils.calculateMoneyChange({
-      purchaseTotalValue: totalValue,
-      receivedValue: value.floatValue,
-    });
-
-    if (typeof changeValue === 'string') {
-      setChangeError(changeValue);
+    if (changeValue < 0) {
+      setChangeError('Troco não pode ser menor que o valor de compra!');
       return;
     }
 
@@ -806,7 +799,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>
@@ -830,7 +823,7 @@ const Payment = () => {
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
           totalCart={shoppingCart.totalCart}
-          deliveryCost={shoppingCart.deliveryFee || {}}
+          deliveryCost={shoppingCart.deliveryFee}
           couponValue={0}
         />
       </Grid>
