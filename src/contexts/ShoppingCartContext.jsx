@@ -1,20 +1,18 @@
 import React, { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 
+import utilsCart from 'utils/cart';
+import storage from 'utils/storage';
+
 const ShoppingCartContext = createContext();
 
 export const ShoppingCartProvider = ({ children }) => {
-  const prevCart = JSON.parse(localStorage.getItem('cart') || '[]');
-
-  const basketCount = prevCart.reduce((count, val) => count + val.quantity, 0);
-
-  const totalCart = prevCart.reduce(
-    (count, val) => count + val.quantity * (val.pricing.modifiers + val.pricing.product),
-    0,
-  );
+  const previousCart = storage.getLocalCart();
+  const totalCart = utilsCart.sumCartTotalPrice(previousCart);
+  const basketCount = utilsCart.sumCartQuantity(previousCart);
 
   const [shoppingCart, setShoppingCart] = useState({
-    cart: prevCart,
+    cart: previousCart,
     withdraw: false,
     cep: '',
     deliveryFee: null,

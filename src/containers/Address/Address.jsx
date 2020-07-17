@@ -4,7 +4,6 @@ import { Formik, Form, Field } from 'formik';
 
 import paths from 'paths';
 import history from 'utils/history';
-import utilsCart from 'utils/cart';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
@@ -193,7 +192,7 @@ const RegisterData = () => {
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
-          totalCart={utilsCart.sumCartTotalPrice(shoppingCart.cart)}
+          totalCart={shoppingCart.totalCart}
           deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={0}
         />

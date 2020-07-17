@@ -14,7 +14,6 @@ import history from 'utils/history';
 import utilsCart from 'utils/cart';
 import storage from 'utils/storage';
 import formatCurrency from 'utils/formatCurrency';
-// import RenderCheckbox from 'components/Form/RenderCheckbox';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
@@ -58,7 +57,7 @@ const addressType = [
 const getCep = cep => axios.get(`https://viacep.com.br/ws/${cep}/json/`);
 
 const RadioContainer = styled.div`
-  display: flex; 
+  display: flex;
   flex-direction: column;
 `;
 
@@ -79,7 +78,6 @@ const Payment = () => {
     cost: 0,
     isDeliverable: false,
   });
-  // const [withdraw, setWithdraw] = useState(false);
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [offlinePayment, setOfflinePayment] = useState(
     shop.allowPayOnline === 0,
@@ -449,24 +447,6 @@ const Payment = () => {
               <Row>
                 <Grid cols="12">
                   <>
-                    {/* {shop.deliveryMode === 'BOTH' && (
-                      <>
-                        <div className="d-flex align-items-center mt-3 mb-3">
-                          <Field
-                            label="Retirar no estabelecimento"
-                            name="pickup"
-                            component={RenderCheckbox}
-                            onClick={() => {
-                              propsForm.setFieldValue(
-                                'pickup',
-                                !propsForm.values.pickup,
-                              );
-                              setWithdraw(!propsForm.values.pickup);
-                            }}
-                          />
-                        </div>
-                      </>
-                    )} */}
                     <SectionTitle>Pagamento</SectionTitle>
                     {shop.allowPayOnline ? (
                       <RadioContainer>
@@ -849,7 +829,7 @@ const Payment = () => {
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
-          totalCart={utilsCart.sumCartTotalPrice(shoppingCart.cart)}
+          totalCart={shoppingCart.totalCart}
           deliveryCost={shoppingCart.deliveryFee || {}}
           couponValue={0}
         />

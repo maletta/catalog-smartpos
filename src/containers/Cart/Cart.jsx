@@ -32,7 +32,12 @@ const Cart = () => {
       page: 1,
       search: '',
     });
-    setStateCart(storage.getLocalCart());
+
+    const localCart = storage.getLocalCart();
+    const localTotalCart = utilsCart.sumCartTotalPrice(localCart);
+    const basketCount = utilsCart.sumCartQuantity(localCart);
+    setStateCart(localCart);
+    updateShoppingCart({ cart: localCart, basketCount, totalCart: localTotalCart });
   }, []);
 
   const removeItemFromCart = (uuid) => {
