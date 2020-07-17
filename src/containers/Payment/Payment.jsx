@@ -398,6 +398,7 @@ const Payment = () => {
       return;
     }
 
+    setChangeError('');
     setMoneyChange(changeValue);
   };
 
