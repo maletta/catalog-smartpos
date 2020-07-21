@@ -100,6 +100,15 @@ const Payment = () => {
 
   const recaptchaRef = useRef();
 
+  const creditCardsImages = creditCardBrands.map(item => (
+    <CreditCardImg
+      key={item.code}
+      src={`https://stc.pagseguro.uol.com.br/${item.images.MEDIUM.path}`}
+      title={item.displayName}
+      alt={item.displayName}
+    />
+  ))
+
   const getInstallments = (brand) => {
     if (brand !== 'none') {
       const amount = totalCar + costDelivery.cost;
@@ -542,14 +551,7 @@ const Payment = () => {
                         <>
                           <Row>
                             <Grid cols="12" className="mb-2" style={{ display: 'flex', flexWrap: 'wrap', gap: '17px' }}>
-                              {creditCardBrands.map(item => (
-                                <CreditCardImg
-                                  key={item.code}
-                                  src={`https://stc.pagseguro.uol.com.br/${item.images.MEDIUM.path}`}
-                                  title={item.displayName}
-                                  alt={item.displayName}
-                                />
-                              ))}
+                              {creditCardsImages}
                             </Grid>
                           </Row>
                           <Row>
@@ -799,7 +801,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>
