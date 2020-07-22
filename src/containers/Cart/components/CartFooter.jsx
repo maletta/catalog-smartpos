@@ -65,10 +65,9 @@ const showStoreIsClosedModal = (shop) => {
 const verifyRedirect = (shop) => {
   if (shop.allowOrderOutsideBusinessHours || !shop.closeNow) {
     redirectToRegisterData();
-    return;
+  } else {
+    showStoreIsClosedModal(shop);
   }
-
-  showStoreIsClosedModal(shop);
 };
 
 const CartFooter = ({
