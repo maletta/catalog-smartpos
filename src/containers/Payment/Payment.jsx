@@ -71,27 +71,19 @@ const Payment = () => {
   const { updateFilter } = useContext(FilterContext);
 
   const [stateCart] = useState(storage.getLocalCart());
-  const totalCar = utilsCart.sumCartTotalPrice(stateCart);
-
-  const [costDelivery] = useState({
-    cost: 0,
-    isDeliverable: false,
-  });
+  const totalCart = utilsCart.sumCartTotalPrice(stateCart);
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [offlinePayment, setOfflinePayment] = useState(
     shop.allowPayOnline === 0,
   );
   const [paymentsType, setPaymentType] = useState([]);
   const [creditCardBrands, setCreditCardBrands] = useState([]);
-  const [state, setState] = useState({
-    loadPagseguro: false,
-  });
+  const [hash, setHash] = useState('');
   const [creditCardBrand, setCreditCardBrand] = useState({
     name: 'none',
     cvvSize: 0,
   });
   const [installments, setInstallments] = useState([]);
-
   const [showAddress, setShowAddress] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isMoneyPayment, setIsMoneyPayment] = useState(false);
@@ -107,12 +99,12 @@ const Payment = () => {
       title={item.displayName}
       alt={item.displayName}
     />
-  ))
+  ));
+
+  const amount = totalCart + shoppingCart.deliveryFee.cost;
 
   const getInstallments = (brand) => {
     if (brand !== 'none') {
-      const amount = totalCar + costDelivery.cost;
-
       PagSeguroDirectPayment.getInstallments({
         amount,
         brand,
@@ -127,8 +119,6 @@ const Payment = () => {
   };
 
   const handleLoadPaymentsPag = () => {
-    const amount = totalCar + costDelivery.cost;
-
     PagSeguroDirectPayment.getPaymentMethods({
       amount,
       success({ paymentMethods }) {
@@ -148,7 +138,7 @@ const Payment = () => {
 
   useEffect(() => {
     getInstallments(creditCardBrand.name);
-  }, [costDelivery.cost, creditCardBrand.name]);
+  }, [creditCardBrand.name]);
 
   useEffect(() => {
     updateFilter({
@@ -168,7 +158,7 @@ const Payment = () => {
 
   const handleSenderHashReady = ({ status, senderHash }) => {
     if (status === 'error') return false;
-    return setState({ ...state, senderHash });
+    return setHash(senderHash);
   };
 
   const getHashReady = () => {
@@ -208,7 +198,7 @@ const Payment = () => {
       const { data } = await createOrder(values);
       updateOrderPlaced({
         ...values,
-        costDelivery,
+        costDelivery: shoppingCart.deliveryFee,
         withdraw: shoppingCart.withdraw,
         orderName: data.orderName,
       });
@@ -228,8 +218,8 @@ const Payment = () => {
     if (!isGatewayPagseguro) return true;
 
     const hasMaxValue = shop.maxValuePayOnline > 0;
-    const isLessThanMax = totalCar <= shop.maxValuePayOnline;
-    const isGreaterThanMin = totalCar >= shop.minValuePayOnline;
+    const isLessThanMax = totalCart <= shop.maxValuePayOnline;
+    const isGreaterThanMin = totalCart >= shop.minValuePayOnline;
     const isWithinMinMax = isGreaterThanMin && isLessThanMax;
 
     if (hasMaxValue) {
@@ -237,8 +227,6 @@ const Payment = () => {
     }
     return isGreaterThanMin;
   };
-
-  const totalWithDelivery = costDelivery.cost + totalCar;
 
   const submitCheckout = (formValues, { setSubmitting }) => {
     if (changeError) return;
@@ -251,7 +239,7 @@ const Payment = () => {
       tipoPessoa: formValues.tipoPessoa,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
-      deliveryValue: costDelivery.cost || 0,
+      deliveryValue: shoppingCart.deliveryFee.cost,
       ...shoppingCart.personData,
       ...shoppingCart.address,
       changeReceivedValue: formValues.valorRecebido || 0,
@@ -264,7 +252,7 @@ const Payment = () => {
     const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
     updateShoppingCart({ paymentType });
 
-    if (formValues.gatewayPagseguro && state.senderHash) {
+    if (formValues.gatewayPagseguro && hash) {
       const [expirationMonth, expirationYear] = formValues.expiration.split('/');
 
       PagSeguroDirectPayment.createCardToken({
@@ -276,7 +264,7 @@ const Payment = () => {
         success(response) {
           const valuesPag = {
             ...values,
-            senderHash: state.senderHash,
+            senderHash: hash,
             cardTokenPag: response.card.token,
           };
           sendCheckout(valuesPag, setSubmitting);
@@ -428,7 +416,7 @@ const Payment = () => {
         };
 
         PagSeguroDirectPayment.getInstallments({
-          amount: totalWithDelivery,
+          amount,
           brand: brand.name,
           success: installmentSuccess,
         });
@@ -482,12 +470,12 @@ const Payment = () => {
                     ) : null}
                     <br />
                     <AlertPaymentType propsForm={propsForm} />
-                    {propsForm.values.gatewayPagseguro && totalCar < shop.minValuePayOnline && (
+                    {propsForm.values.gatewayPagseguro && totalCart < shop.minValuePayOnline && (
                       <MinimumPriceAlert />
                     )}
                     {
                       propsForm.values.gatewayPagseguro
-                      && totalCar > shop.maxValuePayOnline
+                      && totalCart > shop.maxValuePayOnline
                       && shop.maxValuePayOnline !== 0 && <MaximumPriceAlert />}
                     {propsForm.values.offlinePayment && (
                       <Row>
