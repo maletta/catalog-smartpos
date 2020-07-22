@@ -123,7 +123,8 @@ const CartFooter = ({
 
   const handleChangeRetrieve = ({ target }) => {
     setDelivery(target.value);
-    updateShoppingCart({ withdraw: true });
+    updateShoppingCart({ withdraw: true, deliveryFee: { cost: 0 } });
+    setDeliveryCost({});
   };
 
   return (
