@@ -51,9 +51,14 @@ const RegisterData = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const [address, setAddress] = useState(initialValue);
 
+  const getAddress = async () => {
+    const response = await utilsCEP.getAddressByCEP(shoppingCart.cep);
+    setAddress(response);
+  };
+
   useEffect(() => {
     if (shoppingCart.cep) {
-      setAddress(utilsCEP.getAddressByCEP(shoppingCart.cep));
+      getAddress();
     }
   }, []);
 
