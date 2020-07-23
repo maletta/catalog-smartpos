@@ -1,41 +1,3 @@
-@charset "utf-8";
-
-// Set your brand colors
-$purple: #8A4D76;
-$pink: #FA7C91;
-$brown: #757763;
-$beige-light: #D0D1CD;
-$white: #FFFFFF;
-
-// Update Bulma's global variables
-$family-sans-serif: "Nunito", sans-serif;
-$grey-dark: $brown;
-$grey-light: $beige-light;
-$primary: $purple;
-$link: $pink;
-$widescreen-enabled: false;
-$fullhd-enabled: false;
-
-// Update some of Bulma's component variables
-$body-background-color: $white;
-$control-border-width: 2px;
-$input-border-color: transparent;
-$input-shadow: none;
-
-/* pagvendas 
-  --color-header: #00529B;
-  --color-primary: #F37C05;
-  --color-link: #F38A00;
-  --color-primary-light: #ffc67c;
-  --color-gray-light-1: #d7d7d7;
-  --color-gray-light: #efefef;
-  --color-gray-light-1: #d7d7d7;
-  --color-gray-light-2: #918f8f;
-  --color-white: #FFF;
-  --button-primary: #F38A00;
-  --color-secundary: #F38A00; 
-  */
-
 :root {
   --color-header: #00529B;
   --color-primary: #F37C05;
@@ -47,7 +9,7 @@ $input-shadow: none;
   --color-gray-light-2: #918f8f;
   --color-white: #FFF;
   --button-primary: #F38A00;
-  --color-secundary: #F38A00;
+  --color-secondary: #F38A00;
 }
 
 html, body {
@@ -67,7 +29,6 @@ ul {
   cursor: pointer;
 }
 
-/* STYLE PAGINATION */
 .pagination {
   justify-content: center;
   flex-wrap: wrap;
