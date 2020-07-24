@@ -12,7 +12,8 @@
   --color-secondary: #F38A00;
 }
 
-html, body {
+html,
+body {
   background: #EBEBEB;
 }
 
@@ -23,10 +24,6 @@ html, body {
 ul {
   list-style: none !important;
   padding-left: 0;
-}
-
-.cursor-pointer{
-  cursor: pointer;
 }
 
 .pagination {
@@ -53,7 +50,8 @@ ul {
   background: #e0dede;
 }
 
-.pagination .active a, .pagination .active a:hover {
+.pagination .active a,
+.pagination .active a:hover {
   color: #fff;
   font-weight: bold;
   background: var(--color-primary);
@@ -71,12 +69,17 @@ ul {
   }
 }
 
-.breadcrumb a, .breadcrumb a:hover {
+.breadcrumb a,
+.breadcrumb a:hover {
   color: #6c757d;
 }
 
 .breadcrumb li.is-active a {
   color: #eee;
+}
+
+.breadcrumb-item + .breadcrumb-item {
+  padding-left: 0;
 }
 
 .is-mb-paddingless {
@@ -110,25 +113,7 @@ ul {
   cursor: default;
 }
 
-.foradohorario-hours {
-  font-weight: 700;
-  font-size: 1.2rem;
-  text-align: center;
-}
-
 .foradohorario-titulo {
-  font-weight: 700;
+  font-weight: bold;
   font-size: 1.2rem;
-  text-align: left;
-}
-
-.foradohorario-texto {
-  font-size: 1rem;
-  text-align: left;
-  line-height: 25px;
-  margin-top: 15px;
-}
-
-.breadcrumb-item+.breadcrumb-item {
-  padding-left: 0;
 }

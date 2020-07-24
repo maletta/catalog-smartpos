@@ -1,66 +1,18 @@
 import React, { useContext, useState } from 'react';
-import Swal from 'sweetalert2';
-import styled from 'styled-components';
 import NumberFormat from 'react-number-format';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
-import paths from 'paths';
 import Button from 'components/Form/Button';
 import Input from 'components/Form/Input';
 import Grid from 'components/Grid';
-import history from 'utils/history';
 import formatCurrency from 'utils/formatCurrency';
 import ShopContext from 'contexts/ShopContext';
-import ClosedStore from 'assets/closed-store.svg';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
-const checkingDelivery = (locationCustomer, storeID) => axios.get(
-  `${process.env.REACT_APP_MAIN_API}/v1/loja/${storeID}/frete/${locationCustomer}`,
-);
-
-const DeliveryContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-
-  @media (max-width: 425px) {
-    width: 100%;
-  }
-`;
-
-const CEPContainer = styled.div`
-  @media (max-width: 425px) {
-    width: 100%;
-  }
-`;
-
-const redirectToRegisterData = () => history.push(paths.registerData);
-const redirectToHome = () => history.push(paths.home);
-
-const showStoreIsClosedModal = (shop) => {
-  const shopHoursOpen = shop.today.hours.map(
-    itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`,
-  );
-
-  const isShopClosed = shop.today.closed;
-  const title = isShopClosed
-    ? 'Estabelecimento fechado!'
-    : `Este estabelecimento abre entre: ${shopHoursOpen}`;
-
-  Swal.fire({
-    html: `<div>
-    <div><img src="${ClosedStore}"></div>
-    <span class="foradohorario-titulo"> 
-    ${title}
-    </span>
-    <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
-    </div>`,
-    showConfirmButton: true,
-    confirmButtonColor: 'var(-color--primary)',
-    showCloseButton: true,
-    onClose: redirectToHome,
-  });
-};
+import { checkingDelivery } from './cartFooterRequest';
+import { redirectToHome, redirectToRegisterData } from './cartFooterRouter';
+import { CEPContainer, DeliveryContainer } from './cartFooterStyled';
+import { showStoreIsClosedModal } from './cartFooterModal';
 
 const verifyRedirect = (shop) => {
   if (shop.allowOrderOutsideBusinessHours || !shop.closeNow) {
@@ -127,8 +79,20 @@ const CartFooter = ({
     setDeliveryCost({});
   };
 
+  const mockShop = {
+    today: {
+      closed: false,
+      hours: [
+        { openHour: '12:00', closeHour: '18:00' },
+        { openHour: '12:00', closeHour: '18:00' },
+        { openHour: '12:00', closeHour: '18:00' },
+      ],
+    },
+  };
+
   return (
     <>
+      <button type="button" onClick={() => showStoreIsClosedModal(mockShop)}>MODAL</button>
       <Grid cols="12" className="d-flex justify-content-between flex-wrap">
         <DeliveryContainer>
           <p>Entrega:</p>
