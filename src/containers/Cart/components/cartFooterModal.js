@@ -4,40 +4,35 @@ import imageURLClosedStore from 'assets/closed-store.svg';
 
 import { redirectToHome } from './cartFooterRouter';
 
-const createHourLine = (itemHour) => {
+export const createHourLine = (itemHour) => {
   const { openHour, closeHour } = itemHour;
   return `<br />${openHour} às ${closeHour}`;
 };
 
-const createHoursList = hours => hours.map(createHourLine);
+export const createHoursList = hours => hours.map(createHourLine);
 
-const createTitle = (shop) => {
-  const { today } = shop;
+export const createTitleWithHoursList = hours => `Esta loja abre entre: ${createHoursList(hours).join('')}`;
+
+const createTitle = (today) => {
   const { hours, closed: isShopClosed } = today;
-
-  const titleWithHoursList = `Esta loja abre entre: ${createHoursList(hours)}`;
-  const title = isShopClosed ? 'Loja fechada!' : titleWithHoursList;
-
-  return title;
+  return isShopClosed ? 'Loja fechada!' : createTitleWithHoursList(hours);
 };
 
-const text = `
-  Você pode olhar o catálogo à vontade
-  e fazer o pedido quando a loja estiver aberta.
-`;
-
-export const showStoreIsClosedModal = (shop) => {
-  const title = createTitle(shop);
+export const showStoreIsClosedModal = (today) => {
+  const title = createTitle(today);
 
   const html = `
-    <span class="foradohorario-titulo"> 
+    <span style="font-weight: bold; font-size: 1.2rem;"> 
       ${title}
     </span>
   `;
 
-  Swal.fire({
+  const modalConfig = {
     title: html,
-    text,
+    text: `
+      Você pode olhar o catálogo à vontade
+      e fazer o pedido quando a loja estiver aberta.
+    `,
     imageUrl: imageURLClosedStore,
     imageWidth: 400,
     imageHeight: 200,
@@ -45,7 +40,9 @@ export const showStoreIsClosedModal = (shop) => {
     showConfirmButton: true,
     confirmButtonColor: 'var(--color-primary)',
     onClose: redirectToHome,
-  });
+  };
+
+  Swal.fire(modalConfig);
 };
 
 export default {};
