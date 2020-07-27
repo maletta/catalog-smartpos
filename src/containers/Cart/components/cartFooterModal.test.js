@@ -2,6 +2,7 @@ import {
   createHourLine,
   createHoursList,
   createTitleWithHoursList,
+  createHTMLTitle,
 } from './cartFooterModal';
 
 const hourRegex = '\\d\\d:\\d\\d';
@@ -33,4 +34,11 @@ test('Retorna uma lista de faixas de horário', () => {
 test('Retorna texto com os horários que a loja abre', () => {
   const result = createTitleWithHoursList(hours);
   expect(/Esta loja abre entre:/.test(result)).toBe(true);
+});
+
+test('Retorna título em HTML', () => {
+  const today = { hours, closed: true };
+  const result = createHTMLTitle(today);
+  const htmlTagRegex = /<(\w|\s)+(\W|\w)+">\s+.+\s+<\/(\w|\s)+>/;
+  expect(htmlTagRegex.test(result)).toBe(true);
 });

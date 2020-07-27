@@ -18,17 +18,19 @@ const createTitle = (today) => {
   return isShopClosed ? 'Loja fechada!' : createTitleWithHoursList(hours);
 };
 
-export const showStoreIsClosedModal = (today) => {
-  const title = createTitle(today);
-
+export const createHTMLTitle = (today) => {
   const html = `
     <span style="font-weight: bold; font-size: 1.2rem;"> 
-      ${title}
+      ${createTitle(today)}
     </span>
   `;
 
+  return html.trim();
+};
+
+export const showStoreIsClosedModal = (today) => {
   const modalConfig = {
-    title: html,
+    title: createHTMLTitle(today),
     text: `
       Você pode olhar o catálogo à vontade
       e fazer o pedido quando a loja estiver aberta.
