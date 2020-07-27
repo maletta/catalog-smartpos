@@ -34,7 +34,7 @@ const addressType = [
   },
 ];
 
-const initialValue = {
+const addressInitialValue = {
   cep: '',
   endereco: '',
   tipoLogradouro: '',
@@ -49,7 +49,7 @@ const initialValue = {
 
 const RegisterData = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  const [address, setAddress] = useState(initialValue);
+  const [address, setAddress] = useState(addressInitialValue);
 
   const getAddress = async () => {
     const response = await utilsCEP.getAddressByCEP(shoppingCart.cep);
@@ -80,7 +80,7 @@ const RegisterData = () => {
     propsForm.setFieldValue('cidade', data.localidade);
 
     if (data.logradouro) {
-      const [tipoLogradouro] = data.logradouro.split(' ');
+      const tipoLogradouro = data.logradouro.split(' ')[0];
 
       propsForm.setFieldValue('endereco', data.logradouro);
       propsForm.setFieldValue('tipoLogradouro', tipoLogradouro);
@@ -198,7 +198,7 @@ const RegisterData = () => {
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
           totalCart={shoppingCart.totalCart}
-          deliveryCost={shoppingCart.deliveryFee || {}}
+          deliveryCost={shoppingCart.deliveryFee}
           couponValue={0}
         />
       </Grid>

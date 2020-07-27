@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import Button from 'components/Form/Button';
 import Grid from 'components/Grid';
 import history from 'utils/history';
+import paths from 'paths';
 
 const TitleEmptyCart = styled.h2`
   font-size: 2rem;
@@ -25,7 +26,7 @@ const EmptyCart = () => (
       value="Adicionar itens"
       type="submit"
       styleType="secondary"
-      onClick={() => history.push('/')}
+      onClick={() => history.push(paths.home)}
     />
   </Grid>
 );

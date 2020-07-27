@@ -10,7 +10,7 @@ const transformDataToAddress = (cep, addressData) => {
     ibge: codcidade,
     uf: estado,
   } = addressData;
-  const [tipoLogradouro] = endereco.split(' ');
+  const tipoLogradouro = endereco.split(' ')[0];
 
   return ({
     cep,

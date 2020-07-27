@@ -46,7 +46,7 @@ const PurchasePrices = ({
   deliveryCost,
   couponValue,
 }) => {
-  const total = totalCart + couponValue + (deliveryCost.cost || 0);
+  const total = totalCart + couponValue + deliveryCost.cost;
   const positiveTotal = total > 0 ? total : 0;
 
   return (

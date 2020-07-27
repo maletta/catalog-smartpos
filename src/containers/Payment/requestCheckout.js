@@ -9,6 +9,7 @@ const createOrder = (values) => {
     expiration_unformatted: null,
     cvv: null,
   };
+
   return axios.post(
     `${process.env.REACT_APP_MAIN_API}/v1/loja/${values.catalog_id}/pedido`,
     checkout,
