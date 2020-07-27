@@ -25,7 +25,7 @@ export const createHTMLTitle = (today) => {
     </span>
   `;
 
-  return html.trim();
+  return html;
 };
 
 export const showStoreIsClosedModal = (today) => {
