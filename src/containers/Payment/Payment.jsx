@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
-import axios from 'axios';
 import NumberFormat from 'react-number-format';
 import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
@@ -30,8 +29,8 @@ import Alert from 'components/Alert';
 import InputCreditCard from 'components/Form/InputCreditCard';
 import MaskInput from 'components/Form/MaskInput';
 import InputCvv from 'components/Form/InputCvv';
-
 import FilterContext from 'contexts/FilterContext';
+import { requestCEP } from 'api/cepRequests';
 
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
@@ -39,8 +38,13 @@ import AddressCreditCard from './components/AddressCreditCard';
 import Change from './components/Change';
 import Captcha from './components/Captcha';
 import Container from './components/PaymentContainer';
-
-const { PagSeguroDirectPayment } = window.window;
+import CreditCardImage from './components/CreditCardImage';
+import {
+  pagseguro,
+  getInstallments,
+  getPaymentMethods,
+} from './pagseguro';
+import { differenceBetweenValuesErrorModal, genericErrorModal, invalidCardModal } from './paymentModal'
 
 const addressType = [
   {
@@ -53,16 +57,9 @@ const addressType = [
   },
 ];
 
-const getCep = cep => axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-
 const RadioContainer = styled.div`
   display: flex;
   flex-direction: column;
-`;
-
-const CreditCardImg = styled.img`
-  border: 1px solid #818181;
-  border-radius: 5px;
 `;
 
 const Payment = () => {
@@ -72,6 +69,7 @@ const Payment = () => {
 
   const [stateCart] = useState(storage.getLocalCart());
   const totalCart = utilsCart.sumCartTotalPrice(stateCart);
+
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [offlinePayment, setOfflinePayment] = useState(
     shop.allowPayOnline === 0,
@@ -79,10 +77,11 @@ const Payment = () => {
   const [paymentsType, setPaymentType] = useState([]);
   const [creditCardBrands, setCreditCardBrands] = useState([]);
   const [hash, setHash] = useState('');
-  const [creditCardBrand, setCreditCardBrand] = useState({
-    name: 'none',
-    cvvSize: 0,
-  });
+  const [creditCardBrand, setCreditCardBrand] = useState('');
+  const isAmexCard = creditCardBrand === 'amex';
+  const cardFormat = isAmexCard ? '#### ###### ######' : '#### #### #### ####';
+  const cvvFormat = isAmexCard ? '####' : '###';
+
   const [installments, setInstallments] = useState([]);
   const [showAddress, setShowAddress] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -93,52 +92,37 @@ const Payment = () => {
   const recaptchaRef = useRef();
 
   const creditCardsImages = creditCardBrands.map(item => (
-    <CreditCardImg
+    <CreditCardImage
       key={item.code}
-      src={`https://stc.pagseguro.uol.com.br/${item.images.MEDIUM.path}`}
-      title={item.displayName}
-      alt={item.displayName}
+      name={item.displayName}
+      imagePath={item.images.MEDIUM.path}
     />
   ));
 
   const amount = totalCart + shoppingCart.deliveryFee.cost;
 
-  const getInstallments = (brand) => {
-    if (brand !== 'none') {
-      PagSeguroDirectPayment.getInstallments({
-        amount,
-        brand,
-        success(response) {
-          const installment = response.installments[brand];
-          if (installment) {
-            setInstallments(installment);
-          }
-        },
-      });
-    }
-  };
-
-  const handleLoadPaymentsPag = () => {
-    PagSeguroDirectPayment.getPaymentMethods({
-      amount,
-      success({ paymentMethods }) {
-        const { CREDIT_CARD } = paymentMethods;
-        const creditCardBrandList = Object.values(CREDIT_CARD.options);
-
-        setCreditCardBrands(creditCardBrandList);
-      },
-    });
-  };
-
   const cleanCart = () => {
     localStorage.removeItem('cartInit');
     storage.removeLocalCart();
-    updateShoppingCart({ basketCount: 0 });
+    updateShoppingCart({
+      cart: [],
+      withdraw: false,
+      cep: '',
+      deliveryFee: {
+        cost: 0,
+      },
+      basketCount: 0,
+      totalCart: 0,
+      personData: {},
+      address: {},
+      paymentType: '',
+      cardOverlay: false,
+    });
   };
 
   useEffect(() => {
-    getInstallments(creditCardBrand.name);
-  }, [creditCardBrand.name]);
+    getInstallments(creditCardBrand, amount, setInstallments);
+  }, [creditCardBrand]);
 
   useEffect(() => {
     updateFilter({
@@ -146,13 +130,13 @@ const Payment = () => {
       categoryName: '',
     });
 
-    getPayments(shop.id).then((response) => {
-      setPaymentType(response.data);
+    getPayments(shop.id).then(({ data }) => {
+      setPaymentType(data);
     });
 
-    getSessionPag(shop.id).then((response) => {
-      PagSeguroDirectPayment.setSessionId(response.data.session);
-      handleLoadPaymentsPag();
+    getSessionPag(shop.id).then(({ data }) => {
+      pagseguro.setSessionId(data.session);
+      getPaymentMethods(amount, setCreditCardBrands);
     });
   }, []);
 
@@ -162,27 +146,7 @@ const Payment = () => {
   };
 
   const getHashReady = () => {
-    PagSeguroDirectPayment.onSenderHashReady(handleSenderHashReady);
-  };
-
-  const differenceBetweenValuesErrorModal = () => {
-    Swal.fire({
-      type: 'warning',
-      title: 'Divergência nos valores',
-      text:
-        'Pedido com valores divergentes, faça o seu pedido novamente!',
-      onClose: () => {
-        history.push(paths.home);
-      },
-    });
-  };
-
-  const genericErrorModal = () => {
-    Swal.fire({
-      type: 'error',
-      title: 'Oops...',
-      text: 'Erro ao enviar o pedido',
-    });
+    pagseguro.onSenderHashReady(handleSenderHashReady);
   };
 
   const sendCheckoutCatch = (response) => {
@@ -255,9 +219,9 @@ const Payment = () => {
     if (formValues.gatewayPagseguro && hash) {
       const [expirationMonth, expirationYear] = formValues.expiration.split('/');
 
-      PagSeguroDirectPayment.createCardToken({
+      pagseguro.createCardToken({
         cardNumber: formValues.cardNumber_unformatted,
-        brand: creditCardBrand.name,
+        brand: creditCardBrand,
         cvv: formValues.cvv,
         expirationMonth,
         expirationYear,
@@ -270,13 +234,7 @@ const Payment = () => {
           sendCheckout(valuesPag, setSubmitting);
         },
         error() {
-          Swal.fire({
-            type: 'warning',
-            title: 'Cartão inválido',
-            text: 'Por favor verifique seu cartão de crédito!',
-            showConfirmButton: true,
-            showCloseButton: true,
-          });
+          invalidCardModal();
           setSubmitting(false);
           setLoading(false);
         },
@@ -405,7 +363,7 @@ const Payment = () => {
 
     if (value.length < 7) return;
 
-    PagSeguroDirectPayment.getBrand({
+    pagseguro.getBrand({
       cardBin: value.substring(0, 7),
       success({ brand }) {
         setCreditCardBrand(brand);
@@ -415,7 +373,7 @@ const Payment = () => {
           propsForm.setFieldValue('installments', firstInstallments);
         };
 
-        PagSeguroDirectPayment.getInstallments({
+        pagseguro.getInstallments({
           amount,
           brand: brand.name,
           success: installmentSuccess,
@@ -588,14 +546,10 @@ const Payment = () => {
                                 label="Número do cartão"
                                 name="cardNumber_unformatted"
                                 inputId="cardNumber_unformatted"
-                                format={
-                                  creditCardBrand.name === 'amex'
-                                    ? '#### ###### ######'
-                                    : '#### #### #### ####'
-                                }
+                                format={cardFormat}
                                 component={NumberFormat}
                                 customInput={InputCreditCard}
-                                brand={creditCardBrand.name}
+                                brand={creditCardBrand}
                                 onValueChange={handleChangeCreditCard(propsForm)}
                                 isRequired
                                 type="tel"
@@ -627,9 +581,7 @@ const Payment = () => {
                                 label="Cód. de segurança"
                                 name="cvv"
                                 inputId="cvv"
-                                format={
-                                  creditCardBrand.name === 'amex' ? '####' : '###'
-                                }
+                                format={cvvFormat}
                                 component={NumberFormat}
                                 customInput={InputCvv}
                                 onValueChange={(value) => {
@@ -679,46 +631,40 @@ const Payment = () => {
                                     type="tel"
                                     format="#####-###"
                                     component={MaskedNumberInput}
-                                    onValueChange={(values) => {
-                                      if (values.value.length < 8) return;
+                                    onValueChange={async ({ value, formattedValue }) => {
+                                      if (value.length < 8) return;
+
+                                      const { data } = await requestCEP(value);
+                                      const [tipoLogradouro, ...endereco] = data.logradouro.split(' ')[0];
 
                                       propsForm.setFieldValue(
                                         'cobrancaCep',
-                                        values.formattedValue,
+                                        formattedValue,
                                       );
-                                      getCep(values.value).then((address) => {
-                                        const tipoLogradouro = address.data.logradouro.substring(
-                                          0,
-                                          address.data.logradouro.indexOf(' ') + 1,
-                                        );
-                                        const endereco = address.data.logradouro.substring(
-                                          address.data.logradouro.indexOf(' ') + 1,
-                                        );
-                                        propsForm.setFieldValue(
-                                          'cobrancaBairro',
-                                          address.data.bairro,
-                                        );
-                                        propsForm.setFieldValue(
-                                          'cobrancaEstado',
-                                          address.data.uf,
-                                        );
-                                        propsForm.setFieldValue(
-                                          'cobrancaCodcidade',
-                                          address.data.ibge,
-                                        );
-                                        propsForm.setFieldValue(
-                                          'cobrancaCidade',
-                                          address.data.localidade,
-                                        );
-                                        propsForm.setFieldValue(
-                                          'cobrancaEndereco',
-                                          endereco.trim(),
-                                        );
-                                        propsForm.setFieldValue(
-                                          'cobrancaTipoLogradouro',
-                                          tipoLogradouro.trim(),
-                                        );
-                                      });
+                                      propsForm.setFieldValue(
+                                        'cobrancaBairro',
+                                        data.bairro,
+                                      );
+                                      propsForm.setFieldValue(
+                                        'cobrancaEstado',
+                                        data.uf,
+                                      );
+                                      propsForm.setFieldValue(
+                                        'cobrancaCodcidade',
+                                        data.ibge,
+                                      );
+                                      propsForm.setFieldValue(
+                                        'cobrancaCidade',
+                                        data.localidade,
+                                      );
+                                      propsForm.setFieldValue(
+                                        'cobrancaEndereco',
+                                        endereco.trim(),
+                                      );
+                                      propsForm.setFieldValue(
+                                        'cobrancaTipoLogradouro',
+                                        tipoLogradouro.trim(),
+                                      );
                                     }}
                                     isRequired
                                   />
@@ -789,7 +735,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>

@@ -14,9 +14,10 @@ import Button from 'components/Form/Button';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import PurchasePrices from 'containers/Cart/components/PurchasePrices';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import { requestCEP } from 'api/cepRequests';
 
 import addressSchema from './addressSchema';
-import utilsCEP from './cep';
+import { getAddressByCEP } from './cep';
 
 const Container = styled.div`
   background: #fff;
@@ -52,7 +53,7 @@ const RegisterData = () => {
   const [address, setAddress] = useState(addressInitialValue);
 
   const getAddress = async () => {
-    const response = await utilsCEP.getAddressByCEP(shoppingCart.cep);
+    const response = await getAddressByCEP(shoppingCart.cep);
     setAddress(response);
   };
 
@@ -72,7 +73,7 @@ const RegisterData = () => {
 
     propsForm.setFieldValue('cep', formattedValue);
 
-    const { data } = await utilsCEP.requestCEP(value);
+    const { data } = await requestCEP(value);
 
     propsForm.setFieldValue('bairro', data.bairro);
     propsForm.setFieldValue('estado', data.uf);

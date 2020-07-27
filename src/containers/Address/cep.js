@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const requestCEP = cep => axios.get(`https://viacep.com.br/ws/${cep}/json`);
+import { requestCEP } from 'api/cepRequests';
 
 const transformDataToAddress = (cep, addressData) => {
   const {
@@ -10,6 +8,7 @@ const transformDataToAddress = (cep, addressData) => {
     ibge: codcidade,
     uf: estado,
   } = addressData;
+
   const tipoLogradouro = endereco.split(' ')[0];
 
   return ({
@@ -23,12 +22,9 @@ const transformDataToAddress = (cep, addressData) => {
   });
 };
 
-const getAddressByCEP = async (cep) => {
+export const getAddressByCEP = async (cep) => {
   const { data } = await requestCEP(cep);
   return transformDataToAddress(cep, data);
 };
 
-export default {
-  getAddressByCEP,
-  requestCEP,
-};
+export default {};
