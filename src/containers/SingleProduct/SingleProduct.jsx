@@ -39,6 +39,8 @@ import ClosedStore from '../../assets/closed-store.svg';
 import ArrowLeft from '../../assets/arrow-left.svg';
 import ArrowRight from '../../assets/arrow-right.svg';
 import Modal from "../../components/Modal/Modal";
+import ReactImageMagnify from "react-image-magnify";
+import "../../components/Zoom/Zoom.css";
 
 const LoadingConteiner = styled.div`
   display: flex;
@@ -47,6 +49,7 @@ const LoadingConteiner = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 const Img = styled.img`
   width: 100%;
   border-radius: 5px;
@@ -59,7 +62,6 @@ const Img = styled.img`
 
 const ModalImg = styled.img`
   width: 100%;
-
 `;
 
 const Container = styled.div`
@@ -200,7 +202,7 @@ const CodCategory = styled.span`
 `;
 
 const IconFlecha = styled.div`
-    height: 80px;
+   height: 80px;
 
 
    @media (max-width: 576px) {
@@ -221,14 +223,13 @@ const IconFlecha = styled.div`
 
 
 const Flecha = styled.img`
-    width: 25px;
+  width: 25px;
 
-     @media (max-width: 576px) {
-    width: 15px;
+  @media (max-width: 576px) {
+     width: 15px;
    }
-
-
 `;
+
 const IconArrow = styled.div`
 
   width: 40px;
@@ -247,11 +248,13 @@ const IconArrow = styled.div`
   opacity: 0.7;
 `;
 
+
 const Arrow = styled.img`
   @media (max-width: 576px) {
     width: 8px;
   }
 `;
+
 const ImageBelow = styled.div`
   display: flex;
   flex-direction: row;
@@ -262,6 +265,7 @@ const ImageBelow = styled.div`
     display: none;
   }
 `;
+
 const SmallThumb = styled.div`
   display: flex;
   flex-direction: row;
@@ -280,13 +284,13 @@ const Thumb = styled.div`
   display: flex;
   cursor: pointer;
   ${props => props.IsActive && (
-    'box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);'
-  )}
+  'box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);'
+)}
 `;
 
 
 const AreaModal = styled.div`
- width: 500px;
+   width: 500px;
    @media (max-width: 660px) {
     width: 450px;
   }
@@ -295,25 +299,23 @@ const AreaModal = styled.div`
    width: 250px;
    }
 
-
    @media (max-width: 420px) {
    width: 180px;
    padding-top: 20px;
    }
-
 `;
 
 const Page = styled.div`
- color: white;
- text-align: center;
-
+  font-size: 1rem;
+  color: #A9A8A8;
+  opacity: 1;
+  text-align: center;
 `;
-
 
 const SingleProduct = (props) => {
   const { intl } = props;
   const [activeItemIndex, setActiveItemIndex] = useState(0);
-  const chevronWidth = 10;
+  const chevronWidth =10;
   const [product, setProduct] = useState({
     variants: [],
     hasVariant: true,
@@ -345,7 +347,7 @@ const SingleProduct = (props) => {
       Swal.fire({
         html: `<div>
           <div><img src="${ClosedStore}"></div>
-          <span class="foradohorario-titulo"> 
+          <span class="foradohorario-titulo">
           ${shop.today.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre:
           </span>
           <div class="foradohorario-hours">
@@ -595,7 +597,10 @@ const SingleProduct = (props) => {
               <ModalImg
                 src={image}
                 title={product.descricao}
-                alt="Produto "/>
+                alt="Produto"
+
+              />
+
               {product.images && (
                 product.images !== 'notFound' && ((product.images).map(img => (
                     <ModalImg
@@ -618,7 +623,10 @@ const SingleProduct = (props) => {
               {product.images && (
                 <>
                   {product.images !== 'notFound' && (
-                    <Thumb IsActive={activeItemIndex === 0}>
+
+
+
+                 <Thumb IsActive={activeItemIndex === 0}>
                       <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
                     </Thumb>
                   )}
@@ -657,16 +665,27 @@ const SingleProduct = (props) => {
             outsideChevron
             chevronWidth={chevronWidth}
           >
-            <Img
-              src={image}
-              title={product.descricao}
-              alt="Produto"
-              onClick={() => setPropsModal({
-                urlPhoto: image,
-                isOpen: true,
-              })}
 
-            />
+            <div className= "fluid">
+              <div className="fluid__image-container">
+            <ReactImageMagnify {...{  enlargedImageContainerClassName: "enlargedImage",
+                smallImage: {
+                  src: image,
+                  isFluidWidth: true,
+
+
+                },
+                largeImage: {
+                  src: image,
+                  width: 1200,
+                  height: 1800,
+                },
+
+
+              }} />
+              </div>
+
+            </div>
 
             {product.images && (
               product.images !== 'notFound' && ((product.images).map(img => (
@@ -683,8 +702,16 @@ const SingleProduct = (props) => {
             )}
           </ItemsCarousel>
         </Carousel>
-      ) : <Img src={image} title={product.descricao} alt="Produto" />}
+      ) : <Img src={image} title={product.descricao} alt="Produto"
+               onClick={() => setPropsModal({
+                 urlPhoto: image,
+                 isOpen: true,
+               })}
+
+      />}
     </>
+
+
   );
   return (
     <>

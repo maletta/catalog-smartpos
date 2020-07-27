@@ -2,11 +2,16 @@ import React from "react";
 import closeIcon from '../../assets/close-icon.svg';
 import styled from 'styled-components';
 
+const ImgClose = styled.img`
+  width: 28px;
+  cursor: pointer;
 
-const ModalGaleria = styled.div`
+`;
+
+const ModalGallery = styled.div`
   display: block;
   position: fixed;
-  z-index: 1000;
+  z-index: 1050;
   padding-top: 50px;
   left: 0;
   top: 0;
@@ -15,6 +20,7 @@ const ModalGaleria = styled.div`
   overflow: auto;
   background-color: rgb(0,0,0);
   background-color: rgba(0,0,0,0.8);
+
 `;
 
 
@@ -27,7 +33,6 @@ const ModalContent = styled.div`
   justify-content: center;
 
 `;
-
 /*
 .content {
   animation-name: zoom;
@@ -40,7 +45,6 @@ const ModalContent = styled.div`
   to {transform:scale(1)}
 }
 */
-
 
 const BtClose = styled.div `
   position: absolute;
@@ -60,14 +64,14 @@ const Modal = ({id = 'modal',onClose= () => {}, children}) => {
     if(e.target.id === id) onClose();
   }
   return (
-    <ModalGaleria id="modal"  onClick={handleOutsideClick}>
+    <ModalGallery id="modal"  onClick={handleOutsideClick}>
       <ModalContent>
         <BtClose onClick={onClose}>
-          <img src={closeIcon}/>
+          <ImgClose src={closeIcon}/>
         </BtClose>
         <div className="content ">{children}</div>
       </ModalContent>
-    </ModalGaleria>
+    </ModalGallery>
 
   );
 };
