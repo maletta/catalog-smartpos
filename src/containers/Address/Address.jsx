@@ -14,10 +14,12 @@ import Button from 'components/Form/Button';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import PurchasePrices from 'containers/Cart/components/PurchasePrices';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import ShopContext from 'contexts/ShopContext';
 import { requestCEP } from 'api/cepRequests';
 
 import addressSchema from './addressSchema';
 import { getAddressByCEP } from './cep';
+import { checkingDelivery } from '../Cart/components/cartFooterRequest';
 
 const Container = styled.div`
   background: #fff;
@@ -49,6 +51,7 @@ const addressInitialValue = {
 };
 
 const RegisterData = () => {
+  const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const [address, setAddress] = useState(addressInitialValue);
 
@@ -63,8 +66,12 @@ const RegisterData = () => {
     }
   }, []);
 
-  const handleSubmit = (values) => {
-    updateShoppingCart({ address: values });
+  const handleSubmit = async (values) => {
+    const { data } = await checkingDelivery(values.cep, shop.id);
+    updateShoppingCart({
+      address: values,
+      deliveryFee: data,
+    });
     history.push(paths.payment);
   };
 

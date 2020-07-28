@@ -3,7 +3,7 @@ const { PagSeguroDirectPayment } = window.window;
 export const pagseguro = PagSeguroDirectPayment;
 
 export const getInstallments = (brand, amount, setInstallments) => {
-  if (brand === '') return;
+  if (brand === 'none') return;
 
   pagseguro.getInstallments({
     amount,

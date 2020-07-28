@@ -4,7 +4,6 @@ import React, {
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import NumberFormat from 'react-number-format';
-import Swal from 'sweetalert2';
 import PropTypes from 'prop-types';
 
 import paths from 'paths';
@@ -44,7 +43,12 @@ import {
   getInstallments,
   getPaymentMethods,
 } from './pagseguro';
-import { differenceBetweenValuesErrorModal, genericErrorModal, invalidCardModal } from './paymentModal'
+import {
+  differenceBetweenValuesErrorModal,
+  genericErrorModal,
+  invalidCardModal,
+} from './paymentModal';
+import { cleanCart } from './payment-utils';
 
 const addressType = [
   {
@@ -77,7 +81,7 @@ const Payment = () => {
   const [paymentsType, setPaymentType] = useState([]);
   const [creditCardBrands, setCreditCardBrands] = useState([]);
   const [hash, setHash] = useState('');
-  const [creditCardBrand, setCreditCardBrand] = useState('');
+  const [creditCardBrand, setCreditCardBrand] = useState('none');
   const isAmexCard = creditCardBrand === 'amex';
   const cardFormat = isAmexCard ? '#### ###### ######' : '#### #### #### ####';
   const cvvFormat = isAmexCard ? '####' : '###';
@@ -90,6 +94,7 @@ const Payment = () => {
   const [changeError, setChangeError] = useState('');
 
   const recaptchaRef = useRef();
+  const resetRecaptcha = () => recaptchaRef.current.reset();
 
   const creditCardsImages = creditCardBrands.map(item => (
     <CreditCardImage
@@ -100,25 +105,6 @@ const Payment = () => {
   ));
 
   const amount = totalCart + shoppingCart.deliveryFee.cost;
-
-  const cleanCart = () => {
-    localStorage.removeItem('cartInit');
-    storage.removeLocalCart();
-    updateShoppingCart({
-      cart: [],
-      withdraw: false,
-      cep: '',
-      deliveryFee: {
-        cost: 0,
-      },
-      basketCount: 0,
-      totalCart: 0,
-      personData: {},
-      address: {},
-      paymentType: '',
-      cardOverlay: false,
-    });
-  };
 
   useEffect(() => {
     getInstallments(creditCardBrand, amount, setInstallments);
@@ -149,12 +135,12 @@ const Payment = () => {
     pagseguro.onSenderHashReady(handleSenderHashReady);
   };
 
-  const sendCheckoutCatch = (response) => {
-    const errorFn = response && response.status === 406
-      ? differenceBetweenValuesErrorModal
-      : genericErrorModal;
-
-    errorFn();
+  const sendCheckoutCatch = (statusCode) => {
+    if (statusCode === 406) {
+      differenceBetweenValuesErrorModal();
+    } else {
+      genericErrorModal();
+    }
   };
 
   const sendCheckout = async (values, setSubmitting) => {
@@ -169,10 +155,11 @@ const Payment = () => {
 
       history.push(paths.conclusion);
     } catch ({ response }) {
-      sendCheckoutCatch(response);
-      recaptchaRef.current.reset();
+      const statusCode = response ? response.status : 0;
+      sendCheckoutCatch(statusCode);
+      resetRecaptcha();
     } finally {
-      cleanCart();
+      cleanCart(updateShoppingCart);
       setLoading(false);
       setSubmitting(false);
     }
@@ -309,16 +296,20 @@ const Payment = () => {
     />
   );
 
-  const AlertPaymentType = ({ propsForm }) => (
-    <Alert
-      text={
-        propsForm.values.gatewayPagseguro
-          && shop.allowPayOnline
-          ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
-          : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
-      }
-    />
-  );
+  const AlertPaymentType = ({ propsForm }) => {
+    const { values } = propsForm;
+    const temp = values.gatewayPagseguro && shop.allowPayOnline;
+
+    return (
+      <Alert
+        text={
+          temp
+            ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
+            : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
+        }
+      />
+    );
+  };
 
   AlertPaymentType.propTypes = {
     propsForm: PropTypes.any.isRequired,
@@ -343,6 +334,7 @@ const Payment = () => {
 
   const handleChangeMoney = propsForm => (value) => {
     propsForm.setFieldValue('valorRecebido', value.floatValue);
+
     const totalCartValue = shoppingCart.totalCart;
     const fee = shoppingCart.deliveryFee.cost;
     const totalValue = totalCartValue + fee;
@@ -350,11 +342,10 @@ const Payment = () => {
 
     if (changeValue < 0) {
       setChangeError('Troco não pode ser menor que o valor de compra!');
-      return;
+    } else {
+      setChangeError('');
+      setMoneyChange(changeValue);
     }
-
-    setChangeError('');
-    setMoneyChange(changeValue);
   };
 
   const handleChangeCreditCard = propsForm => ({ value, formattedValue }) => {
@@ -366,7 +357,7 @@ const Payment = () => {
     pagseguro.getBrand({
       cardBin: value.substring(0, 7),
       success({ brand }) {
-        setCreditCardBrand(brand);
+        setCreditCardBrand(brand.name);
 
         const installmentSuccess = (resp) => {
           const [firstInstallments] = resp.installments[brand.name];

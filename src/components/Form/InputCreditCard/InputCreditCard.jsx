@@ -132,10 +132,7 @@ InputCreditCard.propTypes = {
   formatter: PropTypes.func,
   hasAccess: PropTypes.bool,
   isSelectedOnFocus: PropTypes.bool,
-  brand: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.string,
-  ]),
+  brand: PropTypes.string,
   optionalLabel: PropTypes.string,
   inputId: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
