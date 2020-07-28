@@ -203,33 +203,33 @@ const Payment = () => {
     const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
     updateShoppingCart({ paymentType });
 
-    if (formValues.gatewayPagseguro && hash) {
-      const [expirationMonth, expirationYear] = formValues.expiration.split('/');
-
-      pagseguro.createCardToken({
-        cardNumber: formValues.cardNumber_unformatted,
-        brand: creditCardBrand,
-        cvv: formValues.cvv,
-        expirationMonth,
-        expirationYear,
-        success(response) {
-          const valuesPag = {
-            ...values,
-            senderHash: hash,
-            cardTokenPag: response.card.token,
-          };
-          sendCheckout(valuesPag, setSubmitting);
-        },
-        error() {
-          invalidCardModal();
-          setSubmitting(false);
-          setLoading(false);
-        },
-      });
+    if (!formValues.gatewayPagseguro && !hash) {
+      sendCheckout(values, setSubmitting);
       return;
     }
 
-    sendCheckout(values, setSubmitting);
+    const [expirationMonth, expirationYear] = formValues.expiration.split('/');
+
+    pagseguro.createCardToken({
+      cardNumber: formValues.cardNumber_unformatted,
+      brand: creditCardBrand,
+      cvv: formValues.cvv,
+      expirationMonth,
+      expirationYear,
+      success({ card }) {
+        const valuesPag = {
+          ...values,
+          senderHash: hash,
+          cardTokenPag: card.token,
+        };
+        sendCheckout(valuesPag, setSubmitting);
+      },
+      error() {
+        invalidCardModal();
+        setSubmitting(false);
+        setLoading(false);
+      },
+    });
   };
 
   const initialValues = {
@@ -278,36 +278,39 @@ const Payment = () => {
     cobrancaTipoLogradouro: shoppingCart.address.tipoLogradouro,
   };
 
-  const MinimumPriceAlert = () => (
-    <Alert
-      typeAlert="warning"
-      text={`Valor mínimo para pagamento on-line ${
-        formatCurrency(shop.minValuePayOnline)}
-      `}
-    />
-  );
-
-  const MaximumPriceAlert = () => (
-    <Alert
-      typeAlert="warning"
-      text={`Valor máximo para pagamento on-line ${
-        formatCurrency(shop.maxValuePayOnline)}
-      `}
-    />
-  );
-
-  const AlertPaymentType = ({ propsForm }) => {
-    const { values } = propsForm;
-    const temp = values.gatewayPagseguro && shop.allowPayOnline;
+  const MinimumPriceAlert = () => {
+    const formattedMinValue = formatCurrency(shop.minValuePayOnline);
+    const alertText = `Valor mínimo para pagamento on-line ${formattedMinValue}`;
 
     return (
       <Alert
-        text={
-          temp
-            ? 'Finalize a compra para realizar o pagamento pelo PagSeguro'
-            : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'
-        }
+        typeAlert="warning"
+        text={alertText}
       />
+    );
+  };
+
+  const MaximumPriceAlert = () => {
+    const formattedMaxValue = formatCurrency(shop.maxValuePayOnline);
+    const alertText = `Valor máximo para pagamento on-line ${formattedMaxValue}`;
+
+    return (
+      <Alert
+        typeAlert="warning"
+        text={alertText}
+      />
+    );
+  };
+
+  const AlertPaymentType = ({ propsForm }) => {
+    const { values } = propsForm;
+    const isPagseguroPayment = values.gatewayPagseguro && shop.allowPayOnline;
+    const pagseguroPaymentText = 'Finalize a compra para realizar o pagamento pelo PagSeguro';
+    const directPaymentText = 'Atenção: você irá realizar o pagamento diretamente com o vendedor!';
+    const alertText = isPagseguroPayment ? pagseguroPaymentText : directPaymentText;
+
+    return (
+      <Alert text={alertText} />
     );
   };
 
@@ -726,7 +729,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                      )}
+                    )}
                   </>
                 </Grid>
               </Row>

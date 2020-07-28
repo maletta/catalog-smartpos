@@ -79,20 +79,8 @@ const CartFooter = ({
     setDeliveryCost({});
   };
 
-  const mockShop = {
-    today: {
-      closed: false,
-      hours: [
-        { openHour: '12:00', closeHour: '18:00' },
-        { openHour: '12:00', closeHour: '18:00' },
-        { openHour: '12:00', closeHour: '18:00' },
-      ],
-    },
-  };
-
   return (
     <>
-      <button type="button" onClick={() => showStoreIsClosedModal(mockShop.today)}>MODAL</button>
       <Grid cols="12" className="d-flex justify-content-between flex-wrap">
         <DeliveryContainer>
           <p>Entrega:</p>
