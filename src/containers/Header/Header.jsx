@@ -249,7 +249,7 @@ const Header = ({
             cols="2 2 2 2 1"
           >
             <div>
-              {shop.is_enableOrder && (
+              {shop.is_enableOrder ? (
                 <CartIcon
                   onClick={onClickCartIcon}
                   className="fa fa-shopping-cart"
@@ -258,7 +258,7 @@ const Header = ({
                     {cartBasketCount}
                   </CartCounter>
                 </CartIcon>
-              )}
+              ) : null}
             </div>
           </Grid>
         </Row>
