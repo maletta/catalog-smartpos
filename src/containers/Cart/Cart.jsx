@@ -52,7 +52,11 @@ const Cart = () => {
 
     storage.updateLocalCart(stateCartClone);
     setStateCart(stateCartClone);
-    updateShoppingCart({ cart: stateCartClone, basketCount });
+    updateShoppingCart({
+      cart: stateCartClone,
+      basketCount,
+      cardOverlay: false,
+    });
   };
 
   const hasItems = stateCart.length > 0;
