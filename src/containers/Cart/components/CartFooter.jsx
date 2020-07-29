@@ -79,6 +79,8 @@ const CartFooter = ({
     setDeliveryCost({});
   };
 
+  const isOnlyPickup = shop.deliveryMode === 'PICKUP';
+
   return (
     <>
       <Grid cols="12" className="d-flex justify-content-between flex-wrap">
@@ -96,18 +98,20 @@ const CartFooter = ({
             />
             Retirar no local
           </label>
-          <label htmlFor="entrega">
-            <input
-              id="entrega"
-              style={{ marginRight: '5px' }}
-              type="radio"
-              name="delivery"
-              value="shipping-fee"
-              checked={delivery === 'shipping-fee'}
-              onChange={handleChangeDeliveryFee}
-            />
-            Calcular frete
-          </label>
+          {!isOnlyPickup && (
+            <label htmlFor="entrega">
+              <input
+                id="entrega"
+                style={{ marginRight: '5px' }}
+                type="radio"
+                name="delivery"
+                value="shipping-fee"
+                checked={delivery === 'shipping-fee'}
+                onChange={handleChangeDeliveryFee}
+              />
+              Calcular frete
+            </label>
+          )}
           {delivery === 'shipping-fee' && (
             <div style={{ display: 'flex', alignItems: 'flex-start' }}>
               <CEPContainer>
