@@ -23,7 +23,6 @@ const Cart = () => {
   const [deliveryCost, setDeliveryCost] = useState({});
 
   const totalCart = utilsCart.sumCartTotalPrice(stateCart);
-  // const basketCountCart = utilsCart.sumCartQuantity(stateCart);
 
   useEffect(() => {
     updateFilter({

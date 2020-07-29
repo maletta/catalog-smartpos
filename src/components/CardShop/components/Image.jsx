@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import NoImage from '../../assets/no-image.png';
 
+import NoImage from 'assets/no-image.png';
 
 const Img = styled.img`
   height: 100px;
@@ -20,11 +20,12 @@ const Img = styled.img`
   }
 `;
 
-
 const ImageBox = (props) => {
   const { product, shoppingCart, url } = props;
   const { id } = product;
+
   const [imageProduct, setImage] = useState(NoImage);
+
   useEffect(() => {
     const img = new Image();
     img.src = url;
@@ -32,12 +33,14 @@ const ImageBox = (props) => {
     img.onload = () => {
       setImage(url);
     };
+
     img.onError = () => {
       setImage(NoImage);
     };
   }, [shoppingCart, id]);
+
   return (
-    <Img src={imageProduct} alt="product" />
+    <Img src={imageProduct} alt="produto" />
   );
 };
 

@@ -1,14 +1,17 @@
 import React, { useState, useContext, useLayoutEffect } from 'react';
 import styled from 'styled-components';
-import ShoppingCartContext from 'contexts/ShoppingCartContext';
-import history from 'utils/history';
 import { injectIntl, intlShape } from 'react-intl';
-import slug from 'utils/slug';
 import isEmpty from 'lodash/isEmpty';
-import Trash from '../../assets/trash.svg';
-import EmptyCart from '../../assets/emptyCart.svg';
-import Close from '../../assets/close.svg';
-import ImageBox from './Image';
+
+import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import storage from 'utils/storage';
+import history from 'utils/history';
+import slug from 'utils/slug';
+import Trash from 'assets/trash.svg';
+import Close from 'assets/close.svg';
+
+import EmptyCartMessage from './components/EmptyCartMessage';
+import ImageBox from './components/Image';
 
 const Overlay = styled.div`
   position: fixed;
@@ -25,6 +28,7 @@ const Overlay = styled.div`
     opacity: 0.8;
   }
 `;
+
 const CardOverlay = styled.div`
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: fixed;
@@ -63,6 +67,7 @@ const CardOverlay = styled.div`
     }
   `}
 `;
+
 const HeaderCard = styled.div`
   width: 100%;
   height: 45px;
@@ -138,7 +143,6 @@ const QuantityText = styled.span`
   color: gray;
 `;
 
-
 const ControlQuantity = styled.div`
   display: flex;
   flex-direction: row;
@@ -148,6 +152,7 @@ const ControlQuantity = styled.div`
   margin-left: 2px;
   padding-left: 10px;
 `;
+
 const Delete = styled.div`
   display: flex;
   flex-direction: column;
@@ -177,26 +182,6 @@ const Controls = styled.div`
   cursor: pointer;
 `;
 
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-  margin-top: 20px;
-`;
-
-const EmptyTitle = styled.span`
-  font-weight: 700;
-  margin-top: 50px;
-`;
-
-const EmptySubTitle = styled.span`
-  margin: 30px;
-  margin-top: 10px;
-  text-align: center;
-`;
-
 const TotalTitle = styled.div`
   font-weight: 700;
   color: var(--color-header);
@@ -209,7 +194,6 @@ const SubTotalTitle = styled.div`
   display: flex;
   flex-direction: row;
 `;
-
 
 const Value = styled.div`
   justify-self: flex-end;
@@ -255,17 +239,16 @@ const CloseIcon = styled.img`
   cursor: pointer;
 `;
 
-
 const CardShop = ({ intl }) => {
   const [closeCardOverlay, setCardOverlay] = useState(false);
   const [totalCart, setTotalCart] = useState(0);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  const [stateCart, setStateCart] = useState(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
+  const [stateCart, setStateCart] = useState(storage.getLocalCart());
 
   useLayoutEffect(() => {
     setCardOverlay(shoppingCart.cardOverlay);
+    setStateCart(storage.getLocalCart());
 
-    setStateCart(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
     if (stateCart.reduce((count, val) => (count + val.quantity), 0) !== shoppingCart.basketCount) {
       updateShoppingCart({
         basketCount: stateCart.reduce((count, val) => (count + val.quantity), 0),
@@ -301,15 +284,21 @@ const CardShop = ({ intl }) => {
     const { quantity } = item;
     const newQuantity = quantity + 1;
     const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+
     cart.map((i, index) => {
       if (i.uuid === item.uuid) {
         cart[index].quantity = newQuantity;
       }
+
       return false;
     });
+
     localStorage.setItem('cart', JSON.stringify(cart));
+
     setStateCart(cart);
+
     const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
+
     updateShoppingCart({
       basketCount,
     });
@@ -318,6 +307,7 @@ const CardShop = ({ intl }) => {
   const removeProduct = (item) => {
     const { quantity } = item;
     const newQuantity = quantity - 1;
+
     if (newQuantity === 0) {
       deleteItem(item);
     } else {
@@ -442,16 +432,7 @@ const CardShop = ({ intl }) => {
                 </BuyMore>
               </span>
             </>
-          ) : (
-            <EmptyState>
-              <img alt="empty" src={EmptyCart} width="180px;" />
-              <EmptyTitle>Seu carrinho está vazio</EmptyTitle>
-              <EmptySubTitle>
-                Navegue pelo site e escolha os
-                produtos desejados para adicionar em seu carrinho de compras.
-              </EmptySubTitle>
-            </EmptyState>
-          )}
+          ) : <EmptyCartMessage />}
         </div>
       </CardOverlay>
     </>
