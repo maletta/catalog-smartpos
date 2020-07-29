@@ -41,8 +41,7 @@ import ClosedStore from '../../assets/closed-store.svg';
 import ArrowLeft from '../../assets/arrow-left.svg';
 import ArrowRight from '../../assets/arrow-right.svg';
 
-
-const LoadingConteiner = styled.div`
+const LoadingContainer = styled.div`
   display: flex;
   justify-self: center;
   align-content: center;
@@ -775,9 +774,9 @@ const SingleProduct = (props) => {
             </>
           ) : (
             <>
-              <LoadingConteiner>
+              <LoadingContainer>
                 <span><Spinner /></span>
-              </LoadingConteiner>
+              </LoadingContainer>
             </>
           )}
 

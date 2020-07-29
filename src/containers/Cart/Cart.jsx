@@ -17,13 +17,13 @@ import ItemsContainer from './components/ItemsContainer';
 
 const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
 
   const [stateCart, setStateCart] = useState([]);
   const [deliveryCost, setDeliveryCost] = useState({});
 
   const totalCart = utilsCart.sumCartTotalPrice(stateCart);
-  const basketCountCart = utilsCart.sumCartQuantity(stateCart);
+  // const basketCountCart = utilsCart.sumCartQuantity(stateCart);
 
   useEffect(() => {
     updateFilter({
@@ -78,9 +78,9 @@ const Cart = () => {
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
-          basketCountCart={basketCountCart}
-          totalCart={totalCart}
-          deliveryCost={deliveryCost}
+          basketCountCart={shoppingCart.basketCount}
+          totalCart={shoppingCart.totalCart}
+          deliveryCost={shoppingCart.deliveryFee}
           couponValue={0}
         />
       </Grid>
