@@ -348,7 +348,7 @@ const Payment = () => {
       setChangeError('Troco não pode ser menor que o valor de compra!');
     } else {
       setChangeError('');
-      setMoneyChange(changeValue);
+      setMoneyChange(changeValue || 0);
     }
   };
 
