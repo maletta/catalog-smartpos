@@ -8,6 +8,7 @@ import Grid from 'components/Grid';
 import formatCurrency from 'utils/formatCurrency';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import RadioButton from 'components/RadioGroup/RadioButton';
 
 import { checkingDelivery } from './cartFooterRequest';
 import { redirectToHome, redirectToRegisterData } from './cartFooterRouter';
@@ -80,37 +81,31 @@ const CartFooter = ({
   };
 
   const isOnlyPickup = shop.deliveryMode === 'PICKUP';
+  const isOnlyDelivery = shop.deliveryMode === 'DELIVERY';
+  const isBothPickupAndDelivery = shop.deliveryMode === 'BOTH';
 
   return (
     <>
       <Grid cols="12" className="d-flex justify-content-between flex-wrap">
         <DeliveryContainer>
           <p>Entrega:</p>
-          <label htmlFor="retirada">
-            <input
-              id="retirada"
-              style={{ marginRight: '5px' }}
-              type="radio"
-              name="delivery"
-              value="retrieve"
-              checked={delivery === 'retrieve'}
-              onChange={handleChangeRetrieve}
-            />
-            Retirar no local
-          </label>
+          <RadioButton
+            id="retirada"
+            name="delivery"
+            label="Retirar no local"
+            value="retrieve"
+            checked={delivery === 'retrieve'}
+            onChange={handleChangeRetrieve}
+          />
           {!isOnlyPickup && (
-            <label htmlFor="entrega">
-              <input
-                id="entrega"
-                style={{ marginRight: '5px' }}
-                type="radio"
-                name="delivery"
-                value="shipping-fee"
-                checked={delivery === 'shipping-fee'}
-                onChange={handleChangeDeliveryFee}
-              />
-              Calcular frete
-            </label>
+            <RadioButton
+              id="entrega"
+              name="delivery"
+              label="Calcular frete"
+              value="shipping-fee"
+              checked={delivery === 'shipping-fee'}
+              onChange={handleChangeDeliveryFee}
+            />
           )}
           {delivery === 'shipping-fee' && (
             <div style={{ display: 'flex', alignItems: 'flex-start' }}>

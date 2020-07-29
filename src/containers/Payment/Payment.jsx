@@ -30,6 +30,7 @@ import MaskInput from 'components/Form/MaskInput';
 import InputCvv from 'components/Form/InputCvv';
 import FilterContext from 'contexts/FilterContext';
 import { requestCEP } from 'api/cepRequests';
+import RadioButton from 'components/RadioGroup/RadioButton';
 
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
@@ -392,32 +393,22 @@ const Payment = () => {
                     <SectionTitle>Pagamento</SectionTitle>
                     {shop.allowPayOnline ? (
                       <RadioContainer>
-                        <label
-                          htmlFor="physicalPayment"
-                        >
-                          <input
-                            name="paymentType"
-                            type="radio"
-                            style={{ marginRight: '5px' }}
-                            id="physicalPayment"
-                            value="offlinePayment"
-                            checked={offlinePayment}
-                            onChange={handleChangePhysicalPayment(propsForm)}
-                          />
-                          Pague na entrega ou retirada
-                        </label>
-                        <label htmlFor="onlinePayment">
-                          <input
-                            name="paymentType"
-                            type="radio"
-                            style={{ marginRight: '5px' }}
-                            id="onlinePayment"
-                            value="gatewayPagseguro"
-                            checked={!offlinePayment}
-                            onChange={handleChangeOnlinePayment(propsForm)}
-                          />
-                          Pague on-line
-                        </label>
+                        <RadioButton
+                          id="physicalPayment"
+                          name="paymentType"
+                          label="Pague na entrega ou retirada"
+                          value="offlinePayment"
+                          checked={offlinePayment}
+                          onChange={handleChangePhysicalPayment(propsForm)}
+                        />
+                        <RadioButton
+                          id="onlinePayment"
+                          name="paymentType"
+                          label="Pague on-line"
+                          value="gatewayPagseguro"
+                          checked={!offlinePayment}
+                          onChange={handleChangeOnlinePayment(propsForm)}
+                        />
                       </RadioContainer>
                     ) : null}
                     <br />
@@ -729,7 +720,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>
