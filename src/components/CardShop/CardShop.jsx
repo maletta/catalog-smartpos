@@ -2,16 +2,18 @@ import React, { useState, useContext, useLayoutEffect } from 'react';
 import styled from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 
+import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import storage from 'utils/storage';
 import history from 'utils/history';
 import slug from 'utils/slug';
 import formatCurrency from 'utils/formatCurrency';
 import Trash from 'assets/trash.svg';
-import Close from 'assets/close.svg';
 
-import EmptyCartMessage from './components/EmptyCartMessage';
 import ImageBox from './components/Image';
+import EmptyCartMessage from './components/EmptyCartMessage';
+import CartHeader from './components/CartHeader';
+import ItemQuantity from './components/ItemQuantity';
 
 const Overlay = styled.div`
   position: fixed;
@@ -20,7 +22,7 @@ const Overlay = styled.div`
   opacity: 0.5;
   width: 100%;
   height: 100%;
-  z-index: 7777;
+  z-index: 2;
   ${props => props.closeCardOverlay && ' display: flex;'}
   ${props => !props.closeCardOverlay && 'display: none;'}
 
@@ -68,40 +70,6 @@ const CardOverlay = styled.div`
   `}
 `;
 
-const HeaderCard = styled.div`
-  width: 100%;
-  height: 45px;
-  color: white;
-  background-color: var(--color-header);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  align-content: center;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-
-const CloseCart = styled.span`
-  display: flex;
-  flex: 1;
-  padding-left: 80px;
-
-  @media (max-width: 768px) {
-    padding-left: 50px;
-  }
-`;
-
-const TitleCart = styled.span`
-  padding-left: 110px;
-
-  @media (max-width: 768px) {
-    padding-left: 90px;
-  }
-`;
-
 const Item = styled.div`
   display: flex;
   flex-direction: row;
@@ -128,31 +96,6 @@ const Description = styled.span`
   margin-left: 25px;
 `;
 
-const Quantity = styled.div`
-  display: flex;
-  align-self: flex-start;
-  flex-direction: column;
-  margin-left: 20px;
-`;
-
-const QuantityText = styled.span`
-  font-weight: 500;
-  font-size: 10px;
-  margin-left: 5px;
-  margin-top: 20px;
-  color: gray;
-`;
-
-const ControlQuantity = styled.div`
-  display: flex;
-  flex-direction: row;
-  border: 1px solid lightgray;
-  border-radius: 2px;
-  margin-top: 5px;
-  margin-left: 2px;
-  padding-left: 10px;
-`;
-
 const Delete = styled.div`
   display: flex;
   flex-direction: column;
@@ -174,12 +117,6 @@ const IconDelete = styled.img`
   cursor: pointer;
   justify-content: flex-end;
   margin-left: 10px;
-`;
-
-const Controls = styled.div`
-  color: var(--color-primary);
-  margin-right: 10px;
-  cursor: pointer;
 `;
 
 const TotalTitle = styled.div`
@@ -229,14 +166,6 @@ const BuyMore = styled.div`
 
 const FinishText = styled.span`
   padding: 15px;
-`;
-
-const ControlButton = styled.span`
-  color: black;
-`;
-
-const CloseIcon = styled.img`
-  cursor: pointer;
 `;
 
 const CardShop = () => {
@@ -328,67 +257,73 @@ const CardShop = () => {
     }
   };
 
+  const hasItems = stateCart.length > 0;
+
+  const calculateItemPrice = (item) => {
+    const { pricing, quantity } = item;
+    const { product, modifiers } = pricing;
+
+    return formatCurrency((product + modifiers) * quantity);
+  };
+
+  const reloadPage = () => window.location.reload();
+
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const createItemImageURL = (item) => {
+    const { id, atualizacao } = item;
+    const baseImgURL = process.env.REACT_APP_IMG_API;
+    return `${baseImgURL}product/${id}?lastUpdate=${atualizacao}`;
+  };
+
+  const createVariantText = (item) => {
+    const { variant } = item;
+    return isEmpty(variant) ? '' : `(${variant.name})`;
+  };
+
   return (
     <>
       <Overlay
-        onClick={() => closeCard()}
+        onClick={closeCard}
         closeCardOverlay={closeCardOverlay}
       />
       <CardOverlay closeCardOverlay={closeCardOverlay}>
-        <HeaderCard>
-          <TitleCart>{`Meu carrinho (${shoppingCart.basketCount})`}</TitleCart>
-          <CloseCart>
-            <CloseIcon src={Close} width="15px;" alt="close" onClick={() => closeCard()} />
-          </CloseCart>
-        </HeaderCard>
+        <CartHeader
+          basketCount={shoppingCart.basketCount}
+          onClose={closeCard}
+        />
         <div>
-
-          {stateCart.length > 0 ? (
+          {hasItems ? (
             <>
               {stateCart.map(item => (
-                <div key={item.codigo + item.descricao}>
+                <div key={item.id + item.descricao}>
                   <Item>
                     <ImageContainer onClick={() => setTimeout(() => {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      closeCard(false);
+                      scrollTop();
+                      closeCard();
                       history.push(`/item/${item.id}/${slug(item.descricao)}`);
-                      window.location.reload();
+                      reloadPage();
                     }, 500)}
                     >
-
-                      <div className="card-image">
-                        {item && <ImageBox url={`${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`} shoppingCart={shoppingCart} product={item} />}
-                      </div>
+                      <ImageBox
+                        url={createItemImageURL(item)}
+                        shoppingCart={shoppingCart}
+                        product={item}
+                      />
                     </ImageContainer>
                     <Info>
                       <Description>
-                        {`${item.descricao}${!isEmpty(item.variant) ? ` (${item.variant.name})` : ('')}`}
+                        {`${item.descricao} ${createVariantText(item)}`}
                       </Description>
-                      <Quantity>
-                        <QuantityText> Quantidade </QuantityText>
-                        <ControlQuantity>
-                          <Controls>
-                            <ControlButton onClick={() => removeProduct(item)}> - </ControlButton>
-                          </Controls>
-                          <Controls>
-                            <span>
-                              {item.quantity}
-                            </span>
-                          </Controls>
-                          <Controls>
-                            <ControlButton onClick={() => addProduct(item)}> + </ControlButton>
-                          </Controls>
-                        </ControlQuantity>
-                      </Quantity>
+                      <ItemQuantity
+                        onRemove={() => removeProduct(item)}
+                        onAdd={() => addProduct(item)}
+                        quantity={item.quantity}
+                      />
                     </Info>
                     <Delete>
                       <IconDelete src={Trash} onClick={() => deleteItem(item)} />
-                      <Price>
-                        {item.pricing
-                          && formatCurrency(
-                            (item.pricing.product + item.pricing.modifiers) * item.quantity,
-                          )}
-                      </Price>
+                      <Price>{calculateItemPrice(item)}</Price>
                     </Delete>
                     <div />
                   </Item>
@@ -405,32 +340,26 @@ const CardShop = () => {
                 </SubTotalTitle>
                 <Finish onClick={() => {
                   setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    scrollTop();
                     updateShoppingCart({
                       cardOverlay: false,
                     });
-                    history.push('/carrinho');
+                    history.push(paths.cart);
                   }, 500);
                 }}
                 >
-                  <FinishText>
-                    <span>
-                      FINALIZAR COMPRA
-                    </span>
-                  </FinishText>
+                  <FinishText>FINALIZAR COMPRA</FinishText>
                 </Finish>
 
                 <BuyMore onClick={() => {
                   setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    closeCard(false);
-                    history.push('/');
+                    scrollTop();
+                    closeCard();
+                    history.push(paths.home);
                   }, 500);
                 }}
                 >
-                  <span>
-                    ADICIONAR MAIS PRODUTOS
-                  </span>
+                  ADICIONAR MAIS PRODUTOS
                 </BuyMore>
               </span>
             </>
