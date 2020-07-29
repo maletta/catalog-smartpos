@@ -77,7 +77,6 @@ const RegisterData = () => {
                   <p>Cadastro de pessoa:</p>
                   <RadioButton
                     name="personType"
-                    id="naturalPerson"
                     label="Física"
                     value="FISICA"
                     checked={personType === 'FISICA'}
@@ -86,7 +85,6 @@ const RegisterData = () => {
                   <span style={{ marginLeft: '20px' }} />
                   <RadioButton
                     name="personType"
-                    id="legalPerson"
                     label="Jurídica"
                     value="JURIDICA"
                     checked={personType === 'JURIDICA'}

@@ -3,8 +3,15 @@ import PropTypes from 'prop-types';
 
 const RadioButton = (props) => {
   const {
-    label, id, name, checked, onChange, value,
+    label,
+    name,
+    checked,
+    onChange,
+    value,
   } = props;
+
+  const id = name + label + value;
+
   return (
     <>
       <label htmlFor={id}>
@@ -25,7 +32,6 @@ const RadioButton = (props) => {
 
 RadioButton.propTypes = {
   label: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   checked: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,

@@ -394,7 +394,6 @@ const Payment = () => {
                     {shop.allowPayOnline ? (
                       <RadioContainer>
                         <RadioButton
-                          id="physicalPayment"
                           name="paymentType"
                           label="Pague na entrega ou retirada"
                           value="offlinePayment"
@@ -402,7 +401,6 @@ const Payment = () => {
                           onChange={handleChangePhysicalPayment(propsForm)}
                         />
                         <RadioButton
-                          id="onlinePayment"
                           name="paymentType"
                           label="Pague on-line"
                           value="gatewayPagseguro"

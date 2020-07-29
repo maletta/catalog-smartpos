@@ -16,7 +16,8 @@ import { CEPContainer, DeliveryContainer } from './cartFooterStyled';
 import { showStoreIsClosedModal } from './cartFooterModal';
 
 const verifyRedirect = (shop) => {
-  if (shop.allowOrderOutsideBusinessHours || !shop.closeNow) {
+  const isShopOpen = shop.allowOrderOutsideBusinessHours || !shop.closeNow;
+  if (isShopOpen) {
     redirectToRegisterData();
   } else {
     showStoreIsClosedModal(shop);
@@ -26,9 +27,14 @@ const verifyRedirect = (shop) => {
 const CartFooter = ({
   updateFilter, deliveryCost, setDeliveryCost,
 }) => {
-  const { shop } = useContext(ShopContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
-  const [delivery, setDelivery] = useState('retrieve');
+  const { shop } = useContext(ShopContext);
+
+  const isOnlyPickup = shop.deliveryMode === 'PICKUP';
+  const isOnlyDelivery = shop.deliveryMode === 'DELIVERY';
+  const deliveryType = shop.deliveryMode === 'BOTH' ? 'PICKUP' : shop.deliveryMode;
+  const [delivery, setDelivery] = useState(deliveryType);
+
   const [cep, setCEP] = useState('');
   const [loadingDeliveryCost, setLoadingDeliveryCost] = useState(false);
   const [flagDelivery, setFlagDelivery] = useState(false);
@@ -38,7 +44,7 @@ const CartFooter = ({
     : 'Não entrega na sua região';
 
   const deliveryText = flagDelivery ? deliveryFeeText : '';
-  const isNotDeliverable = delivery === 'retrieve' ? false : !deliveryCost.isDeliverable;
+  const isNotDeliverable = delivery === 'PICKUP' ? false : !deliveryCost.isDeliverable;
 
   const calculateDeliveryCost = async () => {
     setLoadingDeliveryCost(true);
@@ -63,10 +69,9 @@ const CartFooter = ({
   };
 
   const handleChangeCEP = ({ target }) => {
-    const cepWithoutDash = target.value.replace('-', '');
-    const cepWithoutWhiteSpace = cepWithoutDash.trim();
-    setCEP(cepWithoutWhiteSpace);
-    updateShoppingCart({ cep: cepWithoutWhiteSpace });
+    const cepNumbers = target.value.replace('-', '').trim();
+    setCEP(cepNumbers);
+    updateShoppingCart({ cep: cepNumbers });
   };
 
   const handleChangeDeliveryFee = ({ target }) => {
@@ -80,34 +85,30 @@ const CartFooter = ({
     setDeliveryCost({});
   };
 
-  const isOnlyPickup = shop.deliveryMode === 'PICKUP';
-  const isOnlyDelivery = shop.deliveryMode === 'DELIVERY';
-  const isBothPickupAndDelivery = shop.deliveryMode === 'BOTH';
-
   return (
     <>
       <Grid cols="12" className="d-flex justify-content-between flex-wrap">
         <DeliveryContainer>
           <p>Entrega:</p>
-          <RadioButton
-            id="retirada"
-            name="delivery"
-            label="Retirar no local"
-            value="retrieve"
-            checked={delivery === 'retrieve'}
-            onChange={handleChangeRetrieve}
-          />
+          {!isOnlyDelivery && (
+            <RadioButton
+              name="delivery"
+              label="Retirar no local"
+              value="PICKUP"
+              checked={delivery === 'PICKUP'}
+              onChange={handleChangeRetrieve}
+            />
+          )}
           {!isOnlyPickup && (
             <RadioButton
-              id="entrega"
               name="delivery"
               label="Calcular frete"
-              value="shipping-fee"
-              checked={delivery === 'shipping-fee'}
+              value="DELIVERY"
+              checked={delivery === 'DELIVERY'}
               onChange={handleChangeDeliveryFee}
             />
           )}
-          {delivery === 'shipping-fee' && (
+          {delivery === 'DELIVERY' && (
             <div style={{ display: 'flex', alignItems: 'flex-start' }}>
               <CEPContainer>
                 <NumberFormat
