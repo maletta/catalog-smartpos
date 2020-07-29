@@ -1,12 +1,12 @@
 import React, { useState, useContext, useLayoutEffect } from 'react';
 import styled from 'styled-components';
-import { injectIntl, intlShape } from 'react-intl';
 import isEmpty from 'lodash/isEmpty';
 
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import storage from 'utils/storage';
 import history from 'utils/history';
 import slug from 'utils/slug';
+import formatCurrency from 'utils/formatCurrency';
 import Trash from 'assets/trash.svg';
 import Close from 'assets/close.svg';
 
@@ -239,7 +239,7 @@ const CloseIcon = styled.img`
   cursor: pointer;
 `;
 
-const CardShop = ({ intl }) => {
+const CardShop = () => {
   const [closeCardOverlay, setCardOverlay] = useState(false);
   const [totalCart, setTotalCart] = useState(0);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
@@ -384,14 +384,16 @@ const CardShop = ({ intl }) => {
                     <Delete>
                       <IconDelete src={Trash} onClick={() => deleteItem(item)} />
                       <Price>
-                        {item.pricing && intl.formatNumber((item.pricing.product + item.pricing.modifiers) * item.quantity, { style: 'currency', currency: 'BRL' })}
+                        {item.pricing
+                          && formatCurrency(
+                            (item.pricing.product + item.pricing.modifiers) * item.quantity,
+                          )}
                       </Price>
                     </Delete>
                     <div />
                   </Item>
                   <hr />
                 </div>
-
               ))}
               <span>
                 <TotalTitle>
@@ -399,7 +401,7 @@ const CardShop = ({ intl }) => {
                 </TotalTitle>
                 <SubTotalTitle>
                   <TextTotal>SubTotal: </TextTotal>
-                  <Value>{intl.formatNumber((totalCart), { style: 'currency', currency: 'BRL' })}</Value>
+                  <Value>{formatCurrency(totalCart)}</Value>
                 </SubTotalTitle>
                 <Finish onClick={() => {
                   setTimeout(() => {
@@ -439,8 +441,6 @@ const CardShop = ({ intl }) => {
   );
 };
 
-CardShop.propTypes = {
-  intl: intlShape.isRequired,
-};
+CardShop.propTypes = {};
 
-export default injectIntl(CardShop);
+export default CardShop;
