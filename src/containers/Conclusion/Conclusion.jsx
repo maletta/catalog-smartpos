@@ -127,9 +127,13 @@ const Conclusion = () => {
           <FlexRow>
             <SubTotal subTotal={totalCart} />
           </FlexRow>
-          <FlexRow>
-            <Delivery deliveryCost={deliveryFee.cost} />
-          </FlexRow>
+          {
+            withdraw ? null : (
+              <FlexRow>
+                <Delivery deliveryCost={deliveryFee.cost} />
+              </FlexRow>
+            )
+          }
           <Divider />
           <FlexRowFinal>
             <Total total={totalCart + deliveryFee.cost} />

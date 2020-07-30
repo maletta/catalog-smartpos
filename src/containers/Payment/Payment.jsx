@@ -403,7 +403,7 @@ const Payment = () => {
                         />
                         <RadioButton
                           name="paymentType"
-                          label="Pague on-line"
+                          label="Pague on-line com cartão de crédito"
                           value="gatewayPagseguro"
                           checked={!offlinePayment}
                           onChange={handleChangeOnlinePayment(propsForm)}
