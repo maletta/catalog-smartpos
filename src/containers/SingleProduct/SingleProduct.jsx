@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import ItemsCarousel from 'react-items-carousel';
-import { FormattedPlural, injectIntl, intlShape } from 'react-intl';
+import { FormattedPlural, injectIntl } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
@@ -11,6 +11,7 @@ import 'react-quill/dist/quill.snow.css';
 
 import storage from 'utils/storage';
 import utilsCart from 'utils/cart';
+import formatCurrency from 'utils/formatCurrency';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
 import TextArea from 'components/Form/TextArea';
@@ -198,8 +199,12 @@ const Thumb = styled.div`
   )}
 `;
 
+const VariantContainer = styled.div`
+  display:flex;
+  font-weight: 600;
+`;
+
 const SingleProduct = (props) => {
-  const { intl } = props;
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const chevronWidth = 10;
   const [product, setProduct] = useState({
@@ -275,54 +280,56 @@ const SingleProduct = (props) => {
     window.scrollTo(0, 0);
     const { params: { id } } = props.match;
 
-    getInfoProduct(shop.id, id).then((response) => {
-      setInitialValues({
-        variant: {},
-        note: '',
-        quantity: 1,
-        id: response.codigo,
-        descricao: response.descricao,
-        categoria: response.categoria,
-        pricing: productPricing,
-        viewMode: response.viewMode,
-        atualizacao: response.atualizacao,
-        uuid: uuidv1(),
-        image: [],
-      });
-
-      getCategories(response.tenant_id).then((res) => {
-        const category = res.data.find(r => r.id === response.codcategoria);
-        updateFilter({
-          label: response.descricao,
-          categoryName: category.descricao,
-          categoria: category.id,
+    getInfoProduct(shop.id, id)
+      .then((response) => {
+        setInitialValues({
+          variant: {},
+          note: '',
+          quantity: 1,
+          id: response.codigo,
+          descricao: response.descricao,
+          categoria: response.categoria,
+          pricing: productPricing,
+          viewMode: response.viewMode,
+          atualizacao: response.atualizacao,
+          uuid: uuidv1(),
+          image: [],
         });
-      });
 
-      setProduct(response);
-      setProductPricing({
-        product: response.valorVenda,
-        modifiers: 0,
-      });
-      setModifierSelected(prevState => ([...prevState, []]));
+        getCategories(response.tenant_id)
+          .then((res) => {
+            const category = res.data.find(r => r.id === response.codcategoria);
+            updateFilter({
+              label: response.descricao,
+              categoryName: category.descricao,
+              categoria: category.id,
+            });
+          });
 
-      if (response.codigo) {
-        const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
-        const img = new Image();
-        img.src = imageBaseUrl;
+        setProduct(response);
+        setProductPricing({
+          product: response.valorVenda,
+          modifiers: 0,
+        });
+        setModifierSelected([...modifierSelected, []]);
 
-        img.onload = () => {
-          setImage(imageBaseUrl);
-        };
-      }
+        if (response.codigo) {
+          const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
+          const img = new Image();
+          img.src = imageBaseUrl;
 
-      response.modifiers.map(() => setModifierSelected(prevState => ([...prevState, []])));
-      const modRequired = response.modifiers.map(item => item.required);
-      setModifiersErrors(modRequired);
-      setProductFound(true);
-    })
+          img.onload = () => {
+            setImage(imageBaseUrl);
+          };
+        }
+
+        response.modifiers.map(() => setModifierSelected([...modifierSelected, []]));
+        const modRequired = response.modifiers.map(item => item.required);
+        setModifiersErrors(modRequired);
+        setProductFound(true);
+      })
       .catch(() => setProductFound(false))
-      .finally(() => { setLoaded(true); });
+      .finally(() => setLoaded(true));
   }, []);
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
@@ -349,73 +356,49 @@ const SingleProduct = (props) => {
   };
 
   const enableOrderButton = () => {
-    const availableVariants = product.variants.filter(item => (haveStockVariant(item)));
-    let isEnable = false;
+    const availableVariants = product.variants.filter(item => haveStockVariant(item));
 
     if (!shop.is_enableOrder) {
       return false;
     }
+
     if (product.catalogStock === 'ALL') {
-      isEnable = true;
+      return true;
     }
 
     if (product.catalogStock === 'ONLY_STOCK') {
       if (haveStock() || availableVariants.length) {
-        isEnable = true;
-      } else {
-        setProductFound(false);
-        isEnable = false;
+        return true;
       }
+
+      setProductFound(false);
+      return false;
     }
 
     if (product.catalogStock === 'UNAVAILABLE') {
-      if (haveStock() || availableVariants.length > 0) {
-        isEnable = true;
-      } else {
-        isEnable = false;
-      }
+      return haveStock() || availableVariants.length > 0;
     }
-    return isEnable;
+
+    return false;
   };
 
-
   const renderOptionLabel = (values) => {
+    let temp = null;
     if (values.catalogStock === 'UNAVAILABLE') {
-      return (
-        <LabelVariant>
-          <LabelVariantValues>
-            <div>{values.name}</div>
-            {(values.sellValue)
-              && (
-                <div style={{
-                  fontWeight: '600',
-                  display: 'flex',
-                  flexDirection: 'col',
-                }}
-                >
-                  {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
-                  {(haveStockVariant(values)) || (<div style={{ width: 'auto', marginLeft: '10px' }}>Item indisponível</div>)}
-                </div>
-              )}
-          </LabelVariantValues>
-        </LabelVariant>
-      );
+      const div = <div style={{ width: 'auto', marginLeft: '10px' }}>Item indisponível</div>;
+      temp = haveStockVariant(values) || div;
     }
 
     return (
       <LabelVariant>
         <LabelVariantValues>
           <div>{values.name}</div>
-          {(values.sellValue)
+          {values.sellValue
             && (
-              <div style={{
-                fontWeight: '600',
-                display: 'flex',
-                flexDirection: 'col',
-              }}
-              >
-                {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
-              </div>
+              <VariantContainer>
+                {formatCurrency(values.sellValue)}
+                {temp}
+              </VariantContainer>
             )}
         </LabelVariantValues>
       </LabelVariant>
@@ -526,37 +509,40 @@ const SingleProduct = (props) => {
                                     {`Cód. ${product.codAlfa}`}
                                   </CodCategory>
                                   {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
-                                  <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                                  <Price className="test-price-product">{formatCurrency(sumProductPricing)}</Price>
                                   {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
                                 </>
                               </Grid>
                             </Row>
                             <Row>
                               <Grid cols="12">
-                                {(product.variants.length > 0) && (
+                                {product.variants.length > 0 && (
                                   <SelectDropDown
+                                    isRequired
                                     id="variants"
                                     label="Variações"
                                     options={product.variants}
                                     value={variantSelected}
                                     getOptionLabel={label => renderOptionLabel(label)}
-                                    onChange={(value) => {
-                                      if ((value.noStock === false
-                                        && value.Estoque && value.Estoque.quantidade > 0)
-                                        || (value.noStock)) {
-                                        propsForm.setFieldValue('variant', value);
-                                        setVariantSelected({ name: value.name });
-                                        propsForm.setFieldTouched('variant', true);
-                                        setProductPricing(prevState => ({
-                                          ...prevState,
-                                          product: value.sellValue,
-                                        }));
-                                      }
-                                    }}
                                     getOptionValue={option => option.id}
                                     isInvalid={propsForm.errors.variant}
                                     touched={propsForm.touched.variant}
-                                    isRequired
+                                    onChange={(value) => {
+                                      const a = value.noStock === false;
+                                      const b = value.Estoque && value.Estoque.quantidade > 0;
+
+                                      if ((a && b) || value.noStock) {
+                                        propsForm.setFieldValue('variant', value);
+                                        propsForm.setFieldTouched('variant', true);
+
+                                        setVariantSelected({ name: value.name });
+
+                                        setProductPricing({
+                                          ...productPricing,
+                                          product: value.sellValue,
+                                        });
+                                      }
+                                    }}
                                   />
                                 )}
                                 {isLoaded && (
@@ -581,7 +567,7 @@ const SingleProduct = (props) => {
                                                   />
                                                 </ModifierAmountTitle>
                                               </div>
-                                              {(mod.required) && (
+                                              {mod.required && (
                                                 <div>
                                                   <ModifierTitleRequired
                                                     hasError={!hasError}
@@ -626,7 +612,7 @@ const SingleProduct = (props) => {
                                 <SubTitle>Compartilhe nas redes sociais</SubTitle>
                                 <ShareIcons />
                               </Grid>
-                              {(product.longDescription) && (
+                              {product.longDescription && (
                                 <>
                                   <Grid cols="12" className="d-md-none">
                                     <SubTitle>Descrição do item</SubTitle>
@@ -671,7 +657,11 @@ const SingleProduct = (props) => {
                                       <div>
                                         <ButtonPrice
                                           value="ADICIONAR"
-                                          price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
+                                          price={
+                                            formatCurrency(
+                                              propsForm.values.quantity * sumProductPricing,
+                                            )
+                                          }
                                           type="submit"
                                           disabled={
                                             hasModifiersErrors.length > 0 && isProductFound
@@ -701,7 +691,6 @@ const SingleProduct = (props) => {
 
 SingleProduct.propTypes = {
   match: PropTypes.any.isRequired,
-  intl: intlShape.isRequired,
 };
 
 export default injectIntl(SingleProduct);
