@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import NumberFormat from 'react-number-format';
 import PropTypes from 'prop-types';
 
@@ -45,6 +45,10 @@ const CartFooter = ({
 
   const deliveryText = flagDelivery ? deliveryFeeText : '';
   const isNotDeliverable = delivery === 'PICKUP' ? false : !deliveryCost.isDeliverable;
+
+  useEffect(() => {
+    updateShoppingCart({ withdraw: isOnlyPickup });
+  }, []);
 
   const calculateDeliveryCost = async () => {
     setLoadingDeliveryCost(true);

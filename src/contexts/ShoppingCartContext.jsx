@@ -13,7 +13,7 @@ export const ShoppingCartProvider = ({ children }) => {
 
   const [shoppingCart, setShoppingCart] = useState({
     cart: previousCart,
-    withdraw: false,
+    withdraw: true,
     cep: '',
     deliveryFee: {
       cost: 0,

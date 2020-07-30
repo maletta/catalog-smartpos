@@ -105,7 +105,8 @@ const Payment = () => {
     />
   ));
 
-  const amount = totalCart + shoppingCart.deliveryFee.cost;
+  const feeCost = shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost;
+  const amount = totalCart + feeCost;
 
   useEffect(() => {
     getInstallments(creditCardBrand, amount, setInstallments);
@@ -149,7 +150,7 @@ const Payment = () => {
       const { data } = await createOrder(values);
       updateOrderPlaced({
         ...values,
-        costDelivery: shoppingCart.deliveryFee,
+        costDelivery: shoppingCart.withdraw ? { cost: 0 } : shoppingCart.deliveryFee,
         withdraw: shoppingCart.withdraw,
         orderName: data.orderName,
       });
@@ -191,7 +192,7 @@ const Payment = () => {
       tipoPessoa: formValues.tipoPessoa,
       'g-recaptcha-response': reCaptchaToken,
       orderProducts: stateCart,
-      deliveryValue: shoppingCart.deliveryFee.cost,
+      deliveryValue: shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost,
       ...shoppingCart.personData,
       ...shoppingCart.address,
       changeReceivedValue: formValues.valorRecebido || 0,
@@ -253,7 +254,7 @@ const Payment = () => {
     tipoPessoa: [],
     fantasia: '',
     razaoSocial: '',
-    pickup: false,
+    pickup: shoppingCart.withdraw,
     catalog_id: shop.id,
     loja: shop.codigo,
     gatewayPagseguro: shop.allowPayOnline === 1,
@@ -340,7 +341,7 @@ const Payment = () => {
     propsForm.setFieldValue('valorRecebido', value.floatValue);
 
     const totalCartValue = shoppingCart.totalCart;
-    const fee = shoppingCart.deliveryFee.cost;
+    const fee = shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost;
     const totalValue = totalCartValue + fee;
     const changeValue = value.floatValue - totalValue;
 
@@ -742,7 +743,7 @@ const Payment = () => {
         <PurchasePrices
           basketCountCart={shoppingCart.basketCount}
           totalCart={shoppingCart.totalCart}
-          deliveryCost={shoppingCart.deliveryFee}
+          deliveryCost={shoppingCart.withdraw ? { cost: 0 } : shoppingCart.deliveryFee}
           couponValue={0}
         />
       </Grid>
