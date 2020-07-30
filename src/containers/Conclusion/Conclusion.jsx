@@ -66,12 +66,17 @@ const Footer = styled.div`
 
 const Conclusion = () => {
   const { shop } = useContext(ShopContext);
-  const { shoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
+
   const {
-    address, personData,
-    paymentType, withdraw,
-    totalCart, deliveryFee,
-    cart, orderId,
+    address,
+    personData,
+    paymentType,
+    withdraw,
+    totalCart,
+    deliveryFee,
+    cart,
+    orderId,
   } = shoppingCart;
 
   const {
@@ -79,6 +84,25 @@ const Conclusion = () => {
   } = personData;
 
   const withdrawText = withdraw ? '* Retirar no estabelecimento' : '';
+
+  const handleGoBack = () => {
+    history.push(paths.home);
+
+    updateShoppingCart({
+      cart: [],
+      withdraw: false,
+      cep: '',
+      deliveryFee: {
+        cost: 0,
+      },
+      basketCount: 0,
+      totalCart: 0,
+      personData: {},
+      address: {},
+      paymentType: '',
+      cardOverlay: false,
+    });
+  };
 
   return (
     <Container className="row">
@@ -124,11 +148,11 @@ const Conclusion = () => {
           <PersonalAddress address={address} />
           <div>
             <h4>Pagamento:</h4>
-            <p>{paymentType.descricao}</p>
+            <p>{paymentType.descricao || paymentType}</p>
           </div>
         </Footer>
         <Row className="d-flex justify-content-end pb-4 pr-3">
-          <Button value="Voltar" onClick={() => history.push(paths.home)} />
+          <Button value="Voltar" onClick={handleGoBack} />
         </Row>
       </Grid>
     </Container>
