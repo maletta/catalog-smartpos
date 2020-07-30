@@ -4,11 +4,8 @@ import styled from 'styled-components';
 import Spinner from 'components/Spinner';
 
 const LoadingContainer = styled.div`
-  display: flex;
-  justify-self: center;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
 `;
 
 const LoadingSpinner = () => (
