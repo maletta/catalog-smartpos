@@ -52,8 +52,6 @@ const LoadingConteiner = styled.div`
 
 const Img = styled.img`
   width: 100%;
-  border-radius: 5px;
-  cursor: pointer;
 
   @media (max-width: 576px) {
     width: 100%;
@@ -290,7 +288,7 @@ const Thumb = styled.div`
 
 
 const AreaModal = styled.div`
-   width: 500px;
+   width: 550px;
    @media (max-width: 660px) {
     width: 450px;
   }
@@ -564,7 +562,6 @@ const SingleProduct = (props) => {
     );
   };
 
-
   const [propsModal, setPropsModal] = useState({
     isOpen: false,
     urlPhoto: null,
@@ -579,7 +576,6 @@ const SingleProduct = (props) => {
   const modal = () => {
     return (propsModal.isOpen && (
       <Modal
-        teste={'test'}
         onClose={() => setPropsModal({
         isOpen: false,
         urlPhoto: null,})}>
@@ -617,7 +613,6 @@ const SingleProduct = (props) => {
             </ItemsCarousel>
             <Page>
               {`${activeItemIndex + 1}/${product.images.length + 1}`}
-
             </Page>
             <ImageBelow>
               {product.images && (
@@ -666,49 +661,128 @@ const SingleProduct = (props) => {
             chevronWidth={chevronWidth}
           >
 
-            <div className= "fluid">
-              <div className="fluid__image-container">
-            <ReactImageMagnify {...{  enlargedImageContainerClassName: "enlargedImage",
-                smallImage: {
-                  src: image,
-                  isFluidWidth: true,
 
+
+
+            <div className= "fluid"
+                 onClick={() => setPropsModal({
+                   urlPhoto: image,
+                   isOpen: true,
+                 })}
+                 >
+              <div className="fluid__image-container">
+            <ReactImageMagnify className="teste"
+
+              {...{
+                smallImage: {
+
+                  isFluidWidth: true,
+                  src: image,
+                  title: product.descricao,
+                  alt: "Produto",
 
                 },
                 largeImage: {
                   src: image,
                   width: 1200,
-                  height: 1800,
+                  height: 1200,
                 },
-
+                enlargedImageContainerDimensions :{
+                  width: '100%',
+                  height: '100%',
+                },
+                enlargedImageContainerStyle: {
+                  margin: "0 0 0 1",
+                  position: "absolute",
+                  zIndex: "2000",
+                }
 
               }} />
               </div>
-
             </div>
 
             {product.images && (
               product.images !== 'notFound' && ((product.images).map(img => (
-                <Img
-                  src={`${process.env.REACT_APP_IMG_API}${img.key}`}
-                  title={product.descricao}
-                  alt="Produto"
-                  onClick={() => setPropsModal({
-                    urlPhoto: `${process.env.REACT_APP_IMG_API}${img.key}`,
-                    isOpen: true,
-                  })}
-                />
+                <>
+                  <div className="fluid"
+                       onClick={() => setPropsModal({
+                         urlPhoto:`${process.env.REACT_APP_IMG_API}${img.key}`,
+                         isOpen: true,
+                       })}
+                       >
+                    <div className="fluid__image-container">
+                      <ReactImageMagnify className="teste"
+
+
+                        {...{
+                          smallImage: {
+
+                            isFluidWidth: true,
+                            src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                            title: product.descricao,
+                            alt: "Produto",
+                          },
+                          largeImage: {
+                            src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                            width: 1200,
+                            height: 1200,
+                          },
+                          enlargedImageContainerDimensions :{
+                            width: '100%',
+                            height: '100%',
+                          },
+                          enlargedImageContainerStyle: {
+                            margin: "0 0 0 1",
+                            position: "absolute",
+                            zIndex: "2000",
+                          }
+
+                        }} />
+                    </div>
+                  </div>
+
+                </>
               )))
             )}
           </ItemsCarousel>
         </Carousel>
-      ) : <Img src={image} title={product.descricao} alt="Produto"
-               onClick={() => setPropsModal({
-                 urlPhoto: image,
-                 isOpen: true,
-               })}
+      ) :
+        /*<Img src={image} title={product.descricao} alt={"Produto"}/>}*/
+       <div className="fluid"
+           onClick={() => setPropsModal({
+             urlPhoto: {image},
+             isOpen: true,
+           })}
+      >
+         {console.log(image)}
+        <div className="fluid__image-container">
+          <ReactImageMagnify className="teste"
 
-      />}
+
+                             {...{
+                               smallImage: {
+
+                                 isFluidWidth: true,
+                                 src: {image},
+                                 title: product.descricao,
+                                 alt: "Produto",
+                               },
+                               largeImage: {
+                                 src: {image},
+                                 width: 1200,
+                                 height: 1200,
+                               },
+
+                               enlargedImageContainerStyle: {
+                                 margin: "0 0 0 1",
+                                 position: "absolute",
+                                 zIndex: "2000",
+                               }
+
+                             }} />
+        </div>
+      </div>}
+
     </>
 
 

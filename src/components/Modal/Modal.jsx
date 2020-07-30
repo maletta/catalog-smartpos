@@ -5,7 +5,6 @@ import styled from 'styled-components';
 const ImgClose = styled.img`
   width: 28px;
   cursor: pointer;
-
 `;
 
 const ModalGallery = styled.div`
@@ -20,10 +19,7 @@ const ModalGallery = styled.div`
   overflow: auto;
   background-color: rgb(0,0,0);
   background-color: rgba(0,0,0,0.8);
-
 `;
-
-
 
 const ModalContent = styled.div`
   margin: auto;
@@ -31,22 +27,21 @@ const ModalContent = styled.div`
   width: 100%;
   max-width: 0px;
   justify-content: center;
-
 `;
-/*
-.content {
-  animation-name: zoom;
-  animation-duration: 2s;
 
+const Content = styled.div`
+  opacity: 0;
+  animation: scaleUp 0.3s forwards;
+
+@keyframes scaleUp {
+  to {
+    opacity: initial;
+    transform: initial;
+  }
 }
+`;
 
-@keyframes zoom {
-  from {transform:scale(0)}
-  to {transform:scale(1)}
-}
-*/
-
-const BtClose = styled.div `
+const BtClose = styled.div`
   position: absolute;
   top:41px;
   right: 50px;
@@ -57,7 +52,7 @@ const BtClose = styled.div `
     top:10px;
     right: 20px;
 }
-` ;
+`;
 
 const Modal = ({id = 'modal',onClose= () => {}, children}) => {
   const handleOutsideClick = (e) => {
@@ -69,7 +64,7 @@ const Modal = ({id = 'modal',onClose= () => {}, children}) => {
         <BtClose onClick={onClose}>
           <ImgClose src={closeIcon}/>
         </BtClose>
-        <div className="content ">{children}</div>
+        <Content>{children}</Content>
       </ModalContent>
     </ModalGallery>
 
