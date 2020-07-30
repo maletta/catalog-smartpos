@@ -5,16 +5,9 @@ import { FormattedPlural, injectIntl, intlShape } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  EmailShareButton,
-} from 'react-share';
 import lodash from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import Swal from 'sweetalert2';
 
 import storage from 'utils/storage';
 import utilsCart from 'utils/cart';
@@ -32,15 +25,16 @@ import ItemModifiers from 'components/ItemModifiers';
 import {
   getCategories,
 } from 'requests';
-import ArrowLeft from 'assets/arrow-left.svg';
-import ArrowRight from 'assets/arrow-right.svg';
-import ClosedStore from 'assets/closed-store.svg';
 import NoImage from 'assets/no-image.png';
 
 import orderValidation from './orderSchema';
 import getInfoProduct from './requestProduct';
 import LoadingSpinner from './components/LoadingSpinner';
 import ProductNotFoundMessage from './components/ProductNotFoundMessage';
+import ShareIcons from './components/ShareIcons';
+import Arrow from './components/Arrow';
+
+import { showStoreIsClosedModal } from '../Cart/components/cartFooterModal';
 
 const Img = styled.img`
   width: 100%;
@@ -161,12 +155,6 @@ const ModifierTitleRequired = styled.span`
   border-radius: 3px;
 `;
 
-const SocialIcon = styled.i`
-  font-size: 2rem;
-  color: #00529b;
-  cursor: pointer;
-`;
-
 const Unavailable = styled.p`
   color: #333;
   font-size: 0.8rem;
@@ -186,30 +174,6 @@ const CodCategory = styled.span`
   font-size: 14px;
   color: #989696;
   margin-top: -5px;
-`;
-
-const IconArrow = styled.div`
-  width: 40px;
-  height: 60px;
-
-  @media (max-width: 576px) {
-    width: 20px;
-    height: 30px;
-  }
-
-  background-color: #00549b;
-  color: white;
-  border-radius: 3px;
-  display: flex;
-  padding-left: 8px;
-  padding-right: 8px;
-  opacity: 0.7;
-`;
-
-const Arrow = styled.img`
-  @media (max-width: 576px) {
-    width: 8px;
-  }
 `;
 
 const SmallThumb = styled.div`
@@ -256,9 +220,8 @@ const SingleProduct = (props) => {
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const { filter, updateFilter } = useContext(FilterContext);
   const [image, setImage] = useState(NoImage);
-  const completeURL = window.location.href;
 
-  const sumProductPricing = (productPricing.product + productPricing.modifiers);
+  const sumProductPricing = productPricing.product + productPricing.modifiers;
   const submitItem = (values, { setSubmitting }) => {
     updateFilter({
       ...filter,
@@ -266,22 +229,10 @@ const SingleProduct = (props) => {
     });
 
     setSubmitting(false);
-    if (!shop.allowOrderOutsideBusinessHours === 1 || shop.closeNow) {
-      Swal.fire({
-        html: `<div>
-          <div><img src="${ClosedStore}"></div>
-          <span class="foradohorario-titulo"> 
-          ${shop.today.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre:
-          </span>
-          <div class="foradohorario-hours">
-            ${shop.today.hours.map(itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`)}`}
-          </div>
-          <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
-        </div>`,
-        showConfirmButton: true,
-        confirmButtonColor: 'var(--color-primary)',
-        showCloseButton: true,
-      }).then(() => setLoaded(false));
+
+    const isShopOpen = shop.allowOrderOutsideBusinessHours || !shop.closeNow;
+    if (!isShopOpen) {
+      showStoreIsClosedModal(shop.today);
       return;
     }
 
@@ -323,6 +274,7 @@ const SingleProduct = (props) => {
     setLoaded(false);
     window.scrollTo(0, 0);
     const { params: { id } } = props.match;
+
     getInfoProduct(shop.id, id).then((response) => {
       setInitialValues({
         variant: {},
@@ -337,6 +289,7 @@ const SingleProduct = (props) => {
         uuid: uuidv1(),
         image: [],
       });
+
       getCategories(response.tenant_id).then((res) => {
         const category = res.data.find(r => r.id === response.codcategoria);
         updateFilter({
@@ -345,16 +298,19 @@ const SingleProduct = (props) => {
           categoria: category.id,
         });
       });
+
       setProduct(response);
       setProductPricing({
         product: response.valorVenda,
         modifiers: 0,
       });
       setModifierSelected(prevState => ([...prevState, []]));
+
       if (response.codigo) {
         const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
         const img = new Image();
         img.src = imageBaseUrl;
+
         img.onload = () => {
           setImage(imageBaseUrl);
         };
@@ -367,24 +323,7 @@ const SingleProduct = (props) => {
     })
       .catch(() => setProductFound(false))
       .finally(() => { setLoaded(true); });
-  }, [false]);
-
-  const renderSocialIcon = () => (
-    <div style={{ width: '50%' }} className="d-flex justify-content-between">
-      <FacebookShareButton url={completeURL}>
-        <SocialIcon className="fab fa-facebook-square" />
-      </FacebookShareButton>
-      <TwitterShareButton url={completeURL}>
-        <SocialIcon className="fab fa-twitter-square" />
-      </TwitterShareButton>
-      <WhatsappShareButton url={completeURL}>
-        <SocialIcon className="fab fa-whatsapp-square" />
-      </WhatsappShareButton>
-      <EmailShareButton url={completeURL}>
-        <SocialIcon className="fas fa-envelope-square" />
-      </EmailShareButton>
-    </div>
-  );
+  }, []);
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
   const haveStock = () => {
@@ -399,10 +338,11 @@ const SingleProduct = (props) => {
   };
 
   const haveStockVariant = (variant) => {
-    if (variant.noStock) {
+    const { noStock, Estoque } = variant;
+    if (noStock) {
       return true;
     }
-    if (variant.Estoque && variant.Estoque.quantidade > 0) {
+    if (Estoque && Estoque.quantidade > 0) {
       return true;
     }
     return false;
@@ -482,12 +422,6 @@ const SingleProduct = (props) => {
     );
   };
 
-  const renderArrows = arrow => (
-    <IconArrow>
-      {arrow === 'left' && <Arrow alt="arrow" src={ArrowLeft} />}
-      {arrow === 'right' && <Arrow alt="arrow" src={ArrowRight} />}
-    </IconArrow>
-  );
   const renderImage = () => (
     <>
       {product.images && product.images !== 'notFound' ? (
@@ -496,8 +430,8 @@ const SingleProduct = (props) => {
             requestToChangeActive={setActiveItemIndex}
             activeItemIndex={activeItemIndex}
             numberOfCards={1}
-            leftChevron={renderArrows('left')}
-            rightChevron={renderArrows('right')}
+            leftChevron={<Arrow direction="left" />}
+            rightChevron={<Arrow direction="right" />}
             outsideChevron
             chevronWidth={chevronWidth}
           >
@@ -520,12 +454,10 @@ const SingleProduct = (props) => {
         >
           <SideBar categories={categories} />
         </Grid>
-        <Grid
-          cols="12 12 9 9 9"
-        >
+        <Grid cols="12 12 9 9 9">
           {isLoaded ? (
             <>
-              {(isProductFound) ? (
+              {isProductFound ? (
                 <>
                   <Formik
                     onSubmit={submitItem}
@@ -562,9 +494,9 @@ const SingleProduct = (props) => {
                               </Grid>
                               <Grid cols="12" className="mb-3">
                                 <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
-                                {renderSocialIcon()}
+                                <ShareIcons />
                               </Grid>
-                              {(product.longDescription) && (
+                              {product.longDescription && (
                                 <>
                                   <Grid cols="12 mb-3">
                                     <SubTitle>Descrição do item</SubTitle>
@@ -575,9 +507,7 @@ const SingleProduct = (props) => {
                                       theme="snow"
                                       value={product.longDescription}
                                       enable={false}
-                                      modules={{
-                                        toolbar: [],
-                                      }}
+                                      modules={{ toolbar: [] }}
                                     />
                                   </Grid>
                                 </>
@@ -629,7 +559,7 @@ const SingleProduct = (props) => {
                                     isRequired
                                   />
                                 )}
-                                {(isLoaded) && (
+                                {isLoaded && (
                                   <>
                                     <ModifiersArea>
                                       {product.modifiers.map((mod, index) => {
@@ -694,7 +624,7 @@ const SingleProduct = (props) => {
                               </Grid>
                               <Grid cols="12" className="d-md-none mb-3">
                                 <SubTitle>Compartilhe nas redes sociais</SubTitle>
-                                {renderSocialIcon()}
+                                <ShareIcons />
                               </Grid>
                               {(product.longDescription) && (
                                 <>
