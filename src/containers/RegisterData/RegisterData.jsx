@@ -34,6 +34,7 @@ const RegisterData = () => {
 
   const handleSubmit = (values) => {
     updateShoppingCart({
+      cardOverlay: false,
       personData: { ...values, tipoPessoa: values.personType },
     });
     history.push(paths.address);

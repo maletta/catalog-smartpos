@@ -182,55 +182,50 @@ const CardShop = () => {
     if (utilsCart.sumCartQuantity(stateCart) !== shoppingCart.basketCount) {
       updateShoppingCart({
         basketCount: utilsCart.sumCartQuantity(stateCart),
+        totalCart: utilsCart.sumCartTotalPrice(stateCart),
       });
     }
 
-    const total = stateCart.reduce(
-      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
-    );
-    setTotalCart(total);
+    setTotalCart(utilsCart.sumCartTotalPrice(stateCart));
   }, [shoppingCart]);
 
   const closeCard = () => {
     setCardOverlay(!closeCardOverlay);
   };
 
-  const deleteItem = (item) => {
-    const newCart = stateCart.filter(del => (del.uuid !== item.uuid));
+  const deleteItem = (uuid) => {
+    const newCart = stateCart.filter(del => (del.uuid !== uuid));
     setStateCart(newCart);
     storage.updateLocalCart(newCart);
+
     updateShoppingCart({
-      basketCount: stateCart.length,
-      cardOverlay: true,
+      basketCount: utilsCart.sumCartQuantity(newCart),
+      totalCart: utilsCart.sumCartTotalPrice(newCart),
     });
 
-    const total = stateCart.reduce(
-      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
-    );
-    setTotalCart(total);
+    setTotalCart(utilsCart.sumCartTotalPrice(newCart));
   };
 
   const addProduct = (item) => {
-    const { quantity } = item;
+    const { quantity, uuid } = item;
     const newQuantity = quantity + 1;
     const cart = storage.getLocalCart();
 
-    cart.map((i, index) => {
-      if (i.uuid === item.uuid) {
+    const fn = (i, index) => {
+      if (i.uuid === uuid) {
         cart[index].quantity = newQuantity;
       }
+    };
 
-      return false;
-    });
+    cart.map(fn);
 
     storage.updateLocalCart(cart);
 
     setStateCart(cart);
 
-    const basketCount = utilsCart.sumCartQuantity(stateCart);
-
     updateShoppingCart({
-      basketCount,
+      basketCount: utilsCart.sumCartQuantity(stateCart),
+      totalCart: utilsCart.sumCartTotalPrice(stateCart),
     });
   };
 
@@ -239,7 +234,7 @@ const CardShop = () => {
     const newQuantity = quantity - 1;
 
     if (newQuantity === 0) {
-      deleteItem(item);
+      deleteItem(item.uuid);
     } else {
       const cart = storage.getLocalCart();
       cart.map((i, index) => {
@@ -254,6 +249,7 @@ const CardShop = () => {
       const basketCount = utilsCart.sumCartQuantity(stateCart);
       updateShoppingCart({
         basketCount,
+        totalCart: utilsCart.sumCartTotalPrice(stateCart),
       });
     }
   };
@@ -323,10 +319,9 @@ const CardShop = () => {
                       />
                     </Info>
                     <Delete>
-                      <IconDelete src={Trash} onClick={() => deleteItem(item)} />
+                      <IconDelete src={Trash} onClick={() => deleteItem(item.uuid)} />
                       <Price>{calculateItemPrice(item)}</Price>
                     </Delete>
-                    <div />
                   </Item>
                   <hr />
                 </div>

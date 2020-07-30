@@ -202,7 +202,7 @@ const Payment = () => {
     delete values.personType;
 
     const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
-    updateShoppingCart({ paymentType });
+    updateShoppingCart({ paymentType, cardOverlay: false });
 
     if (!formValues.gatewayPagseguro && !hash) {
       sendCheckout(values, setSubmitting);
@@ -608,6 +608,7 @@ const Payment = () => {
                               <Row>
                                 <Grid cols="12 6 4 4 4">
                                   <Field
+                                    isRequired
                                     label="CEP"
                                     name="cobrancaCep"
                                     inputId="cobrancaCep"
@@ -649,7 +650,6 @@ const Payment = () => {
                                         tipoLogradouro.trim(),
                                       );
                                     }}
-                                    isRequired
                                   />
                                 </Grid>
                                 <Grid cols="12 6 8 8 8">

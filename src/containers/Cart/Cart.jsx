@@ -22,8 +22,6 @@ const Cart = () => {
   const [stateCart, setStateCart] = useState([]);
   const [deliveryCost, setDeliveryCost] = useState({});
 
-  const totalCart = utilsCart.sumCartTotalPrice(stateCart);
-
   useEffect(() => {
     updateFilter({
       categoria: 0,
@@ -33,10 +31,14 @@ const Cart = () => {
     });
 
     const localCart = storage.getLocalCart();
-    const localTotalCart = utilsCart.sumCartTotalPrice(localCart);
-    const basketCount = utilsCart.sumCartQuantity(localCart);
     setStateCart(localCart);
-    updateShoppingCart({ cart: localCart, basketCount, totalCart: localTotalCart });
+
+    updateShoppingCart({
+      cardOverlay: false,
+      cart: localCart,
+      basketCount: utilsCart.sumCartQuantity(localCart),
+      totalCart: utilsCart.sumCartTotalPrice(localCart),
+    });
   }, []);
 
   const removeItemFromCart = (uuid) => {
@@ -48,13 +50,14 @@ const Cart = () => {
   const updateCartPrice = (quantity, itemIndex) => {
     const stateCartClone = lodash.cloneDeep(stateCart);
     stateCartClone[itemIndex].quantity = quantity;
-    const basketCount = utilsCart.sumCartQuantity(stateCartClone);
 
     storage.updateLocalCart(stateCartClone);
     setStateCart(stateCartClone);
+
     updateShoppingCart({
       cart: stateCartClone,
-      basketCount,
+      basketCount: utilsCart.sumCartQuantity(stateCartClone),
+      totalCart: utilsCart.sumCartTotalPrice(stateCartClone),
       cardOverlay: false,
     });
   };
@@ -72,7 +75,6 @@ const Cart = () => {
         />
         {hasItems ? (
           <CartFooter
-            totalCart={totalCart}
             updateFilter={updateFilter}
             deliveryCost={deliveryCost}
             setDeliveryCost={setDeliveryCost}
