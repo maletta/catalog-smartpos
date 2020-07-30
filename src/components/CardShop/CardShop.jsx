@@ -6,6 +6,7 @@ import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import storage from 'utils/storage';
 import history from 'utils/history';
+import utilsCart from 'utils/cart';
 import slug from 'utils/slug';
 import formatCurrency from 'utils/formatCurrency';
 import Trash from 'assets/trash.svg';
@@ -178,9 +179,9 @@ const CardShop = () => {
     setCardOverlay(shoppingCart.cardOverlay);
     setStateCart(storage.getLocalCart());
 
-    if (stateCart.reduce((count, val) => (count + val.quantity), 0) !== shoppingCart.basketCount) {
+    if (utilsCart.sumCartQuantity(stateCart) !== shoppingCart.basketCount) {
       updateShoppingCart({
-        basketCount: stateCart.reduce((count, val) => (count + val.quantity), 0),
+        basketCount: utilsCart.sumCartQuantity(stateCart),
       });
     }
 
@@ -197,7 +198,7 @@ const CardShop = () => {
   const deleteItem = (item) => {
     const newCart = stateCart.filter(del => (del.uuid !== item.uuid));
     setStateCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
+    storage.updateLocalCart(newCart);
     updateShoppingCart({
       basketCount: stateCart.length,
       cardOverlay: true,
@@ -212,7 +213,7 @@ const CardShop = () => {
   const addProduct = (item) => {
     const { quantity } = item;
     const newQuantity = quantity + 1;
-    const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+    const cart = storage.getLocalCart();
 
     cart.map((i, index) => {
       if (i.uuid === item.uuid) {
@@ -222,11 +223,11 @@ const CardShop = () => {
       return false;
     });
 
-    localStorage.setItem('cart', JSON.stringify(cart));
+    storage.updateLocalCart(cart);
 
     setStateCart(cart);
 
-    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
+    const basketCount = utilsCart.sumCartQuantity(stateCart);
 
     updateShoppingCart({
       basketCount,
@@ -240,7 +241,7 @@ const CardShop = () => {
     if (newQuantity === 0) {
       deleteItem(item);
     } else {
-      const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+      const cart = storage.getLocalCart();
       cart.map((i, index) => {
         if (i.uuid === item.uuid) {
           cart[index].quantity = newQuantity;
@@ -248,9 +249,9 @@ const CardShop = () => {
         return false;
       });
 
-      localStorage.setItem('cart', JSON.stringify(cart));
+      storage.updateLocalCart(cart);
       setStateCart(cart);
-      const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
+      const basketCount = utilsCart.sumCartQuantity(stateCart);
       updateShoppingCart({
         basketCount,
       });

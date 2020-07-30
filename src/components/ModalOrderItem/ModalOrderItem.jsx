@@ -18,6 +18,8 @@ import Checkbox from 'components/Form/RenderCheckbox';
 import Counter from 'components/Form/Counter';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
+import storage from 'utils/storage';
+import utilsCart from 'utils/cart';
 
 import getVariantsOfProduct from 'api/variantsRequests';
 import getModifiersOfProduct from 'api/modifiersRequests';
@@ -209,7 +211,7 @@ const ModalOrderItem = (props) => {
   };
 
   const submitOrderItem = (values) => {
-    const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+    const prevCart = storage.getLocalCart();
     const newItem = {
       ...values,
       pricing: productPricing,
@@ -235,11 +237,11 @@ const ModalOrderItem = (props) => {
         newItem,
       ];
     }
-    const basketCount = newCart.reduce((count, val) => (count + val.quantity), 0);
+
     updateShoppingCart({
-      basketCount,
+      basketCount: utilsCart.sumCartQuantity(newCart),
     });
-    localStorage.setItem('cart', JSON.stringify(newCart));
+    storage.updateLocalCart(newCart);
     localStorage.setItem('cartInit', new Date().getTime());
     onClose();
   };

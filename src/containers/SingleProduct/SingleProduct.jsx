@@ -16,6 +16,9 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2';
 
+import paths from 'paths';
+import storage from 'utils/storage';
+import utilsCart from 'utils/cart';
 import Spinner from 'components/Spinner';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
@@ -32,14 +35,13 @@ import history from 'utils/history';
 import {
   getCategories,
 } from 'requests';
+import ArrowLeft from 'assets/arrow-left.svg';
+import ArrowRight from 'assets/arrow-right.svg';
+import ClosedStore from 'assets/closed-store.svg';
+import NoImage from 'assets/no-image.png';
+
 import orderValidation from './orderSchema';
-
 import getInfoProduct from './requestProduct';
-import NoImage from '../../assets/no-image.png';
-import ClosedStore from '../../assets/closed-store.svg';
-
-import ArrowLeft from '../../assets/arrow-left.svg';
-import ArrowRight from '../../assets/arrow-right.svg';
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -289,7 +291,7 @@ const SingleProduct = (props) => {
       }).then(() => setLoaded(false));
       return false;
     }
-    const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+    const prevCart = storage.getLocalCart();
     const newItem = {
       ...values,
       pricing: productPricing,
@@ -315,14 +317,14 @@ const SingleProduct = (props) => {
         newItem,
       ];
     }
-    localStorage.setItem('cart', JSON.stringify(newCart));
+    storage.updateLocalCart(newCart);
     localStorage.setItem('cartInit', new Date().getTime());
     updateShoppingCart({
-      basketCount: newCart.reduce((count, val) => (count + val.quantity), 0),
+      basketCount: utilsCart.sumCartQuantity(newCart),
       cardOverlay: true,
     });
 
-    history.push('/carrinho');
+    history.push(paths.cart);
     return true;
   };
 
@@ -769,16 +771,16 @@ const SingleProduct = (props) => {
                   />
                 </>
               ) : (
-                <div>O produto que você procura não foi encontrado!</div>
-              )}
+                  <div>O produto que você procura não foi encontrado!</div>
+                )}
             </>
           ) : (
-            <>
-              <LoadingContainer>
-                <span><Spinner /></span>
-              </LoadingContainer>
-            </>
-          )}
+              <>
+                <LoadingContainer>
+                  <span><Spinner /></span>
+                </LoadingContainer>
+              </>
+            )}
 
         </Grid>
       </Row>

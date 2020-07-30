@@ -5,8 +5,9 @@ import styled from 'styled-components';
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import PropTypes from 'prop-types';
-
 import queryString from 'query-string';
+
+import paths from 'paths';
 import history from 'utils/history';
 
 const Nav = styled.nav`
@@ -45,7 +46,7 @@ const Breadcrumb = ({ goHome }) => {
   const isNotFinishingPurchase = !(isCart || isCheckout || isOrder);
 
   const goTo = () => {
-    history.push('/');
+    history.push(paths.home);
 
     updateFilter({
       ...filter,

@@ -1,7 +1,9 @@
 import React, { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
+
 import history from 'utils/history';
+import paths from 'paths';
 
 const FilterContext = createContext();
 
@@ -21,7 +23,7 @@ export const FilterProvider = ({ children }) => {
 
   const updateFilter = (newFilter) => {
     if (newFilter.redirect) {
-      history.push('/');
+      history.push(paths.home);
       const { origin, pathname } = window.location;
       window.history.pushState({}, '', `${origin}${pathname}?categoria=${newFilter.categoria}&nome=${newFilter.categoryName}`);
     }

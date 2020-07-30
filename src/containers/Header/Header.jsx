@@ -10,6 +10,7 @@ import FiltersMobile from 'components/FiltersMobile';
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
+import paths from 'paths';
 import ShopContext from 'contexts/ShopContext';
 
 const Container = styled.nav`
@@ -174,7 +175,7 @@ const Header = ({
         label: search,
       });
 
-      history.push('/');
+      history.push(paths.home);
       updateFilter({
         search, page: 1, categoria: 0, label: '', categoryName: '',
       });

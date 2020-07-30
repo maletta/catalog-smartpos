@@ -204,7 +204,7 @@ const App = () => {
   }, []);
 
   const goHome = () => {
-    history.push('/');
+    history.push(paths.home);
 
     updateFilter({
       categoria: 0,
