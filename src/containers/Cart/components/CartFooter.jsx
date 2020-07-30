@@ -47,7 +47,7 @@ const CartFooter = ({
   const isNotDeliverable = delivery === 'PICKUP' ? false : !deliveryCost.isDeliverable;
 
   useEffect(() => {
-    updateShoppingCart({ withdraw: isOnlyPickup });
+    updateShoppingCart({ withdraw: deliveryType === 'PICKUP' });
   }, []);
 
   const calculateDeliveryCost = async () => {
@@ -78,15 +78,15 @@ const CartFooter = ({
     updateShoppingCart({ cep: cepNumbers });
   };
 
-  const handleChangeDeliveryFee = ({ target }) => {
-    setDelivery(target.value);
-    updateShoppingCart({ withdraw: false });
-  };
-
   const handleChangeRetrieve = ({ target }) => {
     setDelivery(target.value);
     updateShoppingCart({ withdraw: true, deliveryFee: { cost: 0 } });
     setDeliveryCost({});
+  };
+
+  const handleChangeDeliveryFee = ({ target }) => {
+    setDelivery(target.value);
+    updateShoppingCart({ withdraw: false });
   };
 
   return (
