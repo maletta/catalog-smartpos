@@ -1,16 +1,24 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { injectIntl, intlShape } from 'react-intl';
 
 import paths from 'paths';
 import history from 'utils/history';
-import formatCurrency from 'utils/formatCurrency';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
 import Button from 'components/Form/Button';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ShopContext from 'contexts/ShopContext';
+
+import SuccessMessage from './components/SuccessMessage';
+import WhatsappLink from './components/WhatsappLink';
+import ThanksMessage from './components/ThanksMessage';
+import ReceiptItem from './components/ReceiptItem';
+import SubTotal from './components/SubTotal';
+import Delivery from './components/Delivery';
+import Total from './components/Total';
+import PersonalData from './components/PersonalData';
+import PersonalAddress from './components/PersonalAddress';
 
 const Container = styled.div`
   background: #fff;
@@ -28,31 +36,7 @@ const FlexRow = styled.div`
   flex-wrap: wrap;
 `;
 
-// Precisa esperar ficar pronta a API do cupom
-// const FlexRowCoupon = styled(FlexRow)`
-//   color: #5bc057;
-// `;
-
 const FlexRowFinal = styled(FlexRow)`
-  font-weight: bold;
-`;
-
-const SuccessMessage = styled.span`
-  color: #94d470;
-  font-weight: bold;
-  font-size: 20px;
-`;
-
-const SendWhatsapp = styled.a`
-  color: #006195;
-
-  :hover {
-    text-decoration: underline #006195;
-  }
-`;
-
-const ThanksMessage = styled.p`
-  color: #212121;
   font-weight: bold;
 `;
 
@@ -69,8 +53,6 @@ const ReceiptObservation = styled(ReceiptNumber)`
   margin-top: 15px;
 `;
 
-const ReceiptCode = styled.h3``;
-
 const Divider = styled.hr`
   border: 1px solid #fff;
 `;
@@ -82,7 +64,7 @@ const Footer = styled.div`
   gap: 50px;
 `;
 
-const Conclusion = ({ intl }) => {
+const Conclusion = () => {
   const { shop } = useContext(ShopContext);
   const { shoppingCart } = useContext(ShoppingCartContext);
   const {
@@ -91,28 +73,12 @@ const Conclusion = ({ intl }) => {
     totalCart, deliveryFee,
     cart, orderId,
   } = shoppingCart;
+
   const {
     email, name, documento, foneFormatted,
   } = personData;
-  const {
-    cep,
-    endereco,
-    bairro,
-    cidade,
-    estado,
-    numero,
-    complemento,
-    tipoLogradouro,
-  } = address;
+
   const withdrawText = withdraw ? '* Retirar no estabelecimento' : '';
-
-  const productPrice = product => intl.formatNumber(
-    (product.pricing.product + product.pricing.modifiers) * product.quantity,
-    { style: 'currency', currency: 'BRL' },
-  );
-
-  const msg = `Você acabou de receber o pedido ${orderId} do seu catálogo on-line SmartPOS, acesse o app ou site e verifique nos pedidos em aberto.`;
-  const linkWhatsApp = `https://api.whatsapp.com/send?phone=55${shop.whatsapp}&text=${encodeURIComponent(msg)}`;
 
   return (
     <Container className="row">
@@ -121,88 +87,41 @@ const Conclusion = ({ intl }) => {
           <Steps activeIndex={4} />
         </StepsContainer>
         <FlexRow>
-          <SuccessMessage>
-            Seu pedido foi finalizado com sucesso
-          </SuccessMessage>
-          <SendWhatsapp
-            href={linkWhatsApp}
-            target="_blank"
-          >
-            Enviar confirmação por Whatsapp
-          </SendWhatsapp>
+          <SuccessMessage />
+          <WhatsappLink orderId={orderId} whatsapp={shop.whatsapp} />
         </FlexRow>
-        <ThanksMessage>
-          {`Obrigada pela compra! Você receberá todos os dados da sua conta no email: ${email}`}
-        </ThanksMessage>
-
+        <ThanksMessage email={email} />
         <Receipt>
           <ReceiptNumber>Número do pedido:</ReceiptNumber>
-          <ReceiptCode>{orderId}</ReceiptCode>
+          <h3>{orderId}</h3>
           {cart.map(item => (
             <FlexRow key={item.uuid}>
-              <span>
-                {`${item.descricao} (x${item.quantity})`}
-              </span>
-              <span>{productPrice(item)}</span>
+              <ReceiptItem item={item} />
             </FlexRow>
           ))}
-          {/* Precisa esperar a API de desconto ficar pronta */}
-          {/* <FlexRowCoupon>
-          <span>Cupom de desconto</span>
-          <span>R$ -5,00</span>
-        </FlexRowCoupon> */}
           <Divider />
           <FlexRow>
-            <span>Total</span>
-            <span>{formatCurrency(totalCart)}</span>
+            <SubTotal subTotal={totalCart} />
           </FlexRow>
           <FlexRow>
-            <span>Entrega</span>
-            <span>{formatCurrency(deliveryFee ? deliveryFee.cost : 0)}</span>
+            <Delivery deliveryCost={deliveryFee.cost} />
           </FlexRow>
           <Divider />
           <FlexRowFinal>
-            <span>Final:</span>
-            <span>{formatCurrency(totalCart + (deliveryFee ? deliveryFee.cost : 0))}</span>
+            <Total total={totalCart + deliveryFee.cost} />
           </FlexRowFinal>
           <ReceiptObservation>
             {withdrawText}
           </ReceiptObservation>
         </Receipt>
         <Footer>
-          <div>
-            <h4>Dados Pessoais:</h4>
-            <span>{name}</span>
-            <br />
-            <span>
-              {`CPF: ${documento}`}
-            </span>
-            <br />
-            <span>{email}</span>
-            <br />
-            <span>
-              {`Telefone: ${foneFormatted}`}
-            </span>
-          </div>
-          <div>
-            <h4>Endereço:</h4>
-            <span>
-              {`${tipoLogradouro} ${endereco}, ${numero} - ${bairro}`}
-            </span>
-            <br />
-            <span>
-              {`${cidade} / ${estado}`}
-            </span>
-            <br />
-            <span>
-              {`CEP: ${cep}`}
-            </span>
-            <br />
-            <span>
-              {`Complemento: ${complemento}`}
-            </span>
-            <br />
-          </div>
+          <PersonalData
+            name={name}
+            email={email}
+            phone={foneFormatted}
+            cpf={documento}
+          />
+          <PersonalAddress address={address} />
           <div>
             <h4>Pagamento:</h4>
             <p>{paymentType.descricao}</p>
@@ -216,9 +135,6 @@ const Conclusion = ({ intl }) => {
   );
 };
 
-Conclusion.propTypes = {
-  intl: intlShape.isRequired,
-};
+Conclusion.propTypes = {};
 
-
-export default injectIntl(Conclusion);
+export default Conclusion;
