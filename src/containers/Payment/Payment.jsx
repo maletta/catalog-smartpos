@@ -155,6 +155,10 @@ const Payment = () => {
         orderName: data.orderName,
       });
 
+      updateShoppingCart({
+        orderName: data.orderName,
+      });
+
       history.push(paths.conclusion);
     } catch ({ response }) {
       const statusCode = response ? response.status : 0;
@@ -250,7 +254,7 @@ const Payment = () => {
     cidade: '',
     codcidade: '',
     estado: '',
-    pagamento: '',
+    pagamento: {},
     tipoPessoa: [],
     fantasia: '',
     razaoSocial: '',

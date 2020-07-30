@@ -76,7 +76,7 @@ const Conclusion = () => {
     totalCart,
     deliveryFee,
     cart,
-    orderId,
+    orderName,
   } = shoppingCart;
 
   const {
@@ -112,12 +112,12 @@ const Conclusion = () => {
         </StepsContainer>
         <FlexRow>
           <SuccessMessage />
-          <WhatsappLink orderId={orderId} whatsapp={shop.whatsapp} />
+          <WhatsappLink orderId={orderName} whatsapp={shop.whatsapp} />
         </FlexRow>
         <ThanksMessage email={email} />
         <Receipt>
           <ReceiptNumber>Número do pedido:</ReceiptNumber>
-          <h3>{orderId}</h3>
+          <h3>{orderName}</h3>
           {cart.map(item => (
             <FlexRow key={item.uuid}>
               <ReceiptItem item={item} />
