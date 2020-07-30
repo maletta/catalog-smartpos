@@ -16,10 +16,8 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import Swal from 'sweetalert2';
 
-import paths from 'paths';
 import storage from 'utils/storage';
 import utilsCart from 'utils/cart';
-import Spinner from 'components/Spinner';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
 import TextArea from 'components/Form/TextArea';
@@ -31,7 +29,6 @@ import ShopContext from 'contexts/ShopContext';
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
-import history from 'utils/history';
 import {
   getCategories,
 } from 'requests';
@@ -42,14 +39,9 @@ import NoImage from 'assets/no-image.png';
 
 import orderValidation from './orderSchema';
 import getInfoProduct from './requestProduct';
+import LoadingSpinner from './components/LoadingSpinner';
+import ProductNotFoundMessage from './components/ProductNotFoundMessage';
 
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-self: center;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
-`;
 const Img = styled.img`
   width: 100%;
   border-radius: 5px;
@@ -272,8 +264,9 @@ const SingleProduct = (props) => {
       ...filter,
       categoryName: '',
     });
+
+    setSubmitting(false);
     if (!shop.allowOrderOutsideBusinessHours === 1 || shop.closeNow) {
-      setSubmitting(false);
       Swal.fire({
         html: `<div>
           <div><img src="${ClosedStore}"></div>
@@ -289,8 +282,9 @@ const SingleProduct = (props) => {
         confirmButtonColor: 'var(--color-primary)',
         showCloseButton: true,
       }).then(() => setLoaded(false));
-      return false;
+      return;
     }
+
     const prevCart = storage.getLocalCart();
     const newItem = {
       ...values,
@@ -323,11 +317,7 @@ const SingleProduct = (props) => {
       basketCount: utilsCart.sumCartQuantity(newCart),
       cardOverlay: true,
     });
-
-    history.push(paths.cart);
-    return true;
   };
-
 
   useEffect(() => {
     setLoaded(false);
@@ -770,18 +760,9 @@ const SingleProduct = (props) => {
                     )}
                   />
                 </>
-              ) : (
-                  <div>O produto que você procura não foi encontrado!</div>
-                )}
+              ) : <ProductNotFoundMessage />}
             </>
-          ) : (
-              <>
-                <LoadingContainer>
-                  <span><Spinner /></span>
-                </LoadingContainer>
-              </>
-            )}
-
+          ) : <LoadingSpinner />}
         </Grid>
       </Row>
     </>
