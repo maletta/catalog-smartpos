@@ -136,7 +136,7 @@ const Conclusion = () => {
           }
           <Divider />
           <FlexRowFinal>
-            <Total total={totalCart + deliveryFee.cost} />
+            <Total total={totalCart + withdraw ? 0 : deliveryFee.cost} />
           </FlexRowFinal>
           <ReceiptObservation>
             {withdrawText}
