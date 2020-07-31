@@ -41,6 +41,7 @@ import ArrowRight from '../../assets/arrow-right.svg';
 import Modal from "../../components/Modal/Modal";
 import ReactImageMagnify from "react-image-magnify";
 import "../../components/Zoom/Zoom.css";
+import media from "../../styles/media";
 
 const LoadingConteiner = styled.div`
   display: flex;
@@ -573,6 +574,9 @@ const SingleProduct = (props) => {
     </IconFlecha>
   );
 
+
+
+
   const modal = () => {
     return (propsModal.isOpen && (
       <Modal
@@ -611,6 +615,7 @@ const SingleProduct = (props) => {
                 )))
               )}
             </ItemsCarousel>
+
             <Page>
               {`${activeItemIndex + 1}/${product.images.length + 1}`}
             </Page>
@@ -660,22 +665,19 @@ const SingleProduct = (props) => {
             outsideChevron
             chevronWidth={chevronWidth}
           >
-
-
-
-
             <div className= "fluid"
                  onClick={() => setPropsModal({
                    urlPhoto: image,
                    isOpen: true,
                  })}
                  >
-              <div className="fluid__image-container">
-            <ReactImageMagnify className="teste"
+            <ReactImageMagnify  className="teste"
+              enlargedImagePortalId="portalarea"
+
+
 
               {...{
                 smallImage: {
-
                   isFluidWidth: true,
                   src: image,
                   title: product.descricao,
@@ -684,23 +686,18 @@ const SingleProduct = (props) => {
                 },
                 largeImage: {
                   src: image,
-                  width: 1200,
-                  height: 1200,
+                  width: 1000,
+                  height: 1000,
+
                 },
-                enlargedImageContainerDimensions :{
-                  width: '100%',
-                  height: '100%',
-                },
-                enlargedImageContainerStyle: {
-                  margin: "0 0 0 1",
-                  position: "absolute",
-                  zIndex: "2000",
+                imageStyle:{
+
                 }
 
-              }} />
-              </div>
-            </div>
 
+
+              }} />
+            </div>
             {product.images && (
               product.images !== 'notFound' && ((product.images).map(img => (
                 <>
@@ -710,35 +707,23 @@ const SingleProduct = (props) => {
                          isOpen: true,
                        })}
                        >
-                    <div className="fluid__image-container">
-                      <ReactImageMagnify className="teste"
+                      <ReactImageMagnify  enlargedImagePortalId="portalarea"
 
+                                          {...{
+                                            smallImage: {
+                                              isFluidWidth: true,
+                                              src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                                              title: product.descricao,
+                                              alt: "Produto",
 
-                        {...{
-                          smallImage: {
-
-                            isFluidWidth: true,
-                            src: `${process.env.REACT_APP_IMG_API}${img.key}`,
-                            title: product.descricao,
-                            alt: "Produto",
-                          },
-                          largeImage: {
-                            src: `${process.env.REACT_APP_IMG_API}${img.key}`,
-                            width: 1200,
-                            height: 1200,
-                          },
-                          enlargedImageContainerDimensions :{
-                            width: '100%',
-                            height: '100%',
-                          },
-                          enlargedImageContainerStyle: {
-                            margin: "0 0 0 1",
-                            position: "absolute",
-                            zIndex: "2000",
-                          }
+                                            },
+                                            largeImage: {
+                                              src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                                              width: 1000,
+                                              height: 1000,
+                                            },
 
                         }} />
-                    </div>
                   </div>
 
                 </>
@@ -747,40 +732,29 @@ const SingleProduct = (props) => {
           </ItemsCarousel>
         </Carousel>
       ) :
-        /*<Img src={image} title={product.descricao} alt={"Produto"}/>}*/
        <div className="fluid"
            onClick={() => setPropsModal({
-             urlPhoto: {image},
+             urlPhoto: image,
              isOpen: true,
            })}
       >
-         {console.log(image)}
-        <div className="fluid__image-container">
-          <ReactImageMagnify className="teste"
+          <ReactImageMagnify  enlargedImagePortalId="portalarea"
 
+                              {...{
+                                smallImage: {
+                                  isFluidWidth: true,
+                                  src: image,
+                                  title: product.descricao,
+                                  alt: "Produto",
 
-                             {...{
-                               smallImage: {
-
-                                 isFluidWidth: true,
-                                 src: {image},
-                                 title: product.descricao,
-                                 alt: "Produto",
-                               },
-                               largeImage: {
-                                 src: {image},
-                                 width: 1200,
-                                 height: 1200,
-                               },
-
-                               enlargedImageContainerStyle: {
-                                 margin: "0 0 0 1",
-                                 position: "absolute",
-                                 zIndex: "2000",
-                               }
+                                },
+                                largeImage: {
+                                  src: image,
+                                  width: 1000,
+                                  height: 1000,
+                                },
 
                              }} />
-        </div>
       </div>}
 
     </>
@@ -864,6 +838,7 @@ const SingleProduct = (props) => {
                           </Grid>
                           <Grid cols="12 12 6 6 6">
                             <Row>
+                              <div id="portalarea" className="portal" ></div>
                               <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
                                 {renderImage()}
                               </Grid>

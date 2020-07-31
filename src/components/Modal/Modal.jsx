@@ -10,7 +10,7 @@ const ImgClose = styled.img`
 const ModalGallery = styled.div`
   display: block;
   position: fixed;
-  z-index: 1050;
+  z-index: 2000;
   padding-top: 50px;
   left: 0;
   top: 0;
