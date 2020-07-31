@@ -9,6 +9,7 @@ import Steps from 'components/Steps';
 import Button from 'components/Form/Button';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ShopContext from 'contexts/ShopContext';
+import formatCurrency from 'utils/formatCurrency';
 
 import SuccessMessage from './components/SuccessMessage';
 import WhatsappLink from './components/WhatsappLink';
@@ -77,6 +78,8 @@ const Conclusion = () => {
     deliveryFee,
     cart,
     orderName,
+    change,
+    changeReceivedValue,
   } = orderPlaced;
 
   const {
@@ -132,6 +135,14 @@ const Conclusion = () => {
               </FlexRow>
             )
           }
+          <FlexRow>
+            <span>Valor a receber pela loja</span>
+            <span>{formatCurrency(changeReceivedValue)}</span>
+          </FlexRow>
+          <FlexRow>
+            <span>Troco</span>
+            <span>{formatCurrency(change)}</span>
+          </FlexRow>
           <Divider />
           <FlexRowFinal>
             <Total total={totalCart + deliveryFee} />
