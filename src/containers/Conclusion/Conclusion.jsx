@@ -65,19 +65,19 @@ const Footer = styled.div`
 `;
 
 const Conclusion = () => {
-  const { shop } = useContext(ShopContext);
-  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shop, orderPlaced } = useContext(ShopContext);
+  const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const {
     address,
     personData,
-    paymentType,
+    pagamento,
     withdraw,
     totalCart,
     deliveryFee,
     cart,
     orderName,
-  } = shoppingCart;
+  } = orderPlaced;
 
   const {
     email, name, documento, foneFormatted,
@@ -86,8 +86,6 @@ const Conclusion = () => {
   const withdrawText = withdraw ? '* Retirar no estabelecimento' : '';
 
   const handleGoBack = () => {
-    history.push(paths.home);
-
     updateShoppingCart({
       cart: [],
       withdraw: false,
@@ -100,9 +98,9 @@ const Conclusion = () => {
       paymentType: '',
       cardOverlay: false,
     });
-  };
 
-  const deliveryCost = withdraw ? 0 : deliveryFee.cost;
+    history.push(paths.home);
+  };
 
   return (
     <Container className="row">
@@ -130,13 +128,13 @@ const Conclusion = () => {
           {
             withdraw ? null : (
               <FlexRow>
-                <Delivery deliveryCost={deliveryCost} />
+                <Delivery deliveryCost={deliveryFee} />
               </FlexRow>
             )
           }
           <Divider />
           <FlexRowFinal>
-            <Total total={totalCart + deliveryCost} />
+            <Total total={totalCart + deliveryFee} />
           </FlexRowFinal>
           <ReceiptObservation>
             {withdrawText}
@@ -152,7 +150,7 @@ const Conclusion = () => {
           <PersonalAddress address={address} />
           <div>
             <h4>Pagamento:</h4>
-            <p>{paymentType.descricao || paymentType}</p>
+            <p>{pagamento.descricao}</p>
           </div>
         </Footer>
         <Row className="d-flex justify-content-end pb-4 pr-3">

@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 const PersonalAddress = ({ address }) => {
   const {
-    tipoLogradouro,
     endereco,
     numero,
     bairro,
@@ -17,7 +16,7 @@ const PersonalAddress = ({ address }) => {
     <div>
       <h4>Endereço:</h4>
       <span>
-        {`${tipoLogradouro} ${endereco}, ${numero} - ${bairro}`}
+        {`${endereco}, ${numero} - ${bairro}`}
       </span>
       <br />
       <span>

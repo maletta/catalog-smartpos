@@ -148,15 +148,18 @@ const Payment = () => {
   const sendCheckout = async (values, setSubmitting) => {
     try {
       const { data } = await createOrder(values);
+
       updateOrderPlaced({
         ...values,
         costDelivery: shoppingCart.withdraw ? { cost: 0 } : shoppingCart.deliveryFee,
         withdraw: shoppingCart.withdraw,
         orderName: data.orderName,
-      });
-
-      updateShoppingCart({
-        orderName: data.orderName,
+        address: { ...values },
+        personData: { ...values },
+        totalCart: data.totalAmount,
+        deliveryFee: data.deliveryFee,
+        cart: values.orderProducts,
+        data,
       });
 
       history.push(paths.conclusion);
@@ -206,7 +209,7 @@ const Payment = () => {
 
     delete values.personType;
 
-    const paymentType = offlinePayment ? formValues.pagamento : 'Cartão de Crédito';
+    const paymentType = offlinePayment ? formValues.pagamento : { descricao: 'Cartão de Crédito' };
     updateShoppingCart({ paymentType, cardOverlay: false });
 
     if (!formValues.gatewayPagseguro && !hash) {
@@ -254,7 +257,7 @@ const Payment = () => {
     cidade: '',
     codcidade: '',
     estado: '',
-    pagamento: {},
+    pagamento: { descricao: '' },
     tipoPessoa: [],
     fantasia: '',
     razaoSocial: '',
