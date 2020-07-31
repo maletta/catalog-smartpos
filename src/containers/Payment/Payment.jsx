@@ -165,7 +165,7 @@ const Payment = () => {
       sendCheckoutCatch(statusCode);
       resetRecaptcha();
     } finally {
-      cleanCart();
+      cleanCart(updateShoppingCart);
       setLoading(false);
       setSubmitting(false);
     }

@@ -91,11 +91,9 @@ const Conclusion = () => {
     updateShoppingCart({
       cart: [],
       withdraw: false,
-      cep: '',
       deliveryFee: {
         cost: 0,
       },
-      basketCount: 0,
       totalCart: 0,
       personData: {},
       address: {},
@@ -103,6 +101,8 @@ const Conclusion = () => {
       cardOverlay: false,
     });
   };
+
+  const deliveryCost = withdraw ? 0 : deliveryFee.cost;
 
   return (
     <Container className="row">
@@ -130,13 +130,13 @@ const Conclusion = () => {
           {
             withdraw ? null : (
               <FlexRow>
-                <Delivery deliveryCost={deliveryFee.cost} />
+                <Delivery deliveryCost={deliveryCost} />
               </FlexRow>
             )
           }
           <Divider />
           <FlexRowFinal>
-            <Total total={totalCart + withdraw ? 0 : deliveryFee.cost} />
+            <Total total={totalCart + deliveryCost} />
           </FlexRowFinal>
           <ReceiptObservation>
             {withdrawText}
