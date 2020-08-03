@@ -40,8 +40,6 @@ import ArrowLeft from '../../assets/arrow-left.svg';
 import ArrowRight from '../../assets/arrow-right.svg';
 import Modal from "../../components/Modal/Modal";
 import ReactImageMagnify from "react-image-magnify";
-import "../../components/Zoom/Zoom.css";
-import media from "../../styles/media";
 
 const LoadingConteiner = styled.div`
   display: flex;
@@ -216,10 +214,7 @@ const IconFlecha = styled.div`
   padding-left: 8px;
   padding-right: 8px;
   opacity: 0.7;
-
-
 `;
-
 
 const Flecha = styled.img`
   width: 25px;
@@ -246,7 +241,6 @@ const IconArrow = styled.div`
   padding-right: 8px;
   opacity: 0.7;
 `;
-
 
 const Arrow = styled.img`
   @media (max-width: 576px) {
@@ -282,9 +276,7 @@ const Thumb = styled.div`
   padding: 0;
   display: flex;
   cursor: pointer;
-  ${props => props.IsActive && (
-  'box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);'
-)}
+  ${props => props.IsActive && ('box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);')}
 `;
 
 
@@ -311,13 +303,28 @@ const Page = styled.div`
   text-align: center;
 `;
 
+const Fluid = styled.div`
+  width: auto;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+`;
+
+const Portal = styled.div`
+  position: absolute;
+  z-index: 500;
+`;
+
 const SingleProduct = (props) => {
   const { intl } = props;
   const [activeItemIndex, setActiveItemIndex] = useState(0);
-  const chevronWidth =10;
+  const chevronWidth = 10;
   const [product, setProduct] = useState({
     variants: [],
     hasVariant: true,
+    images: [],
   });
   const [productPricing, setProductPricing] = useState({
     product: 0,
@@ -562,7 +569,6 @@ const SingleProduct = (props) => {
       </LabelVariant>
     );
   };
-
   const [propsModal, setPropsModal] = useState({
     isOpen: false,
     urlPhoto: null,
@@ -574,15 +580,11 @@ const SingleProduct = (props) => {
     </IconFlecha>
   );
 
-
-
-
   const modal = () => {
     return (propsModal.isOpen && (
       <Modal
-        onClose={() => setPropsModal({
-        isOpen: false,
-        urlPhoto: null,})}>
+        onClose={() => setPropsModal({ isOpen: false, urlPhoto: null })}
+      >
         <AreaModal>
           <Carousel>
             <ItemsCarousel
@@ -592,7 +594,7 @@ const SingleProduct = (props) => {
               leftChevron={arrowModal('left')}
               rightChevron={arrowModal('right')}
               outsideChevron
-              chevronWidth= {70}
+              chevronWidth={70}
             >
               <ModalImg
                 src={image}
@@ -603,30 +605,24 @@ const SingleProduct = (props) => {
 
               {product.images && (
                 product.images !== 'notFound' && ((product.images).map(img => (
-                    <ModalImg
-                      src={`${process.env.REACT_APP_IMG_API}${img.key}`}
-                      title={product.descricao}
-                      alt="Produto"
-
-                    />
-
-
-
+                  <ModalImg
+                    src={`${process.env.REACT_APP_IMG_API}${img.key}`}
+                    title={product.descricao}
+                    alt="Produto"
+                  />
                 )))
               )}
             </ItemsCarousel>
-
             <Page>
-              {`${activeItemIndex + 1}/${product.images.length + 1}`}
+              {(Array.isArray(product.images)) && (
+                `${activeItemIndex + 1}/${product.images.length + 1}`
+              ) }
             </Page>
             <ImageBelow>
               {product.images && (
                 <>
                   {product.images !== 'notFound' && (
-
-
-
-                 <Thumb IsActive={activeItemIndex === 0}>
+                    <Thumb IsActive={activeItemIndex === 0}>
                       <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
                     </Thumb>
                   )}
@@ -637,13 +633,13 @@ const SingleProduct = (props) => {
                   )))}
                 </>
               )}
-
             </ImageBelow>
           </Carousel>
         </AreaModal>
       </Modal>
     ));
-  }
+  };
+
   const renderArrows = arrow => (
     <IconArrow>
       {arrow === 'left' && <Arrow alt="arrow" src={ArrowLeft} />}
@@ -665,66 +661,58 @@ const SingleProduct = (props) => {
             outsideChevron
             chevronWidth={chevronWidth}
           >
-            <div className= "fluid"
-                 onClick={() => setPropsModal({
-                   urlPhoto: image,
-                   isOpen: true,
-                 })}
-                 >
-            <ReactImageMagnify  className="teste"
-              enlargedImagePortalId="portalarea"
-
-
-
-              {...{
-                smallImage: {
-                  isFluidWidth: true,
-                  src: image,
-                  title: product.descricao,
-                  alt: "Produto",
-
-                },
-                largeImage: {
-                  src: image,
-                  width: 1000,
-                  height: 1000,
-
-                },
-                imageStyle:{
-
-                }
-
-
-
-              }} />
-            </div>
+            <Fluid
+              onClick={() => setPropsModal({
+                urlPhoto: image,
+                isOpen: true,
+              })}
+            >
+              <ReactImageMagnify
+                className="teste"
+                enlargedImagePortalId="portalarea"
+                {...{
+                  smallImage: {
+                    isFluidWidth: true,
+                    src: image,
+                    title: product.descricao,
+                    alt: 'Produto',
+                  },
+                  largeImage: {
+                    src: image,
+                    width: 1000,
+                    height: 1000,
+                  },
+                  imageStyle: {
+                    margin: '10px 10px 10px 10px',
+                  },
+                }}
+              />
+            </Fluid>
             {product.images && (
               product.images !== 'notFound' && ((product.images).map(img => (
                 <>
-                  <div className="fluid"
-                       onClick={() => setPropsModal({
-                         urlPhoto:`${process.env.REACT_APP_IMG_API}${img.key}`,
-                         isOpen: true,
-                       })}
-                       >
-                      <ReactImageMagnify  enlargedImagePortalId="portalarea"
-
-                                          {...{
-                                            smallImage: {
-                                              isFluidWidth: true,
-                                              src: `${process.env.REACT_APP_IMG_API}${img.key}`,
-                                              title: product.descricao,
-                                              alt: "Produto",
-
-                                            },
-                                            largeImage: {
-                                              src: `${process.env.REACT_APP_IMG_API}${img.key}`,
-                                              width: 1000,
-                                              height: 1000,
-                                            },
-
-                        }} />
-                  </div>
+                  <Fluid
+                    onClick={() => setPropsModal({
+                      urlPhoto: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                      isOpen: true,
+                    })}
+                  >
+                    <ReactImageMagnify  enlargedImagePortalId='portalarea'
+                      {...{
+                        smallImage: {
+                          isFluidWidth: true,
+                          src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                          title: product.descricao,
+                          alt: 'Produto',
+                        },
+                        largeImage: {
+                          src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                          width: 1000,
+                          height: 1000,
+                        },
+                      }}
+                    />
+                  </Fluid>
 
                 </>
               )))
@@ -732,30 +720,32 @@ const SingleProduct = (props) => {
           </ItemsCarousel>
         </Carousel>
       ) :
-       <div className="fluid"
-           onClick={() => setPropsModal({
-             urlPhoto: image,
-             isOpen: true,
-           })}
-      >
-          <ReactImageMagnify  enlargedImagePortalId="portalarea"
+        <Fluid
+          onClick={() => setPropsModal({
+            urlPhoto: image,
+            isOpen: true,
+          })}
+        >
+          <ReactImageMagnify
+            enlargedImagePortalId='portalarea'
 
-                              {...{
-                                smallImage: {
-                                  isFluidWidth: true,
-                                  src: image,
-                                  title: product.descricao,
-                                  alt: "Produto",
+            {...{
+              smallImage: {
+                isFluidWidth: true,
+                src: image,
+                title: product.descricao,
+                alt: 'Produto',
 
-                                },
-                                largeImage: {
-                                  src: image,
-                                  width: 1000,
-                                  height: 1000,
-                                },
+              },
+              largeImage: {
+                src: image,
+                width: 1000,
+                height: 1000,
+              },
 
-                             }} />
-      </div>}
+            }}
+          />
+        </Fluid>}
 
     </>
 
@@ -838,7 +828,10 @@ const SingleProduct = (props) => {
                           </Grid>
                           <Grid cols="12 12 6 6 6">
                             <Row>
-                              <div id="portalarea" className="portal" ></div>
+                              <Portal
+                                id="portalarea" >
+
+                              </Portal>
                               <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
                                 {renderImage()}
                               </Grid>
@@ -852,6 +845,7 @@ const SingleProduct = (props) => {
                                   <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
                                   {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
                                 </>
+
                               </Grid>
                             </Row>
                             <Row>
