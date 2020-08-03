@@ -2,18 +2,18 @@ import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import lodash from 'lodash';
+
 import slug from 'utils/slug';
 import history from 'utils/history';
-import storage from 'utils/storage';
 import uuidv1 from 'uuid/v1';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import Grid from 'components/Grid';
 import formatCurrency from 'utils/formatCurrency';
-import utilsCart from 'utils/cart';
 
 import ShopContext from 'contexts/ShopContext';
 import getModifiersOfProduct from 'api/modifiersRequests';
-import NoImage from '../../assets/no-image.png';
+import NoImage from 'assets/no-image.png';
 
 const LinkToItem = styled(Link)`
   color: #212529;
@@ -142,7 +142,7 @@ const GridItem = (props) => {
   const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${id}?lastUpdate=${atualizacao}`;
 
   const { shop } = useContext(ShopContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
 
   if (viewMode === 'IMAGE') {
     const img = new Image();
@@ -163,7 +163,7 @@ const GridItem = (props) => {
 
         localStorage.setItem('cartInit', new Date().getTime());
 
-        const localCart = storage.getLocalCart();
+        const localCart = lodash.cloneDeep(shoppingCart.cart);
         const hasItem = localCart.some(localProduct => localProduct.id === product.id);
 
         if (hasItem) {
@@ -177,12 +177,8 @@ const GridItem = (props) => {
             return localProduct;
           });
 
-          storage.updateLocalCart(updatedCart);
-
           updateShoppingCart({
             cart: updatedCart,
-            basketCount: utilsCart.sumCartQuantity(updatedCart),
-            totalCart: utilsCart.sumCartTotalPrice(updatedCart),
             cardOverlay: true,
           });
         } else {
@@ -198,11 +194,9 @@ const GridItem = (props) => {
           };
 
           localCart.push(itemProduct);
-          storage.updateLocalCart(localCart);
+
           updateShoppingCart({
             cart: localCart,
-            basketCount: utilsCart.sumCartQuantity(localCart),
-            totalCart: utilsCart.sumCartTotalPrice(localCart),
             cardOverlay: true,
           });
         }
@@ -211,39 +205,42 @@ const GridItem = (props) => {
 
   const isItemUnavailable = dontControlStock === 0 && stock <= 0;
 
+  const UnavailableItem = () => (
+    <UnavailableBox>
+      <Unavailable>PRODUTO INDISPONÍVEL</Unavailable>
+    </UnavailableBox>
+  );
+
+  const ItemButton = () => (
+    <LinkToItem to={hasVariant ? `item/${id}/${slug(descricao)}` : '/'}>
+      {shop.is_enableOrder && (
+        <Buy onClick={() => hasVariant !== 1 && addCart(item)}>
+          <BuyText>COMPRAR</BuyText>
+        </Buy>
+      )}
+    </LinkToItem>
+  );
+
+  const PriceItem = () => (
+    <div>
+      <PriceFrom>{hasVariant ? 'A partir de ' : ''}</PriceFrom>
+      <Price>{formatCurrency(item.valorVenda)}</Price>
+    </div>
+  );
+
   return (
     <>
       <Grid cols="6 4 4 4 4" className="mb-3">
         <Container>
           <LinkToItem to={`item/${id}/${slug(descricao)}`}>
-            <Img src={image} title={descricao} alt="Produto" />
+            <Img src={image} title={descricao} />
           </LinkToItem>
           <CardContent>
-            <div>
-              <PriceFrom>{hasVariant ? 'A partir de ' : ''}</PriceFrom>
-              <Price>
-                {formatCurrency(item.valorVenda)}
-              </Price>
-            </div>
+            <PriceItem />
             <Descricao>
-              <TextArea>
-                <span>{descricao}</span>
-              </TextArea>
+              <TextArea>{descricao}</TextArea>
             </Descricao>
-            {isItemUnavailable
-              ? (
-                <UnavailableBox>
-                  <Unavailable>PRODUTO INDISPONÍVEL</Unavailable>
-                </UnavailableBox>
-              ) : (
-                <LinkToItem to={hasVariant ? `item/${id}/${slug(descricao)}` : '/'}>
-                  {shop.is_enableOrder && (
-                    <Buy onClick={() => hasVariant !== 1 && addCart(item)}>
-                      <BuyText>COMPRAR</BuyText>
-                    </Buy>
-                  )}
-                </LinkToItem>
-              )}
+            {isItemUnavailable ? <UnavailableItem /> : <ItemButton />}
           </CardContent>
         </Container>
       </Grid>

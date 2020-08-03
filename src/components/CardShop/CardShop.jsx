@@ -1,12 +1,11 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import isEmpty from 'lodash/isEmpty';
+import PropTypes from 'prop-types';
+import lodash from 'lodash';
 
 import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
-import storage from 'utils/storage';
 import history from 'utils/history';
-import utilsCart from 'utils/cart';
 import slug from 'utils/slug';
 import formatCurrency from 'utils/formatCurrency';
 import Trash from 'assets/trash.svg';
@@ -15,6 +14,7 @@ import ImageBox from './components/Image';
 import EmptyCartMessage from './components/EmptyCartMessage';
 import CartHeader from './components/CartHeader';
 import ItemQuantity from './components/ItemQuantity';
+import { BuyMore } from './components/BuyMore';
 
 const Overlay = styled.div`
   position: fixed;
@@ -154,83 +154,39 @@ const Finish = styled.div`
   cursor: pointer;
 `;
 
-const BuyMore = styled.div`
-  background-color: white;
-  color: var(--color-primary);
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 15px;
-  cursor: pointer;
-`;
-
 const FinishText = styled.span`
   padding: 15px;
 `;
 
 const CardShop = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  const hasItems = shoppingCart.cart.length > 0;
 
   const closeCard = () => {
     updateShoppingCart({ cardOverlay: false });
   };
 
   const deleteItem = (uuid) => {
-    const newCart = shoppingCart.cart.filter(item => item.uuid !== uuid);
-
-    storage.updateLocalCart(newCart);
-
-    updateShoppingCart({
-      cart: newCart,
-      basketCount: utilsCart.sumCartQuantity(newCart),
-      totalCart: utilsCart.sumCartTotalPrice(newCart),
-    });
+    const cart = shoppingCart.cart.filter(item => item.uuid !== uuid);
+    updateShoppingCart({ cart });
   };
 
-  const increaseQuantity = (item) => {
-    const { quantity, uuid } = item;
-    const { cart } = shoppingCart;
+  const updateQuantity = (uuid, newQuantity) => {
+    const cart = lodash.cloneDeep(shoppingCart.cart);
+    const itemIndex = cart.indexOf(i => i.uuid === uuid);
+    cart[itemIndex].quantity = newQuantity;
 
-    const fn = (i, index) => {
-      if (i.uuid === uuid) {
-        cart[index].quantity = quantity + 1;
-      }
-    };
-
-    cart.map(fn);
-
-    storage.updateLocalCart(cart);
-
-    updateShoppingCart({
-      cart,
-      basketCount: utilsCart.sumCartQuantity(cart),
-      totalCart: utilsCart.sumCartTotalPrice(cart),
-    });
+    updateShoppingCart({ cart });
   };
 
-  const decreaseQuantity = (item) => {
-    const { quantity, uuid } = item;
-    if (quantity - 1 === 0) return;
+  const increaseQuantity = ({ quantity, uuid }) => {
+    const newQuantity = quantity + 1;
+    updateQuantity(uuid, newQuantity);
+  };
 
-    const { cart } = shoppingCart;
-
-    const fn = (i, index) => {
-      if (i.uuid === uuid) {
-        cart[index].quantity = quantity - 1;
-      }
-    };
-
-    cart.map(fn);
-
-    storage.updateLocalCart(cart);
-
-    updateShoppingCart({
-      cart,
-      basketCount: utilsCart.sumCartQuantity(cart),
-      totalCart: utilsCart.sumCartTotalPrice(cart),
-    });
+  const decreaseQuantity = ({ quantity, uuid }) => {
+    const newQuantity = quantity - 1;
+    if (newQuantity === 0) return;
+    updateQuantity(uuid, newQuantity);
   };
 
   const calculateItemPrice = (item) => {
@@ -250,10 +206,7 @@ const CardShop = () => {
     return `${baseImgURL}product/${id}?lastUpdate=${atualizacao}`;
   };
 
-  const createVariantText = (item) => {
-    const { variant } = item;
-    return isEmpty(variant) ? '' : `(${variant.name})`;
-  };
+  const createVariantText = variant => (lodash.isEmpty(variant) ? '' : `(${variant.name})`);
 
   const handleClickImage = (item) => {
     const { id, descricao } = item;
@@ -269,9 +222,7 @@ const CardShop = () => {
   const handleClickFinish = () => {
     setTimeout(() => {
       scrollTop();
-      updateShoppingCart({
-        cardOverlay: false,
-      });
+      updateShoppingCart({ cardOverlay: false });
       history.push(paths.cart);
     }, 500);
   };
@@ -282,6 +233,94 @@ const CardShop = () => {
       closeCard();
       history.push(paths.home);
     }, 500);
+  };
+
+  const ItemImage = ({ item }) => (
+    <ImageContainer onClick={() => handleClickImage(item)}>
+      <ImageBox
+        url={createItemImageURL(item)}
+        shoppingCart={shoppingCart}
+        product={item}
+      />
+    </ImageContainer>
+  );
+
+  ItemImage.propTypes = {
+    item: PropTypes.any.isRequired,
+  };
+
+  const ItemInfo = ({ item }) => (
+    <Info>
+      <Description>
+        {`${item.descricao} ${createVariantText(item.variant)}`}
+      </Description>
+      <ItemQuantity
+        onRemove={() => decreaseQuantity(item)}
+        onAdd={() => increaseQuantity(item)}
+        quantity={item.quantity}
+      />
+    </Info>
+  );
+
+  ItemInfo.propTypes = {
+    item: PropTypes.any.isRequired,
+  };
+
+  const ItemDelete = ({ item }) => (
+    <Delete>
+      <IconDelete src={Trash} onClick={() => deleteItem(item.uuid)} />
+      <Price>{calculateItemPrice(item)}</Price>
+    </Delete>
+  );
+
+  ItemDelete.propTypes = {
+    item: PropTypes.any.isRequired,
+  };
+
+  const OrderSummary = () => (
+    <span>
+      <TotalTitle>Resumo do pedido</TotalTitle>
+      <SubTotalTitle>
+        <TextTotal>SubTotal: </TextTotal>
+        <Value>{formatCurrency(shoppingCart.totalCart)}</Value>
+      </SubTotalTitle>
+      <Finish onClick={handleClickFinish}>
+        <FinishText>FINALIZAR COMPRA</FinishText>
+      </Finish>
+      <BuyMore onClick={handleClickBuy}>ADICIONAR MAIS PRODUTOS</BuyMore>
+    </span>
+  );
+
+  const ItemCard = ({ item }) => (
+    <div>
+      <Item>
+        <ItemImage item={item} />
+        <ItemInfo item={item} />
+        <ItemDelete item={item} />
+      </Item>
+      <hr />
+    </div>
+  );
+
+  ItemCard.propTypes = {
+    item: PropTypes.any.isRequired,
+  };
+
+  const cartItems = shoppingCart.cart.map(item => (
+    <ItemCard key={item.id + item.descricao} item={item} />
+  ));
+
+  const CartBody = () => {
+    if (shoppingCart.hasItems) {
+      return (
+        <>
+          {cartItems}
+          <OrderSummary />
+        </>
+      );
+    }
+
+    return <EmptyCartMessage />;
   };
 
   return (
@@ -295,55 +334,7 @@ const CardShop = () => {
           basketCount={shoppingCart.basketCount}
           onClose={closeCard}
         />
-        <div>
-          {hasItems ? (
-            <>
-              {shoppingCart.cart.map(item => (
-                <div key={item.id + item.descricao}>
-                  <Item>
-                    <ImageContainer onClick={() => handleClickImage(item)}>
-                      <ImageBox
-                        url={createItemImageURL(item)}
-                        shoppingCart={shoppingCart}
-                        product={item}
-                      />
-                    </ImageContainer>
-                    <Info>
-                      <Description>
-                        {`${item.descricao} ${createVariantText(item)}`}
-                      </Description>
-                      <ItemQuantity
-                        onRemove={() => decreaseQuantity(item)}
-                        onAdd={() => increaseQuantity(item)}
-                        quantity={item.quantity}
-                      />
-                    </Info>
-                    <Delete>
-                      <IconDelete src={Trash} onClick={() => deleteItem(item.uuid)} />
-                      <Price>{calculateItemPrice(item)}</Price>
-                    </Delete>
-                  </Item>
-                  <hr />
-                </div>
-              ))}
-              <span>
-                <TotalTitle>
-                  Resumo do pedido
-                </TotalTitle>
-                <SubTotalTitle>
-                  <TextTotal>SubTotal: </TextTotal>
-                  <Value>{formatCurrency(shoppingCart.totalCart)}</Value>
-                </SubTotalTitle>
-                <Finish onClick={handleClickFinish}>
-                  <FinishText>FINALIZAR COMPRA</FinishText>
-                </Finish>
-                <BuyMore onClick={handleClickBuy}>
-                  ADICIONAR MAIS PRODUTOS
-                </BuyMore>
-              </span>
-            </>
-          ) : <EmptyCartMessage />}
-        </div>
+        <CartBody />
       </CardOverlay>
     </>
   );

@@ -9,8 +9,6 @@ import lodash from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-import storage from 'utils/storage';
-import utilsCart from 'utils/cart';
 import formatCurrency from 'utils/formatCurrency';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
@@ -223,7 +221,7 @@ const SingleProduct = (props) => {
   const [isLoaded, setLoaded] = useState(false);
   const [isProductFound, setProductFound] = useState(true);
   const { shop, categories } = useContext(ShopContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { filter, updateFilter } = useContext(FilterContext);
   const [image, setImage] = useState(NoImage);
 
@@ -242,14 +240,14 @@ const SingleProduct = (props) => {
       return;
     }
 
-    const prevCart = storage.getLocalCart();
+    const prevCart = lodash.cloneDeep(shoppingCart.cart);
     const newItem = {
       ...values,
       pricing: productPricing,
       modifiers: modifierSelected,
     };
 
-    let newCart = [];
+    let cart = [];
     let indexToUpdate = null;
     const repeat = prevCart.filter((item, index) => {
       indexToUpdate = index;
@@ -261,21 +259,17 @@ const SingleProduct = (props) => {
 
     if (repeat.length) {
       prevCart[indexToUpdate].quantity += values.quantity;
-      newCart = prevCart;
+      cart = prevCart;
     } else {
-      newCart = [
+      cart = [
         ...prevCart,
         newItem,
       ];
     }
-    storage.updateLocalCart(newCart);
+
     localStorage.setItem('cartInit', new Date().getTime());
-    updateShoppingCart({
-      cart: newCart,
-      basketCount: utilsCart.sumCartQuantity(newCart),
-      totalCart: utilsCart.sumCartTotalPrice(newCart),
-      cardOverlay: true,
-    });
+
+    updateShoppingCart({ cart, cardOverlay: true });
   };
 
   useEffect(() => {

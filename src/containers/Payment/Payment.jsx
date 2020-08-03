@@ -9,8 +9,6 @@ import PropTypes from 'prop-types';
 import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
-import utilsCart from 'utils/cart';
-import storage from 'utils/storage';
 import formatCurrency from 'utils/formatCurrency';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
@@ -72,9 +70,6 @@ const Payment = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
 
-  const [stateCart] = useState(storage.getLocalCart());
-  const totalCart = utilsCart.sumCartTotalPrice(stateCart);
-
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [offlinePayment, setOfflinePayment] = useState(
     shop.allowPayOnline === 0,
@@ -106,7 +101,7 @@ const Payment = () => {
   ));
 
   const feeCost = shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost;
-  const amount = totalCart + feeCost;
+  const amount = shoppingCart.totalCart + feeCost;
 
   useEffect(() => {
     getInstallments(creditCardBrand, amount, setInstallments);
@@ -178,8 +173,8 @@ const Payment = () => {
     if (!isGatewayPagseguro) return true;
 
     const hasMaxValue = shop.maxValuePayOnline > 0;
-    const isLessThanMax = totalCart <= shop.maxValuePayOnline;
-    const isGreaterThanMin = totalCart >= shop.minValuePayOnline;
+    const isLessThanMax = shoppingCart.totalCart <= shop.maxValuePayOnline;
+    const isGreaterThanMin = shoppingCart.totalCart >= shop.minValuePayOnline;
     const isWithinMinMax = isGreaterThanMin && isLessThanMax;
 
     if (hasMaxValue) {
@@ -198,7 +193,7 @@ const Payment = () => {
       installments: formValues.installments || null,
       tipoPessoa: formValues.tipoPessoa,
       'g-recaptcha-response': reCaptchaToken,
-      orderProducts: stateCart,
+      orderProducts: shoppingCart.cart,
       deliveryValue: shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost,
       ...shoppingCart.personData,
       ...shoppingCart.address,
@@ -210,7 +205,7 @@ const Payment = () => {
     delete values.personType;
 
     const paymentType = offlinePayment ? formValues.pagamento : { descricao: 'Cartão de Crédito' };
-    updateShoppingCart({ paymentType, cardOverlay: false });
+    updateShoppingCart({ paymentType });
 
     if (!formValues.gatewayPagseguro && !hash) {
       sendCheckout(values, setSubmitting);
@@ -419,12 +414,12 @@ const Payment = () => {
                     ) : null}
                     <br />
                     <AlertPaymentType propsForm={propsForm} />
-                    {propsForm.values.gatewayPagseguro && totalCart < shop.minValuePayOnline && (
+                    {propsForm.values.gatewayPagseguro && shoppingCart.totalCart < shop.minValuePayOnline && (
                       <MinimumPriceAlert />
                     )}
                     {
                       propsForm.values.gatewayPagseguro
-                      && totalCart > shop.maxValuePayOnline
+                      && shoppingCart.totalCart > shop.maxValuePayOnline
                       && shop.maxValuePayOnline !== 0 && <MaximumPriceAlert />}
                     {propsForm.values.offlinePayment && (
                       <Row>
@@ -726,7 +721,7 @@ const Payment = () => {
                             </>
                           )}
                         </>
-                    )}
+                      )}
                   </>
                 </Grid>
               </Row>

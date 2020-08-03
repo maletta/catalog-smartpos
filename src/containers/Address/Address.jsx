@@ -69,7 +69,6 @@ const RegisterData = () => {
   const handleSubmit = async (values) => {
     const { data } = await checkingDelivery(values.cep, shop.id);
     updateShoppingCart({
-      cardOverlay: false,
       address: values,
       deliveryFee: data,
     });

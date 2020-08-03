@@ -4,7 +4,7 @@ import React, {
 import styled from 'styled-components';
 import Modal from 'react-responsive-modal';
 import { Formik, Form, Field } from 'formik';
-import { injectIntl, intlShape, FormattedPlural } from 'react-intl';
+import { injectIntl, FormattedPlural } from 'react-intl';
 import lodash from 'lodash';
 import uuidv1 from 'uuid/v1';
 import {
@@ -18,8 +18,7 @@ import Checkbox from 'components/Form/RenderCheckbox';
 import Counter from 'components/Form/Counter';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
-import storage from 'utils/storage';
-import utilsCart from 'utils/cart';
+import formatCurrency from 'utils/formatCurrency';
 
 import getVariantsOfProduct from 'api/variantsRequests';
 import getModifiersOfProduct from 'api/modifiersRequests';
@@ -145,7 +144,7 @@ const TotalValue = styled.div`
 
 const ModalOrderItem = (props) => {
   const {
-    intl, productOnModal, setProductOnModal, modalOpen, setModalOpen, storeId,
+    productOnModal, setProductOnModal, modalOpen, setModalOpen, storeId,
   } = props;
   const [variantSelected, setVariantSelected] = useState({ name: '' });
   const [variants, setVariants] = useState([]);
@@ -153,8 +152,7 @@ const ModalOrderItem = (props) => {
   const [isModLoaded, setIsModLoaded] = useState(false);
   const [modifierSelected, setModifierSelected] = useState([]);
   const [modifiersErrors, setModifiersErrors] = useState(false);
-  const [showTextarea, setShowTextarea] = useState(false);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const [productPricing, setProductPricing] = useState({
     product: 0,
     modifiers: 0,
@@ -167,8 +165,6 @@ const ModalOrderItem = (props) => {
         product: productOnModal.valorVenda,
         modifiers: 0,
       });
-
-      setTimeout(() => setShowTextarea(true), 1);
 
       setInitialValues({
         variant: {},
@@ -184,9 +180,11 @@ const ModalOrderItem = (props) => {
       });
 
       setIsModLoaded(false);
+
       getVariantsOfProduct(storeId, productOnModal.id).then((response) => {
         setVariants(response.data);
       });
+
       getModifiersOfProduct(storeId, productOnModal.id).then((response) => {
         setModifiers(response.data);
         // eslint-disable-next-line array-callback-return
@@ -211,17 +209,20 @@ const ModalOrderItem = (props) => {
   };
 
   const submitOrderItem = (values) => {
-    const prevCart = storage.getLocalCart();
+    const prevCart = lodash.cloneDeep(shoppingCart.cart);
+
     const newItem = {
       ...values,
       pricing: productPricing,
       modifiers: modifierSelected,
     };
 
-    let newCart = [];
+    let cart = [];
     let indexToUpdate = null;
+
     const repeat = prevCart.filter((item, index) => {
       indexToUpdate = index;
+
       return (lodash.isEqual(
         lodash.omit(item, ['quantity']),
         lodash.omit(newItem, ['quantity']),
@@ -230,20 +231,15 @@ const ModalOrderItem = (props) => {
 
     if (repeat.length) {
       prevCart[indexToUpdate].quantity += values.quantity;
-      newCart = prevCart;
+      cart = prevCart;
     } else {
-      newCart = [
+      cart = [
         ...prevCart,
         newItem,
       ];
     }
 
-    updateShoppingCart({
-      cart: newCart,
-      basketCount: utilsCart.sumCartQuantity(newCart),
-      totalCart: utilsCart.sumCartTotalPrice(newCart),
-    });
-    storage.updateLocalCart(newCart);
+    updateShoppingCart({ cart });
     localStorage.setItem('cartInit', new Date().getTime());
     onClose();
   };
@@ -256,7 +252,7 @@ const ModalOrderItem = (props) => {
       <ModifierItem key={item.id}>
         <ModifierItemName>
           {item.name}
-          {(item.sellValue > 0) && (<ModifierItemSellValue>{` + ${intl.formatNumber(item.sellValue, { style: 'currency', currency: 'BRL' })}`}</ModifierItemSellValue>)}
+          {item.sellValue > 0 && <ModifierItemSellValue>{` + ${formatCurrency(item.sellValue)}`}</ModifierItemSellValue>}
         </ModifierItemName>
         <Checkbox
           input={{
@@ -277,7 +273,7 @@ const ModalOrderItem = (props) => {
                 return [...newMod];
               });
               if (modifier.required && !hasError) {
-                setModifiersErrors(() => true);
+                setModifiersErrors(true);
               }
             } else if (modifierSelected[index].length < modifier.maxQuantity) {
               setProductPricing(prevState => ({
@@ -289,7 +285,7 @@ const ModalOrderItem = (props) => {
                 return ([...prevState]);
               });
               if (modifier.required && hasError) {
-                setModifiersErrors(() => false);
+                setModifiersErrors(false);
               }
             }
           }}
@@ -298,7 +294,7 @@ const ModalOrderItem = (props) => {
     );
   });
 
-  const sumProductPricing = (productPricing.product + productPricing.modifiers);
+  const sumProductPricing = productPricing.product + productPricing.modifiers;
 
   return (
     <Modal
@@ -322,7 +318,7 @@ const ModalOrderItem = (props) => {
         <Title>{productOnModal.descricao}</Title>
       </AreaTitle>
       <Content>
-        <Price>{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+        <Price>{formatCurrency(sumProductPricing)}</Price>
         <Formik
           onSubmit={submitOrderItem}
           initialValues={initialValues}
@@ -339,7 +335,7 @@ const ModalOrderItem = (props) => {
                     getOptionLabel={label => (
                       <LabelVariant>
                         <div>{label.name}</div>
-                        {(label.sellValue) && (<div>{intl.formatNumber(label.sellValue, { style: 'currency', currency: 'BRL' })}</div>)}
+                        {(label.sellValue) && (<div>{formatCurrency(label.sellValue)}</div>)}
                       </LabelVariant>
                     )}
                     getOptionValue={option => option.id}
@@ -401,18 +397,16 @@ const ModalOrderItem = (props) => {
                     })}
                   </ModifiersArea>
                 )}
-                {(showTextarea) && (
-                  <div className="column is-mb-paddingless is-12 is-mb-paddingless">
-                    <Field
-                      name="note"
-                      inputId="observacao"
-                      component={TextArea}
-                      label="Observação"
-                      autoFocus={false}
-                      rows={3}
-                    />
-                  </div>
-                )}
+                <div className="column is-mb-paddingless is-12 is-mb-paddingless">
+                  <Field
+                    name="note"
+                    inputId="observacao"
+                    component={TextArea}
+                    label="Observação"
+                    autoFocus={false}
+                    rows={3}
+                  />
+                </div>
               </div>
               <Row
                 className="pt-3 mr-2"
@@ -422,7 +416,7 @@ const ModalOrderItem = (props) => {
                   className="d-flex align-items-sm-start justify-content-end"
                 >
                   <TotalValue>
-                    {`Total ${intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}`}
+                    {`Total ${formatCurrency(propsForm.values.quantity * sumProductPricing)}`}
                   </TotalValue>
                 </Grid>
                 <Grid
@@ -458,7 +452,6 @@ const ModalOrderItem = (props) => {
 };
 
 ModalOrderItem.propTypes = {
-  intl: intlShape.isRequired,
   productOnModal: shape({}).isRequired,
   setProductOnModal: func.isRequired,
   modalOpen: bool.isRequired,

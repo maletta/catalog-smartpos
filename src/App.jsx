@@ -23,7 +23,6 @@ import CardShop from 'components/CardShop';
 import paths from 'paths';
 
 import history from 'utils/history';
-import storage from 'utils/storage';
 
 import getStoreName from 'utils/getStoreName';
 import formatFormErrors from 'utils/formatFormErrors';
@@ -141,8 +140,7 @@ const App = () => {
     const storeName = getStoreName();
 
     getStoreInfo(storeName)
-      .then((response) => {
-        const { data } = response;
+      .then(({ data }) => {
         const {
           allowOrderOutsideBusinessHours,
           is_enableOrder: isEnableOrder,
@@ -179,12 +177,7 @@ const App = () => {
     const hourDiff = Math.abs(date1 - date2) / 36e5;
     if (hourDiff > 1) {
       localStorage.removeItem('cartInit');
-      storage.removeLocalCart();
-      updateShoppingCart({
-        cart: [],
-        totalCart: 0,
-        basketCount: 0,
-      });
+      updateShoppingCart({ cart: [] });
     }
   };
 

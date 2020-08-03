@@ -11,13 +11,12 @@ export const ShoppingCartProvider = ({ children }) => {
 
   const [shoppingCart, setShoppingCart] = useState({
     cart: previousCart,
-    withdraw: true,
-    cep: '',
-    deliveryFee: {
-      cost: 0,
-    },
     basketCount: utilsCart.sumCartQuantity(previousCart),
     totalCart: utilsCart.sumCartTotalPrice(previousCart),
+    hasItems: previousCart.length > 0,
+    withdraw: true,
+    cep: '',
+    deliveryFee: { cost: 0 },
     personData: {},
     address: {},
     paymentType: '',
@@ -25,8 +24,21 @@ export const ShoppingCartProvider = ({ children }) => {
   });
 
   const updateShoppingCart = (newState) => {
-    if (newState.cart) {
-      storage.updateLocalCart(newState.cart);
+    const newCart = newState.cart;
+
+    if (newCart) {
+      storage.updateLocalCart(newCart);
+
+      const basketState = {
+        basketCount: utilsCart.sumCartQuantity(newCart),
+        totalCart: utilsCart.sumCartTotalPrice(newCart),
+        hasItems: newCart.length > 0,
+      };
+
+      setShoppingCart(previousState => ({
+        ...previousState,
+        ...basketState,
+      }));
     }
 
     setShoppingCart(previousState => ({ ...previousState, ...newState }));

@@ -3,8 +3,6 @@ import lodash from 'lodash';
 
 import Grid from 'components/Grid';
 import Steps from 'components/Steps';
-import utilsCart from 'utils/cart';
-import storage from 'utils/storage';
 
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
@@ -19,7 +17,6 @@ const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
 
-  // const [stateCart, setStateCart] = useState([]);
   const [deliveryCost, setDeliveryCost] = useState({});
 
   useEffect(() => {
@@ -29,63 +26,30 @@ const Cart = () => {
       page: 1,
       search: '',
     });
-
-    const localCart = storage.getLocalCart();
-    // setStateCart(localCart);
-
-    updateShoppingCart({
-      cardOverlay: false,
-      cart: localCart,
-      basketCount: utilsCart.sumCartQuantity(localCart),
-      totalCart: utilsCart.sumCartTotalPrice(localCart),
-    });
   }, []);
 
   const removeItemFromCart = (uuid) => {
-    // const newCart = stateCart.filter(item => item.uuid !== uuid);
-    const newCart = shoppingCart.cart.filter(item => item.uuid !== uuid);
-
-    storage.updateLocalCart(newCart);
-    // setStateCart(newCart);
-
-    updateShoppingCart({
-      cart: newCart,
-      basketCount: utilsCart.sumCartQuantity(newCart),
-      totalCart: utilsCart.sumCartTotalPrice(newCart),
-      cardOverlay: false,
-    });
+    const cart = shoppingCart.cart.filter(item => item.uuid !== uuid);
+    updateShoppingCart({ cart });
   };
 
   const updateItemQuantity = (quantity, itemIndex) => {
-    // const stateCartClone = lodash.cloneDeep(stateCart);
-    const stateCartClone = lodash.cloneDeep(shoppingCart.cart);
-    stateCartClone[itemIndex].quantity = quantity;
+    const cart = lodash.cloneDeep(shoppingCart.cart);
+    cart[itemIndex].quantity = quantity;
 
-    storage.updateLocalCart(stateCartClone);
-    // setStateCart(stateCartClone);
-
-    updateShoppingCart({
-      cart: stateCartClone,
-      basketCount: utilsCart.sumCartQuantity(stateCartClone),
-      totalCart: utilsCart.sumCartTotalPrice(stateCartClone),
-      cardOverlay: false,
-    });
+    updateShoppingCart({ cart });
   };
-
-  // const hasItems = stateCart.length > 0;
-  const hasItems = shoppingCart.cart.length > 0;
 
   return (
     <CartContainer className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
         <Steps activeIndex={0} />
         <ItemsContainer
-          // cartItems={stateCart}
           cartItems={shoppingCart.cart}
           deleteItem={removeItemFromCart}
           updateAmount={updateItemQuantity}
         />
-        {hasItems ? (
+        {shoppingCart.hasItems ? (
           <CartFooter
             updateFilter={updateFilter}
             deliveryCost={deliveryCost}
