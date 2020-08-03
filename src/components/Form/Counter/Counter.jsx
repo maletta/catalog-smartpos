@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   func, number,
@@ -47,19 +47,27 @@ const Counter = ({
 }) => {
   const [count, setCount] = useState(initialCount);
 
+  useEffect(() => {
+    setCount(initialCount);
+  }, [initialCount]);
+
   const decrement = () => {
     if (count > min) {
-      const decremented = count - 1;
-      setCount(decremented);
-      setState(decremented);
+      setCount((p) => {
+        const decremented = p - 1;
+        setState(decremented);
+        return decremented;
+      });
     }
   };
 
   const increment = () => {
     if (count < max) {
-      const incremented = count + 1;
-      setCount(incremented);
-      setState(incremented);
+      setCount((p) => {
+        const incremented = p + 1;
+        setState(incremented);
+        return incremented;
+      });
     }
   };
 

@@ -170,23 +170,22 @@ const CardShop = () => {
     updateShoppingCart({ cart });
   };
 
-  const updateQuantity = (uuid, newQuantity) => {
+  const updateQuantity = (newQuantity, itemIndex) => {
     const cart = lodash.cloneDeep(shoppingCart.cart);
-    const itemIndex = cart.indexOf(i => i.uuid === uuid);
     cart[itemIndex].quantity = newQuantity;
 
     updateShoppingCart({ cart });
   };
 
-  const increaseQuantity = ({ quantity, uuid }) => {
+  const increaseQuantity = ({ quantity }, itemIndex) => {
     const newQuantity = quantity + 1;
-    updateQuantity(uuid, newQuantity);
+    updateQuantity(newQuantity, itemIndex);
   };
 
-  const decreaseQuantity = ({ quantity, uuid }) => {
+  const decreaseQuantity = ({ quantity }, itemIndex) => {
     const newQuantity = quantity - 1;
     if (newQuantity === 0) return;
-    updateQuantity(uuid, newQuantity);
+    updateQuantity(newQuantity, itemIndex);
   };
 
   const calculateItemPrice = (item) => {
@@ -249,14 +248,14 @@ const CardShop = () => {
     item: PropTypes.any.isRequired,
   };
 
-  const ItemInfo = ({ item }) => (
+  const ItemInfo = ({ item, itemIndex }) => (
     <Info>
       <Description>
         {`${item.descricao} ${createVariantText(item.variant)}`}
       </Description>
       <ItemQuantity
-        onRemove={() => decreaseQuantity(item)}
-        onAdd={() => increaseQuantity(item)}
+        onRemove={() => decreaseQuantity(item, itemIndex)}
+        onAdd={() => increaseQuantity(item, itemIndex)}
         quantity={item.quantity}
       />
     </Info>
@@ -264,6 +263,7 @@ const CardShop = () => {
 
   ItemInfo.propTypes = {
     item: PropTypes.any.isRequired,
+    itemIndex: PropTypes.number.isRequired,
   };
 
   const ItemDelete = ({ item }) => (
@@ -291,11 +291,11 @@ const CardShop = () => {
     </span>
   );
 
-  const ItemCard = ({ item }) => (
+  const ItemCard = ({ item, itemIndex }) => (
     <div>
       <Item>
         <ItemImage item={item} />
-        <ItemInfo item={item} />
+        <ItemInfo item={item} itemIndex={itemIndex} />
         <ItemDelete item={item} />
       </Item>
       <hr />
@@ -304,10 +304,11 @@ const CardShop = () => {
 
   ItemCard.propTypes = {
     item: PropTypes.any.isRequired,
+    itemIndex: PropTypes.number.isRequired,
   };
 
-  const cartItems = shoppingCart.cart.map(item => (
-    <ItemCard key={item.id + item.descricao} item={item} />
+  const cartItems = shoppingCart.cart.map((item, i) => (
+    <ItemCard key={item.id + item.descricao} item={item} itemIndex={i} />
   ));
 
   const CartBody = () => {

@@ -380,6 +380,12 @@ const Payment = () => {
     });
   };
 
+  const a = shoppingCart.totalCart < shop.minValuePayOnline;
+  const b = shoppingCart.totalCart > shop.maxValuePayOnline;
+  const c = shop.maxValuePayOnline !== 0;
+  const al = isPagseguro => isPagseguro && a && <MinimumPriceAlert />;
+  const al2 = isPagseguro => isPagseguro && b && c && <MaximumPriceAlert />;
+
   return (
     <Container className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
@@ -414,13 +420,8 @@ const Payment = () => {
                     ) : null}
                     <br />
                     <AlertPaymentType propsForm={propsForm} />
-                    {propsForm.values.gatewayPagseguro && shoppingCart.totalCart < shop.minValuePayOnline && (
-                      <MinimumPriceAlert />
-                    )}
-                    {
-                      propsForm.values.gatewayPagseguro
-                      && shoppingCart.totalCart > shop.maxValuePayOnline
-                      && shop.maxValuePayOnline !== 0 && <MaximumPriceAlert />}
+                    {al(propsForm.values.gatewayPagseguro)}
+                    {al2(propsForm.values.gatewayPagseguro)}
                     {propsForm.values.offlinePayment && (
                       <Row>
                         <Grid cols="6">
