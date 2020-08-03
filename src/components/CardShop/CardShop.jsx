@@ -179,14 +179,17 @@ const CardShop = () => {
     setCardOverlay(shoppingCart.cardOverlay);
     setStateCart(storage.getLocalCart());
 
-    if (utilsCart.sumCartQuantity(stateCart) !== shoppingCart.basketCount) {
-      updateShoppingCart({
-        basketCount: utilsCart.sumCartQuantity(stateCart),
-        totalCart: utilsCart.sumCartTotalPrice(stateCart),
-      });
-    }
+    const shopCart = {
+      cart: stateCart,
+      basketCount: utilsCart.sumCartQuantity(stateCart),
+      totalCart: utilsCart.sumCartTotalPrice(stateCart),
+    };
 
-    setTotalCart(utilsCart.sumCartTotalPrice(stateCart));
+    setTotalCart(shopCart.totalCart);
+
+    if (shopCart.basketCount !== shoppingCart.basketCount) {
+      updateShoppingCart(shopCart);
+    }
   }, [shoppingCart]);
 
   const closeCard = () => {
@@ -194,26 +197,27 @@ const CardShop = () => {
   };
 
   const deleteItem = (uuid) => {
-    const newCart = stateCart.filter(del => (del.uuid !== uuid));
+    const newCart = stateCart.filter(item => (item.uuid !== uuid));
+
     setStateCart(newCart);
     storage.updateLocalCart(newCart);
 
+    setTotalCart(utilsCart.sumCartTotalPrice(newCart));
+
     updateShoppingCart({
+      cart: newCart,
       basketCount: utilsCart.sumCartQuantity(newCart),
       totalCart: utilsCart.sumCartTotalPrice(newCart),
     });
-
-    setTotalCart(utilsCart.sumCartTotalPrice(newCart));
   };
 
-  const addProduct = (item) => {
+  const increaseQuantity = (item) => {
     const { quantity, uuid } = item;
-    const newQuantity = quantity + 1;
     const cart = storage.getLocalCart();
 
     const fn = (i, index) => {
       if (i.uuid === uuid) {
-        cart[index].quantity = newQuantity;
+        cart[index].quantity = quantity + 1;
       }
     };
 
@@ -224,34 +228,32 @@ const CardShop = () => {
     setStateCart(cart);
 
     updateShoppingCart({
-      basketCount: utilsCart.sumCartQuantity(stateCart),
-      totalCart: utilsCart.sumCartTotalPrice(stateCart),
+      cart,
+      basketCount: utilsCart.sumCartQuantity(cart),
+      totalCart: utilsCart.sumCartTotalPrice(cart),
     });
   };
 
-  const removeProduct = (item) => {
-    const { quantity } = item;
-    const newQuantity = quantity - 1;
+  const decreaseQuantity = (item) => {
+    const { quantity, uuid } = item;
+    const cart = storage.getLocalCart();
 
-    if (newQuantity === 0) {
-      deleteItem(item.uuid);
-    } else {
-      const cart = storage.getLocalCart();
-      cart.map((i, index) => {
-        if (i.uuid === item.uuid) {
-          cart[index].quantity = newQuantity;
-        }
-        return false;
-      });
+    const fn = (i, index) => {
+      if (i.uuid === uuid) {
+        cart[index].quantity = quantity - 1;
+      }
+    };
 
-      storage.updateLocalCart(cart);
-      setStateCart(cart);
-      const basketCount = utilsCart.sumCartQuantity(stateCart);
-      updateShoppingCart({
-        basketCount,
-        totalCart: utilsCart.sumCartTotalPrice(stateCart),
-      });
-    }
+    cart.map(fn);
+
+    storage.updateLocalCart(cart);
+    setStateCart(cart);
+
+    updateShoppingCart({
+      cart,
+      basketCount: utilsCart.sumCartQuantity(cart),
+      totalCart: utilsCart.sumCartTotalPrice(cart),
+    });
   };
 
   const hasItems = stateCart.length > 0;
@@ -278,6 +280,35 @@ const CardShop = () => {
     return isEmpty(variant) ? '' : `(${variant.name})`;
   };
 
+  const handleClickImage = (item) => {
+    const { id, descricao } = item;
+
+    setTimeout(() => {
+      scrollTop();
+      closeCard();
+      history.push(`/item/${id}/${slug(descricao)}`);
+      reloadPage();
+    }, 500);
+  };
+
+  const handleClickFinish = () => {
+    setTimeout(() => {
+      scrollTop();
+      updateShoppingCart({
+        cardOverlay: false,
+      });
+      history.push(paths.cart);
+    }, 500);
+  };
+
+  const handleClickBuy = () => {
+    setTimeout(() => {
+      scrollTop();
+      closeCard();
+      history.push(paths.home);
+    }, 500);
+  };
+
   return (
     <>
       <Overlay
@@ -295,13 +326,7 @@ const CardShop = () => {
               {stateCart.map(item => (
                 <div key={item.id + item.descricao}>
                   <Item>
-                    <ImageContainer onClick={() => setTimeout(() => {
-                      scrollTop();
-                      closeCard();
-                      history.push(`/item/${item.id}/${slug(item.descricao)}`);
-                      reloadPage();
-                    }, 500)}
-                    >
+                    <ImageContainer onClick={() => handleClickImage(item)}>
                       <ImageBox
                         url={createItemImageURL(item)}
                         shoppingCart={shoppingCart}
@@ -313,8 +338,8 @@ const CardShop = () => {
                         {`${item.descricao} ${createVariantText(item)}`}
                       </Description>
                       <ItemQuantity
-                        onRemove={() => removeProduct(item)}
-                        onAdd={() => addProduct(item)}
+                        onRemove={() => decreaseQuantity(item)}
+                        onAdd={() => increaseQuantity(item)}
                         quantity={item.quantity}
                       />
                     </Info>
@@ -334,27 +359,10 @@ const CardShop = () => {
                   <TextTotal>SubTotal: </TextTotal>
                   <Value>{formatCurrency(totalCart)}</Value>
                 </SubTotalTitle>
-                <Finish onClick={() => {
-                  setTimeout(() => {
-                    scrollTop();
-                    updateShoppingCart({
-                      cardOverlay: false,
-                    });
-                    history.push(paths.cart);
-                  }, 500);
-                }}
-                >
+                <Finish onClick={handleClickFinish}>
                   <FinishText>FINALIZAR COMPRA</FinishText>
                 </Finish>
-
-                <BuyMore onClick={() => {
-                  setTimeout(() => {
-                    scrollTop();
-                    closeCard();
-                    history.push(paths.home);
-                  }, 500);
-                }}
-                >
+                <BuyMore onClick={handleClickBuy}>
                   ADICIONAR MAIS PRODUTOS
                 </BuyMore>
               </span>

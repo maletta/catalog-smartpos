@@ -43,8 +43,16 @@ const Cart = () => {
 
   const removeItemFromCart = (uuid) => {
     const newCart = stateCart.filter(item => item.uuid !== uuid);
+
     storage.updateLocalCart(newCart);
     setStateCart(newCart);
+
+    updateShoppingCart({
+      cart: newCart,
+      basketCount: utilsCart.sumCartQuantity(newCart),
+      totalCart: utilsCart.sumCartTotalPrice(newCart),
+      cardOverlay: false,
+    });
   };
 
   const updateCartPrice = (quantity, itemIndex) => {
