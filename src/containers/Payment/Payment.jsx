@@ -386,6 +386,252 @@ const Payment = () => {
   const al = isPagseguro => isPagseguro && a && <MinimumPriceAlert />;
   const al2 = isPagseguro => isPagseguro && b && c && <MaximumPriceAlert />;
 
+  const Comp = propsForm => (
+    <>
+      <Row>
+        <Grid cols="12" className="mb-2" style={{ display: 'flex', flexWrap: 'wrap', gap: '17px' }}>
+          {creditCardsImages}
+        </Grid>
+      </Row>
+      <Row>
+        <Grid cols="12 6 6 6 6">
+          <Field
+            label="Nome do titular"
+            name="nameHolder"
+            inputId="nameHolder"
+            component={Input}
+            isRequired
+          />
+        </Grid>
+        <Grid cols="12 6 6 6 3">
+          <Field
+            label="Data Nascimento"
+            name="birthDateHolder"
+            inputId="birthDateHolder"
+            format="##/##/####"
+            component={MaskedNumberInput}
+            onValueChange={(event) => {
+              propsForm.setFieldValue(
+                'birthDateHolder',
+                event.formattedValue,
+              );
+            }}
+            isRequired
+            onBlur={getHashReady}
+            type="tel"
+          />
+        </Grid>
+        <Grid cols="12 6 6 6 3">
+          <Field
+            label="CPF do titular"
+            name="cpfHolder"
+            inputId="cpfHolder"
+            format="###.###.###-##"
+            component={MaskedNumberInput}
+            isRequired
+            type="tel"
+          />
+        </Grid>
+      </Row>
+      <Row>
+        <Grid cols="12 6 6 6 9">
+          <Field
+            label="Número do cartão"
+            name="cardNumber_unformatted"
+            inputId="cardNumber_unformatted"
+            format={cardFormat}
+            component={NumberFormat}
+            customInput={InputCreditCard}
+            brand={creditCardBrand}
+            onValueChange={handleChangeCreditCard(propsForm)}
+            isRequired
+            type="tel"
+          />
+        </Grid>
+        <Grid cols="12 6 6 6 3">
+          <Field
+            label="Validade"
+            name="expiration"
+            inputId="expiration"
+            placeholder="MM/AAAA"
+            format="##/####"
+            component={MaskInput}
+            isRequired
+            onValueChange={(value) => {
+              propsForm.setFieldValue(
+                'expiration',
+                value.formattedValue,
+              );
+            }}
+            type="tel"
+          />
+        </Grid>
+      </Row>
+
+      <Row>
+        <Grid cols="12 6 6 6 4">
+          <Field
+            label="Cód. de segurança"
+            name="cvv"
+            inputId="cvv"
+            format={cvvFormat}
+            component={NumberFormat}
+            customInput={InputCvv}
+            onValueChange={(value) => {
+              propsForm.setFieldValue('cvv', value.value);
+            }}
+            isRequired
+            type="tel"
+          />
+        </Grid>
+        <Grid cols="12 12 12 12 8">
+          <SelectDropDown
+            id="installments"
+            label="Parcelas"
+            value={propsForm.values.installments}
+            cacheOptions
+            options={installments}
+            getOptionLabel={label => label.totalAmount
+              && `${label.quantity} 
+              ${label.quantity === 1 ? 'parcela' : 'parcelas'} de 
+              ${formatCurrency(label.installmentAmount)} | Total: 
+              ${formatCurrency(label.totalAmount)}`
+            }
+            getOptionValue={option => option.quantity}
+            onChange={(event) => {
+              propsForm.setFieldValue('installments', event);
+            }}
+            isInvalid={propsForm.errors.installments}
+            touched={propsForm.touched.installments}
+            placeholder="Preencha as informações do cartão para ver as opções de parcelamento"
+            isRequired
+          />
+        </Grid>
+      </Row>
+      <Row>
+        <Grid cols="12" className="mb-3">
+          <AddressCreditCard onClick={() => setShowAddress(!showAddress)} />
+        </Grid>
+      </Row>
+      {showAddress && (
+        <>
+          <Row>
+            <Grid cols="12 6 4 4 4">
+              <Field
+                isRequired
+                label="CEP"
+                name="cobrancaCep"
+                inputId="cobrancaCep"
+                type="tel"
+                format="#####-###"
+                component={MaskedNumberInput}
+                onValueChange={async ({ value, formattedValue }) => {
+                  if (value.length < 8) return;
+
+                  const { data } = await requestCEP(value);
+                  const [tipoLogradouro, ...endereco] = data.logradouro.split(' ')[0];
+
+                  propsForm.setFieldValue(
+                    'cobrancaCep',
+                    formattedValue,
+                  );
+                  propsForm.setFieldValue(
+                    'cobrancaBairro',
+                    data.bairro,
+                  );
+                  propsForm.setFieldValue(
+                    'cobrancaEstado',
+                    data.uf,
+                  );
+                  propsForm.setFieldValue(
+                    'cobrancaCodcidade',
+                    data.ibge,
+                  );
+                  propsForm.setFieldValue(
+                    'cobrancaCidade',
+                    data.localidade,
+                  );
+                  propsForm.setFieldValue(
+                    'cobrancaEndereco',
+                    endereco.trim(),
+                  );
+                  propsForm.setFieldValue(
+                    'cobrancaTipoLogradouro',
+                    tipoLogradouro.trim(),
+                  );
+                }}
+              />
+            </Grid>
+            <Grid cols="12 6 8 8 8">
+              <Field
+                label="Endereço"
+                name="cobrancaEndereco"
+                inputId="cobrancaEndereco"
+                component={Input}
+                isRequired
+              />
+            </Grid>
+          </Row>
+          <Row>
+            <Grid cols="12 6 4 4 4">
+              <Field
+                label="Número"
+                name="cobrancaNumero"
+                inputId="cobrancaNumero"
+                component={Input}
+                isRequired
+                type="tel"
+              />
+            </Grid>
+            <Grid cols="12 6 8 8 8">
+              <Field
+                label="Complemento"
+                name="cobrancaComplemento"
+                inputId="cobrancaComplemento"
+                component={Input}
+              />
+            </Grid>
+          </Row>
+          <Row>
+            <Grid cols="12 12 12 12 12">
+              <Field
+                label="Bairro"
+                name="cobrancaBairro"
+                inputId="cobrancaBairro"
+                component={Input}
+                isRequired
+              />
+            </Grid>
+          </Row>
+          <Row>
+            <Grid cols="12 6 6 6 6">
+              <Field
+                label="Cidade"
+                name="cobrancaCidade"
+                inputId="cobrancaCidade"
+                component={Input}
+                isRequired
+                disabled
+              />
+            </Grid>
+            <Grid cols="12 6 6 6 6">
+              <Field
+                label="Estado"
+                name="cobrancaEstado"
+                inputId="cobrancaEstado"
+                component={Input}
+                isRequired
+                disabled
+              />
+            </Grid>
+          </Row>
+        </>
+      )}
+    </>
+  );
+
+  const verify = isPag => isPag && shop.allowPayOnline && verifyMaxAndMinValue(isPag);
+
   return (
     <Container className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
@@ -476,253 +722,7 @@ const Payment = () => {
                         </Grid>
                       </Row>
                     )}
-                    {propsForm.values.gatewayPagseguro
-                      && shop.allowPayOnline
-                      && verifyMaxAndMinValue(
-                        propsForm.values.gatewayPagseguro,
-                      ) && (
-                        <>
-                          <Row>
-                            <Grid cols="12" className="mb-2" style={{ display: 'flex', flexWrap: 'wrap', gap: '17px' }}>
-                              {creditCardsImages}
-                            </Grid>
-                          </Row>
-                          <Row>
-                            <Grid cols="12 6 6 6 6">
-                              <Field
-                                label="Nome do titular"
-                                name="nameHolder"
-                                inputId="nameHolder"
-                                component={Input}
-                                isRequired
-                              />
-                            </Grid>
-                            <Grid cols="12 6 6 6 3">
-                              <Field
-                                label="Data Nascimento"
-                                name="birthDateHolder"
-                                inputId="birthDateHolder"
-                                format="##/##/####"
-                                component={MaskedNumberInput}
-                                onValueChange={(event) => {
-                                  propsForm.setFieldValue(
-                                    'birthDateHolder',
-                                    event.formattedValue,
-                                  );
-                                }}
-                                isRequired
-                                onBlur={getHashReady}
-                                type="tel"
-                              />
-                            </Grid>
-                            <Grid cols="12 6 6 6 3">
-                              <Field
-                                label="CPF do titular"
-                                name="cpfHolder"
-                                inputId="cpfHolder"
-                                format="###.###.###-##"
-                                component={MaskedNumberInput}
-                                isRequired
-                                type="tel"
-                              />
-                            </Grid>
-                          </Row>
-                          <Row>
-                            <Grid cols="12 6 6 6 9">
-                              <Field
-                                label="Número do cartão"
-                                name="cardNumber_unformatted"
-                                inputId="cardNumber_unformatted"
-                                format={cardFormat}
-                                component={NumberFormat}
-                                customInput={InputCreditCard}
-                                brand={creditCardBrand}
-                                onValueChange={handleChangeCreditCard(propsForm)}
-                                isRequired
-                                type="tel"
-                              />
-                            </Grid>
-                            <Grid cols="12 6 6 6 3">
-                              <Field
-                                label="Validade"
-                                name="expiration"
-                                inputId="expiration"
-                                placeholder="MM/AAAA"
-                                format="##/####"
-                                component={MaskInput}
-                                isRequired
-                                onValueChange={(value) => {
-                                  propsForm.setFieldValue(
-                                    'expiration',
-                                    value.formattedValue,
-                                  );
-                                }}
-                                type="tel"
-                              />
-                            </Grid>
-                          </Row>
-
-                          <Row>
-                            <Grid cols="12 6 6 6 4">
-                              <Field
-                                label="Cód. de segurança"
-                                name="cvv"
-                                inputId="cvv"
-                                format={cvvFormat}
-                                component={NumberFormat}
-                                customInput={InputCvv}
-                                onValueChange={(value) => {
-                                  propsForm.setFieldValue('cvv', value.value);
-                                }}
-                                isRequired
-                                type="tel"
-                              />
-                            </Grid>
-                            <Grid cols="12 12 12 12 8">
-                              <SelectDropDown
-                                id="installments"
-                                label="Parcelas"
-                                value={propsForm.values.installments}
-                                cacheOptions
-                                options={installments}
-                                getOptionLabel={label => label.totalAmount
-                                  && `${label.quantity} 
-                                  ${label.quantity === 1 ? 'parcela' : 'parcelas'} de 
-                                  ${formatCurrency(label.installmentAmount)} | Total: 
-                                  ${formatCurrency(label.totalAmount)}`
-                                }
-                                getOptionValue={option => option.quantity}
-                                onChange={(event) => {
-                                  propsForm.setFieldValue('installments', event);
-                                }}
-                                isInvalid={propsForm.errors.installments}
-                                touched={propsForm.touched.installments}
-                                placeholder="Preencha as informações do cartão para ver as opções de parcelamento"
-                                isRequired
-                              />
-                            </Grid>
-                          </Row>
-                          <Row>
-                            <Grid cols="12" className="mb-3">
-                              <AddressCreditCard onClick={() => setShowAddress(!showAddress)} />
-                            </Grid>
-                          </Row>
-                          {showAddress && (
-                            <>
-                              <Row>
-                                <Grid cols="12 6 4 4 4">
-                                  <Field
-                                    isRequired
-                                    label="CEP"
-                                    name="cobrancaCep"
-                                    inputId="cobrancaCep"
-                                    type="tel"
-                                    format="#####-###"
-                                    component={MaskedNumberInput}
-                                    onValueChange={async ({ value, formattedValue }) => {
-                                      if (value.length < 8) return;
-
-                                      const { data } = await requestCEP(value);
-                                      const [tipoLogradouro, ...endereco] = data.logradouro.split(' ')[0];
-
-                                      propsForm.setFieldValue(
-                                        'cobrancaCep',
-                                        formattedValue,
-                                      );
-                                      propsForm.setFieldValue(
-                                        'cobrancaBairro',
-                                        data.bairro,
-                                      );
-                                      propsForm.setFieldValue(
-                                        'cobrancaEstado',
-                                        data.uf,
-                                      );
-                                      propsForm.setFieldValue(
-                                        'cobrancaCodcidade',
-                                        data.ibge,
-                                      );
-                                      propsForm.setFieldValue(
-                                        'cobrancaCidade',
-                                        data.localidade,
-                                      );
-                                      propsForm.setFieldValue(
-                                        'cobrancaEndereco',
-                                        endereco.trim(),
-                                      );
-                                      propsForm.setFieldValue(
-                                        'cobrancaTipoLogradouro',
-                                        tipoLogradouro.trim(),
-                                      );
-                                    }}
-                                  />
-                                </Grid>
-                                <Grid cols="12 6 8 8 8">
-                                  <Field
-                                    label="Endereço"
-                                    name="cobrancaEndereco"
-                                    inputId="cobrancaEndereco"
-                                    component={Input}
-                                    isRequired
-                                  />
-                                </Grid>
-                              </Row>
-                              <Row>
-                                <Grid cols="12 6 4 4 4">
-                                  <Field
-                                    label="Número"
-                                    name="cobrancaNumero"
-                                    inputId="cobrancaNumero"
-                                    component={Input}
-                                    isRequired
-                                    type="tel"
-                                  />
-                                </Grid>
-                                <Grid cols="12 6 8 8 8">
-                                  <Field
-                                    label="Complemento"
-                                    name="cobrancaComplemento"
-                                    inputId="cobrancaComplemento"
-                                    component={Input}
-                                  />
-                                </Grid>
-                              </Row>
-                              <Row>
-                                <Grid cols="12 12 12 12 12">
-                                  <Field
-                                    label="Bairro"
-                                    name="cobrancaBairro"
-                                    inputId="cobrancaBairro"
-                                    component={Input}
-                                    isRequired
-                                  />
-                                </Grid>
-                              </Row>
-                              <Row>
-                                <Grid cols="12 6 6 6 6">
-                                  <Field
-                                    label="Cidade"
-                                    name="cobrancaCidade"
-                                    inputId="cobrancaCidade"
-                                    component={Input}
-                                    isRequired
-                                    disabled
-                                  />
-                                </Grid>
-                                <Grid cols="12 6 6 6 6">
-                                  <Field
-                                    label="Estado"
-                                    name="cobrancaEstado"
-                                    inputId="cobrancaEstado"
-                                    component={Input}
-                                    isRequired
-                                    disabled
-                                  />
-                                </Grid>
-                              </Row>
-                            </>
-                          )}
-                        </>
-                      )}
+                    {verify(propsForm.values.gatewayPagseguro) && Comp(propsForm)}
                   </>
                 </Grid>
               </Row>
