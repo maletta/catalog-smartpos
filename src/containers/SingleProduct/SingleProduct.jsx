@@ -271,7 +271,9 @@ const SingleProduct = (props) => {
     storage.updateLocalCart(newCart);
     localStorage.setItem('cartInit', new Date().getTime());
     updateShoppingCart({
+      cart: newCart,
       basketCount: utilsCart.sumCartQuantity(newCart),
+      totalCart: utilsCart.sumCartTotalPrice(newCart),
       cardOverlay: true,
     });
   };

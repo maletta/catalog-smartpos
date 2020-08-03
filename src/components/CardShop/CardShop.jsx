@@ -1,4 +1,4 @@
-import React, { useState, useContext, useLayoutEffect } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import isEmpty from 'lodash/isEmpty';
 
@@ -170,39 +170,17 @@ const FinishText = styled.span`
 `;
 
 const CardShop = () => {
-  const [closeCardOverlay, setCardOverlay] = useState(false);
-  const [totalCart, setTotalCart] = useState(0);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  const [stateCart, setStateCart] = useState(storage.getLocalCart());
-
-  useLayoutEffect(() => {
-    setCardOverlay(shoppingCart.cardOverlay);
-    setStateCart(storage.getLocalCart());
-
-    const shopCart = {
-      cart: stateCart,
-      basketCount: utilsCart.sumCartQuantity(stateCart),
-      totalCart: utilsCart.sumCartTotalPrice(stateCart),
-    };
-
-    setTotalCart(shopCart.totalCart);
-
-    if (shopCart.basketCount !== shoppingCart.basketCount) {
-      updateShoppingCart(shopCart);
-    }
-  }, [shoppingCart]);
+  const hasItems = shoppingCart.cart.length > 0;
 
   const closeCard = () => {
-    setCardOverlay(!closeCardOverlay);
+    updateShoppingCart({ cardOverlay: false });
   };
 
   const deleteItem = (uuid) => {
-    const newCart = stateCart.filter(item => (item.uuid !== uuid));
+    const newCart = shoppingCart.cart.filter(item => item.uuid !== uuid);
 
-    setStateCart(newCart);
     storage.updateLocalCart(newCart);
-
-    setTotalCart(utilsCart.sumCartTotalPrice(newCart));
 
     updateShoppingCart({
       cart: newCart,
@@ -213,7 +191,7 @@ const CardShop = () => {
 
   const increaseQuantity = (item) => {
     const { quantity, uuid } = item;
-    const cart = storage.getLocalCart();
+    const { cart } = shoppingCart;
 
     const fn = (i, index) => {
       if (i.uuid === uuid) {
@@ -224,8 +202,6 @@ const CardShop = () => {
     cart.map(fn);
 
     storage.updateLocalCart(cart);
-
-    setStateCart(cart);
 
     updateShoppingCart({
       cart,
@@ -238,7 +214,7 @@ const CardShop = () => {
     const { quantity, uuid } = item;
     if (quantity - 1 === 0) return;
 
-    const cart = storage.getLocalCart();
+    const { cart } = shoppingCart;
 
     const fn = (i, index) => {
       if (i.uuid === uuid) {
@@ -249,7 +225,6 @@ const CardShop = () => {
     cart.map(fn);
 
     storage.updateLocalCart(cart);
-    setStateCart(cart);
 
     updateShoppingCart({
       cart,
@@ -257,8 +232,6 @@ const CardShop = () => {
       totalCart: utilsCart.sumCartTotalPrice(cart),
     });
   };
-
-  const hasItems = stateCart.length > 0;
 
   const calculateItemPrice = (item) => {
     const { pricing, quantity } = item;
@@ -315,9 +288,9 @@ const CardShop = () => {
     <>
       <Overlay
         onClick={closeCard}
-        closeCardOverlay={closeCardOverlay}
+        closeCardOverlay={shoppingCart.cardOverlay}
       />
-      <CardOverlay closeCardOverlay={closeCardOverlay}>
+      <CardOverlay closeCardOverlay={shoppingCart.cardOverlay}>
         <CartHeader
           basketCount={shoppingCart.basketCount}
           onClose={closeCard}
@@ -325,7 +298,7 @@ const CardShop = () => {
         <div>
           {hasItems ? (
             <>
-              {stateCart.map(item => (
+              {shoppingCart.cart.map(item => (
                 <div key={item.id + item.descricao}>
                   <Item>
                     <ImageContainer onClick={() => handleClickImage(item)}>
@@ -359,7 +332,7 @@ const CardShop = () => {
                 </TotalTitle>
                 <SubTotalTitle>
                   <TextTotal>SubTotal: </TextTotal>
-                  <Value>{formatCurrency(totalCart)}</Value>
+                  <Value>{formatCurrency(shoppingCart.totalCart)}</Value>
                 </SubTotalTitle>
                 <Finish onClick={handleClickFinish}>
                   <FinishText>FINALIZAR COMPRA</FinishText>

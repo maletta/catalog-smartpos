@@ -181,6 +181,8 @@ const App = () => {
       localStorage.removeItem('cartInit');
       storage.removeLocalCart();
       updateShoppingCart({
+        cart: [],
+        totalCart: 0,
         basketCount: 0,
       });
     }
@@ -252,7 +254,7 @@ const App = () => {
         <MainContainer>
           <Router history={history}>
             <Switch>
-              <Route path="/" exact component={GridProducts} />
+              <Route path={paths.home} exact component={GridProducts} />
               <Route path={paths.cart} exact component={Cart} />
               <Route path={paths.registerData} exact component={RegisterData} />
               <Route path={paths.address} exact component={Address} />

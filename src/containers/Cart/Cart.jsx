@@ -19,7 +19,7 @@ const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
 
-  const [stateCart, setStateCart] = useState([]);
+  // const [stateCart, setStateCart] = useState([]);
   const [deliveryCost, setDeliveryCost] = useState({});
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const Cart = () => {
     });
 
     const localCart = storage.getLocalCart();
-    setStateCart(localCart);
+    // setStateCart(localCart);
 
     updateShoppingCart({
       cardOverlay: false,
@@ -42,10 +42,11 @@ const Cart = () => {
   }, []);
 
   const removeItemFromCart = (uuid) => {
-    const newCart = stateCart.filter(item => item.uuid !== uuid);
+    // const newCart = stateCart.filter(item => item.uuid !== uuid);
+    const newCart = shoppingCart.cart.filter(item => item.uuid !== uuid);
 
     storage.updateLocalCart(newCart);
-    setStateCart(newCart);
+    // setStateCart(newCart);
 
     updateShoppingCart({
       cart: newCart,
@@ -55,12 +56,13 @@ const Cart = () => {
     });
   };
 
-  const updateCartPrice = (quantity, itemIndex) => {
-    const stateCartClone = lodash.cloneDeep(stateCart);
+  const updateItemQuantity = (quantity, itemIndex) => {
+    // const stateCartClone = lodash.cloneDeep(stateCart);
+    const stateCartClone = lodash.cloneDeep(shoppingCart.cart);
     stateCartClone[itemIndex].quantity = quantity;
 
     storage.updateLocalCart(stateCartClone);
-    setStateCart(stateCartClone);
+    // setStateCart(stateCartClone);
 
     updateShoppingCart({
       cart: stateCartClone,
@@ -70,16 +72,18 @@ const Cart = () => {
     });
   };
 
-  const hasItems = stateCart.length > 0;
+  // const hasItems = stateCart.length > 0;
+  const hasItems = shoppingCart.cart.length > 0;
 
   return (
     <CartContainer className="row">
       <Grid cols="12 12 12 8 8" className="pt-3">
         <Steps activeIndex={0} />
         <ItemsContainer
-          cartItems={stateCart}
+          // cartItems={stateCart}
+          cartItems={shoppingCart.cart}
           deleteItem={removeItemFromCart}
-          updateAmount={updateCartPrice}
+          updateAmount={updateItemQuantity}
         />
         {hasItems ? (
           <CartFooter

@@ -239,7 +239,9 @@ const ModalOrderItem = (props) => {
     }
 
     updateShoppingCart({
+      cart: newCart,
       basketCount: utilsCart.sumCartQuantity(newCart),
+      totalCart: utilsCart.sumCartTotalPrice(newCart),
     });
     storage.updateLocalCart(newCart);
     localStorage.setItem('cartInit', new Date().getTime());

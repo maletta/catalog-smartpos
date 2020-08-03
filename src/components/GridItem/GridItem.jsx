@@ -176,9 +176,13 @@ const GridItem = (props) => {
             }
             return localProduct;
           });
+
           storage.updateLocalCart(updatedCart);
+
           updateShoppingCart({
+            cart: updatedCart,
             basketCount: utilsCart.sumCartQuantity(updatedCart),
+            totalCart: utilsCart.sumCartTotalPrice(updatedCart),
             cardOverlay: true,
           });
         } else {
@@ -196,7 +200,9 @@ const GridItem = (props) => {
           localCart.push(itemProduct);
           storage.updateLocalCart(localCart);
           updateShoppingCart({
+            cart: localCart,
             basketCount: utilsCart.sumCartQuantity(localCart),
+            totalCart: utilsCart.sumCartTotalPrice(localCart),
             cardOverlay: true,
           });
         }

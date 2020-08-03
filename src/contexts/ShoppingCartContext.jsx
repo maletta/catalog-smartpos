@@ -8,8 +8,6 @@ const ShoppingCartContext = createContext();
 
 export const ShoppingCartProvider = ({ children }) => {
   const previousCart = storage.getLocalCart();
-  const totalCart = utilsCart.sumCartTotalPrice(previousCart);
-  const basketCount = utilsCart.sumCartQuantity(previousCart);
 
   const [shoppingCart, setShoppingCart] = useState({
     cart: previousCart,
@@ -18,16 +16,20 @@ export const ShoppingCartProvider = ({ children }) => {
     deliveryFee: {
       cost: 0,
     },
-    basketCount,
-    totalCart,
+    basketCount: utilsCart.sumCartQuantity(previousCart),
+    totalCart: utilsCart.sumCartTotalPrice(previousCart),
     personData: {},
     address: {},
     paymentType: '',
     cardOverlay: false,
   });
 
-  const updateShoppingCart = (newShop) => {
-    setShoppingCart(({ ...shoppingCart, ...newShop }));
+  const updateShoppingCart = (newState) => {
+    if (newState.cart) {
+      storage.updateLocalCart(newState.cart);
+    }
+
+    setShoppingCart(previousState => ({ ...previousState, ...newState }));
   };
 
   return (
