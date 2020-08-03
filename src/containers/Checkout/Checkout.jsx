@@ -157,7 +157,7 @@ const Checkout = ({ intl }) => {
     };
 
     // Pagamento pela pagseguro
-    if (formValues.gatwayPagseguro && state.senderHash) {
+    if (formValues.gatewayPagseguro && state.senderHash) {
       PagSeguroDirectPayment.createCardToken({
         cardNumber: formValues.cardNumber_unformatted, // Número do cartão de crédito
         brand: creditCardBrand.name, // Bandeira do cartão
@@ -211,7 +211,7 @@ const Checkout = ({ intl }) => {
     pickup: false,
     catalog_id: shop.id,
     loja: shop.codigo,
-    gatwayPagseguro: (shop.allowPayOnline === 1),
+    gatewayPagseguro: (shop.allowPayOnline === 1),
     offlinePayment: (shop.allowPayOnline === 0),
     nameHolder: '',
     cardNumber: '',
@@ -347,8 +347,8 @@ const Checkout = ({ intl }) => {
   }, []);
 
 
-  const verifyMaxAndMinValue = (gatwayPagseguro) => {
-    if (gatwayPagseguro) {
+  const verifyMaxAndMinValue = (gatewayPagseguro) => {
+    if (gatewayPagseguro) {
       if (shop.minValuePayOnline >= 0 && totalCar > shop.minValuePayOnline
         && (shop.maxValuePayOnline === 0 || totalCar <= shop.maxValuePayOnline)) {
         return true;
@@ -700,7 +700,7 @@ const Checkout = ({ intl }) => {
                               onChange={(event) => {
                                 event.preventDefault();
                                 propsForm.setFieldValue('offlinePayment', !propsForm.values.offlinePayment);
-                                propsForm.setFieldValue('gatwayPagseguro', !propsForm.values.gatwayPagseguro);
+                                propsForm.setFieldValue('gatewayPagseguro', !propsForm.values.gatewayPagseguro);
                                 setOfflinePayment(true);
                               }}
                             />
@@ -710,11 +710,11 @@ const Checkout = ({ intl }) => {
                           <div className="d-flex align-items-center mt-3 mb-3">
                             <Field
                               label="Pague on-line com cartão de crédito"
-                              name="gatwayPagseguro"
+                              name="gatewayPagseguro"
                               component={RenderCheckbox}
                               onChange={(event) => {
                                 event.preventDefault();
-                                propsForm.setFieldValue('gatwayPagseguro', !propsForm.values.gatwayPagseguro);
+                                propsForm.setFieldValue('gatewayPagseguro', !propsForm.values.gatewayPagseguro);
                                 propsForm.setFieldValue('offlinePayment', !propsForm.values.offlinePayment);
                                 setOfflinePayment(false);
                               }}
@@ -724,16 +724,16 @@ const Checkout = ({ intl }) => {
                         </>
                       )}
                       <Alert
-                        text={(propsForm.values.gatwayPagseguro && shop.allowPayOnline === 1) ? 'Finalize a compra para realizar o pagamento pelo PagSeguro' : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'}
+                        text={(propsForm.values.gatewayPagseguro && shop.allowPayOnline === 1) ? 'Finalize a compra para realizar o pagamento pelo PagSeguro' : 'Atenção: você irá realizar o pagamento diretamente com o vendedor!'}
                       />
-                      {(propsForm.values.gatwayPagseguro
+                      {(propsForm.values.gatewayPagseguro
                         && totalCar < shop.minValuePayOnline) && (
                         <Alert
                           text={`Valor mínimo para pagamento on-line ${intl.formatNumber(shop.minValuePayOnline, { style: 'currency', currency: 'BRL' })}`}
                           typeAlert="warning"
                         />
                       )}
-                      {(propsForm.values.gatwayPagseguro
+                      {(propsForm.values.gatewayPagseguro
                         && (totalCar > shop.maxValuePayOnline && shop.maxValuePayOnline !== 0)) && (
                         <Alert
                           text={`Valor máximo para pagamento on-line ${intl.formatNumber(shop.maxValuePayOnline, { style: 'currency', currency: 'BRL' })}`}
@@ -758,8 +758,8 @@ const Checkout = ({ intl }) => {
                       />
                     </Grid>
                   )}
-                  {(propsForm.values.gatwayPagseguro && shop.allowPayOnline === 1
-                    && verifyMaxAndMinValue(propsForm.values.gatwayPagseguro)) && (
+                  {(propsForm.values.gatewayPagseguro && shop.allowPayOnline === 1
+                    && verifyMaxAndMinValue(propsForm.values.gatewayPagseguro)) && (
                     <>
                       <Grid
                         cols="12"
@@ -1042,7 +1042,7 @@ const Checkout = ({ intl }) => {
                   <Grid cols="12" className="d-flex justify-content-end">
                     <div>
                       <Button
-                        value={(propsForm.values.gatwayPagseguro) ? 'Finalizar compra' : 'Enviar pedido'}
+                        value={(propsForm.values.gatewayPagseguro) ? 'Finalizar compra' : 'Enviar pedido'}
                         type="submit"
                         isLoading={propsForm.isSubmitting}
                         disabled={enableSubmitButton()}
