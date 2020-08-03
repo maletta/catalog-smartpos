@@ -236,6 +236,8 @@ const CardShop = () => {
 
   const decreaseQuantity = (item) => {
     const { quantity, uuid } = item;
+    if (quantity - 1 === 0) return;
+
     const cart = storage.getLocalCart();
 
     const fn = (i, index) => {

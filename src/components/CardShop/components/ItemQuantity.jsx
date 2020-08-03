@@ -33,6 +33,7 @@ const Controls = styled.div`
 `;
 
 const ControlButton = styled.span`
+  user-select: none;
   color: black;
 `;
 
