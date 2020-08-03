@@ -31,7 +31,7 @@ import ItemModifiers from 'components/ItemModifiers';
 import history from 'utils/history';
 import {getCategories,} from 'requests';
 import orderValidation from './orderSchema';
-
+//teste
 import getInfoProduct from './requestProduct';
 import NoImage from '../../assets/no-image.png';
 import ClosedStore from '../../assets/closed-store.svg';
@@ -55,6 +55,7 @@ const Img = styled.img`
   @media (max-width: 576px) {
     width: 100%;
   }
+
 `;
 
 const ModalImg = styled.img`
