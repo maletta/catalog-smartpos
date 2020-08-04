@@ -1,12 +1,14 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 
+import ShopContext from 'contexts/ShopContext';
 import utilsCart from 'utils/cart';
 import storage from 'utils/storage';
 
 const ShoppingCartContext = createContext();
 
 export const ShoppingCartProvider = ({ children }) => {
+  const { shop } = useContext(ShopContext);
   const previousCart = storage.getLocalCart();
 
   const [shoppingCart, setShoppingCart] = useState({
@@ -14,9 +16,9 @@ export const ShoppingCartProvider = ({ children }) => {
     basketCount: utilsCart.sumCartQuantity(previousCart),
     totalCart: utilsCart.sumCartTotalPrice(previousCart),
     hasItems: previousCart.length > 0,
-    withdraw: true,
+    withdraw: shop.deliveryMode !== 'DELIVERY',
     cep: '',
-    deliveryFee: { cost: 0 },
+    deliveryFee: { cost: 0, isDeliverable: false },
     personData: {},
     address: {},
     paymentType: '',

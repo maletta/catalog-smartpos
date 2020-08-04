@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import lodash from 'lodash';
 
 import Grid from 'components/Grid';
@@ -16,8 +16,6 @@ import ItemsContainer from './components/ItemsContainer';
 const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-
-  const [deliveryCost, setDeliveryCost] = useState({});
 
   useEffect(() => {
     updateFilter({
@@ -49,13 +47,7 @@ const Cart = () => {
           deleteItem={removeItemFromCart}
           updateAmount={updateItemQuantity}
         />
-        {shoppingCart.hasItems ? (
-          <CartFooter
-            updateFilter={updateFilter}
-            deliveryCost={deliveryCost}
-            setDeliveryCost={setDeliveryCost}
-          />
-        ) : <EmptyCart />}
+        {shoppingCart.hasItems ? <CartFooter /> : <EmptyCart />}
       </Grid>
       <Grid cols="12 12 12 4 4" style={{ padding: 0 }}>
         <PurchasePrices
