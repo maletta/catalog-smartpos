@@ -43,6 +43,12 @@ export const ShoppingCartProvider = ({ children }) => {
       }));
     }
 
+    if (newState.withdraw) {
+      setShoppingCart(previousState => ({
+        ...previousState, ...newState, deliveryFee: { cost: 0, isDeliverable: false },
+      }));
+    }
+
     setShoppingCart(previousState => ({ ...previousState, ...newState }));
   };
 
