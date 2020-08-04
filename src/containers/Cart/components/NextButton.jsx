@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 
 import Button from 'components/Form/Button';
 import ShopContext from 'contexts/ShopContext';
