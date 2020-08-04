@@ -51,6 +51,8 @@ const CartFooter = ({
   }, []);
 
   const calculateDeliveryCost = async () => {
+    if (cep.length < 8) return;
+
     setLoadingDeliveryCost(true);
 
     const { data } = await checkingDelivery(cep, shop.id);
