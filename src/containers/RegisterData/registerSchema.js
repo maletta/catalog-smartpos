@@ -19,7 +19,12 @@ const naturalPersonSchema = {
   name: yup
     .string()
     .required('Nome é obrigatório')
-    .max(150),
+    .test('name', 'Digite o nome completo', (value) => {
+      if (!value) return false;
+
+      const [firstName, ...lastName] = value.split(' ');
+      return firstName && lastName.join('');
+    }),
   documento: yup
     .string()
     .test('cpf-valid', 'CPF inválido', value => validateCpf(value)),

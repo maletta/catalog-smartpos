@@ -11,7 +11,7 @@ const paymentSchema = yup.object().shape({
       if (!value) return false;
 
       const [firstName, ...lastName] = value.split(' ');
-      return firstName && lastName;
+      return firstName && lastName.join('');
     }),
   cpfHolder: yup
     .string()
