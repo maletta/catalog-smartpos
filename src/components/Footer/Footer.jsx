@@ -63,7 +63,7 @@ const CardCreditImg = styled.img`
 `;
 const FullWidthFooter = styled.div`
   position: relative;
-  background-color: var(--color-secundary);
+  background-color: var(--color-secondary);
   width: 100%;
   color: #fff;
 `;

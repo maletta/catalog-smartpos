@@ -4,7 +4,7 @@ import * as yup from 'yup';
 
 import GridList from 'components/GridList';
 import Spinner from 'components/Spinner';
-import ModalOrderItem from 'components/ModalOrderItem';
+// import ModalOrderItem from 'components/ModalOrderItem';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import SideBar from 'components/SideBar';
@@ -18,28 +18,30 @@ const GridProducts = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [products, setProducts] = useState({});
-  const [modalOpen, setModalOpen] = useState(false);
-  const [productOnModal, setProductOnModal] = useState({});
+  // const [modalOpen, setModalOpen] = useState(false);
+  // const [productOnModal, setProductOnModal] = useState({});
   const [maxPage, setMaxPage] = useState(1);
   const [store] = useState({});
   const { filter, updateFilter } = useContext(FilterContext);
   const { shop, categories } = useContext(ShopContext);
 
   const prodArray = Object.keys(products).map(i => products[i]);
-  const getProductList = (data) => {
-    setLoading(true);
-    if (filter.search) {
-      return getSearch(data.id, filter)
-        .then((response) => {
-          setProducts(response.data.produtos);
-          setMaxPage(response.data.totalPages);
-        })
-        .catch(() => {
-          setProducts({});
-          setMaxPage(-1);
-        }).finally(() => setLoading(false));
-    }
-    return getProducts(data, filter)
+
+  const fnSearch = id => (
+    getSearch(id, filter)
+      .then((response) => {
+        setProducts(response.data.produtos);
+        setMaxPage(response.data.totalPages);
+      })
+      .catch(() => {
+        setProducts({});
+        setMaxPage(-1);
+      })
+      .finally(() => setLoading(false))
+  );
+
+  const fnProd = data => (
+    getProducts(data, filter)
       .then((response) => {
         setProducts(response.data.produtos);
         setMaxPage(response.data.totalPages);
@@ -48,7 +50,18 @@ const GridProducts = () => {
         setNotFound(true);
         setProducts({});
         setMaxPage(-1);
-      }).finally(() => setLoading(false));
+      })
+      .finally(() => setLoading(false))
+  );
+
+  const getProductList = (data) => {
+    setLoading(true);
+
+    if (filter.search) {
+      fnSearch(data.id);
+    } else {
+      fnProd(data);
+    }
   };
 
   const handlePagination = (data) => {
@@ -64,11 +77,17 @@ const GridProducts = () => {
   }, [filter]);
 
   useEffect(() => {
-    updateFilter({
-      ...filter,
-      label: '',
-    });
+    updateFilter({ ...filter, label: '' });
   }, []);
+
+  const ProductsSpinner = () => (
+    <Grid
+      cols="12 9 9 9 9"
+      className="d-flex align-items-center justify-content-center"
+    >
+      <Spinner />
+    </Grid>
+  );
 
   return (
     <>
@@ -82,7 +101,7 @@ const GridProducts = () => {
             storeInfo={store}
           />
         </Grid>
-        {(!loading) ? (
+        {!loading ? (
           <Grid cols="12 12 9 9 9">
             <GridList
               itens={prodArray}
@@ -108,32 +127,21 @@ const GridProducts = () => {
               </Row>
             )}
           </Grid>
-        ) : (
-          <Grid
-            cols="12 9 9 9 9"
-            className="d-flex align-items-center justify-content-center"
-          >
-            <Spinner />
-          </Grid>
-        )}
+        ) : <ProductsSpinner />}
       </Row>
-      <ModalOrderItem
+      {/* <ModalOrderItem
         productOnModal={productOnModal}
         setProductOnModal={setProductOnModal}
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         storeId={shop.id}
-      />
+      /> */}
     </>
   );
 };
 
-GridProducts.propTypes = {
+GridProducts.propTypes = {};
 
-};
-
-GridProducts.defaultProps = {
-
-};
+GridProducts.defaultProps = {};
 
 export default GridProducts;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   func, number,
@@ -42,23 +42,31 @@ const AreaCounter = styled.div`
   border-radius: 3px;
 `;
 
-const Counter = (props) => {
-  const [value, setValue] = useState(props.value);
+const Counter = ({
+  min, max, initialCount, setState,
+}) => {
+  const [count, setCount] = useState(initialCount);
 
-  const add = () => {
-    if (value <= props.limit) {
-      setValue((prevState) => {
-        props.counter(prevState + 1);
-        return (prevState + 1);
+  useEffect(() => {
+    setCount(initialCount);
+  }, [initialCount]);
+
+  const decrement = () => {
+    if (count > min) {
+      setCount((p) => {
+        const decremented = p - 1;
+        setState(decremented);
+        return decremented;
       });
     }
   };
 
-  const remove = () => {
-    if (value > props.min) {
-      setValue((prevState) => {
-        props.counter(prevState - 1);
-        return (prevState - 1);
+  const increment = () => {
+    if (count < max) {
+      setCount((p) => {
+        const incremented = p + 1;
+        setState(incremented);
+        return incremented;
       });
     }
   };
@@ -69,12 +77,12 @@ const Counter = (props) => {
       <AreaCounter>
         <Button
           className="fa fa-minus"
-          onClick={remove}
+          onClick={decrement}
         />
-        <ValueNumber>{value}</ValueNumber>
+        <ValueNumber>{count}</ValueNumber>
         <Button
           className="fa fa-plus"
-          onClick={add}
+          onClick={increment}
         />
       </AreaCounter>
     </Area>
@@ -83,14 +91,14 @@ const Counter = (props) => {
 
 Counter.propTypes = {
   min: number,
-  limit: number,
-  counter: func.isRequired,
-  value: number.isRequired,
+  max: number,
+  initialCount: number.isRequired,
+  setState: func.isRequired,
 };
 
 Counter.defaultProps = {
-  min: 0,
-  limit: 1000,
+  min: 1,
+  max: 100,
 };
 
 export default Counter;

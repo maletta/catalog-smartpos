@@ -1,4 +1,3 @@
-
 const slug = (string = '') => string.toString().toLowerCase()
   .replace(/[àÀáÁâÂãäÄÅåª]+/g, 'a')
   .replace(/[èÈéÉêÊëË]+/g, 'e')
@@ -17,6 +16,5 @@ const slug = (string = '') => string.toString().toLowerCase()
   .replace(/--+/g, '-')
   .replace(/^-+/, '')
   .replace(/-+$/, '');
-
 
 export default slug;

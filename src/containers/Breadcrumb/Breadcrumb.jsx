@@ -4,9 +4,10 @@ import Row from 'components/Row';
 import styled from 'styled-components';
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
-
-
+import PropTypes from 'prop-types';
 import queryString from 'query-string';
+
+import paths from 'paths';
 import history from 'utils/history';
 
 const Nav = styled.nav`
@@ -32,32 +33,57 @@ const LinkCategories = styled.span`
   }
 `;
 
-const Breadcrumb = (prop) => {
-  const { goHome } = prop;
+const Breadcrumb = ({ goHome }) => {
   const { filter, updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
-  const parsed = queryString.parse(window.location.search) || '';
-  const isCart = window.location.pathname.includes('cart');
-  const isCheckout = window.location.pathname.includes('checkout');
-  const isOrder = window.location.pathname.includes('pedido');
+  const { search, origin, pathname } = window.location;
+  const parsed = queryString.parse(search) || '';
+  const isCart = pathname.includes('carrinho');
+  const isCheckout = pathname.includes('checkout');
+  const isOrder = pathname.includes('pedido');
+  const filterCategoryName = filter.categoryName;
 
-  const checkIsFinishing = () => {
-    if (isCart || isCheckout || isOrder) {
-      return true;
-    }
-    return false;
-  };
+  const isNotFinishingPurchase = !(isCart || isCheckout || isOrder);
 
   const goTo = () => {
+    history.push(paths.home);
+
     updateFilter({
       ...filter,
       label: '',
       redirect: false,
     });
-    history.push('/');
 
-    const baseUrl = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-    window.history.pushState({}, '', `${baseUrl}?categoria=${filter.categoria}&nome=${filter.categoryName}`);
+    window.history.pushState(
+      {},
+      '',
+      `${origin}${pathname}?categoria=${filter.categoria}&nome=${filterCategoryName}`,
+    );
+  };
+
+  const FilterList = () => {
+    if (filter.search) return `/ resultados para: ${filter.search}`;
+
+    const parsedName = parsed.nome;
+    const filterLabel = filter.label;
+    const showCategoryName = (parsedName || filterCategoryName) ? `${filterCategoryName}` : '';
+    const showAllCategoriesText = (parsedName === undefined && filterCategoryName === '') ? 'Todas as categorias' : '';
+    const showFilterLabel = filterLabel ? ` ${filterLabel} ` : '';
+
+    return (
+      <>
+        {isNotFinishingPurchase && (
+          <LinkCategories onClick={goTo}>
+            {showCategoryName}
+            {showAllCategoriesText}
+          </LinkCategories>
+        )}
+        <LinkCategories>
+          {(isNotFinishingPurchase && filterLabel && (!parsedName || filterCategoryName)) && ' /'}
+          {showFilterLabel}
+        </LinkCategories>
+      </>
+    );
   };
 
   return (
@@ -65,32 +91,13 @@ const Breadcrumb = (prop) => {
       <Grid cols="12">
         <Nav>
           <ol className="breadcrumb pl-0 mb-0">
-            <li className="breadcrumb-item"><BreadcrumbButton onClick={e => goHome(e)} href="#">{`${shop.usuario} /`}</BreadcrumbButton></li>
+            <li className="breadcrumb-item">
+              <BreadcrumbButton onClick={goHome}>
+                {`${shop.usuario} /`}
+              </BreadcrumbButton>
+            </li>
             <li>
-              {filter && (
-              <>
-                {filter.search ? `/ resultados para: ${filter.search}` : (
-                  <>
-                    {!checkIsFinishing() && (
-                    <LinkCategories onClick={() => {
-                      goTo();
-                    }}
-                    >
-                      {((parsed.nome || filter.categoryName) && `${filter.categoryName}`)}
-                      {((parsed.nome === undefined && filter.categoryName === '') && 'Todas as categorias')}
-                    </LinkCategories>
-                    ) }
-                    {(
-                      <LinkCategories>
-                        {(!checkIsFinishing() && filter.label && (!parsed.nome || filter.categoryName)) && ' /'}
-                        {filter.label && `  ${filter.label} `}
-                      </LinkCategories>
-                    )}
-                  </>
-                )}
-              </>
-              )}
-
+              {filter && <FilterList />}
             </li>
           </ol>
         </Nav>
@@ -99,6 +106,8 @@ const Breadcrumb = (prop) => {
   );
 };
 
-Breadcrumb.propTypes = { };
+Breadcrumb.propTypes = {
+  goHome: PropTypes.func.isRequired,
+};
 
 export default Breadcrumb;

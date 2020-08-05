@@ -1,45 +1,29 @@
 import axios from 'axios';
 
-const getSearch = (id, filter) => {
-  let param;
-  if (!filter) {
-    param = {
-      page: 1,
-      orderBy: 'desc',
-      sortBy: 'valorVenda',
-    };
-  } else {
-    param = { ...filter };
-  }
-  return axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/${id}/produtos/busca?q=${filter.search}`, {
-    params: {
-      ...param,
-    },
-  });
+const storePath = `${process.env.REACT_APP_MAIN_API}/v1/loja`;
+const createParamsFilter = filter => ({
+  params: {
+    ...filter,
+  },
+});
+
+const defaultFilter = {
+  page: 1,
+  orderBy: 'desc',
+  sortBy: 'valorVenda',
 };
 
-const getStoreInfo = name => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/${name}`);
+const getSearch = (id, filter = defaultFilter) => axios.get(
+  `${storePath}/${id}/produtos/busca?q=${filter.search}`,
+  createParamsFilter(filter),
+);
 
-const getCategories = id => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/categorias/${id}`);
+const getStoreInfo = name => axios.get(`${storePath}/${name}`);
+const getCategories = id => axios.get(`${storePath}/categorias/${id}`);
 
-const getProducts = (store, filter) => {
-  let param;
-  if (!filter) {
-    param = {
-      page: 1,
-      categoria: 0,
-      orderBy: 'desc',
-      sortBy: 'valorVenda',
-      stock: store.stock,
-    };
-  } else {
-    param = { ...filter, stock: store.stock };
-  }
-  return axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/produtos/${store.id}`, {
-    params: {
-      ...param,
-    },
-  });
+const getProducts = (store, filter = defaultFilter) => {
+  const param = { ...filter, stock: store.stock };
+  return axios.get(`${storePath}/produtos/${store.id}`, createParamsFilter(param));
 };
 
 export {

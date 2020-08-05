@@ -1,14 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const MainContainerView = (props) => {
-  const { children } = props;
-  return (
-    <>
-      {children}
-    </>
-  );
-};
+const MainContainerView = ({ children }) => (
+  <>
+    {children}
+  </>
+);
 
 MainContainerView.propTypes = {
   children: PropTypes.oneOfType([

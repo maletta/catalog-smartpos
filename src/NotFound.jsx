@@ -3,16 +3,14 @@ import styled from 'styled-components';
 import store from 'assets/online-store.png';
 
 const Image = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   padding-top: 50px;
 `;
 
 const Text = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   font-size: 2.75rem;
   padding-bottom: 150px;
 
@@ -21,26 +19,20 @@ const Text = styled.span`
   }
 `;
 
+const Footer = styled.footer`
+  display: grid;
+  place-items:center;
+  font-weight: bold;
+`;
+
 const NotFound = () => (
   <>
-    <div className="">
-      <Image>
-        <img src={store} alt="store" width="300px" />
-      </Image>
-      <Text>
-        <span className="404page">Loja não encontrada.</span>
-      </Text>
-      <footer>
-        <div className="d-flex align-items-center justify-content-center">
-          <p>
-            <strong>SmartPOS</strong>
-          </p>
-        </div>
-      </footer>
-    </div>
+    <Image>
+      <img src={store} alt="store" width="300px" />
+    </Image>
+    <Text>Loja não encontrada.</Text>
+    <Footer>SmartPOS</Footer>
   </>
-
 );
-
 
 export default NotFound;
