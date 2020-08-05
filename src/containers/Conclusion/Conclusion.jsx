@@ -161,7 +161,7 @@ const Conclusion = () => {
           <PersonalAddress address={address} />
           <div>
             <h4>Pagamento:</h4>
-            <p>{pagamento.descricao}</p>
+            <p>{pagamento.descricao || 'Cartão de Crédito'}</p>
           </div>
         </Footer>
         <Row className="d-flex justify-content-end pb-4 pr-3">
