@@ -37,11 +37,7 @@ const RegisterData = () => {
       personData: { ...values, tipoPessoa: values.personType },
     });
 
-    if (shoppingCart.withdraw) {
-      history.push(paths.payment);
-    } else {
-      history.push(paths.address);
-    }
+    history.push(paths.address);
   };
 
   const initialValues = {
