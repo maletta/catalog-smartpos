@@ -202,8 +202,6 @@ const Payment = () => {
       tipoEndereco: formValues.tipoEndereco.value,
     };
 
-    // delete values.personType;
-
     if (!formValues.gatewayPagseguro && !hash) {
       sendCheckout(values, setSubmitting);
       return;
