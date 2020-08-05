@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import ItemsCarousel from 'react-items-carousel';
 import { FormattedPlural, injectIntl, intlShape } from 'react-intl';
@@ -29,7 +29,8 @@ import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
 import history from 'utils/history';
-import {getCategories,} from 'requests';
+import { getCategories } from 'requests';
+import ReactImageMagnify from 'react-image-magnify';
 import orderValidation from './orderSchema';
 import getInfoProduct from './requestProduct';
 import NoImage from '../../assets/no-image.png';
@@ -37,8 +38,8 @@ import ClosedStore from '../../assets/closed-store.svg';
 
 import ArrowLeft from '../../assets/arrow-left.svg';
 import ArrowRight from '../../assets/arrow-right.svg';
-import Modal from "../../components/Modal/Modal";
-import ReactImageMagnify from "react-image-magnify";
+import Modal from '../../components/Modal/Modal';
+
 
 const LoadingConteiner = styled.div`
   display: flex;
@@ -315,10 +316,6 @@ const Fluid = styled.div`
 const Portal = styled.div`
   position: absolute;
   z-index: 500;
-  flex: 1;
-  ${props => props.IsActive && (
-    'box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);'
-  )}
 `;
 
 const SingleProduct = (props) => {
@@ -584,65 +581,62 @@ const SingleProduct = (props) => {
     </IconFlecha>
   );
 
-  const modal = () => {
-    return (propsModal.isOpen && (
-      <Modal
-        onClose={() => setPropsModal({ isOpen: false, urlPhoto: null })}
-      >
-        <AreaModal>
-          <Carousel>
-            <ItemsCarousel
-              requestToChangeActive={setActiveItemIndex}
-              activeItemIndex={activeItemIndex}
-              numberOfCards={1}
-              leftChevron={arrowModal('left')}
-              rightChevron={arrowModal('right')}
-              outsideChevron
-              chevronWidth={70}
-            >
+  const modal = () => (propsModal.isOpen && (
+  <Modal
+    onClose={() => setPropsModal({ isOpen: false, urlPhoto: null })}
+  >
+    <AreaModal>
+      <Carousel>
+        <ItemsCarousel
+          requestToChangeActive={setActiveItemIndex}
+          activeItemIndex={activeItemIndex}
+          numberOfCards={1}
+          leftChevron={arrowModal('left')}
+          rightChevron={arrowModal('right')}
+          outsideChevron
+          chevronWidth={70}
+        >
+          <ModalImg
+            src={image}
+            title={product.descricao}
+            alt="Produto"
+          />
+
+          {product.images && (
+            product.images !== 'notFound' && ((product.images).map(img => (
               <ModalImg
-                src={image}
+                src={`${process.env.REACT_APP_IMG_API}${img.key}`}
                 title={product.descricao}
                 alt="Produto"
-
               />
-
-              {product.images && (
-                product.images !== 'notFound' && ((product.images).map(img => (
-                  <ModalImg
-                    src={`${process.env.REACT_APP_IMG_API}${img.key}`}
-                    title={product.descricao}
-                    alt="Produto"
-                  />
-                )))
-              )}
-            </ItemsCarousel>
-            <Page>
-              {(Array.isArray(product.images)) && (
-                `${activeItemIndex + 1}/${product.images.length + 1}`
-              ) }
-            </Page>
-            <ImageBelow>
-              {product.images && (
-                <>
-                  {product.images !== 'notFound' && (
-                    <Thumb IsActive={activeItemIndex === 0}>
-                      <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
-                    </Thumb>
-                  )}
-                  {product.images !== 'notFound' && ((product.images).map((img, index) => (
-                    <Thumb IsActive={activeItemIndex === index + 1}>
-                      <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
-                    </Thumb>
-                  )))}
-                </>
-              )}
-            </ImageBelow>
-          </Carousel>
-        </AreaModal>
-      </Modal>
-    ));
-  };
+            )))
+          )}
+        </ItemsCarousel>
+        <Page>
+          {(Array.isArray(product.images)) && (
+            `${activeItemIndex + 1}/${product.images.length + 1}`
+          ) }
+        </Page>
+        <ImageBelow>
+          {product.images && (
+          <>
+            {product.images !== 'notFound' && (
+            <Thumb IsActive={activeItemIndex === 0}>
+              <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
+            </Thumb>
+            )}
+            {product.images !== 'notFound' && ((product.images).map((img, index) => (
+              <Thumb IsActive={activeItemIndex === index + 1}>
+                <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+              </Thumb>
+            )))}
+          </>
+          )}
+        </ImageBelow>
+      </Carousel>
+    </AreaModal>
+  </Modal>
+  ));
 
   const renderArrows = arrow => (
     <IconArrow>
@@ -672,7 +666,6 @@ const SingleProduct = (props) => {
               })}
             >
               <ReactImageMagnify
-                className="teste"
                 enlargedImagePortalId="portalarea"
                 {...{
                   smallImage: {
@@ -683,12 +676,13 @@ const SingleProduct = (props) => {
                   },
                   largeImage: {
                     src: image,
-                    width: 1000,
-                    height: 1000,
+                    width: 1200,
+                    height: 1200,
                   },
                   imageStyle: {
-                    margin: '10px 10px 10px 10px',
+                    margin: '1px',
                   },
+                  lensStyle: { backgroundColor: 'rgba(0, 0, 0, .6)' },
                 }}
               />
             </Fluid>
@@ -701,7 +695,8 @@ const SingleProduct = (props) => {
                       isOpen: true,
                     })}
                   >
-                    <ReactImageMagnify  enlargedImagePortalId='portalarea'
+                    <ReactImageMagnify
+                      enlargedImagePortalId="portalarea"
                       {...{
                         smallImage: {
                           isFluidWidth: true,
@@ -711,19 +706,19 @@ const SingleProduct = (props) => {
                         },
                         largeImage: {
                           src: `${process.env.REACT_APP_IMG_API}${img.key}`,
-                          width: 1000,
-                          height: 1000,
+                          width: 1200,
+                          height: 1200,
                         },
+                        lensStyle: { backgroundColor: 'rgba(0, 0, 0, .6)' },
                       }}
                     />
                   </Fluid>
-
                 </>
               )))
             )}
           </ItemsCarousel>
         </Carousel>
-      ) :
+      ) : (
         <Fluid
           onClick={() => setPropsModal({
             urlPhoto: image,
@@ -731,33 +726,29 @@ const SingleProduct = (props) => {
           })}
         >
           <ReactImageMagnify
-            enlargedImagePortalId='portalarea'
-
+            enlargedImagePortalId="portalarea"
             {...{
               smallImage: {
                 isFluidWidth: true,
                 src: image,
                 title: product.descricao,
                 alt: 'Produto',
-
               },
               largeImage: {
                 src: image,
-                width: 1000,
-                height: 1000,
+                width: 1200,
+                height: 1200,
               },
-
+              lensStyle: { backgroundColor: 'rgba(0, 0, 0, .6)' },
             }}
           />
-        </Fluid>}
-
+        </Fluid>
+      )}
     </>
-
-
   );
+
   return (
     <>
-
       {modal()}
       <Row>
         <Grid
@@ -803,7 +794,6 @@ const SingleProduct = (props) => {
                                       )))}
                                     </>
                                   )}
-
                                 </SmallThumb>
                               </Grid>
                               <Grid cols="12" className="mb-3">
@@ -832,10 +822,7 @@ const SingleProduct = (props) => {
                           </Grid>
                           <Grid cols="12 12 6 6 6">
                             <Row>
-                              <Portal
-                                id="portalarea" >
-
-                              </Portal>
+                              <Portal id="portalarea" />
                               <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
                                 {renderImage()}
                               </Grid>
@@ -996,7 +983,8 @@ const SingleProduct = (props) => {
                                           value="ADICIONAR"
                                           price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
                                           type="submit"
-                                          disabled={(hasModifiersErrors.length > 0 && isProductFound)}
+                                          disabled={
+                                            (hasModifiersErrors.length > 0 && isProductFound)}
                                           isLoading={propsForm.isSubmitting}
                                         />
                                       </div>
@@ -1022,7 +1010,6 @@ const SingleProduct = (props) => {
               </LoadingConteiner>
             </>
           )}
-
         </Grid>
       </Row>
     </>

@@ -1,5 +1,5 @@
-import React from "react";
-import closeIcon from '../../assets/close-icon.svg';
+import React from 'react';
+import closeIcon from 'assets/close-icon.svg';
 import styled from 'styled-components';
 
 const ImgClose = styled.img`
@@ -54,15 +54,16 @@ const BtClose = styled.div`
 }
 `;
 
-const Modal = ({ id = 'modal', onClose= () => {}, children}) => {
+// eslint-disable-next-line react/prop-types
+const Modal = ({ id = 'modal', onClose = () => {}, children }) => {
   const handleOutsideClick = (e) => {
-    if(e.target.id === id) onClose();
-  }
+    if (e.target.id === id) onClose();
+  };
   return (
-    <ModalGallery id="modal"  onClick={handleOutsideClick}>
+    <ModalGallery id="modal" onClick={handleOutsideClick}>
       <ModalContent>
         <BtClose onClick={onClose}>
-          <ImgClose src={closeIcon}/>
+          <ImgClose src={closeIcon} />
         </BtClose>
         <Content>{children}</Content>
       </ModalContent>
