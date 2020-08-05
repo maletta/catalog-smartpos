@@ -3,6 +3,15 @@ export const cleanCart = (updateShoppingCart) => {
   updateShoppingCart({
     basketCount: 0,
     cep: '',
+    cart: [],
+    withdraw: false,
+    deliveryFee: {
+      cost: 0,
+    },
+    totalCart: 0,
+    personData: {},
+    address: {},
+    paymentType: '',
     cardOverlay: false,
   });
 };

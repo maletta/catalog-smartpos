@@ -7,7 +7,6 @@ import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
 import Button from 'components/Form/Button';
-import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ShopContext from 'contexts/ShopContext';
 import formatCurrency from 'utils/formatCurrency';
 
@@ -67,7 +66,6 @@ const Footer = styled.div`
 
 const Conclusion = () => {
   const { shop, orderPlaced } = useContext(ShopContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
 
   const {
     address,
@@ -89,19 +87,6 @@ const Conclusion = () => {
   const withdrawText = withdraw ? '* Retirar no estabelecimento' : '';
 
   const handleGoBack = () => {
-    updateShoppingCart({
-      cart: [],
-      withdraw: false,
-      deliveryFee: {
-        cost: 0,
-      },
-      totalCart: 0,
-      personData: {},
-      address: {},
-      paymentType: '',
-      cardOverlay: false,
-    });
-
     history.push(paths.home);
   };
 
