@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { string, oneOf } from 'prop-types';
 
 const style = {
   primary: {
@@ -20,7 +19,11 @@ const style = {
   },
 };
 
-const DivAlert = styled.div`
+type Div = {
+  typeAlert: 'primary' | 'danger' | 'warning'
+}
+
+const DivAlert = styled.div<Div>`
   position: relative;
   padding: 12px 15px;
   margin-bottom: 1rem;
@@ -31,18 +34,17 @@ const DivAlert = styled.div`
   border-color: ${props => style[props.typeAlert].borderColor};
 `;
 
-const Alert = (props) => {
+type Props = {
+  text: string
+}
+
+const Alert = (props: Props & Div) => {
   const { text, typeAlert } = props;
   return (
     <DivAlert typeAlert={typeAlert} className="fade show">
       <span className="font-weight-bold">{text}</span>
     </DivAlert>
   );
-};
-
-Alert.propTypes = {
-  text: string.isRequired,
-  typeAlert: oneOf(['primary', 'danger', 'warning']),
 };
 
 Alert.defaultProps = {
