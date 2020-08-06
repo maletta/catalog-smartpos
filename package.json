@@ -5,15 +5,13 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "eslint": "eslint src/**/*.js src/**/*.jsx",
-    "eslint-fix": "eslint --fix src/**/*.js src/**/*.jsx",
+    "eslint": "eslint --fix src/**/*.js src/**/*.jsx",
     "stylelint": "stylelint src/**/*.jsx",
     "lint": "yarn run eslint && yarn run stylelint",
     "test": "react-scripts test --env=jsdom --modulePaths=src",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "ci:cy": "start-server-and-test start http-get://localhost:3000 cypress:run",
-    "push": "yarn lint"
+    "ci:cy": "start-server-and-test start http-get://localhost:3000 cypress:run"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
@@ -83,12 +81,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn run push"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
-    "*.{js,jsx}": "eslint --fix"
+    "*.{js,jsx}": "yarn lint"
   },
   "browserslist": [
     ">0.2%",
