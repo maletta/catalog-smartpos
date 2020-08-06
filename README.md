@@ -37,7 +37,7 @@ Ele usa o banco de dados de produção.
 Ambiente *development* é mais para os deselvovedores acompanharem o que está na branch `develop`.
 Ele usa o banco de dados de desenvolvimento.
 
-# [SmartPOS Cliente Store](https://{store}.qa.smartpos.app/)
+# [SmartPOS Catálogo](https://{store}.qa.smartpos.app/)
 ## 📄 Scripts
 
 Veja no `package.json` todos os comandos. Necessário [yarn](https://yarnpkg.com/en/) instalado.
@@ -47,7 +47,7 @@ Para rodar o projeto use os comandos abaixo. Antes configure as variáveis de am
 **Importante**: verifique se você tem a variável `NODE_PATH=src/`.
 
 ```sh
-// instala dependencias
+// instala as dependências
 $ yarn
 
 // inicia servidor de desenvolvimento
@@ -63,9 +63,9 @@ $ yarn serve
 
 - [create-react-app](https://github.com/facebook/create-react-app)
 - [styled-component](https://github.com/styled-components/styled-components)
-- [bulma](https://bulma.io/)
 - [eslint](https://eslint.org/)
 - [fontawesome](https://fontawesome.com/)
+- [typescript](https://www.typescriptlang.org/)
 
 ### Importes absolutos
 
@@ -76,21 +76,3 @@ Evitar importes relativos que vêm do diretório `src/`.
 
 ✔️ import MyComponent from 'components/MyComponent';
 ```
-
-Configure seu editor para resolver esses imports
-
-**VSCode**
-
-Coloque o arquivo `jsconfig.json` na raiz do projeto:
-
-```json
-{
-  "compilerOptions": { "baseUrl": "src" }
-}
-```
-
-**WebStorm**
-
-1. Marque o diretório `src` como **Resource Root** (Botão direito em `src/`)
-2. Vá em **Settings > Editor > Code Style > Javascript**.
-3. Troque para aba **Imports** e selecione **Use paths relative to the project, resource or sources root**.
