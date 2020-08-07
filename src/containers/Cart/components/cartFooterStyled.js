@@ -14,3 +14,9 @@ export const CEPContainer = styled.div`
     width: 100%;
   }
 `;
+
+export const CouponContainer = styled.div`
+  @media (max-width: 425px) {
+    width: 100%;
+  }
+`;

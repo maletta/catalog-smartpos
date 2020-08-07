@@ -7,4 +7,8 @@ export const checkingDelivery = (locationCustomer, storeID) => getRequest(
   `${mainAPIPath}/v1/loja/${storeID}/frete/${locationCustomer}`,
 );
 
+export const checkingCoupon = (couponName, storeID) => getRequest(
+  `${mainAPIPath}/v1/loja/${storeID}/cupom/${couponName}`,
+);
+
 export default {};
