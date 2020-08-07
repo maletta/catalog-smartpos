@@ -1,22 +1,15 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import ItemsCarousel from 'react-items-carousel';
-import { FormattedPlural, injectIntl, intlShape } from 'react-intl';
+import { FormattedPlural, injectIntl } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  WhatsappShareButton,
-  EmailShareButton,
-} from 'react-share';
 import lodash from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import Swal from 'sweetalert2';
 
-import Spinner from 'components/Spinner';
+import formatCurrency from 'utils/formatCurrency';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
 import TextArea from 'components/Form/TextArea';
@@ -33,8 +26,10 @@ import { getCategories } from 'requests';
 import ReactImageMagnify from 'react-image-magnify';
 import orderValidation from './orderSchema';
 import getInfoProduct from './requestProduct';
-import NoImage from '../../assets/no-image.png';
-import ClosedStore from '../../assets/closed-store.svg';
+import LoadingSpinner from './components/LoadingSpinner';
+import ProductNotFoundMessage from './components/ProductNotFoundMessage';
+import ShareIcons from './components/ShareIcons';
+import Arrow from './components/Arrow';
 
 import ArrowLeft from '../../assets/arrow-left.svg';
 import ArrowRight from '../../assets/arrow-right.svg';
@@ -170,12 +165,6 @@ const ModifierTitleRequired = styled.span`
   border: none;
   padding: 6px 6px 4px;
   border-radius: 3px;
-`;
-
-const SocialIcon = styled.i`
-  font-size: 2rem;
-  color: #00529b;
-  cursor: pointer;
 `;
 
 const Unavailable = styled.p`
@@ -318,8 +307,12 @@ const Portal = styled.div`
   z-index: 500;
 `;
 
+const VariantContainer = styled.div`
+  display: flex;
+  font-weight: 600;
+`;
+
 const SingleProduct = (props) => {
-  const { intl } = props;
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const chevronWidth = 10;
   const [product, setProduct] = useState({
@@ -338,44 +331,33 @@ const SingleProduct = (props) => {
   const [isLoaded, setLoaded] = useState(false);
   const [isProductFound, setProductFound] = useState(true);
   const { shop, categories } = useContext(ShopContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { filter, updateFilter } = useContext(FilterContext);
   const [image, setImage] = useState(NoImage);
-  const completeURL = window.location.href;
 
-  const sumProductPricing = (productPricing.product + productPricing.modifiers);
-  const submitItem = (values, { resetForm, setSubmitting }) => {
+  const sumProductPricing = productPricing.product + productPricing.modifiers;
+  const submitItem = (values, { setSubmitting }) => {
     updateFilter({
       ...filter,
       categoryName: '',
     });
-    if (!shop.allowOrderOutsideBusinessHours === 1 || shop.closeNow) {
-      setSubmitting(false);
-      Swal.fire({
-        html: `<div>
-          <div><img src="${ClosedStore}"></div>
-          <span class="foradohorario-titulo">
-          ${shop.today.closed ? 'Estabelecimento fechado!' : `Este estabelecimento abre entre:
-          </span>
-          <div class="foradohorario-hours">
-            ${shop.today.hours.map(itemHour => `<br />${itemHour.openHour} às ${itemHour.closeHour}`)}`}
-          </div>
-          <p class="foradohorario-texto">Você pode olhar o catálogo à vontade e fazer o pedido quando o estabelecimento estiver aberto.</p>
-        </div>`,
-        showConfirmButton: true,
-        confirmButtonColor: 'var(--color-primary)',
-        showCloseButton: true,
-      }).then(() => setLoaded(false));
-      return false;
+
+    setSubmitting(false);
+
+    const isShopOpen = shop.allowOrderOutsideBusinessHours || !shop.closeNow;
+    if (!isShopOpen) {
+      showStoreIsClosedModal(shop.today);
+      return;
     }
-    const prevCart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
+
+    const prevCart = lodash.cloneDeep(shoppingCart.cart);
     const newItem = {
       ...values,
       pricing: productPricing,
       modifiers: modifierSelected,
     };
 
-    let newCart = [];
+    let cart = [];
     let indexToUpdate = null;
     const repeat = prevCart.filter((item, index) => {
       indexToUpdate = index;
@@ -387,93 +369,75 @@ const SingleProduct = (props) => {
 
     if (repeat.length) {
       prevCart[indexToUpdate].quantity += values.quantity;
-      newCart = prevCart;
+      cart = prevCart;
     } else {
-      newCart = [
+      cart = [
         ...prevCart,
         newItem,
       ];
     }
-    localStorage.setItem('cart', JSON.stringify(newCart));
-    localStorage.setItem('cartInit', new Date().getTime());
-    updateShoppingCart({
-      basketCount: newCart.reduce((count, val) => (count + val.quantity), 0),
-      cardOverlay: true,
-    });
-    setTimeout(() => {
-      history.push('/');
-      resetForm({ quantity: 1, variant: {} });
-    }, 1000);
-    return false;
-  };
 
+    localStorage.setItem('cartInit', new Date().getTime());
+
+    updateShoppingCart({ cart, cardOverlay: true });
+  };
 
   useEffect(() => {
     setLoaded(false);
     window.scrollTo(0, 0);
     const { params: { id } } = props.match;
-    getInfoProduct(shop.id, id).then((response) => {
-      setInitialValues({
-        variant: {},
-        note: '',
-        quantity: 1,
-        id: response.codigo,
-        descricao: response.descricao,
-        categoria: response.categoria,
-        pricing: productPricing,
-        viewMode: response.viewMode,
-        atualizacao: response.atualizacao,
-        uuid: uuidv1(),
-        image: [],
-      });
-      getCategories(response.tenant_id).then((res) => {
-        const category = res.data.find(r => r.id === response.codcategoria);
-        updateFilter({
-          label: response.descricao,
-          categoryName: category.descricao,
-          categoria: category.id,
+
+    getInfoProduct(shop.id, id)
+      .then((response) => {
+        setInitialValues({
+          variant: {},
+          note: '',
+          quantity: 1,
+          id: response.codigo,
+          descricao: response.descricao,
+          categoria: response.categoria,
+          pricing: productPricing,
+          viewMode: response.viewMode,
+          atualizacao: response.atualizacao,
+          uuid: uuidv1(),
+          image: [],
         });
-      });
-      setProduct(response);
-      setProductPricing({
-        product: response.valorVenda,
-        modifiers: 0,
-      });
-      setModifierSelected(prevState => ([...prevState, []]));
-      if (response.codigo) {
-        const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
-        const img = new Image();
-        img.src = imageBaseUrl;
-        img.onload = () => {
-          setImage(imageBaseUrl);
-        };
-      }
 
-      response.modifiers.map(() => setModifierSelected(prevState => ([...prevState, []])));
-      const modRequired = response.modifiers.map(item => item.required);
-      setModifiersErrors(modRequired);
-      setProductFound(true);
-    })
+        getCategories(response.tenant_id)
+          .then((res) => {
+            const category = res.data.find(r => r.id === response.codcategoria);
+            updateFilter({
+              label: response.descricao,
+              categoryName: category.descricao,
+              categoria: category.id,
+            });
+          });
+
+        setProduct(response);
+        setProductPricing({
+          product: response.valorVenda,
+          modifiers: 0,
+        });
+        setModifierSelected([...modifierSelected, []]);
+
+        if (response.codigo) {
+          const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
+          const img = new Image();
+          img.src = imageBaseUrl;
+
+          img.onload = () => {
+            setImage(imageBaseUrl);
+          };
+        }
+
+        response.modifiers.map(() => setModifierSelected([...modifierSelected, []]));
+        const modRequired = response.modifiers.map(item => item.required);
+        setModifiersErrors(modRequired);
+        setProductFound(true);
+      })
       .catch(() => setProductFound(false))
-      .finally(() => { setLoaded(true); });
-  }, [false]);
-
-  const renderSocialIcon = () => (
-    <div style={{ width: '50%' }} className="d-flex justify-content-between">
-      <FacebookShareButton url={completeURL}>
-        <SocialIcon className="fab fa-facebook-square" />
-      </FacebookShareButton>
-      <TwitterShareButton url={completeURL}>
-        <SocialIcon className="fab fa-twitter-square" />
-      </TwitterShareButton>
-      <WhatsappShareButton url={completeURL}>
-        <SocialIcon className="fab fa-whatsapp-square" />
-      </WhatsappShareButton>
-      <EmailShareButton url={completeURL}>
-        <SocialIcon className="fas fa-envelope-square" />
-      </EmailShareButton>
-    </div>
-  );
+      .finally(() => setLoaded(true));
+  }, []);
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);
   const haveStock = () => {
@@ -488,84 +452,61 @@ const SingleProduct = (props) => {
   };
 
   const haveStockVariant = (variant) => {
-    if (variant.noStock) {
+    const { noStock, Estoque } = variant;
+    if (noStock) {
       return true;
     }
-    if (variant.Estoque && variant.Estoque.quantidade > 0) {
+    if (Estoque && Estoque.quantidade > 0) {
       return true;
     }
     return false;
   };
 
   const enableOrderButton = () => {
-    const availableVariants = product.variants.filter(item => (haveStockVariant(item)));
-    let isEnable = false;
+    const availableVariants = product.variants.filter(item => haveStockVariant(item));
 
     if (!shop.is_enableOrder) {
       return false;
     }
+
     if (product.catalogStock === 'ALL') {
-      isEnable = true;
+      return true;
     }
 
     if (product.catalogStock === 'ONLY_STOCK') {
       if (haveStock() || availableVariants.length) {
-        isEnable = true;
-      } else {
-        setProductFound(false);
-        isEnable = false;
+        return true;
       }
+
+      setProductFound(false);
+      return false;
     }
 
     if (product.catalogStock === 'UNAVAILABLE') {
-      if (haveStock() || availableVariants.length > 0) {
-        isEnable = true;
-      } else {
-        isEnable = false;
-      }
+      return haveStock() || availableVariants.length > 0;
     }
-    return isEnable;
+
+    return false;
   };
 
-
   const renderOptionLabel = (values) => {
+    let temp = null;
     if (values.catalogStock === 'UNAVAILABLE') {
-      return (
-        <LabelVariant>
-          <LabelVariantValues>
-            <div>{values.name}</div>
-            {(values.sellValue)
-            && (
-              <div style={{
-                fontWeight: '600',
-                display: 'flex',
-                flexDirection: 'col',
-              }}
-              >
-                {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
-                {(haveStockVariant(values)) || (<div style={{ width: 'auto', marginLeft: '10px' }}>Item indisponível</div>)}
-              </div>
-            )}
-          </LabelVariantValues>
-        </LabelVariant>
-      );
+      const div = <div style={{ width: 'auto', marginLeft: '10px' }}>Item indisponível</div>;
+      temp = haveStockVariant(values) || div;
     }
 
     return (
       <LabelVariant>
         <LabelVariantValues>
           <div>{values.name}</div>
-          {(values.sellValue)
-          && (
-            <div style={{
-              fontWeight: '600',
-              display: 'flex',
-              flexDirection: 'col',
-            }}
-            >
-              {intl.formatNumber(values.sellValue, { style: 'currency', currency: 'BRL' })}
-            </div>
-          )}
+          {values.sellValue
+            && (
+              <VariantContainer>
+                {formatCurrency(values.sellValue)}
+                {temp}
+              </VariantContainer>
+            )}
         </LabelVariantValues>
       </LabelVariant>
     );
@@ -648,14 +589,14 @@ const SingleProduct = (props) => {
   const renderImage = () => (
 
     <>
-      {product.images !== 'notFound' ? (
+      {product.images && product.images !== 'notFound' ? (
         <Carousel>
           <ItemsCarousel
             requestToChangeActive={setActiveItemIndex}
             activeItemIndex={activeItemIndex}
             numberOfCards={1}
-            leftChevron={renderArrows('left')}
-            rightChevron={renderArrows('right')}
+            leftChevron={<Arrow direction="left" />}
+            rightChevron={<Arrow direction="right" />}
             outsideChevron
             chevronWidth={chevronWidth}
           >
@@ -757,12 +698,10 @@ const SingleProduct = (props) => {
         >
           <SideBar categories={categories} />
         </Grid>
-        <Grid
-          cols="12 12 9 9 9"
-        >
+        <Grid cols="12 12 9 9 9">
           {isLoaded ? (
             <>
-              {(isProductFound) ? (
+              {isProductFound ? (
                 <>
                   <Formik
                     onSubmit={submitItem}
@@ -798,9 +737,9 @@ const SingleProduct = (props) => {
                               </Grid>
                               <Grid cols="12" className="mb-3">
                                 <SubTitle className="mb-2">Compartilhe nas redes sociais</SubTitle>
-                                {renderSocialIcon()}
+                                <ShareIcons />
                               </Grid>
-                              {(product.longDescription) && (
+                              {product.longDescription && (
                                 <>
                                   <Grid cols="12 mb-3">
                                     <SubTitle>Descrição do item</SubTitle>
@@ -811,9 +750,7 @@ const SingleProduct = (props) => {
                                       theme="snow"
                                       value={product.longDescription}
                                       enable={false}
-                                      modules={{
-                                        toolbar: [],
-                                      }}
+                                      modules={{ toolbar: [] }}
                                     />
                                   </Grid>
                                 </>
@@ -833,7 +770,7 @@ const SingleProduct = (props) => {
                                     {`Cód. ${product.codAlfa}`}
                                   </CodCategory>
                                   {(product.hasVariant) && (<PriceFrom>a partir de </PriceFrom>)}
-                                  <Price className="test-price-product">{intl.formatNumber(sumProductPricing, { style: 'currency', currency: 'BRL' })}</Price>
+                                  <Price className="test-price-product">{formatCurrency(sumProductPricing)}</Price>
                                   {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
                                 </>
 
@@ -841,33 +778,36 @@ const SingleProduct = (props) => {
                             </Row>
                             <Row>
                               <Grid cols="12">
-                                {(product.variants.length > 0) && (
+                                {product.variants.length > 0 && (
                                   <SelectDropDown
+                                    isRequired
                                     id="variants"
                                     label="Variações"
                                     options={product.variants}
                                     value={variantSelected}
                                     getOptionLabel={label => renderOptionLabel(label)}
-                                    onChange={(value) => {
-                                      if ((value.noStock === false
-                                        && value.Estoque && value.Estoque.quantidade > 0)
-                                        || (value.noStock)) {
-                                        propsForm.setFieldValue('variant', value);
-                                        setVariantSelected({ name: value.name });
-                                        propsForm.setFieldTouched('variant', true);
-                                        setProductPricing(prevState => ({
-                                          ...prevState,
-                                          product: value.sellValue,
-                                        }));
-                                      }
-                                    }}
                                     getOptionValue={option => option.id}
                                     isInvalid={propsForm.errors.variant}
                                     touched={propsForm.touched.variant}
-                                    isRequired
+                                    onChange={(value) => {
+                                      const a = value.noStock === false;
+                                      const b = value.Estoque && value.Estoque.quantidade > 0;
+
+                                      if ((a && b) || value.noStock) {
+                                        propsForm.setFieldValue('variant', value);
+                                        propsForm.setFieldTouched('variant', true);
+
+                                        setVariantSelected({ name: value.name });
+
+                                        setProductPricing({
+                                          ...productPricing,
+                                          product: value.sellValue,
+                                        });
+                                      }
+                                    }}
                                   />
                                 )}
-                                {(isLoaded) && (
+                                {isLoaded && (
                                   <>
                                     <ModifiersArea>
                                       {product.modifiers.map((mod, index) => {
@@ -889,12 +829,12 @@ const SingleProduct = (props) => {
                                                   />
                                                 </ModifierAmountTitle>
                                               </div>
-                                              {(mod.required) && (
+                                              {mod.required && (
                                                 <div>
                                                   <ModifierTitleRequired
                                                     hasError={!hasError}
                                                   >
-                                                    {'Obrigatório'}
+                                                    Obrigatório
                                                   </ModifierTitleRequired>
                                                 </div>
                                               )}
@@ -932,9 +872,9 @@ const SingleProduct = (props) => {
                               </Grid>
                               <Grid cols="12" className="d-md-none mb-3">
                                 <SubTitle>Compartilhe nas redes sociais</SubTitle>
-                                {renderSocialIcon()}
+                                <ShareIcons />
                               </Grid>
-                              {(product.longDescription) && (
+                              {product.longDescription && (
                                 <>
                                   <Grid cols="12" className="d-md-none">
                                     <SubTitle>Descrição do item</SubTitle>
@@ -965,10 +905,8 @@ const SingleProduct = (props) => {
                                     >
                                       <div>
                                         <Counter
-                                          limit={100}
-                                          min={1}
-                                          value={1}
-                                          counter={(value) => {
+                                          initialCount={1}
+                                          setState={(value) => {
                                             propsForm.setFieldValue('quantity', value);
                                           }}
                                         />
@@ -981,10 +919,15 @@ const SingleProduct = (props) => {
                                       <div>
                                         <ButtonPrice
                                           value="ADICIONAR"
-                                          price={intl.formatNumber((propsForm.values.quantity * sumProductPricing), { style: 'currency', currency: 'BRL' })}
+                                          price={
+                                            formatCurrency(
+                                              propsForm.values.quantity * sumProductPricing,
+                                            )
+                                          }
                                           type="submit"
                                           disabled={
-                                            (hasModifiersErrors.length > 0 && isProductFound)}
+                                            hasModifiersErrors.length > 0 && isProductFound
+                                          }
                                           isLoading={propsForm.isSubmitting}
                                         />
                                       </div>
@@ -999,17 +942,9 @@ const SingleProduct = (props) => {
                     )}
                   />
                 </>
-              ) : (
-                <div>O produto que você procura não foi encontrado!</div>
-              )}
+              ) : <ProductNotFoundMessage />}
             </>
-          ) : (
-            <>
-              <LoadingConteiner>
-                <span><Spinner /></span>
-              </LoadingConteiner>
-            </>
-          )}
+          ) : <LoadingSpinner />}
         </Grid>
       </Row>
     </>
@@ -1017,8 +952,7 @@ const SingleProduct = (props) => {
 };
 
 SingleProduct.propTypes = {
-  match: PropTypes.shape({}).isRequired,
-  intl: intlShape.isRequired,
+  match: PropTypes.any.isRequired,
 };
 
 export default injectIntl(SingleProduct);

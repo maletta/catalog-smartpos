@@ -1,14 +1,20 @@
-import React, { useState, useContext, useLayoutEffect } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import PropTypes from 'prop-types';
+import lodash from 'lodash';
+
+import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
-import { injectIntl, intlShape } from 'react-intl';
 import slug from 'utils/slug';
-import isEmpty from 'lodash/isEmpty';
-import Trash from '../../assets/trash.svg';
-import EmptyCart from '../../assets/emptyCart.svg';
-import Close from '../../assets/close.svg';
-import ImageBox from './Image';
+import formatCurrency from 'utils/formatCurrency';
+import Trash from 'assets/trash.svg';
+
+import ImageBox from './components/Image';
+import EmptyCartMessage from './components/EmptyCartMessage';
+import CartHeader from './components/CartHeader';
+import ItemQuantity from './components/ItemQuantity';
+import { BuyMore } from './components/BuyMore';
 
 const Overlay = styled.div`
   position: fixed;
@@ -17,7 +23,7 @@ const Overlay = styled.div`
   opacity: 0.5;
   width: 100%;
   height: 100%;
-  z-index: 7777;
+  z-index: 2;
   ${props => props.closeCardOverlay && ' display: flex;'}
   ${props => !props.closeCardOverlay && 'display: none;'}
 
@@ -25,6 +31,7 @@ const Overlay = styled.div`
     opacity: 0.8;
   }
 `;
+
 const CardOverlay = styled.div`
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: fixed;
@@ -63,39 +70,6 @@ const CardOverlay = styled.div`
     }
   `}
 `;
-const HeaderCard = styled.div`
-  width: 100%;
-  height: 45px;
-  color: white;
-  background-color: var(--color-header);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  align-content: center;
-  font-size: 14px;
-  font-weight: 500;
-  padding: 10px;
-  margin-bottom: 10px;
-`;
-
-const CloseCart = styled.span`
-  display: flex;
-  flex: 1;
-  padding-left: 80px;
-
-  @media (max-width: 768px) {
-    padding-left: 50px;
-  }
-`;
-
-const TitleCart = styled.span`
-  padding-left: 110px;
-
-  @media (max-width: 768px) {
-    padding-left: 90px;
-  }
-`;
 
 const Item = styled.div`
   display: flex;
@@ -123,31 +97,6 @@ const Description = styled.span`
   margin-left: 25px;
 `;
 
-const Quantity = styled.div`
-  display: flex;
-  align-self: flex-start;
-  flex-direction: column;
-  margin-left: 20px;
-`;
-
-const QuantityText = styled.span`
-  font-weight: 500;
-  font-size: 10px;
-  margin-left: 5px;
-  margin-top: 20px;
-  color: gray;
-`;
-
-
-const ControlQuantity = styled.div`
-  display: flex;
-  flex-direction: row;
-  border: 1px solid lightgray;
-  border-radius: 2px;
-  margin-top: 5px;
-  margin-left: 2px;
-  padding-left: 10px;
-`;
 const Delete = styled.div`
   display: flex;
   flex-direction: column;
@@ -171,32 +120,6 @@ const IconDelete = styled.img`
   margin-left: 10px;
 `;
 
-const Controls = styled.div`
-  color: var(--color-primary);
-  margin-right: 10px;
-  cursor: pointer;
-`;
-
-const EmptyState = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  align-self: center;
-  margin-top: 20px;
-`;
-
-const EmptyTitle = styled.span`
-  font-weight: 700;
-  margin-top: 50px;
-`;
-
-const EmptySubTitle = styled.span`
-  margin: 30px;
-  margin-top: 10px;
-  text-align: center;
-`;
-
 const TotalTitle = styled.div`
   font-weight: 700;
   color: var(--color-header);
@@ -209,7 +132,6 @@ const SubTotalTitle = styled.div`
   display: flex;
   flex-direction: row;
 `;
-
 
 const Value = styled.div`
   justify-self: flex-end;
@@ -232,235 +154,193 @@ const Finish = styled.div`
   cursor: pointer;
 `;
 
-const BuyMore = styled.div`
-  background-color: white;
-  color: var(--color-primary);
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 15px;
-  cursor: pointer;
-`;
-
 const FinishText = styled.span`
   padding: 15px;
 `;
 
-const ControlButton = styled.span`
-  color: black;
-`;
-
-const CloseIcon = styled.img`
-  cursor: pointer;
-`;
-
-
-const CardShop = ({ intl }) => {
-  const [closeCardOverlay, setCardOverlay] = useState(false);
-  const [totalCart, setTotalCart] = useState(0);
+const CardShop = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  const [stateCart, setStateCart] = useState(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
-
-  useLayoutEffect(() => {
-    setCardOverlay(shoppingCart.cardOverlay);
-
-    setStateCart(localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : []);
-    if (stateCart.reduce((count, val) => (count + val.quantity), 0) !== shoppingCart.basketCount) {
-      updateShoppingCart({
-        basketCount: stateCart.reduce((count, val) => (count + val.quantity), 0),
-        cardOverlay: true,
-      });
-    }
-
-    const total = stateCart.reduce(
-      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
-    );
-    setTotalCart(total);
-  }, [shoppingCart]);
 
   const closeCard = () => {
-    setCardOverlay(!closeCardOverlay);
+    updateShoppingCart({ cardOverlay: false });
   };
 
-  const deleteItem = (item) => {
-    const newCart = stateCart.filter(del => (del.uuid !== item.uuid));
-    setStateCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
-    updateShoppingCart({
-      basketCount: stateCart.length,
-      cardOverlay: true,
-    });
-
-    const total = stateCart.reduce(
-      (count, val) => (count + (val.quantity * (val.pricing.modifiers + val.pricing.product))), 0,
-    );
-    setTotalCart(total);
+  const deleteItem = (uuid) => {
+    const cart = shoppingCart.cart.filter(item => item.uuid !== uuid);
+    updateShoppingCart({ cart });
   };
 
-  const addProduct = (item) => {
-    const { quantity } = item;
+  const updateQuantity = (newQuantity, itemIndex) => {
+    const cart = lodash.cloneDeep(shoppingCart.cart);
+    cart[itemIndex].quantity = newQuantity;
+
+    updateShoppingCart({ cart });
+  };
+
+  const increaseQuantity = ({ quantity }, itemIndex) => {
     const newQuantity = quantity + 1;
-    const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-    cart.map((i, index) => {
-      if (i.uuid === item.uuid) {
-        cart[index].quantity = newQuantity;
-      }
-      return false;
-    });
-    localStorage.setItem('cart', JSON.stringify(cart));
-    setStateCart(cart);
-    const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
-    updateShoppingCart({
-      basketCount,
-    });
+    updateQuantity(newQuantity, itemIndex);
   };
 
-  const removeProduct = (item) => {
-    const { quantity } = item;
+  const decreaseQuantity = ({ quantity }, itemIndex) => {
     const newQuantity = quantity - 1;
-    if (newQuantity === 0) {
-      deleteItem(item);
-    } else {
-      const cart = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-      cart.map((i, index) => {
-        if (i.uuid === item.uuid) {
-          cart[index].quantity = newQuantity;
-        }
-        return false;
-      });
+    if (newQuantity === 0) return;
+    updateQuantity(newQuantity, itemIndex);
+  };
 
-      localStorage.setItem('cart', JSON.stringify(cart));
-      setStateCart(cart);
-      const basketCount = stateCart.reduce((count, val) => (count + val.quantity), 0);
-      updateShoppingCart({
-        basketCount,
-      });
+  const calculateItemPrice = (item) => {
+    const { pricing, quantity } = item;
+    const { product, modifiers } = pricing;
+
+    return formatCurrency((product + modifiers) * quantity);
+  };
+
+  const reloadPage = () => window.location.reload();
+
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const createItemImageURL = (item) => {
+    const { id, atualizacao } = item;
+    const baseImgURL = process.env.REACT_APP_IMG_API;
+    return `${baseImgURL}product/${id}?lastUpdate=${atualizacao}`;
+  };
+
+  const createVariantText = variant => (lodash.isEmpty(variant) ? '' : `(${variant.name})`);
+
+  const handleClickImage = (item) => {
+    const { id, descricao } = item;
+
+    setTimeout(() => {
+      scrollTop();
+      closeCard();
+      history.push(`/item/${id}/${slug(descricao)}`);
+      reloadPage();
+    }, 500);
+  };
+
+  const handleClickFinish = () => {
+    setTimeout(() => {
+      scrollTop();
+      updateShoppingCart({ cardOverlay: false });
+      history.push(paths.cart);
+    }, 500);
+  };
+
+  const handleClickBuy = () => {
+    setTimeout(() => {
+      scrollTop();
+      closeCard();
+      history.push(paths.home);
+    }, 500);
+  };
+
+  const ItemImage = ({ item }) => (
+    <ImageContainer onClick={() => handleClickImage(item)}>
+      <ImageBox
+        url={createItemImageURL(item)}
+        shoppingCart={shoppingCart}
+        product={item}
+      />
+    </ImageContainer>
+  );
+
+  ItemImage.propTypes = {
+    item: PropTypes.any.isRequired,
+  };
+
+  const ItemInfo = ({ item, itemIndex }) => (
+    <Info>
+      <Description>
+        {`${item.descricao} ${createVariantText(item.variant)}`}
+      </Description>
+      <ItemQuantity
+        onRemove={() => decreaseQuantity(item, itemIndex)}
+        onAdd={() => increaseQuantity(item, itemIndex)}
+        quantity={item.quantity}
+      />
+    </Info>
+  );
+
+  ItemInfo.propTypes = {
+    item: PropTypes.any.isRequired,
+    itemIndex: PropTypes.number.isRequired,
+  };
+
+  const ItemDelete = ({ item }) => (
+    <Delete>
+      <IconDelete src={Trash} onClick={() => deleteItem(item.uuid)} />
+      <Price>{calculateItemPrice(item)}</Price>
+    </Delete>
+  );
+
+  ItemDelete.propTypes = {
+    item: PropTypes.any.isRequired,
+  };
+
+  const OrderSummary = () => (
+    <span>
+      <TotalTitle>Resumo do pedido</TotalTitle>
+      <SubTotalTitle>
+        <TextTotal>SubTotal: </TextTotal>
+        <Value>{formatCurrency(shoppingCart.totalCart)}</Value>
+      </SubTotalTitle>
+      <Finish onClick={handleClickFinish}>
+        <FinishText>FINALIZAR COMPRA</FinishText>
+      </Finish>
+      <BuyMore onClick={handleClickBuy}>ADICIONAR MAIS PRODUTOS</BuyMore>
+    </span>
+  );
+
+  const ItemCard = ({ item, itemIndex }) => (
+    <div>
+      <Item>
+        <ItemImage item={item} />
+        <ItemInfo item={item} itemIndex={itemIndex} />
+        <ItemDelete item={item} />
+      </Item>
+      <hr />
+    </div>
+  );
+
+  ItemCard.propTypes = {
+    item: PropTypes.any.isRequired,
+    itemIndex: PropTypes.number.isRequired,
+  };
+
+  const cartItems = shoppingCart.cart.map((item, i) => (
+    <ItemCard key={item.id + item.descricao} item={item} itemIndex={i} />
+  ));
+
+  const CartBody = () => {
+    if (shoppingCart.hasItems) {
+      return (
+        <>
+          {cartItems}
+          <OrderSummary />
+        </>
+      );
     }
+
+    return <EmptyCartMessage />;
   };
 
   return (
     <>
       <Overlay
-        onClick={() => closeCard()}
-        closeCardOverlay={closeCardOverlay}
+        onClick={closeCard}
+        closeCardOverlay={shoppingCart.cardOverlay}
       />
-      <CardOverlay closeCardOverlay={closeCardOverlay}>
-        <HeaderCard>
-          <TitleCart>{`Meu carrinho (${shoppingCart.basketCount})`}</TitleCart>
-          <CloseCart>
-            <CloseIcon src={Close} width="15px;" alt="close" onClick={() => closeCard()} />
-          </CloseCart>
-        </HeaderCard>
-        <div>
-
-          {stateCart.length > 0 ? (
-            <>
-              {stateCart.map(item => (
-                <div key={item.codigo}>
-                  <Item>
-                    <ImageContainer onClick={() => setTimeout(() => {
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                      closeCard(false);
-                      history.push(`/item/${item.id}/${slug(item.descricao)}`);
-                      window.location.reload();
-                    }, 500)}
-                    >
-
-                      <div className="card-image">
-                        {item && <ImageBox url={`${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`} shoppingCart={shoppingCart} product={item} />}
-                      </div>
-                    </ImageContainer>
-                    <Info>
-                      <Description>
-                        {`${item.descricao}${!isEmpty(item.variant) ? ` (${item.variant.name})` : ('')}`}
-                      </Description>
-                      <Quantity>
-                        <QuantityText> Quantidade </QuantityText>
-                        <ControlQuantity>
-                          <Controls>
-                            <ControlButton onClick={() => removeProduct(item)}> - </ControlButton>
-                          </Controls>
-                          <Controls>
-                            <span>
-                              {item.quantity}
-                            </span>
-                          </Controls>
-                          <Controls>
-                            <ControlButton onClick={() => addProduct(item)}> + </ControlButton>
-                          </Controls>
-                        </ControlQuantity>
-                      </Quantity>
-                    </Info>
-                    <Delete>
-                      <IconDelete src={Trash} onClick={() => deleteItem(item)} />
-                      <Price>
-                        {item.pricing && intl.formatNumber((item.pricing.product + item.pricing.modifiers) * item.quantity, { style: 'currency', currency: 'BRL' })}
-                      </Price>
-                    </Delete>
-                    <div />
-                  </Item>
-                  <hr />
-                </div>
-
-              ))}
-              <span>
-                <TotalTitle>
-                  Resumo do pedido
-                </TotalTitle>
-                <SubTotalTitle>
-                  <TextTotal>SubTotal: </TextTotal>
-                  <Value>{ intl.formatNumber((totalCart), { style: 'currency', currency: 'BRL' }) }</Value>
-                </SubTotalTitle>
-                <Finish onClick={() => {
-                  setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    updateShoppingCart({
-                      cardOverlay: false,
-                    });
-                    history.push('/cart');
-                  }, 500);
-                }}
-                >
-                  <FinishText>
-                    <span>
-                       FINALIZAR COMPRA
-                    </span>
-                  </FinishText>
-                </Finish>
-
-                <BuyMore onClick={() => {
-                  setTimeout(() => {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                    closeCard(false);
-                    history.push('/');
-                  }, 500);
-                }}
-                >
-                  <span>
-                       ADICIONAR MAIS PRODUTOS
-                  </span>
-                </BuyMore>
-              </span>
-            </>
-          ) : (
-            <EmptyState>
-              <img alt="empty" src={EmptyCart} width="180px;" />
-              <EmptyTitle>Seu carrinho está vazio</EmptyTitle>
-              <EmptySubTitle>
-                Navegue pelo site e escolha os
-                produtos desejados para adicionar em seu carrinho de compras.
-              </EmptySubTitle>
-            </EmptyState>
-          ) }
-        </div>
+      <CardOverlay closeCardOverlay={shoppingCart.cardOverlay}>
+        <CartHeader
+          basketCount={shoppingCart.basketCount}
+          onClose={closeCard}
+        />
+        <CartBody />
       </CardOverlay>
     </>
   );
 };
 
-CardShop.propTypes = {
-  intl: intlShape.isRequired,
-};
+CardShop.propTypes = {};
 
-export default injectIntl(CardShop);
+export default CardShop;

@@ -126,7 +126,7 @@ const InputCvv = ({
 };
 
 InputCvv.propTypes = {
-  field: PropTypes.shape({}),
+  field: PropTypes.any,
   form: PropTypes.shape({
     touched: PropTypes.shape({}),
     errors: PropTypes.shape({}),
@@ -147,7 +147,7 @@ InputCvv.propTypes = {
 };
 
 InputCvv.defaultProps = {
-  field: {},
+  field: PropTypes.any,
   form: {
     touched: {},
     errors: {},

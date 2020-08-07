@@ -9,15 +9,18 @@ import moment from 'moment';
 import GridProducts from 'containers/GridProducts';
 import MainContainer from 'containers/mainContainer';
 import Cart from 'containers/Cart';
-import Checkout from 'containers/Checkout';
 import NotFound from 'NotFound';
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
 import SingleProduct from 'containers/SingleProduct';
-import OrderPlaced from 'containers/OrderPlaced';
+import RegisterData from 'containers/RegisterData';
+import Address from 'containers/Address';
+import Payment from 'containers/Payment';
+import Conclusion from 'containers/Conclusion';
 import CardShop from 'components/CardShop';
+import paths from 'paths';
 
 import history from 'utils/history';
 
@@ -25,11 +28,24 @@ import getStoreName from 'utils/getStoreName';
 import formatFormErrors from 'utils/formatFormErrors';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
-  faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope, faArrowRight, faArrowLeft,
-  faCaretDown, faSlidersH, faSort, faTimes,
+  faCheck,
+  faList,
+  faTh,
+  faMapMarkerAlt,
+  faPhone,
+  faEnvelope,
+  faArrowRight,
+  faArrowLeft,
+  faCaretDown,
+  faSlidersH,
+  faSort,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons';
 import {
-  faFacebookF, faWhatsapp, faInstagram, faGooglePlay,
+  faFacebookF,
+  faWhatsapp,
+  faInstagram,
+  faGooglePlay,
 } from '@fortawesome/free-brands-svg-icons';
 import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
@@ -45,9 +61,25 @@ import getBusinessHour from './api/businessHoursRequests';
 
 import initGA from './initGA';
 
-library.add(faCheck, faList, faTh, faMapMarkerAlt, faPhone, faEnvelope,
-  faFacebookF, faTimes, faGooglePlay, faWhatsapp, faInstagram, faHeart,
-  faArrowRight, faArrowLeft, faCaretDown, faSlidersH, faSort);
+library.add(
+  faCheck,
+  faList,
+  faTh,
+  faMapMarkerAlt,
+  faPhone,
+  faEnvelope,
+  faFacebookF,
+  faTimes,
+  faGooglePlay,
+  faWhatsapp,
+  faInstagram,
+  faHeart,
+  faArrowRight,
+  faArrowLeft,
+  faCaretDown,
+  faSlidersH,
+  faSort,
+);
 
 const Container = styled.div`
   width: 100%;
@@ -61,26 +93,14 @@ const Content = styled.div`
   position: relative;
   top: 80px;
   padding-bottom: 80px;
-
-  @media (max-width: 768px) {
-    ${props => (props.pathname !== '/checkout' ? 'top: 105px' : 'top: 70px')};
-  }
 `;
 
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [store, setStore] = useState({});
-  const {
-    updateShop, categories, updateCategory,
-  } = useContext(ShopContext);
+  const { updateShop, categories, updateCategory } = useContext(ShopContext);
   const { filter, updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
-
-  const notFoundHandle = () => (loading ? (
-    <Container>
-      <Spinner />
-    </Container>
-  ) : !loading && (<NotFound />));
 
   const getCategoryList = (data) => {
     getCategories(data.id)
@@ -90,59 +110,53 @@ const App = () => {
       .catch(() => updateCategory([]))
       .finally(() => setLoading(false));
   };
-  const getStore = () => {
-    getStoreInfo(getStoreName())
-      .then((response) => {
-        const today = () => {
-          if (response.data.openHours) {
-            return response.data.openHours[moment().day()];
-          }
-          return daysOfWeek[moment().day()];
-        };
-        const verifyIsClosed = () => {
-          let isClosed = true;
-          if (response.data) {
-            if (response.data.openHours === null || response.data.openHours.length === 0) {
-              return false;
-            }
-            const anyHour = response.data.allowOrderOutsideBusinessHours;
-            const { hours } = today();
-            const hourNow = moment().format('HH:mm');
-            if (today.closed) {
-              return true;
-            }
-            if (anyHour === 1) {
-              return false;
-            }
-            hours.map((item) => {
-              if (item.openHour < hourNow && item.closeHour > hourNow) {
-                isClosed = false;
-              }
 
-              return !!isClosed;
-            });
-          }
-          return isClosed;
-        };
-        const closeNow = verifyIsClosed();
-        document.title = response.data.fantasia;
-        // criar uma função para refazer essa etapa abaixo até setStore
-        if (closeNow === true
-          && response.data.allowOrderOutsideBusinessHours === 0) {
-          updateShop({
-            ...response.data, today, closeNow, is_enableOrder: 0,
-          });
-        } else if (closeNow === false
-          && response.data.is_enableOrder === 1
-          && response.data.allowOrderOutsideBusinessHours === 1) {
-          updateShop({
-            ...response.data, today, closeNow, is_enableOrder: 1,
-          });
-        } else {
-          updateShop({ ...response.data, today, closeNow });
-        }
-        setStore({ ...response.data, found: true, storeName: getStoreName() });
-        getCategoryList(response.data);
+  const today = openHours => (openHours || daysOfWeek)[moment().day()];
+
+  const isShopClosed = (data) => {
+    if (!data) {
+      return true;
+    }
+
+    const { openHours, allowOrderOutsideBusinessHours } = data;
+
+    if (openHours === null || openHours.length === 0) {
+      return false;
+    }
+
+    if (allowOrderOutsideBusinessHours) {
+      return false;
+    }
+
+    const { hours } = today(openHours);
+    const currentHour = moment().format('HH:mm');
+    const isCurrentTimeWithinTimeRange = ({ openHour, closeHour }) => openHour < currentHour
+      && closeHour > currentHour;
+
+    return !hours.some(isCurrentTimeWithinTimeRange);
+  };
+
+  const getStore = () => {
+    const storeName = getStoreName();
+
+    getStoreInfo(storeName)
+      .then(({ data }) => {
+        const {
+          allowOrderOutsideBusinessHours,
+          is_enableOrder: isEnableOrder,
+        } = data;
+
+        document.title = data.fantasia;
+
+        setStore({ ...data, found: true, storeName });
+        getCategoryList(data);
+
+        const closeNow = isShopClosed(data);
+        const isOrderEnabled = !closeNow && allowOrderOutsideBusinessHours && isEnableOrder;
+
+        updateShop({
+          ...data, today, closeNow, is_enableOrder: Number(isOrderEnabled),
+        });
       })
       .catch(() => {
         setStore({ found: false });
@@ -150,14 +164,11 @@ const App = () => {
       });
   };
 
-  const BusinessHour = () => {
-    if (!store.allowOrderOutsideBusinessHours) {
-      const date = moment().format();
-      const timezone = date.substr(date.length - 6);
-      getBusinessHour(store.id, store.codigo, timezone).then((openStore) => {
-        updateShop(openStore.data);
-      });
-    }
+  const businessHourRequest = async () => {
+    const date = moment().format();
+    const timezone = date.substr(date.length - 6);
+    const openStore = await getBusinessHour(store.id, store.codigo, timezone);
+    updateShop(openStore.data);
   };
 
   const cleanCart = () => {
@@ -166,20 +177,17 @@ const App = () => {
     const hourDiff = Math.abs(date1 - date2) / 36e5;
     if (hourDiff > 1) {
       localStorage.removeItem('cartInit');
-      localStorage.removeItem('cart');
-      updateShoppingCart({
-        basketCount: 0,
-      });
+      updateShoppingCart({ cart: [] });
     }
   };
 
   useEffect(() => {
     getStore();
-  }, [false]);
+  }, []);
 
   useEffect(() => {
-    if (store.id) {
-      BusinessHour();
+    if (store.id && !store.allowOrderOutsideBusinessHours) {
+      businessHourRequest();
     }
   }, [loading]);
 
@@ -188,13 +196,11 @@ const App = () => {
     window.scrollTo(0, 0);
     initGA(history);
     cleanCart();
-  }, [false]);
+  }, []);
 
+  const goHome = () => {
+    history.push(paths.home);
 
-  const { pathname } = history.location;
-
-  const home = () => {
-    history.push('/');
     updateFilter({
       categoria: 0,
       label: '',
@@ -203,44 +209,59 @@ const App = () => {
       categoryName: 'Todas as categorias',
       redirect: true,
     });
-    const baseUrl = [window.location.protocol, '//', window.location.host, '/', window.location.pathname.split('/')[1]].join('');
-    window.history.pushState({}, '', `${baseUrl}?categoria=${filter.categoria}&nome=Todas as categorias`);
+
+    const { origin, pathname } = window.location;
+    window.history.pushState(
+      {},
+      '',
+      `${origin}${pathname}?categoria=${filter.categoria}&nome=Todas as categorias`,
+    );
   };
+
+  if (loading) {
+    return (
+      <Container>
+        <Spinner />
+      </Container>
+    );
+  }
+
+  if (!store.found) {
+    return (
+      <NotFound />
+    );
+  }
 
   return (
     <>
-      {store.found ? (
-        <div>
-          <CardShop />
-          <Header
-            categories={categories}
-            codigo={store.codigo}
-            goHome={() => home()}
-            atualizacao={store.atualizacao}
-            store={store}
-          />
-          <Content
-            pathname={pathname}
-            className="container mb-5"
-          >
-            <Breadcrumb goHome={() => home()} />
-            <MainContainer>
-              <Router
-                history={history}
-              >
-                <Switch>
-                  <Route path="/" exact component={GridProducts} />
-                  <Route path="/cart" exact component={Cart} />
-                  <Route path="/checkout" exact component={Checkout} />
-                  <Route path="/pedido-realizado" exact component={OrderPlaced} />
-                  <Route path="/item/:id/:descricao?" component={SingleProduct} />
-                </Switch>
-              </Router>
-            </MainContainer>
-          </Content>
-          <Footer storeInfo={store} />
-        </div>
-      ) : (notFoundHandle())}
+      <CardShop />
+      <Header
+        categories={categories}
+        codigo={store.codigo}
+        goHome={goHome}
+        atualizacao={store.atualizacao}
+        store={store}
+      />
+      <Content pathname={history.location.pathname} className="container mb-5">
+        <Breadcrumb goHome={() => goHome()} />
+        <MainContainer>
+          <Router history={history}>
+            <Switch>
+              <Route path={paths.home} exact component={GridProducts} />
+              <Route path={paths.cart} exact component={Cart} />
+              <Route path={paths.registerData} exact component={RegisterData} />
+              <Route path={paths.address} exact component={Address} />
+              <Route path={paths.payment} exact component={Payment} />
+              <Route path={paths.conclusion} exact component={Conclusion} />
+              <Route
+                path={paths.singleProduct}
+                component={SingleProduct}
+              />
+            </Switch>
+          </Router>
+        </MainContainer>
+      </Content>
+      <Footer storeInfo={store} />
     </>
   );
 };
