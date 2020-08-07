@@ -19,4 +19,10 @@ export const createText = (deliveryCost) => {
   return isDeliverable ? createDeliveryCostText(cost) : 'Não entrega na sua região';
 };
 
+export const calculateTotalCoupon = (percent, total) => {
+  let newTotal = total;
+  newTotal -= percent * newTotal / 100;
+  return newTotal;
+};
+
 export default {};
