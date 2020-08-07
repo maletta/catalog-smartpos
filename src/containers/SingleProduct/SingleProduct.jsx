@@ -199,7 +199,7 @@ const Thumb = styled.div`
 `;
 
 const VariantContainer = styled.div`
-  display:flex;
+  display: flex;
   font-weight: 600;
 `;
 
