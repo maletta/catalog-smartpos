@@ -356,6 +356,7 @@ const Footer = ({ storeInfo }) => {
             <Grid cols="12">
               <FooterCopyright>
                 <span>
+
                   Todos os direitos reservados - Built with love by
                   <LinkNetPOS
                     href="https://www.smartpos.net.br"
@@ -363,6 +364,7 @@ const Footer = ({ storeInfo }) => {
                     target="_blank"
                     title="SmartPOS"
                   >
+
                     SmartPOS
                   </LinkNetPOS>
                 </span>

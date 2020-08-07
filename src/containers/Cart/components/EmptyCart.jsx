@@ -20,6 +20,7 @@ const EmptyCart = () => (
     style={{ minHeight: '40vh' }}
   >
     <TitleEmptyCart>
+
       O seu carrinho está vazio
     </TitleEmptyCart>
     <Button
