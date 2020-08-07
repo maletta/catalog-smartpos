@@ -157,13 +157,14 @@ const Payment = () => {
         data,
       });
 
+      cleanCart(updateShoppingCart);
+
       history.push(paths.conclusion);
     } catch ({ response }) {
       const statusCode = response ? response.status : 0;
       sendCheckoutCatch(statusCode);
       resetRecaptcha();
     } finally {
-      cleanCart(updateShoppingCart);
       setLoading(false);
       setSubmitting(false);
     }
