@@ -120,14 +120,26 @@ const Conclusion = () => {
               </FlexRow>
             )
           }
-          <FlexRow>
-            <span>Valor a receber pela loja</span>
-            <span>{formatCurrency(changeReceivedValue)}</span>
-          </FlexRow>
-          <FlexRow>
-            <span>Troco</span>
-            <span>{formatCurrency(change)}</span>
-          </FlexRow>
+          {
+            changeReceivedValue > 0
+              ? (
+                <FlexRow>
+                  <span>Valor a receber pela loja</span>
+                  <span>{formatCurrency(changeReceivedValue)}</span>
+                </FlexRow>
+              )
+              : null
+          }
+          {
+            change > 0
+              ? (
+                <FlexRow>
+                  <span>Troco</span>
+                  <span>{formatCurrency(change)}</span>
+                </FlexRow>
+              )
+              : null
+          }
           <Divider />
           <FlexRowFinal>
             <Total total={totalCart + deliveryFee} />
