@@ -21,7 +21,6 @@ import ShopContext from 'contexts/ShopContext';
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
-import history from 'utils/history';
 import { getCategories } from 'requests';
 import ReactImageMagnify from 'react-image-magnify';
 import orderValidation from './orderSchema';
@@ -34,15 +33,8 @@ import Arrow from './components/Arrow';
 import ArrowLeft from '../../assets/arrow-left.svg';
 import ArrowRight from '../../assets/arrow-right.svg';
 import Modal from '../../components/Modal/Modal';
+import { showStoreIsClosedModal } from '../Cart/components/cartFooterModal';
 
-
-const LoadingConteiner = styled.div`
-  display: flex;
-  justify-self: center;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
-`;
 
 const Img = styled.img`
   width: 100%;
@@ -50,7 +42,6 @@ const Img = styled.img`
   @media (max-width: 576px) {
     width: 100%;
   }
-
 `;
 
 const ModalImg = styled.img`
@@ -189,15 +180,14 @@ const CodCategory = styled.span`
 `;
 
 const IconFlecha = styled.div`
-   height: 80px;
+  height: 80px;
 
-
-   @media (max-width: 576px) {
+  @media (max-width: 576px) {
     height: 60px;
     right: 20px;
-   }
+  }
 
-  background-color:  #A9A8A8;
+  background-color: #a9a8a8;
   color: white;
   border-radius: 3px;
   display: flex;
@@ -210,31 +200,7 @@ const Flecha = styled.img`
   width: 25px;
 
   @media (max-width: 576px) {
-     width: 15px;
-   }
-`;
-
-const IconArrow = styled.div`
-
-  width: 40px;
-  height: 60px;
-
-  @media (max-width: 576px) {
-    width: 20px;
-    height: 30px;
-  }
-  background-color: #00549b;
-  color: white;
-  border-radius: 3px;
-  display: flex;
-  padding-left: 8px;
-  padding-right: 8px;
-  opacity: 0.7;
-`;
-
-const Arrow = styled.img`
-  @media (max-width: 576px) {
-    width: 8px;
+    width: 15px;
   }
 `;
 
@@ -271,24 +237,25 @@ const Thumb = styled.div`
 
 
 const AreaModal = styled.div`
-   width: 550px;
-   @media (max-width: 660px) {
+  width: 550px;
+
+  @media (max-width: 660px) {
     width: 450px;
   }
 
-   @media (max-width: 576px) {
-   width: 250px;
-   }
+  @media (max-width: 576px) {
+    width: 250px;
+  }
 
-   @media (max-width: 420px) {
-   width: 180px;
-   padding-top: 20px;
-   }
+  @media (max-width: 420px) {
+    width: 180px;
+    padding-top: 20px;
+  }
 `;
 
 const Page = styled.div`
   font-size: 1rem;
-  color: #A9A8A8;
+  color: #a9a8a8;
   opacity: 1;
   text-align: center;
 `;
@@ -311,6 +278,10 @@ const VariantContainer = styled.div`
   display: flex;
   font-weight: 600;
 `;
+
+function NoImage() {
+
+}
 
 const SingleProduct = (props) => {
   const [activeItemIndex, setActiveItemIndex] = useState(0);
@@ -578,14 +549,6 @@ const SingleProduct = (props) => {
     </AreaModal>
   </Modal>
   ));
-
-  const renderArrows = arrow => (
-    <IconArrow>
-      {arrow === 'left' && <Arrow alt="arrow" src={ArrowLeft} />}
-      {arrow === 'right' && <Arrow alt="arrow" src={ArrowRight} />}
-    </IconArrow>
-  );
-
   const renderImage = () => (
 
     <>

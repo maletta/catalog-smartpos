@@ -17,15 +17,15 @@ const ModalGallery = styled.div`
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.8);
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.8);
 `;
 
 const ModalContent = styled.div`
   margin: auto;
   display: flex;
   width: 100%;
-  max-width: 0px;
+  max-width: 0;
   justify-content: center;
 `;
 
@@ -33,25 +33,25 @@ const Content = styled.div`
   opacity: 0;
   animation: scaleUp 0.3s forwards;
 
-@keyframes scaleUp {
-  to {
-    opacity: initial;
-    transform: initial;
+  @keyframes scaleUp {
+    to {
+      opacity: initial;
+      transform: initial;
+    }
   }
-}
 `;
 
 const BtClose = styled.div`
   position: absolute;
-  top:41px;
+  top: 41px;
   right: 50px;
   border: none;
   background-color: transparent;
 
-@media (max-width: 500px){
-    top:10px;
+  @media (max-width: 500px) {
+    top: 10px;
     right: 20px;
-}
+  }
 `;
 
 // eslint-disable-next-line react/prop-types
