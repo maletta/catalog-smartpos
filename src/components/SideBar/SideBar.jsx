@@ -1,14 +1,13 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
+
 import { List, LinkItem } from 'components/List';
 import FilterContext from 'contexts/FilterContext';
+import ShopContext from 'contexts/ShopContext';
 
-
-const SideBar = (props) => {
-  const {
-    categories,
-  } = props;
+const SideBar = () => {
   const { filter, updateFilter } = useContext(FilterContext);
+  const { categories } = useContext(ShopContext);
+
   const items = categories.map((item, index) => (
     <LinkItem
       key={item.id}
@@ -34,7 +33,7 @@ const SideBar = (props) => {
 
   return (
     <aside>
-      <List title="Ordernar por" isFullHeight>
+      <List title="Ordenar por" isFullHeight>
         <LinkItem
           text="Maior preço"
           onClick={() => updateFilter({
@@ -96,14 +95,6 @@ const SideBar = (props) => {
       </List>
     </aside>
   );
-};
-
-SideBar.propTypes = {
-  categories: PropTypes.array,
-};
-
-SideBar.defaultProps = {
-  categories: null,
 };
 
 export default SideBar;

@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
-import PropTypes from 'prop-types';
 import styled from 'styled-components';
 
 import FilterContext from 'contexts/FilterContext';
-import ShopContext from 'contexts/ShopContext';
 import Row from 'components/Row';
 import GridItem from 'components/GridItem';
 import notFoundImagePath from 'assets/no_result_found.png';
@@ -14,17 +12,32 @@ const Container = styled.div`
   align-items: center;
 `;
 
-const Text = styled.div`
+const Text = styled.p`
   padding-top: 30px;
 `;
 
-const GridList = (props) => {
-  const { filter } = useContext(FilterContext);
-  const { shop } = useContext(ShopContext);
-  const { itens, notFound } = props;
+type Item = {
+  id: number
+  descricao: string
+  valorVenda: number
+  atualizacao: string
+  viewMode: string
+  hasVariant: boolean
+  not_control_stock: boolean
+  stock: number
+};
 
-  const items = itens.map(item => (
-    <GridItem key={item.id} item={item} enableOrder={shop.is_enableOrder} />
+type Props = {
+  notFound: boolean
+  items: Item[]
+};
+
+const GridList = (props: Props) => {
+  const { filter } = useContext(FilterContext);
+  const { items, notFound } = props;
+
+  const mappedItems = items.map(item => (
+    <GridItem key={item.id} item={item} />
   ));
 
   const CategoryNameWithItems = () => {
@@ -34,7 +47,7 @@ const GridList = (props) => {
       <>
         <h2>{categoryName}</h2>
         <hr />
-        <Row className="d-flex">{items}</Row>
+        <Row className="d-flex">{mappedItems}</Row>
       </>
     );
   };
@@ -45,9 +58,7 @@ const GridList = (props) => {
         <img src={notFoundImagePath} alt="nenhum resultado" />
       </Container>
       <Container className="container is-fluid">
-        <Text>
-          <p>Nenhum resultado encontrado.</p>
-        </Text>
+        <Text>Nenhum resultado encontrado.</Text>
       </Container>
     </>
   );
@@ -57,11 +68,6 @@ const GridList = (props) => {
   }
 
   return <CategoryNameWithItems />;
-};
-
-GridList.propTypes = {
-  notFound: PropTypes.bool.isRequired,
-  itens: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default GridList;
