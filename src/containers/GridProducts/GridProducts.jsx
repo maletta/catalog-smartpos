@@ -4,7 +4,6 @@ import * as yup from 'yup';
 
 import GridList from 'components/GridList';
 import Spinner from 'components/Spinner';
-// import ModalOrderItem from 'components/ModalOrderItem';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import SideBar from 'components/SideBar';
@@ -18,8 +17,6 @@ const GridProducts = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [products, setProducts] = useState({});
-  // const [modalOpen, setModalOpen] = useState(false);
-  // const [productOnModal, setProductOnModal] = useState({});
   const [maxPage, setMaxPage] = useState(1);
   const [store] = useState({});
   const { filter, updateFilter } = useContext(FilterContext);
@@ -129,19 +126,8 @@ const GridProducts = () => {
           </Grid>
         ) : <ProductsSpinner />}
       </Row>
-      {/* <ModalOrderItem
-        productOnModal={productOnModal}
-        setProductOnModal={setProductOnModal}
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        storeId={shop.id}
-      /> */}
     </>
   );
 };
-
-GridProducts.propTypes = {};
-
-GridProducts.defaultProps = {};
 
 export default GridProducts;
