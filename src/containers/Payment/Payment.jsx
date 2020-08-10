@@ -487,9 +487,9 @@ const Payment = () => {
             cacheOptions
             options={installments}
             getOptionLabel={label => label.totalAmount
-              && `${label.quantity} 
-              ${label.quantity === 1 ? 'parcela' : 'parcelas'} de 
-              ${formatCurrency(label.installmentAmount)} | Total: 
+              && `${label.quantity}
+              ${label.quantity === 1 ? 'parcela' : 'parcelas'} de
+              ${formatCurrency(label.installmentAmount)} | Total:
               ${formatCurrency(label.totalAmount)}`
             }
             getOptionValue={option => option.quantity}
@@ -742,7 +742,7 @@ const Payment = () => {
           basketCountCart={shoppingCart.basketCount}
           totalCart={shoppingCart.totalCart}
           deliveryCost={shoppingCart.withdraw ? { cost: 0 } : shoppingCart.deliveryFee}
-          couponValue={0}
+          coupon={shoppingCart.coupon}
         />
       </Grid>
     </Container>

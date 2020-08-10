@@ -10,12 +10,8 @@ export const DeliveryContainer = styled.div`
 `;
 
 export const CEPContainer = styled.div`
-  @media (max-width: 425px) {
-    width: 100%;
-  }
-`;
+  margin-bottom: 20px;
 
-export const CouponContainer = styled.div`
   @media (max-width: 425px) {
     width: 100%;
   }
