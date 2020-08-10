@@ -21,6 +21,7 @@ export const ShoppingCartProvider = ({ children }) => {
     deliveryFee: { cost: 0, isDeliverable: false },
     personData: {},
     address: {},
+    coupon: {},
     paymentType: '',
     cardOverlay: false,
   });

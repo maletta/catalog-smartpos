@@ -129,7 +129,7 @@ const RegisterData = () => {
           basketCountCart={shoppingCart.basketCount}
           totalCart={shoppingCart.totalCart}
           deliveryCost={shoppingCart.deliveryFee || {}}
-          couponValue={0}
+          coupon={shoppingCart.coupon}
         />
       </Grid>
     </Container>

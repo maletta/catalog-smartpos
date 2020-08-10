@@ -20,9 +20,7 @@ export const createText = (deliveryCost) => {
 };
 
 export const calculateTotalCoupon = (percent, total) => {
-  let newTotal = total;
-  newTotal -= percent * newTotal / 100;
-  return newTotal;
+  return percent * total / 100;
 };
 
 export default {};

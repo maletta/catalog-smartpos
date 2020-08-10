@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import formatCurrency from 'utils/formatCurrency';
+import { calculateTotalCoupon } from './cartFooterUtils';
+
+import CouponPriceContainer from './CouponPriceContainer';
 
 const PurchasePriceTitle = styled.h2`
   color: #707070;
@@ -44,9 +47,12 @@ const PurchasePrices = ({
   basketCountCart,
   totalCart,
   deliveryCost,
-  couponValue,
+  coupon,
 }) => {
-  const total = totalCart + couponValue + deliveryCost.cost;
+  const couponValue = coupon.isPercentDiscountApplied
+    ? calculateTotalCoupon(coupon.totalAmount, totalCart) : coupon.totalAmount || 0;
+
+  const total = totalCart - couponValue + deliveryCost.cost;
   const positiveTotal = total > 0 ? total : 0;
 
   return (
@@ -65,6 +71,12 @@ const PurchasePrices = ({
             <span>{formatCurrency(deliveryCost.cost)}</span>
           </ProductRow>
         )}
+        {couponValue > 0 && (
+          <CouponPriceContainer
+            couponValue={coupon.totalAmount}
+            isPercent={coupon.isPercentDiscountApplied}
+          />
+        )}
         <TotalRow>
           <span>Total:</span>
           <span>{formatCurrency(positiveTotal)}</span>
@@ -78,7 +90,7 @@ PurchasePrices.propTypes = {
   basketCountCart: PropTypes.number.isRequired,
   totalCart: PropTypes.number.isRequired,
   deliveryCost: PropTypes.any.isRequired,
-  couponValue: PropTypes.number.isRequired,
+  coupon: PropTypes.any.isRequired,
 };
 
 export default PurchasePrices;
