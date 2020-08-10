@@ -31,9 +31,8 @@ import getBusinessHour from 'api/businessHoursRequests';
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
 `;
 
 const Content = styled.div`
@@ -45,15 +44,13 @@ const Content = styled.div`
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [store, setStore] = useState({});
-  const { updateShop, categories, updateCategory } = useContext(ShopContext);
+  const { updateShop, updateCategory } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
-  const getCategoryList = (data) => {
-    getCategories(data.id)
-      .then((response) => {
-        updateCategory(response.data);
-      })
+  const getCategoryList = (id) => {
+    getCategories(id)
+      .then(({ data }) => updateCategory(data))
       .catch(() => updateCategory([]))
       .finally(() => setLoading(false));
   };
@@ -89,7 +86,6 @@ const App = () => {
     try {
       const { data } = await getStoreInfo(storeName);
       const {
-        allowOrderOutsideBusinessHours,
         is_enableOrder: isEnableOrder,
         fantasia,
       } = data;
@@ -97,10 +93,10 @@ const App = () => {
       document.title = fantasia;
 
       setStore({ ...data, found: true, storeName });
-      getCategoryList(data);
+      getCategoryList(data.id);
 
       const closeNow = isShopClosed(data);
-      const isOrderEnabled = !closeNow && allowOrderOutsideBusinessHours && isEnableOrder;
+      const isOrderEnabled = !closeNow && isEnableOrder;
 
       updateShop({
         ...data, today, closeNow, is_enableOrder: Number(isOrderEnabled),
@@ -112,10 +108,10 @@ const App = () => {
   };
 
   const businessHourRequest = async () => {
-    const date = moment().format();
-    const timezone = date.substr(date.length - 6);
-    const openStore = await getBusinessHour(store.id, store.codigo, timezone);
-    updateShop(openStore.data);
+    const currentDateFormat = moment().format();
+    const timezone = currentDateFormat.substr(currentDateFormat.length - 6);
+    const { data } = await getBusinessHour(store.id, store.codigo, timezone);
+    updateShop(data);
   };
 
   const cleanCart = () => {
@@ -129,16 +125,13 @@ const App = () => {
   };
 
   useEffect(() => {
-    getStore();
-  }, []);
-
-  useEffect(() => {
     if (store.id && !store.allowOrderOutsideBusinessHours) {
       businessHourRequest();
     }
   }, [loading]);
 
   useEffect(() => {
+    getStore();
     window.scrollTo(0, 0);
     initGA(history);
     cleanCart();
@@ -172,15 +165,9 @@ const App = () => {
   return (
     <>
       <CardShop />
-      <Header
-        categories={categories}
-        codigo={store.codigo}
-        goHome={goHome}
-        atualizacao={store.atualizacao}
-        store={store}
-      />
-      <Content pathname={history.location.pathname} className="container mb-5">
-        <Breadcrumb goHome={() => goHome()} />
+      <Header goHome={goHome} store={store} />
+      <Content className="container mb-5">
+        <Breadcrumb goHome={goHome} />
         <AppRouter />
       </Content>
       <Footer storeInfo={store} />
