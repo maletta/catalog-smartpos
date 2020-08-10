@@ -83,33 +83,32 @@ const App = () => {
     return !hours.some(isCurrentTimeWithinTimeRange);
   };
 
-  const getStore = () => {
+  const getStore = async () => {
     const storeName = getStoreName();
 
-    getStoreInfo(storeName)
-      .then(({ data }) => {
-        const {
-          allowOrderOutsideBusinessHours,
-          is_enableOrder: isEnableOrder,
-          fantasia,
-        } = data;
+    try {
+      const { data } = await getStoreInfo(storeName);
+      const {
+        allowOrderOutsideBusinessHours,
+        is_enableOrder: isEnableOrder,
+        fantasia,
+      } = data;
 
-        document.title = fantasia;
+      document.title = fantasia;
 
-        setStore({ ...data, found: true, storeName });
-        getCategoryList(data);
+      setStore({ ...data, found: true, storeName });
+      getCategoryList(data);
 
-        const closeNow = isShopClosed(data);
-        const isOrderEnabled = !closeNow && allowOrderOutsideBusinessHours && isEnableOrder;
+      const closeNow = isShopClosed(data);
+      const isOrderEnabled = !closeNow && allowOrderOutsideBusinessHours && isEnableOrder;
 
-        updateShop({
-          ...data, today, closeNow, is_enableOrder: Number(isOrderEnabled),
-        });
-      })
-      .catch(() => {
-        setStore({ found: false });
-        setLoading(false);
+      updateShop({
+        ...data, today, closeNow, is_enableOrder: Number(isOrderEnabled),
       });
+    } catch {
+      setStore({ found: false });
+      setLoading(false);
+    }
   };
 
   const businessHourRequest = async () => {
