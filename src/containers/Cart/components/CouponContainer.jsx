@@ -11,16 +11,14 @@ import { checkingCoupon } from './cartFooterRequest';
 
 const Coupon = styled.div`
   display: flex;
-  align-items: flex-start;
-
-  @media (max-width: 425px) {
-    width: 100%;
-  }
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 `;
 
 const CouponInputButtonContainer = styled.div`
   display: flex;
-  align-items: center;
+  justify-content: center;
   width: 100%;
 `;
 
@@ -36,7 +34,6 @@ const CouponContainer = () => {
 
   const [coupon, setCoupon] = useState('');
   const [loadingCoupon, setLoadingCoupon] = useState(false);
-
   const [couponError, setCouponError] = useState('');
 
   const calculateCoupon = () => {
@@ -48,7 +45,7 @@ const CouponContainer = () => {
       const { couponSelected } = response.data;
 
       if (shoppingCart.totalCart < couponSelected.minimumPurchaseAmount) {
-        setCouponError('não atingiu valor mínimo da compra');
+        setCouponError('Não atingiu valor mínimo da compra');
         return;
       }
 
@@ -56,7 +53,7 @@ const CouponContainer = () => {
       setCouponError('');
     }).catch((error) => {
       if (error.response.status === 404 || error.response.status === 400) {
-        setCouponError(error.response.data.message);
+        setCouponError('Cupom inválido');
       }
       updateShoppingCart({ coupon: {} });
     }).finally(() => {
@@ -77,14 +74,14 @@ const CouponContainer = () => {
       <CouponInputButtonContainer>
         <CouponInputContainer>
           <Input
-            label="Cupom de desconto:"
+            label=""
             name="coupon"
             inputId="coupon"
             type="text"
-            placeholder="Informe seu Cupom"
+            placeholder="Cupom de desconto"
+            isErrorHide
             onChange={handleChangeCoupon}
           />
-          {couponError}
         </CouponInputContainer>
         <Button
           styleType="tertiary"
@@ -93,6 +90,7 @@ const CouponContainer = () => {
           onClick={calculateCoupon}
         />
       </CouponInputButtonContainer>
+      {couponError}
     </Coupon>
   );
 };
