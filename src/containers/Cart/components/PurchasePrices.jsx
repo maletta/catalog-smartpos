@@ -6,6 +6,7 @@ import formatCurrency from 'utils/formatCurrency';
 import { calculateTotalCoupon } from './cartFooterUtils';
 
 import CouponPriceContainer from './CouponPriceContainer';
+import CouponContainer from './CouponContainer';
 
 const PurchasePriceTitle = styled.h2`
   color: #707070;
@@ -23,6 +24,7 @@ const PurchasePriceContainer = styled.div`
 
 const PurchaseReviewContainer = styled.div`
   width: 100%;
+  height: 100%;
   padding: 10px 20px;
   display: flex;
   flex-direction: column;
@@ -41,6 +43,11 @@ const ProductRow = styled(PurchaseReviewRow)`
 const TotalRow = styled(PurchaseReviewRow)`
   color: #707070;
   font-weight: bold;
+`;
+
+const CouponArea = styled.div`
+  display: flex;
+  margin-top: 20px;
 `;
 
 const PurchasePrices = ({
@@ -81,6 +88,9 @@ const PurchasePrices = ({
           <span>Total:</span>
           <span>{formatCurrency(positiveTotal)}</span>
         </TotalRow>
+        <CouponArea>
+          <CouponContainer />
+        </CouponArea>
       </PurchaseReviewContainer>
     </PurchasePriceContainer>
   );

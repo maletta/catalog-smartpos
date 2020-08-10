@@ -7,7 +7,6 @@ import RadioButton from 'components/RadioGroup/RadioButton';
 
 import { DeliveryContainer } from './cartFooterStyled';
 import DeliveryCEPInput from './DeliveryCEPInput';
-import CouponContainer from './CouponContainer';
 import AddMoreItemsButton from './AddMoreItemsButton';
 import NextButton from './NextButton';
 
@@ -43,8 +42,6 @@ const CartFooter = () => {
             />
           )}
           {!shoppingCart.withdraw && <DeliveryCEPInput />}
-
-          <CouponContainer />
         </DeliveryContainer>
       </Grid>
       <Grid cols="12" className="d-flex justify-content-end mb-4">

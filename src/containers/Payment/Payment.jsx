@@ -200,6 +200,7 @@ const Payment = () => {
       changeReceivedValue: formValues.valorRecebido || 0,
       change: moneyChange,
       tipoEndereco: formValues.tipoEndereco.value,
+      coupon: shoppingCart.coupon.name || null,
     };
 
     if (!formValues.gatewayPagseguro && !hash) {
