@@ -235,7 +235,6 @@ const Thumb = styled.div`
   ${props => props.IsActive && ('box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);')}
 `;
 
-
 const AreaModal = styled.div`
   width: 550px;
 
@@ -731,7 +730,6 @@ const SingleProduct = (props) => {
                                   <Price className="test-price-product">{formatCurrency(sumProductPricing)}</Price>
                                   {(!enableOrderButton() && (product.catalogStock === 'UNAVAILABLE')) && (<Unavailable>Produto indisponível</Unavailable>)}
                                 </>
-
                               </Grid>
                             </Row>
                             <Row>

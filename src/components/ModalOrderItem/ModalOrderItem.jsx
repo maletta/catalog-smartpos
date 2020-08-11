@@ -384,8 +384,6 @@ const ModalOrderItem = (props) => {
                                 <ModifierTitleRequired
                                   hasError={hasError}
                                 >
-
-
                                   Obrigatório
                                 </ModifierTitleRequired>
                               </div>

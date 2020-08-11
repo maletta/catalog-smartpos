@@ -148,8 +148,6 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Maior preço');
                 }}
               >
-
-
                 Maior preço
               </DropdownContenItem>
               <DropdownContenItem
@@ -159,8 +157,6 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Menor preço');
                 }}
               >
-
-
                 Menor preço
               </DropdownContenItem>
               <DropdownContenItem
@@ -170,8 +166,6 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('A-Z');
                 }}
               >
-
-
                 A-Z
               </DropdownContenItem>
               <DropdownContenItem
@@ -181,8 +175,6 @@ const FiltersMobile = ({ categories }) => {
                   setDropdownSelected('Z-A');
                 }}
               >
-
-
                 Z-A
               </DropdownContenItem>
             </DropdownContent>
@@ -216,8 +208,6 @@ const FiltersMobile = ({ categories }) => {
                 setCategorySelected(null);
               }}
             >
-
-
               Todas as Categorias
             </SelectItem>
             {renderCategories}
