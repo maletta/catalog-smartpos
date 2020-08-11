@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
+
+import formatCurrency from 'utils/formatCurrency';
 
 const Container = styled.div`
   display: flex;
@@ -23,10 +23,23 @@ const LabelItem = styled.p`
   margin: 0;
 `;
 
-const ItemPrice = ({ product, intl }) => {
-  const productPrice = intl.formatNumber(
+type Pricing = {
+  product: number
+  modifiers: number
+};
+
+type Product = {
+  pricing: Pricing
+  quantity: number
+};
+
+type Props = {
+  product: Product
+};
+
+const ItemPrice = ({ product }: Props) => {
+  const productPrice = formatCurrency(
     (product.pricing.product + product.pricing.modifiers) * product.quantity,
-    { style: 'currency', currency: 'BRL' },
   );
 
   return (
@@ -37,9 +50,4 @@ const ItemPrice = ({ product, intl }) => {
   );
 };
 
-ItemPrice.propTypes = {
-  intl: intlShape.isRequired,
-  product: PropTypes.any.isRequired,
-};
-
-export default injectIntl(ItemPrice);
+export default ItemPrice;

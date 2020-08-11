@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import ItemsCarousel from 'react-items-carousel';
-import { FormattedPlural, injectIntl } from 'react-intl';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
@@ -557,11 +556,7 @@ const SingleProduct = (props) => {
                                                 </ModifierTitle>
                                                 <ModifierAmountTitle>
                                                   {`Máximo ${mod.maxQuantity} `}
-                                                  <FormattedPlural
-                                                    value={mod.maxQuantity}
-                                                    one="opção"
-                                                    other="opções"
-                                                  />
+                                                  {mod.maxQuantity > 1 ? 'opções' : 'opção'}
                                                 </ModifierAmountTitle>
                                               </div>
                                               {mod.required && (
@@ -690,4 +685,4 @@ SingleProduct.propTypes = {
   match: PropTypes.any.isRequired,
 };
 
-export default injectIntl(SingleProduct);
+export default SingleProduct;
