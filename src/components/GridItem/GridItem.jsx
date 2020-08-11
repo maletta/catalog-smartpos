@@ -213,7 +213,7 @@ const GridItem = (props) => {
 
   const ItemButton = () => (
     <LinkToItem to={hasVariant ? `item/${id}/${slug(descricao)}` : '/'}>
-      {shop.is_enableOrder && (
+      {shop.is_enableOrder === 1 && (
         <Buy onClick={() => hasVariant !== 1 && addCart(item)}>
           <BuyText>COMPRAR</BuyText>
         </Buy>

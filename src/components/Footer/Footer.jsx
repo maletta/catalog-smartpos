@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import ReactGA from 'react-ga';
 
 import daysOfWeek from 'utils/daysOfWeek';
-import CardCredit from '../../assets/Imagem 73@2x.png';
+import CardCredit from 'assets/Imagem 73@2x.png';
 
 const FullWidthCopyright = styled.div`
   background-color: #fff;

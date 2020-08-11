@@ -154,16 +154,12 @@ const Whatsapp = styled.span`
   font-size: 12px;
 `;
 
-
-const Header = ({
-  codigo, goHome, categories, atualizacao, store,
-}) => {
+const Header = ({ goHome, store }) => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
-
   const [search, setSearch] = useState('');
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${codigo}?lastUpdate=${atualizacao}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${store.codigo}?lastUpdate=${store.atualizacao}`;
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -264,20 +260,13 @@ const Header = ({
           </Grid>
         </Row>
       </AreaMenu>
-      {history.location.pathname !== '/checkout' && (
-        <FiltersMobile
-          categories={categories}
-        />
-      )}
+      {history.location.pathname !== '/checkout' && <FiltersMobile />}
     </Container>
   );
 };
 
 Header.propTypes = {
-  codigo: PropTypes.number.isRequired,
   goHome: PropTypes.func.isRequired,
-  categories: PropTypes.array.isRequired,
-  atualizacao: PropTypes.string.isRequired,
   store: PropTypes.object.isRequired,
 };
 

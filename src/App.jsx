@@ -1,92 +1,38 @@
 import 'babel-polyfill';
 import 'url-search-params-polyfill';
+import 'icons';
+
 import React, { useState, useEffect, useContext } from 'react';
-import { Router, Route, Switch } from 'react-router-dom';
 import styled from 'styled-components';
-import * as yup from 'yup';
 import moment from 'moment';
 
-import GridProducts from 'containers/GridProducts';
-import MainContainer from 'containers/mainContainer';
-import Cart from 'containers/Cart';
+import initGA from 'initGA';
+import paths from 'paths';
 import NotFound from 'NotFound';
+import AppRouter from 'Router';
+import { getStoreInfo, getCategories } from 'requests';
+
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
 import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
-import SingleProduct from 'containers/SingleProduct';
-import RegisterData from 'containers/RegisterData';
-import Address from 'containers/Address';
-import Payment from 'containers/Payment';
-import Conclusion from 'containers/Conclusion';
 import CardShop from 'components/CardShop';
-import paths from 'paths';
 
 import history from 'utils/history';
-
 import getStoreName from 'utils/getStoreName';
-import formatFormErrors from 'utils/formatFormErrors';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faCheck,
-  faList,
-  faTh,
-  faMapMarkerAlt,
-  faPhone,
-  faEnvelope,
-  faArrowRight,
-  faArrowLeft,
-  faCaretDown,
-  faSlidersH,
-  faSort,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons';
-import {
-  faFacebookF,
-  faWhatsapp,
-  faInstagram,
-  faGooglePlay,
-} from '@fortawesome/free-brands-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
-
-import {
-  getStoreInfo,
-  getCategories,
-} from 'requests';
 import daysOfWeek from 'utils/daysOfWeek';
+
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
-import getBusinessHour from './api/businessHoursRequests';
 
-import initGA from './initGA';
-
-library.add(
-  faCheck,
-  faList,
-  faTh,
-  faMapMarkerAlt,
-  faPhone,
-  faEnvelope,
-  faFacebookF,
-  faTimes,
-  faGooglePlay,
-  faWhatsapp,
-  faInstagram,
-  faHeart,
-  faArrowRight,
-  faArrowLeft,
-  faCaretDown,
-  faSlidersH,
-  faSort,
-);
+import getBusinessHour from 'api/businessHoursRequests';
 
 const Container = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: grid;
+  place-items: center;
 `;
 
 const Content = styled.div`
@@ -98,15 +44,13 @@ const Content = styled.div`
 const App = () => {
   const [loading, setLoading] = useState(true);
   const [store, setStore] = useState({});
-  const { updateShop, categories, updateCategory } = useContext(ShopContext);
-  const { filter, updateFilter } = useContext(FilterContext);
+  const { updateShop, updateCategory } = useContext(ShopContext);
+  const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
 
-  const getCategoryList = (data) => {
-    getCategories(data.id)
-      .then((response) => {
-        updateCategory(response.data);
-      })
+  const getCategoryList = (id) => {
+    getCategories(id)
+      .then(({ data }) => updateCategory(data))
       .catch(() => updateCategory([]))
       .finally(() => setLoading(false));
   };
@@ -136,39 +80,38 @@ const App = () => {
     return !hours.some(isCurrentTimeWithinTimeRange);
   };
 
-  const getStore = () => {
+  const getStore = async () => {
     const storeName = getStoreName();
 
-    getStoreInfo(storeName)
-      .then(({ data }) => {
-        const {
-          allowOrderOutsideBusinessHours,
-          is_enableOrder: isEnableOrder,
-        } = data;
+    try {
+      const { data } = await getStoreInfo(storeName);
+      const {
+        is_enableOrder: isEnableOrder,
+        fantasia,
+      } = data;
 
-        document.title = data.fantasia;
+      document.title = fantasia;
 
-        setStore({ ...data, found: true, storeName });
-        getCategoryList(data);
+      setStore({ ...data, found: true, storeName });
+      getCategoryList(data.id);
 
-        const closeNow = isShopClosed(data);
-        const isOrderEnabled = !closeNow && allowOrderOutsideBusinessHours && isEnableOrder;
+      const closeNow = isShopClosed(data);
+      const isOrderEnabled = !closeNow && isEnableOrder;
 
-        updateShop({
-          ...data, today, closeNow, is_enableOrder: Number(isOrderEnabled),
-        });
-      })
-      .catch(() => {
-        setStore({ found: false });
-        setLoading(false);
+      updateShop({
+        ...data, today, closeNow, is_enableOrder: Number(isOrderEnabled),
       });
+    } catch {
+      setStore({ found: false });
+      setLoading(false);
+    }
   };
 
   const businessHourRequest = async () => {
-    const date = moment().format();
-    const timezone = date.substr(date.length - 6);
-    const openStore = await getBusinessHour(store.id, store.codigo, timezone);
-    updateShop(openStore.data);
+    const currentDateFormat = moment().format();
+    const timezone = currentDateFormat.substr(currentDateFormat.length - 6);
+    const { data } = await getBusinessHour(store.id, store.codigo, timezone);
+    updateShop(data);
   };
 
   const cleanCart = () => {
@@ -182,17 +125,13 @@ const App = () => {
   };
 
   useEffect(() => {
-    getStore();
-  }, []);
-
-  useEffect(() => {
     if (store.id && !store.allowOrderOutsideBusinessHours) {
       businessHourRequest();
     }
   }, [loading]);
 
   useEffect(() => {
-    yup.setLocale(formatFormErrors());
+    getStore();
     window.scrollTo(0, 0);
     initGA(history);
     cleanCart();
@@ -209,13 +148,6 @@ const App = () => {
       categoryName: 'Todas as categorias',
       redirect: true,
     });
-
-    const { origin, pathname } = window.location;
-    window.history.pushState(
-      {},
-      '',
-      `${origin}${pathname}?categoria=${filter.categoria}&nome=Todas as categorias`,
-    );
   };
 
   if (loading) {
@@ -227,39 +159,16 @@ const App = () => {
   }
 
   if (!store.found) {
-    return (
-      <NotFound />
-    );
+    return <NotFound />;
   }
 
   return (
     <>
       <CardShop />
-      <Header
-        categories={categories}
-        codigo={store.codigo}
-        goHome={goHome}
-        atualizacao={store.atualizacao}
-        store={store}
-      />
-      <Content pathname={history.location.pathname} className="container mb-5">
-        <Breadcrumb goHome={() => goHome()} />
-        <MainContainer>
-          <Router history={history}>
-            <Switch>
-              <Route path={paths.home} exact component={GridProducts} />
-              <Route path={paths.cart} exact component={Cart} />
-              <Route path={paths.registerData} exact component={RegisterData} />
-              <Route path={paths.address} exact component={Address} />
-              <Route path={paths.payment} exact component={Payment} />
-              <Route path={paths.conclusion} exact component={Conclusion} />
-              <Route
-                path={paths.singleProduct}
-                component={SingleProduct}
-              />
-            </Switch>
-          </Router>
-        </MainContainer>
+      <Header goHome={goHome} store={store} />
+      <Content className="container mb-5">
+        <Breadcrumb goHome={goHome} />
+        <AppRouter />
       </Content>
       <Footer storeInfo={store} />
     </>
