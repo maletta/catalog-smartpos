@@ -13,7 +13,7 @@ import { ShoppingCartProvider } from './contexts/ShoppingCartContext';
 
 import 'bootstrap/dist/css/bootstrap-reboot.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'styles/index.scss';
+import 'styles/index.css';
 
 ReactDOM.render((
   <IntlProvider language={{ locale: 'pt', messages: {} }}>
