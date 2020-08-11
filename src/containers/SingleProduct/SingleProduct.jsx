@@ -21,11 +21,12 @@ import ShopContext from 'contexts/ShopContext';
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
-import {
-  getCategories,
-} from 'requests';
+import { getCategories } from 'requests';
+import ReactImageMagnify from 'react-image-magnify';
 import NoImage from 'assets/no-image.png';
-
+import ArrowLeft from 'assets/arrow-left.svg';
+import ArrowRight from 'assets/arrow-right.svg';
+import Modal from 'components/Modal/Modal';
 import orderValidation from './orderSchema';
 import getInfoProduct from './requestProduct';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -37,11 +38,14 @@ import { showStoreIsClosedModal } from '../Cart/components/cartFooterModal';
 
 const Img = styled.img`
   width: 100%;
-  border-radius: 5px;
 
   @media (max-width: 576px) {
     width: 100%;
   }
+`;
+
+const ModalImg = styled.img`
+  width: 100%;
 `;
 
 const Container = styled.div`
@@ -175,10 +179,46 @@ const CodCategory = styled.span`
   margin-top: -5px;
 `;
 
+const IconFlecha = styled.div`
+  height: 80px;
+
+  @media (max-width: 576px) {
+    height: 60px;
+    right: 20px;
+  }
+
+  background-color: #a9a8a8;
+  color: white;
+  border-radius: 3px;
+  display: flex;
+  padding-left: 8px;
+  padding-right: 8px;
+  opacity: 0.7;
+`;
+
+const Flecha = styled.img`
+  width: 25px;
+
+  @media (max-width: 576px) {
+    width: 15px;
+  }
+`;
+
+const ImageBelow = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 5px;
+  justify-content: center;
+
+  @media (max-width: 576px) {
+    display: none;
+  }
+`;
+
 const SmallThumb = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
+  margin-top: 50px;
   justify-content: center;
 
   @media (max-width: 576px) {
@@ -192,10 +232,45 @@ const Thumb = styled.div`
   padding: 0;
   display: flex;
   cursor: pointer;
-  flex: 1;
-  ${props => props.IsActive && (
-    'box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);'
-  )}
+  ${props => props.IsActive && ('box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);')}
+`;
+
+const AreaModal = styled.div`
+  width: 550px;
+
+  @media (max-width: 660px) {
+    width: 450px;
+  }
+
+  @media (max-width: 576px) {
+    width: 250px;
+  }
+
+  @media (max-width: 420px) {
+    width: 180px;
+    padding-top: 20px;
+  }
+`;
+
+const Page = styled.div`
+  font-size: 1rem;
+  color: #a9a8a8;
+  opacity: 1;
+  text-align: center;
+`;
+
+const Fluid = styled.div`
+  width: auto;
+  max-width: 400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  position: relative;
+`;
+
+const Portal = styled.div`
+  position: absolute;
+  z-index: 500;
 `;
 
 const VariantContainer = styled.div`
@@ -209,6 +284,7 @@ const SingleProduct = (props) => {
   const [product, setProduct] = useState({
     variants: [],
     hasVariant: true,
+    images: [],
   });
   const [productPricing, setProductPricing] = useState({
     product: 0,
@@ -401,8 +477,74 @@ const SingleProduct = (props) => {
       </LabelVariant>
     );
   };
+  const [propsModal, setPropsModal] = useState({
+    isOpen: false,
+    urlPhoto: null,
+  });
+  const arrowModal = arrow => (
+    <IconFlecha>
+      {arrow === 'left' && <Flecha alt="arrow" src={ArrowLeft} />}
+      {arrow === 'right' && <Flecha alt="arrow" src={ArrowRight} />}
+    </IconFlecha>
+  );
 
+  const modal = () => (propsModal.isOpen && (
+  <Modal
+    onClose={() => setPropsModal({ isOpen: false, urlPhoto: null })}
+  >
+    <AreaModal>
+      <Carousel>
+        <ItemsCarousel
+          requestToChangeActive={setActiveItemIndex}
+          activeItemIndex={activeItemIndex}
+          numberOfCards={1}
+          leftChevron={arrowModal('left')}
+          rightChevron={arrowModal('right')}
+          outsideChevron
+          chevronWidth={70}
+        >
+          <ModalImg
+            src={image}
+            title={product.descricao}
+            alt="Produto"
+          />
+          {product.images && (
+            product.images !== 'notFound' && ((product.images).map(img => (
+              <ModalImg
+                src={`${process.env.REACT_APP_IMG_API}${img.key}`}
+                title={product.descricao}
+                alt="Produto"
+              />
+            )))
+          )}
+        </ItemsCarousel>
+        <Page>
+          {(Array.isArray(product.images)) && (
+            `${activeItemIndex + 1}/${product.images.length + 1}`
+          ) }
+        </Page>
+        <ImageBelow>
+          {product.images && (
+          <>
+            {product.images !== 'notFound' && (
+            <Thumb IsActive={activeItemIndex === 0}>
+              <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
+            </Thumb>
+            )}
+            {product.images !== 'notFound' && ((product.images).map((img, index) => (
+              <Thumb IsActive={activeItemIndex === index + 1}>
+                <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+              </Thumb>
+            )))}
+          </>
+          )}
+        </ImageBelow>
+      </Carousel>
+    </AreaModal>
+  </Modal>
+  ));
   const renderImage = () => (
+
     <>
       {product.images && product.images !== 'notFound' ? (
         <Carousel>
@@ -415,18 +557,97 @@ const SingleProduct = (props) => {
             outsideChevron
             chevronWidth={chevronWidth}
           >
-            <Img src={image} title={product.descricao} alt="Produto" />
-            {product.images.map(
-              img => <Img key={img.key} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />,
+            <Fluid
+              onClick={() => setPropsModal({
+                urlPhoto: image,
+                isOpen: true,
+              })}
+            >
+              <ReactImageMagnify
+                enlargedImagePortalId="portalarea"
+                {...{
+                  smallImage: {
+                    isFluidWidth: true,
+                    src: image,
+                    title: product.descricao,
+                    alt: 'Produto',
+                  },
+                  largeImage: {
+                    src: image,
+                    width: 1200,
+                    height: 1200,
+                  },
+                  imageStyle: {
+                    margin: '1px',
+                  },
+                  lensStyle: { backgroundColor: 'rgba(0, 0, 0, .6)' },
+                }}
+              />
+            </Fluid>
+            {product.images && (
+              product.images !== 'notFound' && ((product.images).map(img => (
+                <>
+                  <Fluid
+                    onClick={() => setPropsModal({
+                      urlPhoto: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                      isOpen: true,
+                    })}
+                  >
+                    <ReactImageMagnify
+                      enlargedImagePortalId="portalarea"
+                      {...{
+                        smallImage: {
+                          isFluidWidth: true,
+                          src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                          title: product.descricao,
+                          alt: 'Produto',
+                        },
+                        largeImage: {
+                          src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                          width: 1200,
+                          height: 1200,
+                        },
+                        lensStyle: { backgroundColor: 'rgba(0, 0, 0, .6)' },
+                      }}
+                    />
+                  </Fluid>
+                </>
+              )))
             )}
           </ItemsCarousel>
         </Carousel>
-      ) : <Img src={image} title={product.descricao} alt="Produto" />}
+      ) : (
+        <Fluid
+          onClick={() => setPropsModal({
+            urlPhoto: image,
+            isOpen: true,
+          })}
+        >
+          <ReactImageMagnify
+            enlargedImagePortalId="portalarea"
+            {...{
+              smallImage: {
+                isFluidWidth: true,
+                src: image,
+                title: product.descricao,
+                alt: 'Produto',
+              },
+              largeImage: {
+                src: image,
+                width: 1200,
+                height: 1200,
+              },
+              lensStyle: { backgroundColor: 'rgba(0, 0, 0, .6)' },
+            }}
+          />
+        </Fluid>
+      )}
     </>
   );
 
   return (
     <>
+      {modal()}
       <Row>
         <Grid
           className="d-none d-md-block"
@@ -469,7 +690,6 @@ const SingleProduct = (props) => {
                                       )))}
                                     </>
                                   )}
-
                                 </SmallThumb>
                               </Grid>
                               <Grid cols="12" className="mb-3">
@@ -496,6 +716,7 @@ const SingleProduct = (props) => {
                           </Grid>
                           <Grid cols="12 12 6 6 6">
                             <Row>
+                              <Portal id="portalarea" />
                               <Grid cols="5 6 6 6 6" className="d-md-none mb-3">
                                 {renderImage()}
                               </Grid>

@@ -41,6 +41,7 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-ga": "^2.5.7",
+    "react-image-magnify": "^2.7.4",
     "react-intl": "^2.7.2",
     "react-items-carousel": "^2.8.0",
     "react-number-format": "4.0.6",
