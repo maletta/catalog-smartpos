@@ -24,6 +24,9 @@ import ItemModifiers from 'components/ItemModifiers';
 import { getCategories } from 'requests';
 import ReactImageMagnify from 'react-image-magnify';
 import NoImage from 'assets/no-image.png';
+import ArrowLeft from 'assets/arrow-left.svg';
+import ArrowRight from 'assets/arrow-right.svg';
+import Modal from 'components/Modal/Modal';
 import orderValidation from './orderSchema';
 import getInfoProduct from './requestProduct';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -31,9 +34,6 @@ import ProductNotFoundMessage from './components/ProductNotFoundMessage';
 import ShareIcons from './components/ShareIcons';
 import Arrow from './components/Arrow';
 
-import ArrowLeft from '../../assets/arrow-left.svg';
-import ArrowRight from '../../assets/arrow-right.svg';
-import Modal from '../../components/Modal/Modal';
 import { showStoreIsClosedModal } from '../Cart/components/cartFooterModal';
 
 const Img = styled.img`
