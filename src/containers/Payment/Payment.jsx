@@ -123,6 +123,12 @@ const Payment = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (shop.is_enableOrder === 0) {
+      history.push(paths.home);
+    }
+  }, []);
+
   const handleSenderHashReady = ({ status, senderHash }) => {
     if (status === 'error') return false;
     return setHash(senderHash);
