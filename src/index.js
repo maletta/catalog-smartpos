@@ -1,5 +1,4 @@
 import 'babel-polyfill';
-import 'url-search-params-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { ThemeProvider } from 'styled-components';

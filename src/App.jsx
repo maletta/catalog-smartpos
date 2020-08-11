@@ -1,5 +1,4 @@
 import 'babel-polyfill';
-import 'url-search-params-polyfill';
 import 'icons';
 
 import React, { useState, useEffect, useContext } from 'react';
