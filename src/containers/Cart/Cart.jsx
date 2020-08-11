@@ -1,11 +1,15 @@
 import React, { useEffect, useContext } from 'react';
 import lodash from 'lodash';
 
+import history from 'utils/history';
+import paths from 'paths';
+
 import Grid from 'components/Grid';
 import Steps from 'components/Steps';
 
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import ShopContext from 'contexts/ShopContext';
 
 import EmptyCart from './components/EmptyCart';
 import CartFooter from './components/CartFooter';
@@ -16,6 +20,7 @@ import ItemsContainer from './components/ItemsContainer';
 const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shop } = useContext(ShopContext);
 
   useEffect(() => {
     updateFilter({
@@ -24,6 +29,10 @@ const Cart = () => {
       page: 1,
       search: '',
     });
+
+    if (shop.is_enableOrder === 0) {
+      history.push(paths.home);
+    }
   }, []);
 
   const removeItemFromCart = (uuid) => {
