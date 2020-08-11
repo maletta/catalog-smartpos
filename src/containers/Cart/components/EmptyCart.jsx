@@ -21,6 +21,7 @@ const EmptyCart = () => (
   >
     <TitleEmptyCart>
 
+
       O seu carrinho está vazio
     </TitleEmptyCart>
     <Button

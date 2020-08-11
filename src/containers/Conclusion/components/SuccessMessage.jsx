@@ -10,6 +10,7 @@ const SuccessMessage = styled.span`
 const SuccessMessageContainer = () => (
   <SuccessMessage>
 
+
     Seu pedido foi finalizado com sucesso
   </SuccessMessage>
 );

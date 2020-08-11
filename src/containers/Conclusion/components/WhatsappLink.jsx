@@ -25,6 +25,7 @@ const WhatsappLink = (props) => {
       target="_blank"
     >
 
+
       Enviar confirmação por Whatsapp
     </SendWhatsapp>
   );

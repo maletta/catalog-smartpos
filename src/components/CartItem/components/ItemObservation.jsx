@@ -22,6 +22,7 @@ const ItemObservation = ({ id }) => {
     <Container>
       <ObservationButton onClick={() => setShowObservation(!showObservation)}>
 
+
         Adicionar observação
       </ObservationButton>
       {showObservation && (

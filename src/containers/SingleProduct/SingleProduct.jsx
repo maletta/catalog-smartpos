@@ -23,6 +23,7 @@ import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
 import { getCategories } from 'requests';
 import ReactImageMagnify from 'react-image-magnify';
+import NoImage from 'assets/no-image.png';
 import orderValidation from './orderSchema';
 import getInfoProduct from './requestProduct';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -34,7 +35,6 @@ import ArrowLeft from '../../assets/arrow-left.svg';
 import ArrowRight from '../../assets/arrow-right.svg';
 import Modal from '../../components/Modal/Modal';
 import { showStoreIsClosedModal } from '../Cart/components/cartFooterModal';
-
 
 const Img = styled.img`
   width: 100%;
@@ -279,10 +279,6 @@ const VariantContainer = styled.div`
   font-weight: 600;
 `;
 
-function NoImage() {
-
-}
-
 const SingleProduct = (props) => {
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const chevronWidth = 10;
@@ -513,7 +509,6 @@ const SingleProduct = (props) => {
             title={product.descricao}
             alt="Produto"
           />
-
           {product.images && (
             product.images !== 'notFound' && ((product.images).map(img => (
               <ModalImg
