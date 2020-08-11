@@ -1,4 +1,3 @@
-import 'babel-polyfill';
 import 'icons';
 
 import React, { useState, useEffect, useContext } from 'react';
