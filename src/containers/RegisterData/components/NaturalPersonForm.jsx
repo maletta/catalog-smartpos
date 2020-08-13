@@ -24,6 +24,7 @@ const NaturalPersonForm = () => (
         format="###.###.###-##"
         component={MaskedNumberInput}
         type="tel"
+        isRequired
       />
     </Grid>
   </>
