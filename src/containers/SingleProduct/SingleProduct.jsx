@@ -231,6 +231,7 @@ const Thumb = styled.div`
   max-width: 100px;
   padding: 0;
   display: flex;
+  flex: 1;
   cursor: pointer;
   ${props => props.IsActive && ('box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);')}
 `;
