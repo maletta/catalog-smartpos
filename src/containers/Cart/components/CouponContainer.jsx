@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import lodash from 'lodash';
+import Swal from 'sweetalert2';
 
 import Input from 'components/Form/Input';
 import Button from 'components/Form/Button';
@@ -32,37 +33,45 @@ const CouponContainer = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
 
-  const [coupon, setCoupon] = useState('');
+  const [couponName, setCouponName] = useState(shoppingCart.coupon.name || '');
   const [loadingCoupon, setLoadingCoupon] = useState(false);
-  const [couponError, setCouponError] = useState('');
+
+  const [couponText, setCouponText] = useState('');
 
   const calculateCoupon = () => {
-    if (!coupon.length) return;
+    if (!couponName) return;
 
     setLoadingCoupon(true);
 
-    checkingCoupon(coupon, shop.id).then((response) => {
-      const { couponSelected } = response.data;
+    checkingCoupon(couponName, shop.id).then((response) => {
+      const { coupon } = response.data;
 
-      if (shoppingCart.totalCart < couponSelected.minimumPurchaseAmount) {
-        setCouponError('Não atingiu valor mínimo da compra');
+      if (shoppingCart.totalCart < coupon.minimumPurchaseAmount) {
+        setCouponText('Não atingiu valor mínimo da compra');
+        updateShoppingCart({ coupon: {} });
         return;
       }
 
-      updateShoppingCart({ coupon: response.data.couponSelected });
-      setCouponError('');
+      updateShoppingCart({ coupon });
+      setCouponText('');
     }).catch((error) => {
-      if (error.response.status === 404 || error.response.status === 400) {
-        setCouponError('Cupom inválido');
-      }
       updateShoppingCart({ coupon: {} });
+      if (error.response.status === 404 || error.response.status === 400) {
+        setCouponText('Cupom inválido');
+        return;
+      }
+      Swal.fire({
+        type: 'error',
+        title: 'Oops...',
+        text: 'Erro ao consultar cupom',
+      });
     }).finally(() => {
       setLoadingCoupon(false);
     });
   };
 
   const handleChangeCoupon = ({ target }) => {
-    setCoupon(target.value);
+    setCouponName(target.value);
 
     if (!lodash.isEmpty(shoppingCart.coupon)) {
       updateShoppingCart({ coupon: {} });
@@ -77,6 +86,7 @@ const CouponContainer = () => {
             label=""
             name="coupon"
             inputId="coupon"
+            value={couponName}
             type="text"
             placeholder="Cupom de desconto"
             isErrorHide
@@ -90,7 +100,7 @@ const CouponContainer = () => {
           onClick={calculateCoupon}
         />
       </CouponInputButtonContainer>
-      {couponError}
+      {couponText}
     </Coupon>
   );
 };

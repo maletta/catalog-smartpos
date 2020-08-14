@@ -30,6 +30,7 @@ import FilterContext from 'contexts/FilterContext';
 import { requestCEP } from 'api/cepRequests';
 import RadioButton from 'components/RadioGroup/RadioButton';
 
+import { calculateDiscountCouponPercent } from 'utils/coupon';
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
@@ -146,6 +147,7 @@ const Payment = () => {
 
       updateOrderPlaced({
         ...values,
+        coupon: shoppingCart.coupon,
         costDelivery: shoppingCart.withdraw ? { cost: 0 } : shoppingCart.deliveryFee,
         withdraw: shoppingCart.withdraw,
         orderName: data.orderName,
@@ -376,6 +378,13 @@ const Payment = () => {
     });
   };
 
+  const calculateCoupon = (value) => {
+    const { coupon, totalCart } = shoppingCart;
+    let newValue = value;
+    newValue -= calculateDiscountCouponPercent(coupon, value, totalCart);
+    return newValue;
+  };
+
   const a = shoppingCart.totalCart < shop.minValuePayOnline;
   const b = shoppingCart.totalCart > shop.maxValuePayOnline;
   const c = shop.maxValuePayOnline !== 0;
@@ -491,7 +500,7 @@ const Payment = () => {
               && `${label.quantity}
               ${label.quantity === 1 ? 'parcela' : 'parcelas'} de
               ${formatCurrency(label.installmentAmount)} | Total:
-              ${formatCurrency(label.totalAmount)}`
+              ${formatCurrency(calculateCoupon(label.totalAmount))}`
             }
             getOptionValue={option => option.quantity}
             onChange={(event) => {

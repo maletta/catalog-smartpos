@@ -15,6 +15,7 @@ export const ShopProvider = ({ children }) => {
     costDelivery: {
       cost: 0,
     },
+    coupon: {},
   });
 
   const updateShop = (newShop) => {

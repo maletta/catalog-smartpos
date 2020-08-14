@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 import formatCurrency from 'utils/formatCurrency';
-import { calculateTotalCoupon } from './cartFooterUtils';
+import { calculateDiscountCoupon } from 'utils/coupon';
 
 import CouponPriceContainer from './CouponPriceContainer';
 import CouponContainer from './CouponContainer';
@@ -56,9 +56,7 @@ const PurchasePrices = ({
   deliveryCost,
   coupon,
 }) => {
-  const couponValue = coupon.isPercentDiscountApplied
-    ? calculateTotalCoupon(coupon.totalAmount, totalCart) : coupon.totalAmount || 0;
-
+  const couponValue = calculateDiscountCoupon(coupon, totalCart);
   const total = totalCart - couponValue + deliveryCost.cost;
   const positiveTotal = total > 0 ? total : 0;
 
