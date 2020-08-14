@@ -10,20 +10,9 @@ import ShopContext from 'contexts/ShopContext';
 
 import { checkingCoupon } from './cartFooterRequest';
 
-const Coupon = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-`;
-
-const CouponInputButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-`;
-
 const CouponInputContainer = styled.div`
+  margin-bottom: 20px;
+
   @media (max-width: 425px) {
     width: 100%;
   }
@@ -79,29 +68,26 @@ const CouponContainer = () => {
   };
 
   return (
-    <Coupon>
-      <CouponInputButtonContainer>
-        <CouponInputContainer>
-          <Input
-            label=""
-            name="coupon"
-            inputId="coupon"
-            value={couponName}
-            type="text"
-            placeholder="Cupom de desconto"
-            isErrorHide
-            onChange={handleChangeCoupon}
-          />
-        </CouponInputContainer>
-        <Button
-          styleType="tertiary"
-          value="Aplicar"
-          isLoading={loadingCoupon}
-          onClick={calculateCoupon}
+    <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+      <CouponInputContainer>
+        <Input
+          label=""
+          name="coupon"
+          inputId="coupon"
+          value={couponName}
+          type="text"
+          placeholder="Cupom de desconto"
+          onChange={handleChangeCoupon}
         />
-      </CouponInputButtonContainer>
-      {couponText}
-    </Coupon>
+        {couponText}
+      </CouponInputContainer>
+      <Button
+        styleType="tertiary"
+        value="Aplicar"
+        isLoading={loadingCoupon}
+        onClick={calculateCoupon}
+      />
+    </div>
   );
 };
 

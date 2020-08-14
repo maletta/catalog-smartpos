@@ -1,6 +1,11 @@
 import React from 'react';
+import styled from 'styled-components';
 
 import formatCurrency from 'utils/formatCurrency';
+
+const Span = styled.span`
+  color: #5bc057;
+`;
 
 type Props = {
   couponValue: number,
@@ -12,8 +17,8 @@ const Coupon = (props: Props) => {
 
   return (
     <>
-      <span>Cupom de desconto</span>
-      <span>{isPercent ? `-${couponValue}%` : `-${formatCurrency(couponValue)}`}</span>
+      <Span>Cupom de desconto: </Span>
+      <Span>{isPercent ? `- ${couponValue}%` : `- ${formatCurrency(couponValue)}`}</Span>
     </>
   );
 };

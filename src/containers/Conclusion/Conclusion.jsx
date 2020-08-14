@@ -128,7 +128,10 @@ const Conclusion = () => {
           {
             couponValue > 0 && (
               <FlexRow>
-                <Coupon couponValue={couponValue} isPercent={coupon.isPercentDiscountApplied} />
+                <Coupon
+                  couponValue={coupon.totalAmount}
+                  isPercent={coupon.isPercentDiscountApplied}
+                />
               </FlexRow>
             )
           }

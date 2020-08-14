@@ -166,6 +166,7 @@ const Payment = () => {
       resetRecaptcha();
     } finally {
       cleanCart(updateShoppingCart);
+      updateShoppingCart({ coupon: {} });
       setLoading(false);
       setSubmitting(false);
     }
@@ -499,7 +500,7 @@ const Payment = () => {
             getOptionLabel={label => label.totalAmount
               && `${label.quantity}
               ${label.quantity === 1 ? 'parcela' : 'parcelas'} de
-              ${formatCurrency(label.installmentAmount)} | Total:
+              ${formatCurrency(calculateCoupon(label.installmentAmount))} | Total:
               ${formatCurrency(calculateCoupon(label.totalAmount))}`
             }
             getOptionValue={option => option.quantity}

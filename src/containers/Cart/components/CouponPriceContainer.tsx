@@ -23,8 +23,8 @@ const PurchasePrices = (props: Props) => {
 
   return (
     <CouponRow>
-      <span>Cupom:</span>
-      <span>{isPercent ? `${couponValue}%` : formatCurrency(couponValue)}</span>
+      <span>Cupom: </span>
+      <span>{isPercent ? `- ${couponValue}%` : formatCurrency(couponValue)}</span>
     </CouponRow>
   );
 };
