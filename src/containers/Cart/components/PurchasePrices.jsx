@@ -6,7 +6,6 @@ import formatCurrency from 'utils/formatCurrency';
 import { calculateDiscountCoupon } from 'utils/coupon';
 
 import CouponPriceContainer from './CouponPriceContainer';
-import CouponContainer from './CouponContainer';
 
 const PurchasePriceTitle = styled.h2`
   color: #707070;
@@ -45,11 +44,6 @@ const TotalRow = styled(PurchaseReviewRow)`
   font-weight: bold;
 `;
 
-const CouponArea = styled.div`
-  display: flex;
-  margin-top: 20px;
-`;
-
 const PurchasePrices = ({
   basketCountCart,
   totalCart,
@@ -86,9 +80,6 @@ const PurchasePrices = ({
           <span>Total:</span>
           <span>{formatCurrency(positiveTotal)}</span>
         </TotalRow>
-        <CouponArea>
-          <CouponContainer />
-        </CouponArea>
       </PurchaseReviewContainer>
     </PurchasePriceContainer>
   );
