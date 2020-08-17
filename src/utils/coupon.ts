@@ -13,13 +13,13 @@ export const calculateDiscountCoupon = (coupon: Coupon, total: number) => {
   const { totalAmount, isPercentDiscountApplied } = coupon;
 
   if (isPercentDiscountApplied) {
-    return total * (totalAmount / 100);
+    return total * totalAmount / 100;
   }
 
   return totalAmount;
 };
 
-export const calculateDiscountCouponPercent = (coupon: Coupon, totalInstallment: number, totalCart: number) => {
+export const calculateDiscountPercent = (coupon: Coupon, totalInstallment: number, totalCart: number) => {
   if (lodash.isEmpty(coupon)) {
     return 0;
   }
@@ -27,12 +27,10 @@ export const calculateDiscountCouponPercent = (coupon: Coupon, totalInstallment:
   const { totalAmount, isPercentDiscountApplied } = coupon;
 
   if (isPercentDiscountApplied) {
-    return totalInstallment * (totalAmount / 100);
+    return totalInstallment * totalAmount / 100;
   }
 
-  const percent = (totalAmount / totalCart) * 100;
-
-  return totalInstallment * (percent / 100);
+  return totalInstallment * totalAmount / totalCart;
 };
 
 export default {};

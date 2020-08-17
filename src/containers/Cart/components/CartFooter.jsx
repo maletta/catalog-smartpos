@@ -23,7 +23,7 @@ const CartFooter = () => {
   return (
     <>
       <Row>
-        <Grid cols="6" className="d-flex justify-content-between flex-wrap">
+        <Grid cols="12 6 6 6 6" className="d-flex justify-content-between flex-wrap">
           <DeliveryContainer>
             <p>Entrega:</p>
             {shop.deliveryMode !== 'DELIVERY' && (
@@ -47,7 +47,7 @@ const CartFooter = () => {
             {!shoppingCart.withdraw && <DeliveryCEPInput />}
           </DeliveryContainer>
         </Grid>
-        <Grid cols="6">
+        <Grid cols="12 6 6 6 6">
           <p>Cupom de desconto:</p>
           <CouponContainer />
         </Grid>

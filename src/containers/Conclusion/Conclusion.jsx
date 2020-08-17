@@ -114,6 +114,16 @@ const Conclusion = () => {
               <ReceiptItem item={item} />
             </FlexRow>
           ))}
+          {
+            couponValue > 0 && (
+              <FlexRow>
+                <Coupon
+                  couponValue={coupon.totalAmount}
+                  isPercent={coupon.isPercentDiscountApplied}
+                />
+              </FlexRow>
+            )
+          }
           <Divider />
           <FlexRow>
             <SubTotal subTotal={totalCart} />
@@ -122,16 +132,6 @@ const Conclusion = () => {
             withdraw ? null : (
               <FlexRow>
                 <Delivery deliveryCost={deliveryFee} />
-              </FlexRow>
-            )
-          }
-          {
-            couponValue > 0 && (
-              <FlexRow>
-                <Coupon
-                  couponValue={coupon.totalAmount}
-                  isPercent={coupon.isPercentDiscountApplied}
-                />
               </FlexRow>
             )
           }
