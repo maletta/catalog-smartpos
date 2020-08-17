@@ -35,7 +35,7 @@ const CouponContainer = () => {
     checkingCoupon(couponName, shop.id).then((response) => {
       const { coupon } = response.data;
 
-      if (shoppingCart.totalCart < coupon.minimumPurchaseAmount) {
+      if (coupon.minimumPurchaseAmount && shoppingCart.totalCart < coupon.minimumPurchaseAmount) {
         setCouponText('Não atingiu valor mínimo da compra');
         updateShoppingCart({ coupon: {} });
         return;
