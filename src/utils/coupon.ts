@@ -5,7 +5,7 @@ type Coupon = {
   isPercentDiscountApplied: boolean
 }
 
-export const calculateDiscountCoupon = (coupon: Coupon, total: number) => {
+export const calculateDiscountCoupon = (coupon: Coupon, total: number): number => {
   if (lodash.isEmpty(coupon)) {
     return 0;
   }
@@ -19,7 +19,7 @@ export const calculateDiscountCoupon = (coupon: Coupon, total: number) => {
   return totalAmount;
 };
 
-export const calculateDiscountPercent = (coupon: Coupon, totalInstallment: number, totalCart: number) => {
+export const calculateDiscountPercent = (coupon: Coupon, totalInstallment: number, totalCart: number): number => {
   if (lodash.isEmpty(coupon)) {
     return 0;
   }
