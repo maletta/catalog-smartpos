@@ -1,4 +1,4 @@
-import { calculateDiscountCoupon, calculateDiscountCouponPercent } from './coupon';
+import { calculateDiscountCoupon, calculateDiscountPercent } from './coupon';
 
 test('Calcula o valor de disconto do cupom quando não existe cupom', () => {
   const coupon = {};
@@ -45,6 +45,6 @@ test('Calcula o valor do disconto do cupom pela porcentagem em cada parcela', ()
     totalAmount: 10,
   };
 
-  const result = calculateDiscountCouponPercent(coupon, 25, 50);
+  const result = calculateDiscountPercent(coupon, 25, 50);
   expect(result).toBe(5);
 });
