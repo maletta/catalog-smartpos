@@ -64,6 +64,10 @@ const RegisterData = () => {
     if (shoppingCart.cep) {
       getAddress();
     }
+
+    if (shop.is_enableOrder === 0) {
+      history.push(paths.home);
+    }
   }, []);
 
   const handleSubmit = async (values) => {

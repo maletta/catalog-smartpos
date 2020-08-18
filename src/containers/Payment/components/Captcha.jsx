@@ -13,7 +13,7 @@ const SecureConnectionContainer = styled.span`
 
 const RecaptchaContainer = styled.p`
   font-size: 12px;
-  color: #A6A6A6;
+  color: #a6a6a6;
 `;
 
 const secureConnectionText = 'Você está em uma conexão segura';

@@ -10,8 +10,7 @@ import PropTypes from 'prop-types';
 import ReactGA from 'react-ga';
 
 import daysOfWeek from 'utils/daysOfWeek';
-import CardCredit from '../../assets/Imagem 73@2x.png';
-
+import CardCredit from 'assets/Imagem 73@2x.png';
 
 const FullWidthCopyright = styled.div`
   background-color: #fff;
@@ -59,8 +58,8 @@ const CardCreditImg = styled.img`
   @media (max-width: 270px) {
     width: 180px;
   }
-
 `;
+
 const FullWidthFooter = styled.div`
   position: relative;
   background-color: var(--color-secondary);
@@ -81,19 +80,19 @@ const FullWidthFooterInfo = styled.div`
   border-bottom: solid 1px #b1b1b1;
   padding-bottom: 50px;
   display: flex;
-  justify-content:space-around;
+  justify-content: space-around;
 `;
 
 const FooterInfoTitle = styled.h5`
   font-weight: bold;
   font-size: 1.1rem;
   margin-bottom: 5px;
- `;
+`;
 const CaptionFlag = styled.div`
   margin-top: 5px;
   font-size: 0.9rem;
   margin-bottom: 5px;
- `;
+`;
 
 const AddressInfo = styled.h6`
   font-size: 0.9rem;
@@ -107,11 +106,11 @@ const OpenHourItem = styled.div`
 `;
 
 const OpenHourItemArea = styled.div`
- width: 100%;
- display: flex;
- flex-direction: row;
- justify-items: center;
- justify-content: space-around;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-items: center;
+  justify-content: space-around;
 `;
 const Icon = styled.span`
   min-width: 20px;
@@ -156,6 +155,7 @@ const SocialIcon = styled.span`
   min-width: 20px;
   display: inline-block;
 `;
+
 const GridHour = styled.div`
   display: flex;
   flex-direction: column;

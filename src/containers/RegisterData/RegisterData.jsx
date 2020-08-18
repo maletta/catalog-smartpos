@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 
@@ -17,6 +17,7 @@ import Button from 'components/Form/Button';
 import PurchasePrices from 'containers/Cart/components/PurchasePrices';
 
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import ShopContext from 'contexts/ShopContext';
 
 import NaturalPersonForm from './components/NaturalPersonForm';
 import LegalPersonForm from './components/LegalPersonForm';
@@ -30,7 +31,14 @@ const Container = styled.div`
 const RegisterData = () => {
   const [personType, setPersonType] = useState('FISICA');
   const isNaturalPerson = personType === 'FISICA';
+  const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
+
+  useEffect(() => {
+    if (shop.is_enableOrder === 0) {
+      history.push(paths.home);
+    }
+  }, []);
 
   const handleSubmit = (values) => {
     updateShoppingCart({

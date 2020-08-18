@@ -21,7 +21,7 @@ const Text = styled.span`
 
 const Footer = styled.footer`
   display: grid;
-  place-items:center;
+  place-items: center;
   font-weight: bold;
 `;
 
