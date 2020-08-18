@@ -30,7 +30,7 @@ import FilterContext from 'contexts/FilterContext';
 import { requestCEP } from 'api/cepRequests';
 import RadioButton from 'components/RadioGroup/RadioButton';
 
-import { calculateDiscountPercent } from 'utils/coupon';
+import { calculateDiscountCoupon } from 'utils/coupon';
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
@@ -101,8 +101,9 @@ const Payment = () => {
     />
   ));
 
+  const couponValue = calculateDiscountCoupon(shoppingCart.coupon, shoppingCart.totalCart);
   const feeCost = shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost;
-  const amount = shoppingCart.totalCart + feeCost;
+  const amount = shoppingCart.totalCart - couponValue + feeCost;
 
   useEffect(() => {
     getInstallments(creditCardBrand, amount, setInstallments);
@@ -380,13 +381,6 @@ const Payment = () => {
     });
   };
 
-  const calculateDiscountInstallmentAmount = (value) => {
-    const { coupon, totalCart } = shoppingCart;
-    let newValue = value;
-    newValue -= calculateDiscountPercent(coupon, value, totalCart);
-    return newValue;
-  };
-
   const a = shoppingCart.totalCart < shop.minValuePayOnline;
   const b = shoppingCart.totalCart > shop.maxValuePayOnline;
   const c = shop.maxValuePayOnline !== 0;
@@ -501,8 +495,8 @@ const Payment = () => {
             getOptionLabel={label => label.totalAmount
               && `${label.quantity}
               ${label.quantity === 1 ? 'parcela' : 'parcelas'} de
-              ${formatCurrency(calculateDiscountInstallmentAmount(label.installmentAmount))} | Total:
-              ${formatCurrency(calculateDiscountInstallmentAmount(label.totalAmount))}`
+              ${formatCurrency(label.installmentAmount)} | Total:
+              ${formatCurrency(label.totalAmount)}`
             }
             getOptionValue={option => option.quantity}
             onChange={(event) => {
