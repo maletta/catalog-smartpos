@@ -1,4 +1,4 @@
-function isValidCPF(cpf: string): boolean {
+function isValidCPF(cpf: string = ''): boolean {
   if (cpf.length !== 11 || cpf === '00000000000')
     return false;
 
