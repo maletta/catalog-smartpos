@@ -350,8 +350,9 @@ const Payment = () => {
     propsForm.setFieldValue('valorRecebido', value.floatValue);
 
     const totalCartValue = shoppingCart.totalCart;
+    const coupon = calculateDiscountCoupon(shoppingCart.coupon, totalCartValue);
     const fee = shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost;
-    const totalValue = totalCartValue + fee;
+    const totalValue = totalCartValue - coupon + fee;
     const changeValue = value.floatValue - totalValue;
 
     if (changeValue < 0) {
