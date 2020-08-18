@@ -4,8 +4,7 @@ import { redirectToRegisterData } from './cartFooterRouter';
 import { showStoreIsClosedModal } from './cartFooterModal';
 
 export const shouldRedirectToNextStep = (shop) => {
-  const isShopOpen = shop.allowOrderOutsideBusinessHours || !shop.closeNow;
-  if (isShopOpen) {
+  if (shop.customerCanOrder) {
     redirectToRegisterData();
   } else {
     showStoreIsClosedModal(shop);
