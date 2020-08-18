@@ -19,20 +19,4 @@ export const calculateDiscountCoupon = (coupon: Coupon, total: number): number =
   return totalAmount;
 };
 
-export const calculateDiscountPercent = (coupon: Coupon, totalInstallment: number, totalCart: number): number => {
-  if (lodash.isEmpty(coupon)) {totalCart
-    return 0;
-  }
-
-  const { totalAmount, isPercentDiscountApplied } = coupon;
-
-  if (isPercentDiscountApplied) {
-    return totalInstallment * totalAmount / 100;
-  }
-
-  const percent = totalAmount / totalCart * 100;
-
-  return totalInstallment * percent / 100;
-};
-
 export default {};

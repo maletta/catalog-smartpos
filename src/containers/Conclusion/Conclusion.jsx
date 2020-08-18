@@ -126,7 +126,7 @@ const Conclusion = () => {
           }
           <Divider />
           <FlexRow>
-            <SubTotal subTotal={totalCart} />
+            <SubTotal subTotal={totalCart - couponValue} />
           </FlexRow>
           {
             withdraw ? null : (
