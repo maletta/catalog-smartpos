@@ -1,6 +1,5 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import lodash from 'lodash';
 import Swal from 'sweetalert2';
 
 import Input from 'components/Form/Input';
@@ -21,18 +20,17 @@ const CouponInputContainer = styled.div`
 const CouponContainer = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
+  const { name } = shoppingCart.coupon;
 
-  const [couponName, setCouponName] = useState(shoppingCart.coupon.name || '');
   const [loadingCoupon, setLoadingCoupon] = useState(false);
-
   const [couponText, setCouponText] = useState('');
 
   const calculateCoupon = () => {
-    if (!couponName) return;
+    if (!name) return;
 
     setLoadingCoupon(true);
 
-    checkingCoupon(couponName, shop.id).then((response) => {
+    checkingCoupon(name, shop.id).then((response) => {
       const { coupon } = response.data;
 
       if (coupon.minimumPurchaseAmount && shoppingCart.totalCart < coupon.minimumPurchaseAmount) {
@@ -60,11 +58,7 @@ const CouponContainer = () => {
   };
 
   const handleChangeCoupon = ({ target }) => {
-    setCouponName(target.value);
-
-    if (!lodash.isEmpty(shoppingCart.coupon)) {
-      updateShoppingCart({ coupon: {} });
-    }
+    updateShoppingCart({ coupon: { name: target.value } });
   };
 
   return (
@@ -74,7 +68,7 @@ const CouponContainer = () => {
           label=""
           name="coupon"
           inputId="coupon"
-          value={couponName}
+          value={name}
           type="text"
           placeholder="Cupom de desconto"
           onChange={handleChangeCoupon}
