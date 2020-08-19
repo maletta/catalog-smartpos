@@ -18,13 +18,13 @@ import CardShop from 'components/CardShop';
 
 import history from 'utils/history';
 import getStoreName from 'utils/getStoreName';
-import daysOfWeek from 'utils/daysOfWeek';
 
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 
 import getBusinessHour from 'api/businessHoursRequests';
+import { isCurrentTimeWithinTimeRange } from 'utils/withinTimeRange';
 
 const Container = styled.div`
   width: 100%;
@@ -37,6 +37,7 @@ const Content = styled.div`
   position: relative;
   top: 80px;
   padding-bottom: 80px;
+  margin-bottom: 3rem;
 `;
 
 const App = () => {
@@ -53,29 +54,16 @@ const App = () => {
       .finally(() => setLoading(false));
   };
 
-  const today = openHours => (openHours || daysOfWeek)[moment().day()];
-
-  const isShopClosed = (data) => {
-    if (!data) {
-      return true;
-    }
-
-    const { openHours, allowOrderOutsideBusinessHours } = data;
-
-    if (openHours === null || openHours.length === 0) {
-      return false;
-    }
-
-    if (allowOrderOutsideBusinessHours) {
-      return false;
-    }
-
-    const { hours } = today(openHours);
-    const currentHour = moment().format('HH:mm');
-    const isCurrentTimeWithinTimeRange = ({ openHour, closeHour }) => openHour < currentHour
-      && closeHour > currentHour;
-
-    return !hours.some(isCurrentTimeWithinTimeRange);
+  const isShopOpen = (openHours) => {
+    const { hours, closed } = openHours[moment().day()];
+    if (closed) return false;
+    const fn = (openCloseHours) => {
+      const { openHour, closeHour } = openCloseHours;
+      return isCurrentTimeWithinTimeRange(
+        { openHour, closeHour, currentHour: moment().format('HH:mm') },
+      );
+    };
+    return hours.some(fn);
   };
 
   const getStore = async () => {
@@ -86,18 +74,26 @@ const App = () => {
       const {
         is_enableOrder: isEnableOrder,
         fantasia,
+        allowOrderOutsideBusinessHours,
+        openHours,
       } = data;
 
       document.title = fantasia;
-
       setStore({ ...data, found: true, storeName });
       getCategoryList(data.id);
 
-      const closeNow = isShopClosed(data);
-      const isOrderEnabled = !closeNow && isEnableOrder;
+      let customerCanOrder = isEnableOrder === 1;
+
+      if (customerCanOrder) {
+        customerCanOrder = allowOrderOutsideBusinessHours === 1;
+
+        if (!customerCanOrder) {
+          customerCanOrder = isShopOpen(openHours);
+        }
+      }
 
       updateShop({
-        ...data, today, closeNow, is_enableOrder: Number(isOrderEnabled),
+        ...data, is_enableOrder: Number(customerCanOrder), customerCanOrder,
       });
     } catch {
       setStore({ found: false });
@@ -166,7 +162,7 @@ const App = () => {
     <>
       <CardShop />
       <Header goHome={goHome} store={store} />
-      <Content className="container mb-5">
+      <Content className="container">
         <Breadcrumb goHome={goHome} />
         <AppRouter />
       </Content>

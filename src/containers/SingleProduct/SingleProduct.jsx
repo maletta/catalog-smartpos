@@ -7,6 +7,7 @@ import uuidv1 from 'uuid/v1';
 import lodash from 'lodash';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import moment from 'moment';
 
 import formatCurrency from 'utils/formatCurrency';
 import SelectDropDown from 'components/Form/SelectDropDown';
@@ -310,9 +311,8 @@ const SingleProduct = (props) => {
 
     setSubmitting(false);
 
-    const isShopOpen = shop.allowOrderOutsideBusinessHours || !shop.closeNow;
-    if (!isShopOpen) {
-      showStoreIsClosedModal(shop.today);
+    if (!shop.customerCanOrder) {
+      showStoreIsClosedModal(shop.openHours[moment().day()]);
       return;
     }
 

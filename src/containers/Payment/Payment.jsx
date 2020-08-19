@@ -702,13 +702,19 @@ const Payment = () => {
                                 />
                               </Grid>
                               <Grid cols="3">
-                                <Field
-                                  inputId="troco"
-                                  name="troco"
-                                  label="Troco"
-                                  component={Change}
-                                  value={formatCurrency(moneyChange)}
-                                />
+                                {
+                                  changeError ? (
+                                    <div>{changeError}</div>
+                                  ) : (
+                                    <Field
+                                      inputId="troco"
+                                      name="troco"
+                                      label="Troco"
+                                      component={Change}
+                                      value={formatCurrency(moneyChange)}
+                                    />
+                                  )
+                                }
                               </Grid>
                             </>
                           )}
