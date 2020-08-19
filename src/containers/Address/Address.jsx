@@ -59,7 +59,12 @@ const RegisterData = () => {
     if (shoppingCart.cep) {
       getAddressByCEP(shoppingCart.cep).then(setAddress);
     }
-  }, [shoppingCart.cep]);
+
+    if (shop.is_enableOrder === 0) {
+      history.push(paths.home);
+    }
+    // eslint-disable-next-line
+  }, []);
 
   const handleSubmit = async (values) => {
     const { data } = await checkingDelivery(values.cep, shop.id);

@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 import validateCnpj from 'utils/validation/validateCnpj';
-import validateCpf from 'utils/validation/validateCpf';
+import isValidCPF from 'utils/validation/cpfValidation';
 
 const sharedPersonSchema = {
   email: yup
@@ -27,7 +27,7 @@ const naturalPersonSchema = {
     }),
   documento: yup
     .string()
-    .test('cpf-valid', 'CPF inválido', value => validateCpf(value)),
+    .test('cpf-valid', 'CPF inválido', value => isValidCPF(value)),
 };
 
 const legalPerson = {

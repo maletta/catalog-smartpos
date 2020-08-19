@@ -15,6 +15,7 @@ const LegalPersonForm = () => (
         format="##.###.###/####-##"
         component={MaskedNumberInput}
         type="tel"
+        isRequired
       />
     </Grid>
     <Grid cols="12 6 6 6 6">

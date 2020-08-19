@@ -1,7 +1,6 @@
 {
-  "name": "smartpos-client-store-front",
-  "version": "0.1.0",
-  "private": true,
+  "name": "smartpos-catalogo",
+  "version": "1.0.0",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -29,6 +28,7 @@
     "react-dom": "^16.13.1",
     "react-ga": "^2.5.7",
     "react-google-recaptcha": "^2.1.0",
+    "react-image-magnify": "^2.7.4",
     "react-items-carousel": "^2.8.0",
     "react-number-format": "^4.4.1",
     "react-paginate": "^6.3.2",

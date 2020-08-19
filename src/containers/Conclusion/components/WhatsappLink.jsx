@@ -12,8 +12,8 @@ const SendWhatsapp = styled.a`
 
 const WhatsappLink = (props) => {
   const { orderId, whatsapp } = props;
-  const msg = `Você acabou de receber o pedido ${orderId} 
-  do seu catálogo on-line SmartPOS, acesse o app ou site e 
+  const msg = `Você acabou de receber o pedido ${orderId}
+  do seu catálogo on-line SmartPOS, acesse o app ou site e
   verifique nos pedidos em aberto.
   `;
   const baseURL = 'https://api.whatsapp.com/send?phone=55';
