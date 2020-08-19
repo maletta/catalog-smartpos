@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 import moment from 'moment';
 
-import validateCpf from 'utils/validation/validateCpf';
+import isValidCPF from 'utils/validation/cpfValidation';
 
 const paymentSchema = yup.object().shape({
   nameHolder: yup
@@ -16,7 +16,7 @@ const paymentSchema = yup.object().shape({
   cpfHolder: yup
     .string()
     .required('CPF é obrigatório')
-    .test('cpf-valid', 'CPF inválido', value => validateCpf(value)),
+    .test('cpf-valid', 'CPF inválido', value => isValidCPF(value)),
   birthDateHolder: yup
     .string()
     .required('Data de nascimento é obrigatória')
