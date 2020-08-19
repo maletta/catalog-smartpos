@@ -55,16 +55,11 @@ const RegisterData = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const [address, setAddress] = useState(addressInitialValue);
 
-  const getAddress = async () => {
-    const response = await getAddressByCEP(shoppingCart.cep);
-    setAddress(response);
-  };
-
   useEffect(() => {
     if (shoppingCart.cep) {
-      getAddress();
+      getAddressByCEP(shoppingCart.cep).then(setAddress);
     }
-  }, []);
+  }, [shoppingCart.cep]);
 
   const handleSubmit = async (values) => {
     const { data } = await checkingDelivery(values.cep, shop.id);

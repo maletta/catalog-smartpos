@@ -24,6 +24,7 @@ const Cart = () => {
       page: 1,
       search: '',
     });
+    // eslint-disable-next-line
   }, []);
 
   const removeItemFromCart = (uuid) => {

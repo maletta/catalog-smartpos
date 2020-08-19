@@ -326,6 +326,7 @@ const SingleProduct = (props) => {
       })
       .catch(() => setProductFound(false))
       .finally(() => setLoaded(true));
+    // eslint-disable-next-line
   }, []);
 
   const hasModifiersErrors = modifiersErrors.filter(item => item);

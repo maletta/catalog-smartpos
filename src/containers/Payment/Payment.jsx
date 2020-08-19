@@ -105,6 +105,7 @@ const Payment = () => {
 
   useEffect(() => {
     getInstallments(creditCardBrand, amount, setInstallments);
+    // eslint-disable-next-line
   }, [creditCardBrand]);
 
   useEffect(() => {
@@ -121,6 +122,7 @@ const Payment = () => {
       pagseguro.setSessionId(data.session);
       getPaymentMethods(amount, setCreditCardBrands);
     });
+    // eslint-disable-next-line
   }, []);
 
   const handleSenderHashReady = ({ status, senderHash }) => {
