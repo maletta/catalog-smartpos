@@ -1,13 +1,13 @@
 import { calculateDiscountCoupon } from './coupon';
 
-test('Calcula o valor de disconto do cupom quando não existe cupom', () => {
+test('Calcula o valor de desconto do cupom quando não existe cupom', () => {
   const coupon = {};
 
   const result = calculateDiscountCoupon(coupon, 350);
   expect(result).toBe(0);
 });
 
-test('Calcula o valor de disconto do cupom quando o cupom é por valor', () => {
+test('Calcula o valor de desconto do cupom quando o cupom é por valor', () => {
   const coupon = {
     couponStatus: 'OPENED',
     expirationDate: '2020-08-20',
@@ -21,7 +21,7 @@ test('Calcula o valor de disconto do cupom quando o cupom é por valor', () => {
   expect(result).toBe(10);
 });
 
-test('Calcula o valor de disconto do cupom quando o cupom é por porcentagem', () => {
+test('Calcula o valor de desconto do cupom quando o cupom é por porcentagem', () => {
   const coupon = {
     couponStatus: 'OPENED',
     expirationDate: '2020-08-20',

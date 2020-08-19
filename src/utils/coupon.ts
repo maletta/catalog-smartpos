@@ -1,12 +1,12 @@
 import lodash from 'lodash';
 
 type Coupon = {
-  totalAmount: number,
-  isPercentDiscountApplied: boolean
+  totalAmount?: number | undefined,
+  isPercentDiscountApplied?: boolean | undefined
 }
 
 export const calculateDiscountCoupon = (coupon: Coupon, total: number): number => {
-  if (lodash.isEmpty(coupon)) {
+  if (lodash.isEmpty(coupon) || !coupon.totalAmount) {
     return 0;
   }
 

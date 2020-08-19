@@ -1,24 +1,22 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 
+import ShopContext from 'contexts/ShopContext';
 import formatCurrency from 'utils/formatCurrency';
 
 const Span = styled.span`
   color: #5bc057;
 `;
 
-type Props = {
-  couponValue: number,
-  isPercent: boolean
-}
+const Coupon = () => {
+  const { orderPlaced } = useContext(ShopContext);
 
-const Coupon = (props: Props) => {
-  const { couponValue, isPercent } = props;
+  const { coupon } = orderPlaced;
 
   return (
     <>
       <Span>Cupom de desconto: </Span>
-      <Span>{isPercent ? `- ${couponValue}%` : `- ${formatCurrency(couponValue)}`}</Span>
+      <Span>{coupon.isPercentDiscountApplied ? `- ${coupon.totalAmount}%` : `- ${formatCurrency(coupon.totalAmount)}`}</Span>
     </>
   );
 };
