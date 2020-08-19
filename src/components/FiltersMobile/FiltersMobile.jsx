@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import FilterContext from 'contexts/FilterContext';
+import ShopContext from 'contexts/ShopContext';
 
 const Div = styled.div`
   display: flex;
@@ -79,7 +79,7 @@ const DropdownContent = styled.ul`
   z-index: 1;
 `;
 
-const DropdownContenItem = styled.li`
+const DropdownContentItem = styled.li`
   padding: 12px 16px;
   text-decoration: none;
   display: block;
@@ -87,12 +87,13 @@ const DropdownContenItem = styled.li`
   cursor: pointer;
 `;
 
-const FiltersMobile = ({ categories }) => {
+const FiltersMobile = () => {
   const [isSelectCategoryOpen, setSelectCategoryOpen] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [categorySelected, setCategorySelected] = useState(null);
   const [dropdownSelected, setDropdownSelected] = useState(null);
   const { updateFilter } = useContext(FilterContext);
+  const { categories } = useContext(ShopContext);
 
   const renderCategories = categories.map(item => (
     <SelectItem
@@ -137,46 +138,46 @@ const FiltersMobile = ({ categories }) => {
             <Icon>
               <FontAwesomeIcon icon={['fa', 'sort']} size="1x" />
             </Icon>
-            {(dropdownSelected || 'Ordenar')}
+            {dropdownSelected || 'Ordenar'}
           </Label>
           {isDropdownOpen && (
             <DropdownContent>
-              <DropdownContenItem
+              <DropdownContentItem
                 onClick={() => {
                   updateFilter({ orderBy: 'desc', sortBy: 'valorVenda' });
                   setDropdownOpen(false);
                   setDropdownSelected('Maior preço');
                 }}
               >
-                {'Maior preço'}
-              </DropdownContenItem>
-              <DropdownContenItem
+                Maior preço
+              </DropdownContentItem>
+              <DropdownContentItem
                 onClick={() => {
                   updateFilter({ orderBy: 'asc', sortBy: 'valorVenda' });
                   setDropdownOpen(false);
                   setDropdownSelected('Menor preço');
                 }}
               >
-                {'Menor preço'}
-              </DropdownContenItem>
-              <DropdownContenItem
+                Menor preço
+              </DropdownContentItem>
+              <DropdownContentItem
                 onClick={() => {
                   updateFilter({ orderBy: 'asc', sortBy: 'descricao' });
                   setDropdownOpen(false);
                   setDropdownSelected('A-Z');
                 }}
               >
-                {'A-Z'}
-              </DropdownContenItem>
-              <DropdownContenItem
+                A-Z
+              </DropdownContentItem>
+              <DropdownContentItem
                 onClick={() => {
                   updateFilter({ orderBy: 'desc', sortBy: 'descricao' });
                   setDropdownOpen(false);
                   setDropdownSelected('Z-A');
                 }}
               >
-                {'Z-A'}
-              </DropdownContenItem>
+                Z-A
+              </DropdownContentItem>
             </DropdownContent>
           )}
         </Dropdown>
@@ -208,7 +209,7 @@ const FiltersMobile = ({ categories }) => {
                 setCategorySelected(null);
               }}
             >
-              {'Todas as Categorias'}
+              Todas as Categorias
             </SelectItem>
             {renderCategories}
           </Select>
@@ -216,14 +217,6 @@ const FiltersMobile = ({ categories }) => {
       )}
     </div>
   );
-};
-
-FiltersMobile.propTypes = {
-  categories: PropTypes.array,
-};
-
-FiltersMobile.defaultProps = {
-  categories: null,
 };
 
 export default FiltersMobile;

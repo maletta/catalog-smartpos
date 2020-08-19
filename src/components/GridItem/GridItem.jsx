@@ -2,17 +2,18 @@ import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { injectIntl, intlShape } from 'react-intl';
+import lodash from 'lodash';
+
 import slug from 'utils/slug';
 import history from 'utils/history';
 import uuidv1 from 'uuid/v1';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import Grid from 'components/Grid';
+import formatCurrency from 'utils/formatCurrency';
 
 import ShopContext from 'contexts/ShopContext';
 import getModifiersOfProduct from 'api/modifiersRequests';
-import NoImage from '../../assets/no-image.png';
-
+import NoImage from 'assets/no-image.png';
 
 const LinkToItem = styled(Link)`
   color: #212529;
@@ -37,7 +38,7 @@ const Img = styled.img`
   border-radius: 5px 5px 0 0;
 `;
 
-const Cardcontent = styled.div`
+const CardContent = styled.div`
   background-color: transparent;
   padding: 0.4rem 1rem 1rem 1rem;
 
@@ -45,7 +46,6 @@ const Cardcontent = styled.div`
     padding: 0.75rem;
   }
 `;
-
 
 const Descricao = styled.div`
   display: flex;
@@ -78,6 +78,7 @@ const PriceFrom = styled.p`
   color: #333;
   height: 20px;
 `;
+
 const Price = styled.p`
   color: #333;
   font-weight: bold;
@@ -126,28 +127,25 @@ const BuyText = styled.p`
 `;
 
 const GridItem = (props) => {
+  const { item } = props;
   const {
-    item,
-    intl,
-  } = props;
+    id,
+    atualizacao,
+    viewMode,
+    descricao,
+    not_control_stock: dontControlStock,
+    stock,
+    hasVariant,
+  } = item;
+
   const [image, setImage] = useState(NoImage);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${item.id}?lastUpdate=${item.atualizacao}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${id}?lastUpdate=${atualizacao}`;
 
   const { shop } = useContext(ShopContext);
-  const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
 
-  const enableOrderButton = () => {
-    const isEnable = true;
-
-    if (!shop.is_enableOrder) {
-      return false;
-    }
-    return isEnable;
-  };
-
-  let img;
-  if (item.viewMode === 'IMAGE') {
-    img = new Image();
+  if (viewMode === 'IMAGE') {
+    const img = new Image();
     img.src = imageBaseUrl;
 
     img.onload = () => {
@@ -155,75 +153,95 @@ const GridItem = (props) => {
     };
   }
 
-
   const addCart = (product) => {
-    getModifiersOfProduct(product.tenant_id, product.id).then((response) => {
-      if (response.data.length === 0) {
-        localStorage.setItem('cartInit', new Date().getTime());
-        const itemProduct = {
-          ...product,
-          quantity: 1,
-          uuid: uuidv1(),
-          variant: {},
-          pricing: { product: product.valorVenda, modifiers: 0 },
-          image: [],
-          modifiers: [[]],
-          note: '',
-        };
+    getModifiersOfProduct(product.tenant_id, product.id)
+      .then(({ data }) => {
+        if (data.length !== 0) {
+          history.push(`item/${id}/${slug(descricao)}`);
+          return;
+        }
 
-        const merged = localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')) : [];
-        merged.push(itemProduct);
-        localStorage.setItem('cart', JSON.stringify(merged));
-        updateShoppingCart({
-          basketCount: merged.reduce((count, val) => (count + val.quantity), 0),
-          cardOverlay: true,
-        });
-      } else {
-        history.push(`item/${item.id}/${slug(item.descricao)}`);
-      }
-    });
+        localStorage.setItem('cartInit', new Date().getTime());
+
+        const localCart = lodash.cloneDeep(shoppingCart.cart);
+        const hasItem = localCart.some(localProduct => localProduct.id === product.id);
+
+        if (hasItem) {
+          const updatedCart = localCart.map((localProduct) => {
+            if (localProduct.id === product.id) {
+              return {
+                ...localProduct,
+                quantity: localProduct.quantity + 1,
+              };
+            }
+            return localProduct;
+          });
+
+          updateShoppingCart({
+            cart: updatedCart,
+            cardOverlay: true,
+          });
+        } else {
+          const itemProduct = {
+            ...product,
+            quantity: 1,
+            uuid: uuidv1(),
+            variant: {},
+            pricing: { product: product.valorVenda, modifiers: 0 },
+            image: [],
+            modifiers: [[]],
+            note: '',
+          };
+
+          localCart.push(itemProduct);
+
+          updateShoppingCart({
+            cart: localCart,
+            cardOverlay: true,
+          });
+        }
+      });
   };
+
+  const isItemUnavailable = dontControlStock === 0 && stock <= 0;
+
+  const UnavailableItem = () => (
+    <UnavailableBox>
+      <Unavailable>PRODUTO INDISPONÍVEL</Unavailable>
+    </UnavailableBox>
+  );
+
+  const ItemButton = () => (
+    <LinkToItem to={hasVariant ? `item/${id}/${slug(descricao)}` : '/'}>
+      {shop.is_enableOrder === 1 && (
+        <Buy onClick={() => hasVariant !== 1 && addCart(item)}>
+          <BuyText>COMPRAR</BuyText>
+        </Buy>
+      )}
+    </LinkToItem>
+  );
+
+  const PriceItem = () => (
+    <div>
+      <PriceFrom>{hasVariant ? 'A partir de ' : ''}</PriceFrom>
+      <Price>{formatCurrency(item.valorVenda)}</Price>
+    </div>
+  );
+
   return (
     <>
-      <Grid
-        cols="6 4 4 4 4"
-        className="mb-3"
-      >
-        <Container
-          className="product-item"
-        >
-          <LinkToItem to={`item/${item.id}/${slug(item.descricao)}`}>
-            <div className="card-image">
-              <Img src={image} title={item.descricao} alt="Produto" />
-            </div>
+      <Grid cols="6 4 4 4 4" className="mb-3">
+        <Container>
+          <LinkToItem to={`item/${id}/${slug(descricao)}`}>
+            <Img src={image} title={descricao} />
           </LinkToItem>
-          <Cardcontent>
-            <div>
-              {<PriceFrom>{(item.hasVariant === 1) && ('A partir de ')}</PriceFrom>}
-              <Price>
-                {intl.formatNumber(item.valorVenda, { style: 'currency', currency: 'BRL' })}
-              </Price>
-            </div>
+          <CardContent>
+            <PriceItem />
             <Descricao>
-              <TextArea>
-                <span>{item.descricao}</span>
-              </TextArea>
+              <TextArea>{descricao}</TextArea>
             </Descricao>
-            {(item.not_control_stock === 0 && item.stock <= 0)
-              ? (
-                <UnavailableBox>
-                  <Unavailable>PRODUTO INDISPONÍVEL</Unavailable>
-                </UnavailableBox>
-              ) : (
-                <LinkToItem to={item.hasVariant === 1 && `item/${item.id}/${slug(item.descricao)}`}>
-                  {enableOrderButton(item) && (
-                  <Buy onClick={() => item.hasVariant !== 1 && addCart(item)}>
-                    <BuyText> COMPRAR</BuyText>
-                  </Buy>
-                  )}
-                </LinkToItem>
-              )}
-          </Cardcontent>
+            {isItemUnavailable ? <UnavailableItem /> : <ItemButton />}
+          </CardContent>
         </Container>
       </Grid>
     </>
@@ -235,9 +253,12 @@ GridItem.propTypes = {
     id: PropTypes.number.isRequired,
     descricao: PropTypes.string.isRequired,
     valorVenda: PropTypes.number.isRequired,
+    atualizacao: PropTypes.any,
+    viewMode: PropTypes.any,
+    hasVariant: PropTypes.any.isRequired,
+    not_control_stock: PropTypes.any,
+    stock: PropTypes.any,
   }).isRequired,
-  intl: intlShape.isRequired,
 };
 
-
-export default injectIntl(GridItem);
+export default GridItem;

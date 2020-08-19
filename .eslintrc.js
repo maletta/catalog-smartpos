@@ -15,7 +15,17 @@ module.exports = {
     'react/jsx-filename-extension': 'off',
     "react/destructuring-assignment": 'off',
     "react/forbid-prop-types": "off",
-    "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "js": "never",
+        "jsx": "never",
+        "ts": "never",
+        "tsx": "never"
+      }
+    ]
   },
   env: {
     jest: true,
@@ -23,7 +33,8 @@ module.exports = {
   settings: {
     "import/resolver": {
       node: {
-        paths: ["src"]
+        paths: ["src"],
+        extensions: [".js", ".jsx", ".ts", ".tsx"]
       }
     }
   }

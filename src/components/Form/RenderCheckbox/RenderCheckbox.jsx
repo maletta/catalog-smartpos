@@ -99,9 +99,11 @@ const RenderCheckbox = (props) => {
 RenderCheckbox.propTypes = {
   input: PropTypes.shape({
     value: bool,
+    name: PropTypes.string,
   }),
   field: PropTypes.shape({
     value: bool,
+    name: PropTypes.string,
   }),
   form: PropTypes.shape({
     touched: PropTypes.object,
