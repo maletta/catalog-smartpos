@@ -10,7 +10,6 @@ export const calculateDiscountCoupon = (coupon: Coupon, total: number): number =
   }
 
   const { totalAmount, isPercentDiscountApplied } = coupon;
-
   const totalDiscount = isPercentDiscountApplied ? total * totalAmount / 100 : totalAmount;
 
   if (total <= totalDiscount) {
