@@ -37,14 +37,14 @@ const CouponContainer = () => {
         && shoppingCart.totalCart < coupon.minimumPurchaseAmount)
         || shoppingCart.totalCart <= coupon.totalAmount) {
         setCouponText('Não atingiu valor mínimo da compra');
-        updateShoppingCart({ coupon: { name }});
+        updateShoppingCart({ coupon: { name } });
         return;
       }
 
       updateShoppingCart({ coupon });
       setCouponText('');
     }).catch((error) => {
-      updateShoppingCart({ coupon: {} });
+      updateShoppingCart({ coupon: { name } });
       if (error.response.status === 404 || error.response.status === 400) {
         setCouponText('Cupom inválido');
         return;
