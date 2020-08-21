@@ -769,7 +769,7 @@ const SingleProduct = (props) => {
                                     <ModifiersArea>
                                       {product.modifiers.map((mod, index) => {
                                         const hasError = (mod.required
-                                          ? (modifierSelected[index].length > 0) : false);
+                                          ? (modifierSelected[index] && modifierSelected[index].length > 0) : false);
                                         return (
                                           <div key={mod.id}>
                                             <ModifierHeader>
