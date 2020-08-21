@@ -30,7 +30,7 @@ import FilterContext from 'contexts/FilterContext';
 import { requestCEP } from 'api/cepRequests';
 import RadioButton from 'components/RadioGroup/RadioButton';
 
-import { calculateDiscountCoupon } from 'utils/coupon';
+import { calculateDiscountCoupon, validateCoupon } from 'utils/coupon';
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
@@ -211,7 +211,8 @@ const Payment = () => {
       changeReceivedValue: formValues.valorRecebido || 0,
       change: moneyChange,
       tipoEndereco: formValues.tipoEndereco.value,
-      coupon: shoppingCart.coupon.totalAmount ? shoppingCart.coupon.name : null,
+      coupon: validateCoupon(shoppingCart.coupon, shoppingCart.totalCart)
+        ? shoppingCart.coupon.name : null,
     };
 
     if (!formValues.gatewayPagseguro && !hash) {
