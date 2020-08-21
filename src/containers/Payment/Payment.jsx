@@ -30,6 +30,7 @@ import FilterContext from 'contexts/FilterContext';
 import { requestCEP } from 'api/cepRequests';
 import RadioButton from 'components/RadioGroup/RadioButton';
 
+import { calculateDiscountCoupon } from 'utils/coupon';
 import paymentSchema from './paymentSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
@@ -100,8 +101,9 @@ const Payment = () => {
     />
   ));
 
+  const couponValue = calculateDiscountCoupon(shoppingCart.coupon, shoppingCart.totalCart);
   const feeCost = shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost;
-  const amount = shoppingCart.totalCart + feeCost;
+  const amount = shoppingCart.totalCart - couponValue + feeCost;
 
   useEffect(() => {
     getInstallments(creditCardBrand, amount, setInstallments);
@@ -155,6 +157,7 @@ const Payment = () => {
 
       updateOrderPlaced({
         ...values,
+        coupon: shoppingCart.coupon,
         costDelivery: shoppingCart.withdraw ? { cost: 0 } : shoppingCart.deliveryFee,
         withdraw: shoppingCart.withdraw,
         orderName: data.orderName,
@@ -166,6 +169,7 @@ const Payment = () => {
         data,
       });
 
+      updateShoppingCart({ coupon: {} });
       cleanCart(updateShoppingCart);
 
       history.push(paths.conclusion);
@@ -210,6 +214,7 @@ const Payment = () => {
       changeReceivedValue: formValues.valorRecebido || 0,
       change: moneyChange,
       tipoEndereco: formValues.tipoEndereco.value,
+      coupon: shoppingCart.coupon.totalAmount ? shoppingCart.coupon.name : null,
     };
 
     if (!formValues.gatewayPagseguro && !hash) {
@@ -348,8 +353,9 @@ const Payment = () => {
     propsForm.setFieldValue('valorRecebido', value.floatValue);
 
     const totalCartValue = shoppingCart.totalCart;
+    const coupon = calculateDiscountCoupon(shoppingCart.coupon, totalCartValue);
     const fee = shoppingCart.withdraw ? 0 : shoppingCart.deliveryFee.cost;
-    const totalValue = totalCartValue + fee;
+    const totalValue = totalCartValue - coupon + fee;
     const changeValue = value.floatValue - totalValue;
 
     if (changeValue < 0) {
@@ -497,9 +503,9 @@ const Payment = () => {
             cacheOptions
             options={installments}
             getOptionLabel={label => label.totalAmount
-              && `${label.quantity} 
-              ${label.quantity === 1 ? 'parcela' : 'parcelas'} de 
-              ${formatCurrency(label.installmentAmount)} | Total: 
+              && `${label.quantity}
+              ${label.quantity === 1 ? 'parcela' : 'parcelas'} de
+              ${formatCurrency(label.installmentAmount)} | Total:
               ${formatCurrency(label.totalAmount)}`
             }
             getOptionValue={option => option.quantity}
@@ -758,7 +764,7 @@ const Payment = () => {
           basketCountCart={shoppingCart.basketCount}
           totalCart={shoppingCart.totalCart}
           deliveryCost={shoppingCart.withdraw ? { cost: 0 } : shoppingCart.deliveryFee}
-          couponValue={0}
+          coupon={shoppingCart.coupon}
         />
       </Grid>
     </Container>

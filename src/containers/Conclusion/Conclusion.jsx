@@ -9,12 +9,14 @@ import Steps from 'components/Steps';
 import Button from 'components/Form/Button';
 import ShopContext from 'contexts/ShopContext';
 import formatCurrency from 'utils/formatCurrency';
+import { calculateDiscountCoupon } from 'utils/coupon';
 
 import SuccessMessage from './components/SuccessMessage';
 import WhatsappLink from './components/WhatsappLink';
 import ThanksMessage from './components/ThanksMessage';
 import ReceiptItem from './components/ReceiptItem';
 import SubTotal from './components/SubTotal';
+import Coupon from './components/Coupon';
 import Delivery from './components/Delivery';
 import Total from './components/Total';
 import PersonalData from './components/PersonalData';
@@ -78,6 +80,7 @@ const Conclusion = () => {
     orderName,
     change,
     changeReceivedValue,
+    coupon,
   } = orderPlaced;
 
   const {
@@ -85,6 +88,8 @@ const Conclusion = () => {
   } = personData;
 
   const withdrawText = withdraw ? '* Retirar no estabelecimento' : '';
+
+  const couponValue = calculateDiscountCoupon(coupon, totalCart);
 
   const handleGoBack = () => {
     history.push(paths.home);
@@ -109,9 +114,16 @@ const Conclusion = () => {
               <ReceiptItem item={item} />
             </FlexRow>
           ))}
+          {
+            couponValue > 0 && (
+              <FlexRow>
+                <Coupon />
+              </FlexRow>
+            )
+          }
           <Divider />
           <FlexRow>
-            <SubTotal subTotal={totalCart} />
+            <SubTotal subTotal={totalCart - couponValue} />
           </FlexRow>
           {
             withdraw ? null : (
@@ -142,7 +154,7 @@ const Conclusion = () => {
           }
           <Divider />
           <FlexRowFinal>
-            <Total total={totalCart + deliveryFee} />
+            <Total total={totalCart - couponValue + deliveryFee} />
           </FlexRowFinal>
           <ReceiptObservation>
             {withdrawText}
