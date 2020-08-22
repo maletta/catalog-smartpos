@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ThemeProvider } from 'styled-components';
-import defaultTheme from 'styles/DefaultTheme';
+// import { ThemeProvider } from 'styled-components';
 import dynamicManifest from 'dynamicManifest';
+import GlobalStyles from 'styles/Global';
+import { ThemeProvider } from './contexts/ThemeProvider';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 import { ShopProvider } from './contexts/ShopContext';
@@ -11,13 +12,14 @@ import { ShoppingCartProvider } from './contexts/ShoppingCartContext';
 
 import 'bootstrap/dist/css/bootstrap-reboot.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'styles/index.css';
+// import 'styles/index.css';
 
 ReactDOM.render((
-  <ThemeProvider theme={defaultTheme}>
+  <ThemeProvider>
     <ShopProvider>
       <FilterProvider>
         <ShoppingCartProvider>
+          <GlobalStyles />
           {dynamicManifest()}
           <App />
         </ShoppingCartProvider>

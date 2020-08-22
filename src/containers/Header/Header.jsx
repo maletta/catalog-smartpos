@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import ReactGA from 'react-ga';
-import styled, { css } from 'styled-components';
+import styled, { css, ThemeContext } from 'styled-components';
 import PropTypes from 'prop-types';
 
 import Row from 'components/Row';
@@ -12,6 +12,7 @@ import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import history from 'utils/history';
 import paths from 'paths';
 import ShopContext from 'contexts/ShopContext';
+
 
 const Container = styled.nav`
   padding-top: 5px;
@@ -198,6 +199,9 @@ const Header = ({ goHome, store }) => {
   };
 
   const cartBasketCount = shoppingCart.basketCount;
+
+  const theme = useContext(ThemeContext);
+  console.log('theme-> ', theme);
 
   return (
     <Container className="fixed-top">

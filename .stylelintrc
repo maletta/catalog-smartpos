@@ -3,5 +3,8 @@
   "extends": [
     "stylelint-config-standard",
     "stylelint-config-styled-components",
-  ]
+  ],
+  "rules":{
+    "no-descending-specificity": false,
+  }
 }
