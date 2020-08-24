@@ -11,4 +11,8 @@ export const checkingCoupon = (couponName, storeID) => getRequest(
   `${mainAPIPath}/v1/loja/${storeID}/cupom/${couponName}`,
 );
 
+export const checkingForOpenCoupons = storeID => getRequest(
+  `${mainAPIPath}/v1/loja/${storeID}/cuponsAbertos/`,
+);
+
 export default {};
