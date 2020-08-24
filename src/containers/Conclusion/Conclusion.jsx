@@ -90,6 +90,8 @@ const Conclusion = () => {
   const withdrawText = withdraw ? '* Retirar no estabelecimento' : '';
 
   const couponValue = calculateDiscountCoupon(coupon, totalCart);
+  const total = totalCart - couponValue;
+  const positiveTotal = total > 0 ? total : 0;
 
   const handleGoBack = () => {
     history.push(paths.home);
@@ -123,7 +125,7 @@ const Conclusion = () => {
           }
           <Divider />
           <FlexRow>
-            <SubTotal subTotal={totalCart - couponValue} />
+            <SubTotal subTotal={positiveTotal} />
           </FlexRow>
           {
             withdraw ? null : (
@@ -154,7 +156,7 @@ const Conclusion = () => {
           }
           <Divider />
           <FlexRowFinal>
-            <Total total={totalCart - couponValue + deliveryFee} />
+            <Total total={positiveTotal + deliveryFee} />
           </FlexRowFinal>
           <ReceiptObservation>
             {withdrawText}
