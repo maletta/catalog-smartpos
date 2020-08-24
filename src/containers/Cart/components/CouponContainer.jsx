@@ -7,6 +7,7 @@ import Button from 'components/Form/Button';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ShopContext from 'contexts/ShopContext';
 
+import { validateCoupon } from 'utils/coupon';
 import { checkingCoupon } from './cartFooterRequest';
 
 const CouponInputContainer = styled.div`
@@ -33,16 +34,16 @@ const CouponContainer = () => {
     checkingCoupon(name, shop.id).then((response) => {
       const { coupon } = response.data;
 
-      if (coupon.minimumPurchaseAmount && shoppingCart.totalCart < coupon.minimumPurchaseAmount) {
+      if (!validateCoupon(coupon, shoppingCart.totalCart)) {
         setCouponText('Não atingiu valor mínimo da compra');
-        updateShoppingCart({ coupon: {} });
+        updateShoppingCart({ coupon: { name } });
         return;
       }
 
       updateShoppingCart({ coupon });
       setCouponText('');
     }).catch((error) => {
-      updateShoppingCart({ coupon: {} });
+      updateShoppingCart({ coupon: { name } });
       if (error.response.status === 404 || error.response.status === 400) {
         setCouponText('Cupom inválido');
         return;
