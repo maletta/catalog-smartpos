@@ -11,27 +11,27 @@ import DeliveryCEPInput from './DeliveryCEPInput';
 import AddMoreItemsButton from './AddMoreItemsButton';
 import NextButton from './NextButton';
 import CouponContainer from './CouponContainer';
-import { checkingForOpenCoupons } from './cartFooterRequest';
+import { checkingCouponsAvailable } from './cartFooterRequest';
 
 const CartFooter = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
 
-  const [displayCoupon, setDisplayCoupon] = useState(false);
+  const [couponsAvailable, setCouponsAvailable] = useState(false);
 
   const handleChangeDelivery = ({ target }) => {
     updateShoppingCart({ withdraw: target.value === 'PICKUP' });
   };
 
   useEffect(() => {
-    checkingForOpenCoupons(shop.id).then((response) => {
-      const { openCoupons } = response.data;
+    checkingCouponsAvailable(shop.id).then((response) => {
+      const { available } = response.data;
 
-      if (openCoupons) {
-        setDisplayCoupon(true);
+      if (available) {
+        setCouponsAvailable(available);
       }
     }).catch(() => {
-      setDisplayCoupon(false);
+      setCouponsAvailable(false);
     });
   }, []);
 
@@ -62,7 +62,7 @@ const CartFooter = () => {
             {!shoppingCart.withdraw && <DeliveryCEPInput />}
           </DeliveryContainer>
         </Grid>
-        {displayCoupon && (
+        {couponsAvailable && (
           <Grid cols="12 6 6 6 6">
             <p>Cupom de desconto:</p>
             <CouponContainer />
