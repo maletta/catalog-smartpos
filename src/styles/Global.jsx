@@ -5,7 +5,7 @@ const GlobalStyles = createGlobalStyle`
     --color-header: ${({ theme }) => theme.colorHeader};
     --color-footer: ${({ theme }) => theme.colorFooter};
     --color-primary: ${({ theme }) => theme.colorPrimary};
-    --color-link: <div id="f38a"></div>00;
+    --color-link: #f38a00;
     --color-primary-light: #ffc67c;
     --color-gray-light-1: #d7d7d7;
     --color-gray-light: #efefef;
