@@ -12,7 +12,7 @@ export const checkingCoupon = (couponName, storeID) => getRequest(
 );
 
 export const checkingCouponsAvailable = storeID => getRequest(
-  `${mainAPIPath}/v1/loja/${storeID}/cupons/disponivel`,
+  `${mainAPIPath}/v1/loja/${storeID}/cupons/available`,
 );
 
 export default {};
