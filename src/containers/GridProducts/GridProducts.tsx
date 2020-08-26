@@ -31,9 +31,7 @@ const GridProducts : React.FC<IGridProcuts> = ({ products, pageCount }) => (
 
 
 GridProducts.propTypes = {
-  products: PropTypes.shape({
-    length: PropTypes.number.isRequired,
-  }).isRequired,
+  products: PropTypes.array.isRequired,
   pageCount: PropTypes.node.isRequired,
 };
 

@@ -11,6 +11,7 @@ import RegisterData from 'containers/RegisterData';
 import Address from 'containers/Address';
 import Payment from 'containers/Payment';
 import Conclusion from 'containers/Conclusion';
+import PreviewCatalog from 'containers/PreviewCatalog';
 
 const AppRouter = () => {
   return (
@@ -22,7 +23,7 @@ const AppRouter = () => {
         <Route path={paths.address} exact component={Address} />
         <Route path={paths.payment} exact component={Payment} />
         <Route path={paths.conclusion} exact component={Conclusion} />
-        <Route path={paths.previewCatalog} exact component={GridProductsWrapper} />
+        <Route path={paths.previewCatalog} exact component={PreviewCatalog} />
         <Route path={paths.singleProduct} component={SingleProduct} />
       </Switch>
     </Router>
