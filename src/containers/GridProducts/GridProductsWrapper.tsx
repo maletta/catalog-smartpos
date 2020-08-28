@@ -50,7 +50,6 @@ const GridProductsWrapper = () => {
       return <GridProductsSpinner />;
     }
 
-    console.log('produtos ', products, 'pageCount ', pageCount);
     return (
       <GridProducts products={products} pageCount={pageCount} />
     );

@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import { SideBarContainer } from 'components/SideBar';
 import { GridProducts } from 'containers/GridProducts';
-
 
 const categories = [
   {
@@ -89,14 +88,28 @@ const products = [
 
 const pageCount = 1;
 
+const getThemeFromUrl = (url) => {
+  const params = new URLSearchParams(url);
+  const theme = params.has('theme') ? params.get('theme') : '';
+  return theme;
+};
 
-const PreviewCatalog = () => (
-  <Row>
-    <Grid className="d-none d-md-block" cols="12 3 3 3 3">
-      <SideBarContainer categories={categories} filter={filter} updateFilter={updateFilter} />
-    </Grid>
-    <GridProducts products={products} pageCount={pageCount} />
-  </Row>
-);
+const PreviewCatalog = () => {
+  useEffect(() => {
+    const themeBase64 = getThemeFromUrl(window.location.search);
+    const themeString = window.atob(themeBase64);
+    const theme = JSON.parse(themeString);
+    return () => theme;
+  }, []);
+
+  return (
+    <Row>
+      <Grid className="d-none d-md-block" cols="12 3 3 3 3">
+        <SideBarContainer categories={categories} filter={filter} updateFilter={updateFilter} />
+      </Grid>
+      <GridProducts products={products} pageCount={pageCount} />
+    </Row>
+  );
+};
 
 export default PreviewCatalog;

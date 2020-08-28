@@ -11,7 +11,6 @@ export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(defaultTheme);
 
   const updateTheme = newTheme => setTheme(prevTheme => ({ ...prevTheme, ...newTheme }));
-  console.log('thema state ', theme);
   return (
     <ThemeContext.Provider value={{ theme, updateTheme }}>
       <ThemeProviderStyledComponents theme={{ ...theme }}>
