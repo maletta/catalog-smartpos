@@ -490,59 +490,59 @@ const SingleProduct = (props) => {
   );
 
   const modal = () => (propsModal.isOpen && (
-  <Modal
-    onClose={() => setPropsModal({ isOpen: false, urlPhoto: null })}
-  >
-    <AreaModal>
-      <Carousel>
-        <ItemsCarousel
-          requestToChangeActive={setActiveItemIndex}
-          activeItemIndex={activeItemIndex}
-          numberOfCards={1}
-          leftChevron={arrowModal('left')}
-          rightChevron={arrowModal('right')}
-          outsideChevron
-          chevronWidth={70}
-        >
-          <ModalImg
-            src={image}
-            title={product.descricao}
-            alt="Produto"
-          />
-          {product.images && (
-            product.images !== 'notFound' && ((product.images).map(img => (
-              <ModalImg
-                src={`${process.env.REACT_APP_IMG_API}${img.key}`}
-                title={product.descricao}
-                alt="Produto"
-              />
-            )))
-          )}
-        </ItemsCarousel>
-        <Page>
-          {(Array.isArray(product.images)) && (
-            `${activeItemIndex + 1}/${product.images.length + 1}`
-          ) }
-        </Page>
-        <ImageBelow>
-          {product.images && (
-            <>
-              {product.images !== 'notFound' && (
-              <Thumb IsActive={activeItemIndex === 0}>
-                <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
-              </Thumb>
-              )}
-              {product.images !== 'notFound' && ((product.images).map((img, index) => (
-                <Thumb IsActive={activeItemIndex === index + 1}>
-                  <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
-                </Thumb>
-              )))}
-            </>
-          )}
-        </ImageBelow>
-      </Carousel>
-    </AreaModal>
-  </Modal>
+    <Modal
+      onClose={() => setPropsModal({ isOpen: false, urlPhoto: null })}
+    >
+      <AreaModal>
+        <Carousel>
+          <ItemsCarousel
+            requestToChangeActive={setActiveItemIndex}
+            activeItemIndex={activeItemIndex}
+            numberOfCards={1}
+            leftChevron={arrowModal('left')}
+            rightChevron={arrowModal('right')}
+            outsideChevron
+            chevronWidth={70}
+          >
+            <ModalImg
+              src={image}
+              title={product.descricao}
+              alt="Produto"
+            />
+            {product.images && (
+              product.images !== 'notFound' && ((product.images).map(img => (
+                <ModalImg
+                  src={`${process.env.REACT_APP_IMG_API}${img.key}`}
+                  title={product.descricao}
+                  alt="Produto"
+                />
+              )))
+            )}
+          </ItemsCarousel>
+          <Page>
+            {(Array.isArray(product.images)) && (
+              `${activeItemIndex + 1}/${product.images.length + 1}`
+            )}
+          </Page>
+          <ImageBelow>
+            {product.images && (
+              <>
+                {product.images !== 'notFound' && (
+                  <Thumb IsActive={activeItemIndex === 0}>
+                    <Img onClick={() => setActiveItemIndex(0)} src={image} title={product.descricao} alt="Produto" />
+                  </Thumb>
+                )}
+                {product.images !== 'notFound' && ((product.images).map((img, index) => (
+                  <Thumb IsActive={activeItemIndex === index + 1}>
+                    <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+                  </Thumb>
+                )))}
+              </>
+            )}
+          </ImageBelow>
+        </Carousel>
+      </AreaModal>
+    </Modal>
   ));
   const renderImage = () => (
 
@@ -769,7 +769,9 @@ const SingleProduct = (props) => {
                                     <ModifiersArea>
                                       {product.modifiers.map((mod, index) => {
                                         const hasError = (mod.required
-                                          ? (modifierSelected[index] && modifierSelected[index].length > 0) : false);
+                                          ? (modifierSelected[index]
+                                            && modifierSelected[index].length > 0)
+                                          : false);
                                         return (
                                           <div key={mod.id}>
                                             <ModifierHeader>

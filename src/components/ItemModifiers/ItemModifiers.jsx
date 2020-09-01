@@ -76,8 +76,10 @@ const ItemModifiers = (props) => {
   return (
     modifier.itens.map((item) => {
       const isChecked = (modifierSelected[index] ? modifierSelected[index].includes(item) : false);
-      const isAvailable = ((modifierSelected[index])
-        && (modifierSelected[index].length + 1) <= modifier.maxQuantity);
+      const isAvailable = modifierSelected[index]
+        ? modifierSelected[index].length + 1 <= modifier.maxQuantity
+        : modifierSelected[index] = [];
+
       return (
         <ModifierItem key={item.id}>
           <ModifierItemName>
