@@ -781,7 +781,7 @@ const SingleProduct = (props) => {
                                                 </ModifierTitle>
                                                 <ModifierAmountTitle>
                                                   {`Máximo ${mod.maxQuantity} `}
-                                                  {mod.maxQuantity > 1 ? 'opções' : 'opção'}
+                                                  {mod.maxQuantity !== 1 ? 'opções' : 'opção'}
                                                 </ModifierAmountTitle>
                                               </div>
                                               {mod.required && (
