@@ -1,0 +1,4 @@
+{
+  "modulePaths": "<rootDir>/src/",
+  "env": "node"
+}
