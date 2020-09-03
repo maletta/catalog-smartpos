@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import { SideBarContainer } from 'components/SideBar';
 import { GridProducts } from 'containers/GridProducts';
+import ThemeContext from 'contexts/ThemeProvider';
 
 const categories = [
   {
@@ -94,12 +95,24 @@ const getThemeFromUrl = (url) => {
   return theme;
 };
 
+const adapterPayloadToTheme = payload => ({
+  colorHeader: payload.header.background,
+  colorFooter: payload.footer.background,
+  colorPrimary: '#F37C05',
+  backgroundColor: payload.screenBackground.background,
+
+});
+
 const PreviewCatalog = () => {
+  const { updateTheme } = useContext(ThemeContext);
+
   useEffect(() => {
     const themeBase64 = getThemeFromUrl(window.location.search);
     const themeString = window.atob(themeBase64);
-    const theme = JSON.parse(themeString);
-    return () => theme;
+    const themeParsed = JSON.parse(themeString);
+    const themeAdapted = adapterPayloadToTheme(themeParsed);
+    // console.log('theme parsed ', themeParsed, 'theme adaptado ', themeAdapted);
+    updateTheme(themeAdapted);
   }, []);
 
   return (
