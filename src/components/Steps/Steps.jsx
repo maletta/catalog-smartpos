@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
@@ -52,24 +52,18 @@ const stepsInfo = [
 ];
 
 const Steps = ({ activeIndex }) => {
-  const [stateSteps, setStateStep] = useState(stepsInfo);
+  const cloneSteps = lodash.cloneDeep(stepsInfo);
+  const activeSteps = cloneSteps.map((step, index) => {
+    const cloneStep = lodash.cloneDeep(step);
 
-  useEffect(() => {
-    const cloneSteps = lodash.cloneDeep(stateSteps);
-    const activeSteps = cloneSteps.map((step, index) => {
-      const cloneStep = lodash.cloneDeep(step);
+    if (index <= activeIndex) {
+      cloneStep.isActive = true;
+    }
 
-      if (index <= activeIndex) {
-        cloneStep.isActive = true;
-      }
+    return cloneStep;
+  });
 
-      return cloneStep;
-    });
-
-    setStateStep(activeSteps);
-  }, []);
-
-  const steps = stateSteps.map(({
+  const steps = activeSteps.map(({
     icon, text, isActive, path,
   }) => <Step key={text} icon={icon} text={text} isActive={isActive} path={path} />);
 

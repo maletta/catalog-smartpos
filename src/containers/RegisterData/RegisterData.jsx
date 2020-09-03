@@ -38,6 +38,7 @@ const RegisterData = () => {
     if (shop.is_enableOrder === 0) {
       history.push(paths.home);
     }
+    // eslint-disable-next-line
   }, []);
 
   const handleSubmit = (values) => {

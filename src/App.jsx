@@ -1,5 +1,3 @@
-import 'babel-polyfill';
-import 'url-search-params-polyfill';
 import 'icons';
 
 import React, { useState, useEffect, useContext } from 'react';
@@ -124,6 +122,7 @@ const App = () => {
     if (store.id && !store.allowOrderOutsideBusinessHours) {
       businessHourRequest();
     }
+    // eslint-disable-next-line
   }, [loading]);
 
   useEffect(() => {
@@ -131,6 +130,7 @@ const App = () => {
     window.scrollTo(0, 0);
     initGA(history);
     cleanCart();
+    // eslint-disable-next-line
   }, []);
 
   const goHome = () => {

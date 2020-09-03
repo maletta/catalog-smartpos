@@ -1,6 +1,6 @@
 {
-  "extends": "./paths.json",
   "compilerOptions": {
+    "baseUrl": "src",
     "jsx": "preserve",
     "esModuleInterop": true,
     "target": "es5",

@@ -33,6 +33,7 @@ const Cart = () => {
     if (shop.is_enableOrder === 0) {
       history.push(paths.home);
     }
+    // eslint-disable-next-line
   }, []);
 
   const removeItemFromCart = (uuid) => {

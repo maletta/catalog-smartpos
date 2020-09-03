@@ -37,6 +37,7 @@ const ImageBox = (props) => {
     img.onError = () => {
       setImage(NoImage);
     };
+    // eslint-disable-next-line
   }, [shoppingCart, id]);
 
   return (

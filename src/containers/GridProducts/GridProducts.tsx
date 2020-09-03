@@ -25,10 +25,10 @@ const GridProducts = () => {
   const [products, setProducts] = useState([]);
   const [pageCount, setPageCount] = useState(1);
 
-  const getProductList = async (shopData: ShopData) => {
+  const getProductList = async () => {
     setLoading(true);
 
-    const promise = filter.search ? getSearch(shopData.id, filter) : getProducts(shopData, filter);
+    const promise = filter.search ? getSearch(shop.id, filter) : getProducts(shop, filter);
 
     try {
       const { data } = await promise;
@@ -45,11 +45,13 @@ const GridProducts = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    getProductList(shop);
+    getProductList();
+    // eslint-disable-next-line
   }, [filter]);
 
   useEffect(() => {
     updateFilter({ ...filter, label: '' });
+    // eslint-disable-next-line
   }, []);
 
   const GridListProducts = () => {

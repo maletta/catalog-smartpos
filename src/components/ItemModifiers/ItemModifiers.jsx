@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { injectIntl, intlShape } from 'react-intl';
 
+import formatCurrency from 'utils/formatCurrency';
 import Checkbox from 'components/Form/RenderCheckbox/RenderCheckbox';
 
 const ModifierItem = styled.li`
@@ -27,7 +27,6 @@ const ItemModifiers = (props) => {
   const {
     modifier,
     index,
-    intl,
     modifierSelected,
     setProductPricing,
     setModifierSelected,
@@ -85,7 +84,7 @@ const ItemModifiers = (props) => {
         <ModifierItem key={item.id}>
           <ModifierItemName>
             {item.name}
-            {(item.sellValue > 0) && (<ModifierItemSellValue>{` + ${intl.formatNumber(item.sellValue, { style: 'currency', currency: 'BRL' })}`}</ModifierItemSellValue>)}
+            {(item.sellValue > 0) && (<ModifierItemSellValue>{` + ${formatCurrency(item.sellValue)}`}</ModifierItemSellValue>)}
           </ModifierItemName>
           <Checkbox
             input={{
@@ -102,7 +101,6 @@ const ItemModifiers = (props) => {
 };
 
 ItemModifiers.propTypes = {
-  intl: intlShape.isRequired,
   modifierSelected: PropTypes.array.isRequired,
   modifiersErrors: PropTypes.array.isRequired,
   setProductPricing: PropTypes.func.isRequired,
@@ -110,4 +108,4 @@ ItemModifiers.propTypes = {
   setModifiersErrors: PropTypes.func.isRequired,
 };
 
-export default injectIntl(ItemModifiers);
+export default ItemModifiers;

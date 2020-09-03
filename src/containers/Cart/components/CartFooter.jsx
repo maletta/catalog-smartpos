@@ -33,7 +33,7 @@ const CartFooter = () => {
     }).catch(() => {
       setCouponsAvailable(false);
     });
-  }, []);
+  }, [shop.id]);
 
   return (
     <>

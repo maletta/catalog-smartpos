@@ -1,4 +1,4 @@
-export const hasDomainName = process.env.REACT_APP_GET_NAME_DOMAIN === 'true';
+export const hasDomainName = process.env.REACT_APP_ENV === 'production';
 export const getSubDomain = url => url.hostname.split('.')[0];
 export const getStoreNameFromURL = url => url.pathname.split('/')[1];
 
