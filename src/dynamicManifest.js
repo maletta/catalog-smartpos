@@ -9,7 +9,7 @@ const baseUrl = url => `${url.protocol}//${url.host}${url.pathname}`;
 
 const getIconPath = (props) => {
   const { codigo, atualizacao } = props;
-  return `${REACT_APP_IMG_API}store/${codigo}?lastUpdate=${atualizacao}`;
+  return `${REACT_APP_IMG_API}/store/${codigo}?lastUpdate=${atualizacao}`;
 };
 
 const generateManifestURL = (manifest) => {
