@@ -7,8 +7,7 @@ import Close from 'assets/close.svg';
 const HeaderCard = styled.div`
   width: 100%;
   height: 45px;
-  color: white;
-  background-color: var(--color-header);
+  background-color: var(--header-background);
   display: flex;
   font-size: 14px;
   font-weight: 500;

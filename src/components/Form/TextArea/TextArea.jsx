@@ -33,7 +33,7 @@ const Textarea = styled.textarea`
   margin-top: 5px;
 
   :focus {
-    border-color: ${props => (props.hasError ? '#dc3545' : 'var(--color-primary)')};
+    border-color: ${props => (props.hasError ? '#dc3545' : 'var(--button-primary-background)')};
   }
 `;
 
@@ -50,7 +50,7 @@ const ValueContainer = styled.div`
   `}
 `;
 
-const Value = styled.div` 
+const Value = styled.div`
   margin: 8px 0;
   font-size: 16px;
 `;

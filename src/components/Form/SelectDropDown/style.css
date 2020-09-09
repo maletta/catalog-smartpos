@@ -16,7 +16,7 @@
 
 .react-select__control--is-focused.react-select__control--is-focused:hover,
 .react-select__control--is-focused.react-select__control--is-focused {
-  border-color: var(--color-primary);
+  border-color: var(--button-primary-background);
   border-radius: 0;
 }
 

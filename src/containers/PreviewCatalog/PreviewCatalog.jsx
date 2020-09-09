@@ -96,11 +96,29 @@ const getThemeFromUrl = (url) => {
 };
 
 const adapterPayloadToTheme = payload => ({
-  colorHeader: payload.header.background,
-  colorFooter: payload.footer.background,
-  colorPrimary: '#F37C05',
-  backgroundColor: payload.screenBackground.background,
-
+  background: payload.screenBackground.background,
+  buttons: {
+    primary: {
+      text: payload.buttonsAndLinks.text,
+      background: payload.buttonsAndLinks.button,
+    },
+    secondary: {
+      text: payload.buttonsAndLinks.button,
+      background: payload.buttonsAndLinks.text,
+    },
+  },
+  footer: {
+    background: payload.footer.background,
+    text: payload.footer.text,
+  },
+  header: {
+    background: payload.header.background,
+    text: payload.header.text,
+  },
+  links: {
+    primary: payload.buttonsAndLinks.button,
+    secondary: payload.buttonsAndLinks.text,
+  },
 });
 
 const PreviewCatalog = () => {
@@ -108,11 +126,13 @@ const PreviewCatalog = () => {
 
   useEffect(() => {
     const themeBase64 = getThemeFromUrl(window.location.search);
-    const themeString = window.atob(themeBase64);
-    const themeParsed = JSON.parse(themeString);
-    const themeAdapted = adapterPayloadToTheme(themeParsed);
+    if (themeBase64) {
+      const themeString = window.atob(themeBase64);
+      const themeParsed = JSON.parse(themeString);
+      const themeAdapted = adapterPayloadToTheme(themeParsed);
+      updateTheme(themeAdapted);
+    }
     // console.log('theme parsed ', themeParsed, 'theme adaptado ', themeAdapted);
-    updateTheme(themeAdapted);
   }, []);
 
   return (

@@ -26,13 +26,13 @@ const FooterCopyright = styled.div`
 `;
 
 const LinkNetPOS = styled.a`
-  color: #00529b;
+  color: var(--header-background);
   text-decoration: none;
   font-weight: 600;
   margin: 5px 5px;
 
   :hover {
-    color: var(--color-primary);
+    color: var(--links-secondary);
     text-decoration: none;
   }
 `;
@@ -62,9 +62,9 @@ const CardCreditImg = styled.img`
 
 const FullWidthFooter = styled.div`
   position: relative;
-  background-color: var(--color-secondary);
+  background-color: var(--footer-background);
   width: 100%;
-  color: #fff;
+  color: var(--footer-text);
 `;
 
 const FullWidthFooterDownload = styled.div`
@@ -121,7 +121,7 @@ const LinkSocial = styled.a`
   color: #3a3a3a;
 
   :hover {
-    color: var(--color-link);
+    color: var(--links-secondary);
   }
 `;
 

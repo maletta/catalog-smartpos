@@ -4,22 +4,22 @@ import PropTypes from 'prop-types';
 
 const styles = {
   primary: {
-    bgColor: 'var(--button-primary)',
-    border: '1px solid var(--button-primary)',
-    color: 'var(--color-white)',
+    bgColor: 'var(--button-primary-background)',
+    border: '1px solid var(--button-primary-background)',
+    color: 'var(--button-primary-text)',
     colorLoading: 'rgba(0, 0, 0, 0.1)',
   },
   secondary: {
-    bgColor: 'var(--color-white)',
-    border: '1px solid var(--button-primary)',
-    color: 'var(--button-primary)',
-    colorLoading: 'var(--button-primary)',
+    bgColor: 'var(--button-primary-text)',
+    border: '1px solid var(--button-primary-background)',
+    color: 'var(--button-primary-background)',
+    colorLoading: 'var(--button-primary-background)',
   },
   tertiary: {
     bgColor: 'transparent',
     border: '0',
-    color: 'var(--button-primary)',
-    colorLoading: 'var(--button-primary)',
+    color: 'var(--button-primary-background)',
+    colorLoading: 'var(--button-primary-background)',
   },
   danger: {
     bgColor: 'transparent',
@@ -85,7 +85,7 @@ const Btn = styled.button`
   ` : '')}
 
   ${props => (props.isLoading ? `
-  :after {  
+  :after {
     color: transparent!important;
     pointer-events: none;
     display: block;

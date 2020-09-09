@@ -48,7 +48,7 @@ const StyledInput = styled.input`
   display: block;
 
   :focus {
-    border-color: ${props => (props.hasError ? '#dc3545' : 'var(--color-primary)')};
+    border-color: ${props => (props.hasError ? '#dc3545' : 'var(--button-primary-background)')};
   }
 
   :disabled {

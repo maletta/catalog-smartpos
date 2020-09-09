@@ -65,7 +65,7 @@ const CardOverlay = styled.div`
 
   ::-webkit-scrollbar-thumb
     {
-      background-color: #F38A00;
+      background-color: var(--button-primary-background);
       border: 1px solid #black;
     }
   `}
@@ -122,7 +122,7 @@ const IconDelete = styled.img`
 
 const TotalTitle = styled.div`
   font-weight: 700;
-  color: var(--color-header);
+  color: var(--header-background);
   margin-left: 15px;
 `;
 
@@ -144,8 +144,8 @@ const TextTotal = styled.div`
 `;
 
 const Finish = styled.div`
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--button-primary-background);
+  color: var(--button-primary-text);
   height: 30px;
   display: flex;
   justify-content: center;

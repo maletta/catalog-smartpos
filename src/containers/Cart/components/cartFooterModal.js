@@ -20,7 +20,7 @@ const createTitle = (today) => {
 
 export const createHTMLTitle = (today) => {
   const html = `
-    <span style="font-weight: bold; font-size: 1.2rem;"> 
+    <span style="font-weight: bold; font-size: 1.2rem;">
       ${createTitle(today)}
     </span>
   `;
@@ -40,7 +40,7 @@ export const showStoreIsClosedModal = (today) => {
     imageHeight: 200,
     imageAlt: 'Loja fechada',
     showConfirmButton: true,
-    confirmButtonColor: 'var(--color-primary)',
+    confirmButtonColor: 'var(--button-primary-background',
     onClose: redirectToHome,
   };
 

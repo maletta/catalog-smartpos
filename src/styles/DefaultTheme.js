@@ -1,14 +1,38 @@
 export default {
-  colorHeader: '#00529B',
-  colorFooter: '#F38A00',
-  colorPrimary: '#F37C05',
-  colorLink: '#F38A00',
+  background: '#ebebeb',
+
+  buttons: {
+    primary: {
+      text: '#fff',
+      background: '#f38a00',
+    },
+    secondary: {
+      text: '#f38a00',
+      background: '#fff',
+    },
+  },
+
+  header: {
+    background: '#00529B',
+    text: '#fff',
+  },
+  footer: {
+    background: '#f38a00',
+    text: '#fff',
+  },
+
+  links: {
+    primary: '#6c757d',
+    secondary: '#f28A00',
+  },
+
+
+  colorWhite: '#fff',
+
   colorPrimaryLight: '#ffc67c',
   colorGrayLight: '#efefef',
   colorGrayLight1: '#d7d7d7',
   colorgraylight2: '#918f8f',
-  colorWhite: '#FFF',
-  buttonPrimary: '#F38A00',
-  colorSecondary: '#F38A00',
-  backgroundColor: '#EBEBEB',
+  buttonPrimary: '#f28a00',
+  colorSecondary: '#f28a00',
 };

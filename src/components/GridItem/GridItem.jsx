@@ -114,12 +114,12 @@ const Buy = styled.div`
   margin: 0;
   margin-top: 20px;
   border-radius: 2px;
-  background-color: var(--color-primary);
+  background-color: var(--button-primary-background);
   cursor: pointer;
 `;
 
 const BuyText = styled.p`
-  color: white;
+  color: var(--button-primary-text);
   font-size: 0.8rem;
   text-align: left;
   margin: 0;

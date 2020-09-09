@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import ReactGA from 'react-ga';
-import styled, { css, ThemeContext } from 'styled-components';
+import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
 
 import Row from 'components/Row';
@@ -24,7 +24,7 @@ const Container = styled.nav`
   }
 
   &&& {
-    background: var(--color-header);
+    background: var(--header-background);
   }
 `;
 
@@ -132,7 +132,7 @@ const CartCounter = styled.div`
 `;
 
 const StoreNameArea = styled.div`
-  color: white;
+  color: var(--header-text);
   margin-left: 15px;
   display: flex;
   flex-direction: column;
@@ -199,9 +199,6 @@ const Header = ({ goHome, store }) => {
   };
 
   const cartBasketCount = shoppingCart.basketCount;
-
-  const theme = useContext(ThemeContext);
-  console.log('theme-> ', theme);
 
   return (
     <Container className="fixed-top">

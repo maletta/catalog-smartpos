@@ -47,8 +47,8 @@ const Label = styled.label`
     width: 16px;
     height: 16px;
     ${props => (props.isChecked ? `
-      background: var(--color-primary) url(${checkMark});
-      border: 1px solid var(--color-primary);
+      background: var(--button-primary-background) url(${checkMark});
+      border: 1px solid var(--button-primary-background);
       background-repeat: no-repeat;
       background-position: center center;
       background-size: 60% 60%;

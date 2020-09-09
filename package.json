@@ -51,6 +51,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/styled-components": "^5.1.2",
     "@types/yup": "^0.29.5",
+    "@typescript-eslint/parser": "^4.1.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jsx-a11y": "^6.1.2",

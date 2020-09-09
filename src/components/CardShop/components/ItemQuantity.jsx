@@ -27,7 +27,7 @@ const ControlQuantity = styled.div`
 `;
 
 const Controls = styled.div`
-  color: var(--color-primary);
+  color: var(--button-primary-background);
   margin-right: 10px;
   cursor: pointer;
 `;

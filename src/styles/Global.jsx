@@ -2,23 +2,26 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
   :root {
-    --color-header: ${({ theme }) => theme.colorHeader};
-    --color-footer: ${({ theme }) => theme.colorFooter};
-    --color-primary: ${({ theme }) => theme.colorPrimary};
-    --color-link: #f38a00;
-    --color-primary-light: #ffc67c;
+    --header-background: ${({ theme }) => theme.header.background};
+    --header-text: ${({ theme }) => theme.header.text};
+    --footer-background: ${({ theme }) => theme.footer.background};
+    --footer-text: ${({ theme }) => theme.footer.text};
+    --links-primary: ${({ theme }) => theme.links.primary};
+    --links-secondary: ${({ theme }) => theme.links.secondary};
+    --button-primary-background: ${({ theme }) => theme.buttons.primary.background};
+    --button-primary-text: ${({ theme }) => theme.buttons.primary.text};
+    --button-secondary-background: ${({ theme }) => theme.buttons.secondary.background};
+    --button-secondary-text: ${({ theme }) => theme.buttons.secondary.text};
+    --color-white: #fff;
     --color-gray-light-1: #d7d7d7;
     --color-gray-light: #efefef;
     --color-gray-light-1: #d7d7d7;
     --color-gray-light-2: #918f8f;
-    --color-white: #fff;
-    --button-primary: #f38a00;
-    --color-secondary: #f38a00;
   }
 
   html,
   html body {
-    background: ${({ theme }) => theme.backgroundColor};
+    background: ${({ theme }) => theme.background};
   }
 
   .fixed-top {
