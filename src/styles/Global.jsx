@@ -61,7 +61,7 @@ const GlobalStyles = createGlobalStyle`
   .pagination .active a:hover {
     color: #fff;
     font-weight: bold;
-    background: var(--color-primary);
+    background: var(--button-primary-background);
   }
 
   .breadcrumb {

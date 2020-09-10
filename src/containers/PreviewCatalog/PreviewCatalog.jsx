@@ -5,6 +5,8 @@ import { SideBarContainer } from 'components/SideBar';
 import { GridProducts } from 'containers/GridProducts';
 import ThemeContext from 'contexts/ThemeProvider';
 
+import { adapterURLPayloadToTheme } from 'api/catalogCustomization';
+
 const categories = [
   {
     descricao: 'Categoria 1',
@@ -95,32 +97,6 @@ const getThemeFromUrl = (url) => {
   return theme;
 };
 
-const adapterPayloadToTheme = payload => ({
-  background: payload.screenBackground.background,
-  buttons: {
-    primary: {
-      text: payload.buttonsAndLinks.text,
-      background: payload.buttonsAndLinks.button,
-    },
-    secondary: {
-      text: payload.buttonsAndLinks.button,
-      background: payload.buttonsAndLinks.text,
-    },
-  },
-  footer: {
-    background: payload.footer.background,
-    text: payload.footer.text,
-  },
-  header: {
-    background: payload.header.background,
-    text: payload.header.text,
-  },
-  links: {
-    primary: payload.buttonsAndLinks.button,
-    secondary: payload.buttonsAndLinks.text,
-  },
-});
-
 const PreviewCatalog = () => {
   const { updateTheme } = useContext(ThemeContext);
 
@@ -129,10 +105,9 @@ const PreviewCatalog = () => {
     if (themeBase64) {
       const themeString = window.atob(themeBase64);
       const themeParsed = JSON.parse(themeString);
-      const themeAdapted = adapterPayloadToTheme(themeParsed);
+      const themeAdapted = adapterURLPayloadToTheme(themeParsed);
       updateTheme(themeAdapted);
     }
-    // console.log('theme parsed ', themeParsed, 'theme adaptado ', themeAdapted);
   }, []);
 
   return (

@@ -1,6 +1,6 @@
 import React, { useState, createContext } from 'react';
 import { ThemeProvider as ThemeProviderStyledComponents } from 'styled-components';
-import defaultTheme from 'styles/DefaultTheme';
+import defaultTheme from 'styles/defaultTheme';
 import PropTypes from 'prop-types';
 
 

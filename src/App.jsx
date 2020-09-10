@@ -26,6 +26,7 @@ import ThemeContext from 'contexts/ThemeProvider';
 
 
 import getBusinessHour from 'api/businessHoursRequests';
+import { getTheme } from 'api/catalogCustomization';
 import { isCurrentTimeWithinTimeRange } from 'utils/withinTimeRange';
 
 const Container = styled.div`
@@ -98,8 +99,8 @@ const App = () => {
       updateShop({
         ...data, is_enableOrder: Number(customerCanOrder), customerCanOrder,
       });
-
-      updateTheme();
+      const theme = await getTheme();
+      updateTheme(theme);
     } catch {
       setStore({ found: false });
       setLoading(false);
