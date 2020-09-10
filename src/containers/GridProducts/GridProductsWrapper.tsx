@@ -1,4 +1,6 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, {
+  useState, useContext, useEffect, useRef,
+} from 'react';
 
 import Row from 'components/Row';
 import Grid from 'components/Grid';
@@ -18,6 +20,9 @@ const GridProductsWrapper = () => {
   const [products, setProducts] = useState([]);
   const [pageCount, setPageCount] = useState(1);
 
+  const mounted = useRef<boolean>(true);
+
+
   const getProductList = async () => {
     setLoading(true);
 
@@ -35,8 +40,27 @@ const GridProductsWrapper = () => {
   };
 
   useEffect(() => {
+    mounted.current = true;
     window.scrollTo(0, 0);
-    getProductList();
+    // getProductList();
+    setLoading(true);
+
+    const promise = filter.search ? getSearch(shop.id, filter) : getProducts(shop, filter);
+
+    promise.then(({ data }) => {
+      if (mounted.current) {
+        setProducts(data.produtos);
+        setPageCount(data.totalPages);
+      }
+    }).catch(() => {
+      if (mounted.current) setProducts([]);
+    }).finally(() => {
+      if (mounted.current) setLoading(false);
+    });
+
+    return () => {
+      mounted.current = false;
+    };
     // eslint-disable-next-line
   }, [filter]);
 

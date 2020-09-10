@@ -98,8 +98,8 @@ SideBarContainer.propTypes = {
   filter: PropTypes.shape({
     categoria: PropTypes.any.isRequired,
     categoryName: PropTypes.string.isRequired,
-    orderBy: PropTypes.string.isRequired,
-    sortBy: PropTypes.string.isRequired,
+    orderBy: PropTypes.string,
+    sortBy: PropTypes.string,
   }).isRequired,
   updateFilter: PropTypes.func.isRequired,
 
