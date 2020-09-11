@@ -159,7 +159,7 @@ const Header = ({ goHome, store }) => {
   const { updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
   const [search, setSearch] = useState('');
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}/store/${store.codigo}?lastUpdate=${store.atualizacao}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${store.codigo}?lastUpdate=${store.atualizacao}`;
 
   const onSubmit = (e) => {
     e.preventDefault();

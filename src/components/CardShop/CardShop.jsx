@@ -202,7 +202,7 @@ const CardShop = () => {
   const createItemImageURL = (item) => {
     const { id, atualizacao } = item;
     const baseImgURL = process.env.REACT_APP_IMG_API;
-    return `${baseImgURL}/product/${id}?lastUpdate=${atualizacao}`;
+    return `${baseImgURL}product/${id}?lastUpdate=${atualizacao}`;
   };
 
   const createVariantText = variant => (lodash.isEmpty(variant) ? '' : `(${variant.name})`);
