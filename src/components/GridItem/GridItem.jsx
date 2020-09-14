@@ -139,7 +139,7 @@ const GridItem = (props) => {
   } = item;
 
   const [image, setImage] = useState(NoImage);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}/product/${id}?lastUpdate=${atualizacao}`;
+  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${id}?lastUpdate=${atualizacao}`;
 
   const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);

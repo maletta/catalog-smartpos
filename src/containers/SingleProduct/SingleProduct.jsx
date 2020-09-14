@@ -387,7 +387,7 @@ const SingleProduct = (props) => {
         setModifierSelected([...modifierSelected, []]);
 
         if (response.codigo) {
-          const imageBaseUrl = `${process.env.REACT_APP_IMG_API}/product/${response.codigo}?lastUpdate${response.atualizacao}`;
+          const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
           const img = new Image();
           img.src = imageBaseUrl;
 
@@ -512,7 +512,7 @@ const SingleProduct = (props) => {
             {product.images && (
               product.images !== 'notFound' && ((product.images).map(img => (
                 <ModalImg
-                  src={`${process.env.REACT_APP_IMG_API}/${img.key}`}
+                  src={`${process.env.REACT_APP_IMG_API}${img.key}`}
                   title={product.descricao}
                   alt="Produto"
                 />
@@ -534,7 +534,7 @@ const SingleProduct = (props) => {
                 )}
                 {product.images !== 'notFound' && ((product.images).map((img, index) => (
                   <Thumb IsActive={activeItemIndex === index + 1}>
-                    <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}/${img.key}`} title={product.descricao} alt="Produto" />
+                    <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
                   </Thumb>
                 )))}
               </>
@@ -590,7 +590,7 @@ const SingleProduct = (props) => {
                 <>
                   <Fluid
                     onClick={() => setPropsModal({
-                      urlPhoto: `${process.env.REACT_APP_IMG_API}/${img.key}`,
+                      urlPhoto: `${process.env.REACT_APP_IMG_API}${img.key}`,
                       isOpen: true,
                     })}
                   >
@@ -599,12 +599,12 @@ const SingleProduct = (props) => {
                       {...{
                         smallImage: {
                           isFluidWidth: true,
-                          src: `${process.env.REACT_APP_IMG_API}/${img.key}`,
+                          src: `${process.env.REACT_APP_IMG_API}${img.key}`,
                           title: product.descricao,
                           alt: 'Produto',
                         },
                         largeImage: {
-                          src: `${process.env.REACT_APP_IMG_API}/${img.key}`,
+                          src: `${process.env.REACT_APP_IMG_API}${img.key}`,
                           width: 1200,
                           height: 1200,
                         },
@@ -686,7 +686,7 @@ const SingleProduct = (props) => {
                                       )}
                                       {product.images !== 'notFound' && ((product.images).map((img, index) => (
                                         <Thumb IsActive={activeItemIndex === index + 1}>
-                                          <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}/${img.key}`} title={product.descricao} alt="Produto" />
+                                          <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
                                         </Thumb>
                                       )))}
                                     </>
