@@ -1,6 +1,6 @@
 import React, { useState, createContext } from 'react';
 import { ThemeProvider as ThemeProviderStyledComponents } from 'styled-components';
-import catalogDefaultTheme from 'styles/defaultTheme2';
+import catalogDefaultTheme from 'styles/defaultTheme';
 import PropTypes from 'prop-types';
 
 const ThemeContext = createContext();
