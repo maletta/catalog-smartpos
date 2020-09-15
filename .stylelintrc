@@ -5,6 +5,6 @@
     "stylelint-config-styled-components",
   ],
   "rules":{
-    "no-descending-specificity": false,
+    "no-descending-specificity": null,
   }
 }
