@@ -1,12 +1,12 @@
 import React, { useState, createContext } from 'react';
 import { ThemeProvider as ThemeProviderStyledComponents } from 'styled-components';
-import defaultTheme from 'styles/defaultTheme';
+import catalogDefaultTheme from 'styles/defaultTheme2';
 import PropTypes from 'prop-types';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(defaultTheme);
+  const [theme, setTheme] = useState(catalogDefaultTheme);
 
   const updateTheme = newTheme => setTheme(prevTheme => ({ ...prevTheme, ...newTheme }));
   return (

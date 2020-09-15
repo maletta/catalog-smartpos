@@ -1,6 +1,6 @@
 import axios from 'axios';
 import getStoreName from 'utils/getStoreName';
-import defaultTheme from 'styles/defaultTheme';
+import defaultTheme from 'styles/defaultTheme2';
 
 export const adapterURLPayloadToTheme = payload => ({
   background: payload.screenBackground.background,
