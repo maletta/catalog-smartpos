@@ -1,6 +1,6 @@
 import axios from 'axios';
 import getStoreName from 'utils/getStoreName';
-import defaultTheme from 'styles/defaultTheme';
+import smartposTheme from 'styles/smartposTheme';
 
 export const adapterURLPayloadToTheme = payload => ({
   background: payload.screenBackground.background,
@@ -81,10 +81,10 @@ export const getTheme = async () => {
     const { data } = await requestTheme();
     const { theme, plan } = data;
     const newTheme = hasTheme(theme) && isValidPlan(plan)
-      ? adapterPayloadToTheme(theme) : defaultTheme;
+      ? adapterPayloadToTheme(theme) : smartposTheme;
     return newTheme;
   } catch {
-    return defaultTheme;
+    return smartposTheme;
   }
 };
 

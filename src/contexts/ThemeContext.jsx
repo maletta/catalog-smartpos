@@ -1,12 +1,12 @@
 import React, { useState, createContext } from 'react';
 import { ThemeProvider as ThemeProviderStyledComponents } from 'styled-components';
-import catalogDefaultTheme from 'styles/defaultTheme';
+import smartposTheme from 'styles/smartposTheme';
 import PropTypes from 'prop-types';
 
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(catalogDefaultTheme);
+  const [theme, setTheme] = useState(smartposTheme);
 
   const updateTheme = newTheme => setTheme(prevTheme => ({ ...prevTheme, ...newTheme }));
   return (
