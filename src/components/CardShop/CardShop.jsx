@@ -5,10 +5,11 @@ import lodash from 'lodash';
 
 import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import ThemeContext from 'contexts/ThemeContext';
 import history from 'utils/history';
 import slug from 'utils/slug';
 import formatCurrency from 'utils/formatCurrency';
-import Trash from 'assets/trash.svg';
+import SvgIcon from 'components/SvgIcon';
 
 import ImageBox from './components/Image';
 import EmptyCartMessage from './components/EmptyCartMessage';
@@ -114,9 +115,10 @@ const Price = styled.span`
   padding-bottom: 10px;
 `;
 
-const IconDelete = styled.img`
+const IconDelete = styled(SvgIcon)`
   cursor: pointer;
   justify-content: flex-end;
+  align-self: flex-end;
   margin-left: 10px;
 `;
 
@@ -160,6 +162,7 @@ const FinishText = styled.span`
 
 const CardShop = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
+  const { theme } = useContext(ThemeContext);
 
   const closeCard = () => {
     updateShoppingCart({ cardOverlay: false });
@@ -266,9 +269,11 @@ const CardShop = () => {
     itemIndex: PropTypes.number.isRequired,
   };
 
+  // theme.buttons.primary.background
+
   const ItemDelete = ({ item }) => (
     <Delete>
-      <IconDelete src={Trash} onClick={() => deleteItem(item.uuid)} />
+      <IconDelete color={theme.buttons.primary.background} icon="close" onClick={() => deleteItem(item.uuid)} />
       <Price>{calculateItemPrice(item)}</Price>
     </Delete>
   );

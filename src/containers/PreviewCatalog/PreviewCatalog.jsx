@@ -3,7 +3,7 @@ import Row from 'components/Row';
 import Grid from 'components/Grid';
 import { SideBarContainer } from 'components/SideBar';
 import { GridProducts } from 'containers/GridProducts';
-import ThemeContext from 'contexts/ThemeProvider';
+import ThemeContext from 'contexts/ThemeContext';
 
 import { adapterURLPayloadToTheme } from 'api/catalogCustomization';
 

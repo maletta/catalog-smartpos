@@ -1,9 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import { ThemeProvider } from 'styled-components';
 import dynamicManifest from 'dynamicManifest';
 import GlobalStyles from 'styles/Global';
-import { ThemeProvider } from './contexts/ThemeProvider';
+import { ThemeProvider } from './contexts/ThemeContext';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 import { ShopProvider } from './contexts/ShopContext';

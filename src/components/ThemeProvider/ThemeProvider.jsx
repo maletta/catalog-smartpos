@@ -9,7 +9,7 @@ const ThemeContext = createContext();
 const ThemeProvider = ({ children, theme }) => {
   const [currentTheme, setTheme] = useState(
     theme || {
-      colorHeader: 'gree',
+      colorHeader: '#00529B',
       colorPrimary: '#F37C05',
       colorLink: '#F38A00',
       colorPrimaryLight: '#ffc67c',

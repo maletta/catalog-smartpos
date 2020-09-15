@@ -8,6 +8,7 @@ const HeaderCard = styled.div`
   width: 100%;
   height: 45px;
   background-color: var(--header-background);
+  color: var(--header-text);
   display: flex;
   font-size: 14px;
   font-weight: 500;

@@ -22,7 +22,7 @@ import getStoreName from 'utils/getStoreName';
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
-import ThemeContext from 'contexts/ThemeProvider';
+import ThemeContext from 'contexts/ThemeContext';
 
 
 import getBusinessHour from 'api/businessHoursRequests';
