@@ -3,9 +3,7 @@ import { ThemeProvider as ThemeProviderStyledComponents } from 'styled-component
 import defaultTheme from 'styles/defaultTheme';
 import PropTypes from 'prop-types';
 
-
 const ThemeContext = createContext();
-
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(defaultTheme);
