@@ -108,7 +108,7 @@ const PreviewCatalog = () => {
       const themeAdapted = adapterURLPayloadToTheme(themeParsed);
       updateTheme(themeAdapted);
     }
-  }, []);
+  }, [updateTheme]);
 
   return (
     <Row>

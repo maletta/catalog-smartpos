@@ -22,23 +22,6 @@ const GridProductsWrapper = () => {
 
   const mounted = useRef<boolean>(true);
 
-
-  const getProductList = async () => {
-    setLoading(true);
-
-    const promise = filter.search ? getSearch(shop.id, filter) : getProducts(shop, filter);
-
-    try {
-      const { data } = await promise;
-      setProducts(data.produtos);
-      setPageCount(data.totalPages);
-    } catch {
-      setProducts([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     mounted.current = true;
     window.scrollTo(0, 0);
