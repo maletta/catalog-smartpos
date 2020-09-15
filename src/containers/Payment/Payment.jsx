@@ -686,6 +686,7 @@ const Payment = () => {
                           <SelectDropDown
                             id="pagamento"
                             label="Forma de pagamento"
+                            name="paymentType"
                             cacheOptions
                             options={paymentsType}
                             getOptionLabel={label => label.descricao}
@@ -749,10 +750,11 @@ const Payment = () => {
                 recaptchaRef={recaptchaRef}
               />
               <Row className="d-flex justify-content-end pb-4 pr-3">
+                {console.log(propsForm.values)}
                 <Button
                   type="submit"
                   isLoading={loading}
-                  disabled={!reCaptchaToken}
+                  disabled={!reCaptchaToken || propsForm.values.pagamento.descricao === ''}
                   value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
                 />
               </Row>
