@@ -286,7 +286,7 @@ const CardShop = () => {
     <span>
       <TotalTitle>Resumo do pedido</TotalTitle>
       <SubTotalTitle>
-        <TextTotal>SubTotal: </TextTotal>
+        <TextTotal>Subtotal: </TextTotal>
         <Value>{formatCurrency(shoppingCart.totalCart)}</Value>
       </SubTotalTitle>
       <Finish onClick={handleClickFinish}>

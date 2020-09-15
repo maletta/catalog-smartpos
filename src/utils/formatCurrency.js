@@ -3,7 +3,7 @@ const currencyOptions = {
   currency: 'BRL',
 };
 
-const format = options => (number = 0) => number.toLocaleString('pt-BR', options);
+const format = options => (number = 0) => (number ? number.toLocaleString('pt-BR', options) : 0);
 
 const formatCurrency = format(currencyOptions);
 

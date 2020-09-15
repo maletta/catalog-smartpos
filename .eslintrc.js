@@ -12,6 +12,7 @@ module.exports = {
     Image: true,
     AbortController: true,
   },
+  ignorePatterns: ["serviceWorker.js"],
   rules: {
     'react/prefer-stateless-function': 'off',
     'linebreak-style': 'off',
