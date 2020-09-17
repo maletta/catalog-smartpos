@@ -750,7 +750,6 @@ const Payment = () => {
                 recaptchaRef={recaptchaRef}
               />
               <Row className="d-flex justify-content-end pb-4 pr-3">
-                {console.log(propsForm.values)}
                 <Button
                   type="submit"
                   isLoading={loading}
