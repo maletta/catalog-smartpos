@@ -61,6 +61,7 @@ ${cart.map(item => (
     </SendWhatsapp>
   );
 };
+
 WhatsappLink.propTypes = {
   orderId: PropTypes.any.isRequired,
   whatsapp: PropTypes.string.isRequired,
