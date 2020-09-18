@@ -76,6 +76,9 @@ const Conclusion = () => {
     withdraw,
     totalCart,
     deliveryFee,
+    endereco,
+    numero,
+    bairro,
     cart,
     orderName,
     change,
@@ -105,7 +108,22 @@ const Conclusion = () => {
         </StepsContainer>
         <FlexRow>
           <SuccessMessage />
-          <WhatsappLink orderId={orderName} whatsapp={shop.whatsapp} />
+          <WhatsappLink
+            orderId={orderName}
+            whatsapp={shop.whatsapp}
+            subTotal={positiveTotal}
+            endereco={endereco}
+            numero={numero}
+            bairro={bairro}
+            phone={foneFormatted}
+            deliveryCost={deliveryFee}
+            total={positiveTotal + deliveryFee}
+            pagamento={pagamento}
+            name={name}
+            change={change}
+            couponValue={couponValue}
+            cart={cart}
+          />
         </FlexRow>
         <ThanksMessage email={email} />
         <Receipt>
