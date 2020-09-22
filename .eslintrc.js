@@ -1,6 +1,9 @@
 module.exports = {
   extends: ['airbnb'],
   parser: 'babel-eslint',
+  parserOptions: {
+    parser: "@typescript-eslint/parser"
+  },
   plugins: ['react', 'jsx-a11y', 'import'],
   globals: {
     document: false,

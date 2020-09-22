@@ -22,8 +22,11 @@ import getStoreName from 'utils/getStoreName';
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
+import ThemeContext from 'contexts/ThemeContext';
+
 
 import getBusinessHour from 'api/businessHoursRequests';
+import { getTheme } from 'api/catalogCustomization';
 import { isCurrentTimeWithinTimeRange } from 'utils/withinTimeRange';
 
 const Container = styled.div`
@@ -46,6 +49,7 @@ const App = () => {
   const { updateShop, updateCategory } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
+  const { updateTheme } = useContext(ThemeContext);
 
   const getCategoryList = (id) => {
     getCategories(id)
@@ -95,6 +99,8 @@ const App = () => {
       updateShop({
         ...data, is_enableOrder: Number(customerCanOrder), customerCanOrder,
       });
+      const theme = await getTheme();
+      updateTheme(theme);
     } catch {
       setStore({ found: false });
       setLoading(false);

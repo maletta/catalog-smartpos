@@ -8,7 +8,7 @@ const Button = styled.a`
   width: 100%;
   text-align: left;
   font-size: 14px;
-  color: ${props => (props.selected ? 'var(--color-link)' : '#6c757d')} !important;
+  color: ${props => (props.selected ? 'var(--links-secondary)' : 'var(--links-primary)')} !important;
 `;
 
 const Li = styled.li`

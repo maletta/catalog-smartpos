@@ -13,6 +13,7 @@ import history from 'utils/history';
 import paths from 'paths';
 import ShopContext from 'contexts/ShopContext';
 
+
 const Container = styled.nav`
   padding-top: 5px;
   padding-bottom: 8px;
@@ -23,7 +24,7 @@ const Container = styled.nav`
   }
 
   &&& {
-    background: var(--color-header);
+    background: var(--header-background);
   }
 `;
 
@@ -131,7 +132,7 @@ const CartCounter = styled.div`
 `;
 
 const StoreNameArea = styled.div`
-  color: white;
+  color: var(--header-text);
   margin-left: 15px;
   display: flex;
   flex-direction: column;

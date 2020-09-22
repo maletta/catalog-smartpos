@@ -6,6 +6,7 @@ const paths = {
   payment: '/pagamento',
   conclusion: '/conclusao',
   orderPlaced: '/pedido-realizado',
+  previewCatalog: '/pre-visualizacao-catalogo',
   singleProduct: '/item/:id/:descricao?',
 };
 

@@ -12,7 +12,7 @@ const Container = styled.div`
 
 const ObservationButton = styled.p`
   cursor: pointer;
-  color: var(--color-primary);
+  color: var(--button-primary-background);
 `;
 
 const ItemObservation = ({ id }) => {

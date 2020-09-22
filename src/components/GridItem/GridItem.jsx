@@ -1,4 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, {
+  useState, useContext, useRef, useEffect,
+} from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
@@ -114,12 +116,12 @@ const Buy = styled.div`
   margin: 0;
   margin-top: 20px;
   border-radius: 2px;
-  background-color: var(--color-primary);
+  background-color: var(--button-primary-background);
   cursor: pointer;
 `;
 
 const BuyText = styled.p`
-  color: white;
+  color: var(--button-primary-text);
   font-size: 0.8rem;
   text-align: left;
   margin: 0;
@@ -144,14 +146,21 @@ const GridItem = (props) => {
   const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
 
+  const mounted = useRef(true);
+
   if (viewMode === 'IMAGE') {
     const img = new Image();
     img.src = imageBaseUrl;
 
     img.onload = () => {
-      setImage(imageBaseUrl);
+      if (mounted.current) setImage(imageBaseUrl);
     };
   }
+
+
+  useEffect(() => () => {
+    mounted.current = false;
+  }, []);
 
   const addCart = (product) => {
     getModifiersOfProduct(product.tenant_id, product.id)

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
 import history from 'utils/history';
 
-const isPrimaryColor = ({ isActive }) => (isActive ? 'var(--color-primary)' : '#b6b6b6');
+const isPrimaryColor = ({ isActive }) => (isActive ? 'var(--button-primary-background)' : '#b6b6b6');
 const isPointerCursor = ({ isActive }) => (isActive ? 'pointer' : 'auto');
 
 const StepCircle = styled.div`

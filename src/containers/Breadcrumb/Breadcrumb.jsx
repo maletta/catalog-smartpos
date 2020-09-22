@@ -18,7 +18,7 @@ const Nav = styled.nav`
 
 const BreadcrumbButton = styled.span`
   align-items: center;
-  color: var(--color-link);
+  color: var(--links-secondary);
   display: flex;
   justify-content: center;
   padding: 0 0.75em;
@@ -29,7 +29,7 @@ const LinkCategories = styled.span`
   cursor: pointer;
 
   :hover {
-    color: var(--color-primary);
+    color: var(--links-secondary);
   }
 `;
 

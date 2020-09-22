@@ -1,13 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
 import { List, LinkItem } from 'components/List';
-import FilterContext from 'contexts/FilterContext';
-import ShopContext from 'contexts/ShopContext';
+import PropTypes from 'prop-types';
 
-const SideBar = () => {
-  const { filter, updateFilter } = useContext(FilterContext);
-  const { categories } = useContext(ShopContext);
-
+const SideBarContainer = ({ categories, filter, updateFilter }) => {
   const items = categories.map((item, index) => (
     <LinkItem
       key={item.id}
@@ -97,4 +93,16 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+SideBarContainer.propTypes = {
+  categories: PropTypes.array.isRequired,
+  filter: PropTypes.shape({
+    categoria: PropTypes.any.isRequired,
+    categoryName: PropTypes.string.isRequired,
+    orderBy: PropTypes.string,
+    sortBy: PropTypes.string,
+  }).isRequired,
+  updateFilter: PropTypes.func.isRequired,
+
+};
+
+export default SideBarContainer;

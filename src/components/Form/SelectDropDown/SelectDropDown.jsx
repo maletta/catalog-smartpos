@@ -45,7 +45,7 @@ const ExclamationIcon = styled.span`
   font-family: 'simple-line-icons', sans-serif;
   font-size: inherit;
   margin: 0 0 0 5px;
-  color: var(--color-primary);
+  color: var(--button-primary-background);
   font-weight: bold;
   cursor: pointer;
 `;

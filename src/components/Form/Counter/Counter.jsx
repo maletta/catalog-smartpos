@@ -10,7 +10,7 @@ const Area = styled.div`
 
 const Button = styled.span`
   display: block;
-  color: var(--color-primary);
+  color: var(--button-primary-background);
   cursor: pointer;
   padding: 10px 15px 10px 15px;
 `;
