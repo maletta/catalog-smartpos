@@ -84,6 +84,8 @@ const Conclusion = () => {
     change,
     changeReceivedValue,
     coupon,
+    complemento,
+    observacao,
   } = orderPlaced;
 
   const {
@@ -123,6 +125,8 @@ const Conclusion = () => {
             change={change}
             couponValue={couponValue}
             cart={cart}
+            complemento={complemento}
+            observacao={observacao}
           />
         </FlexRow>
         <ThanksMessage email={email} />
