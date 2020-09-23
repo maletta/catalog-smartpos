@@ -31,24 +31,24 @@ const WhatsappLink = (props) => {
     observacao,
   } = props;
   const msg = `
-✅ *PEDIDO ENVIADO* ${'%0D'} ${'%0D'}
-▶ *RESUMO DO PEDIDO* ${'%0D'} ${'%0D'}
-*Pedido:* ${orderId} ${'%0D'} ${'%0D'}
+✅ *PEDIDO ENVIADO*${'%0A'}${'%0A'}
+▶ *RESUMO DO PEDIDO*${'%0A'}${'%0A'}
+*Pedido:* ${orderId}${'%0A'}${'%0A'}
 ${cart.map(item => (
-    `*${item.quantity}x* _${item.descricao}_ *(${formatCurrency(item.pricing.product)})* ${'%0D'}`
-  ))} ${'%0D'}
-*Subtotal da compra:* ${formatCurrency(subTotal)} ${'%0D'}
-${couponValue > 0 ? (`*Cupom de desconto:* ${formatCurrency(couponValue)} ${'%0D'}`) : ''}
-${deliveryCost > 0 ? (`*Taxa de Entrega:* ${formatCurrency(deliveryCost)} ${'%0D'}`) : ''}
-${change > 0 ? (`*Troco:* ${formatCurrency(change)} ${'%0D'}`) : ''}
-${observacao ? (`*Observação:* ${observacao} ${'%0D'}`) : ''} ${'%0D'}
-▶ *DADOS PARA ENTREGA* ${'%0D'}
-*Nome:* ${name} ${'%0D'}
-*Endereço:* ${endereco} n°${numero} ${'%0D'}
-*Bairro:* ${bairro} ${'%0D'}
-${complemento ? (`*Complemento:* ${complemento}  ${'%0D'}`) : ''}
-*WhatsApp:* ${phone} ${'%0D'} ${'%0D'}
-▶ *TOTAL = ${formatCurrency(total)}* ${'%0D'} ${'%0D'}
+    `*${item.quantity}x* _${item.descricao}_ *(${formatCurrency(item.pricing.product)})*${'%0A'}`
+  ))}${'%0A'}
+*Subtotal da compra:* ${formatCurrency(subTotal)}${'%0A'}
+${couponValue > 0 ? (`*Cupom de desconto:* ${formatCurrency(couponValue)}${'%0A'}`) : ''}
+${deliveryCost > 0 ? (`*Taxa de Entrega:* ${formatCurrency(deliveryCost)}${'%0A'}`) : ''}
+${change > 0 ? (`*Troco:* ${formatCurrency(change)} ${'%0A'}`) : ''}
+${observacao ? (`*Observação:* ${observacao} ${'%0A'}`) : ''}${'%0A'}
+▶ *DADOS PARA ENTREGA*${'%0A'}
+*Nome:* ${name}${'%0A'}
+*Endereço:* ${endereco} n°${numero}${'%0A'}
+*Bairro:* ${bairro}${'%0A'}
+${complemento ? (`*Complemento:* ${complemento}${'%0A'}`) : ''}
+*WhatsApp:* ${phone}${'%0A'}${'%0A'}
+▶ *TOTAL = ${formatCurrency(total)}*${'%0A'}${'%0A'}
 ▶ *PAGAMENTO:* ${pagamento.descricao || 'Cartão de Crédito'}
   `;
 
