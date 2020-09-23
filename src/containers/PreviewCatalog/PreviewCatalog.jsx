@@ -1,11 +1,8 @@
-import React, { useEffect, useContext } from 'react';
+import React from 'react';
 import Row from 'components/Row';
 import Grid from 'components/Grid';
 import { SideBarContainer } from 'components/SideBar';
 import { GridProducts } from 'containers/GridProducts';
-import ThemeContext from 'contexts/ThemeContext';
-
-import { adapterURLPayloadToTheme } from 'api/catalogCustomization';
 
 const categories = [
   {
@@ -91,33 +88,12 @@ const products = [
 
 const pageCount = 1;
 
-const getThemeFromUrl = (url) => {
-  const params = new URLSearchParams(url);
-  const theme = params.has('theme') ? params.get('theme') : '';
-  return theme;
-};
-
-const PreviewCatalog = () => {
-  const { updateTheme } = useContext(ThemeContext);
-
-  useEffect(() => {
-    const themeBase64 = getThemeFromUrl(window.location.search);
-    if (themeBase64) {
-      const themeString = window.atob(themeBase64);
-      const themeParsed = JSON.parse(themeString);
-      const themeAdapted = adapterURLPayloadToTheme(themeParsed);
-      updateTheme(themeAdapted);
-    }
-  }, [updateTheme]);
-
-  return (
-    <Row>
-      <Grid className="d-none d-md-block" cols="12 3 3 3 3">
-        <SideBarContainer categories={categories} filter={filter} updateFilter={updateFilter} />
-      </Grid>
-      <GridProducts products={products} pageCount={pageCount} />
-    </Row>
-  );
-};
-
+const PreviewCatalog = () => (
+  <Row>
+    <Grid className="d-none d-md-block" cols="12 3 3 3 3">
+      <SideBarContainer categories={categories} filter={filter} updateFilter={updateFilter} />
+    </Grid>
+    <GridProducts products={products} pageCount={pageCount} />
+  </Row>
+);
 export default PreviewCatalog;

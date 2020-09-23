@@ -69,14 +69,27 @@ export const adapterPayloadToTheme = payload => ({
 });
 
 const hasTheme = theme => theme !== null && theme !== undefined;
-const isValidPlan = plan => plan.subscribedPlan === 'PREMIUM' || plan.freeDays;
+const isValidPlan = plan => plan.subscribedPlan !== 'FREE' || plan.freeDays;
+
+const getThemeFromUrl = (url) => {
+  const params = new URLSearchParams(url);
+  const theme = params.has('theme') ? params.get('theme') : null;
+  return theme;
+};
+
+const adapterThemeFromUrl = (themeBase64) => {
+  const themeString = window.atob(themeBase64);
+  const themeParsed = JSON.parse(themeString);
+  const themeAdapted = adapterURLPayloadToTheme(themeParsed);
+  return themeAdapted;
+};
 
 export const requestTheme = () => {
   const storeName = getStoreName();
   return axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/customizacao/${storeName}`);
 };
 
-export const getTheme = async () => {
+export const getThemeFromApi = async () => {
   try {
     const { data } = await requestTheme();
     const { theme, plan } = data;
@@ -86,6 +99,17 @@ export const getTheme = async () => {
   } catch {
     return smartposTheme;
   }
+};
+
+export const getTheme = async () => {
+  const themeBase64 = getThemeFromUrl(window.location.search);
+  let response = null;
+  if (themeBase64) {
+    response = adapterThemeFromUrl(themeBase64);
+  } else {
+    response = await getThemeFromApi();
+  }
+  return response;
 };
 
 export default {};
