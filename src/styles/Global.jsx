@@ -66,6 +66,7 @@ const GlobalStyles = createGlobalStyle`
 
   .breadcrumb {
     font-size: 0.8rem;
+    background-color: transparent !important;/*#e9ecef*/
   }
 
   .breadcrumb:not(:last-child) {
