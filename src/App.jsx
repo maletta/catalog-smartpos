@@ -49,7 +49,7 @@ const App = () => {
   const { updateShop, updateCategory } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
-  const { updateTheme } = useContext(ThemeContext);
+  const { dispatchTheme } = useContext(ThemeContext);
 
   const getCategoryList = (id) => {
     getCategories(id)
@@ -99,8 +99,6 @@ const App = () => {
       updateShop({
         ...data, is_enableOrder: Number(customerCanOrder), customerCanOrder,
       });
-      const theme = await getTheme();
-      updateTheme(theme);
     } catch {
       setStore({ found: false });
       setLoading(false);
@@ -124,6 +122,11 @@ const App = () => {
     }
   };
 
+  const defineTheme = async () => {
+    const theme = await getTheme();
+    dispatchTheme({ type: 'THEME', payload: theme });
+  };
+
   useEffect(() => {
     if (store.id && !store.allowOrderOutsideBusinessHours) {
       businessHourRequest();
@@ -132,6 +135,7 @@ const App = () => {
   }, [loading]);
 
   useEffect(() => {
+    defineTheme();
     getStore();
     window.scrollTo(0, 0);
     initGA(history);

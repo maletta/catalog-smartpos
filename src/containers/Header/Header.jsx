@@ -69,7 +69,7 @@ const Search = styled.div`
 
 const SearchInput = styled.input`
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  width: 100%;
+  width: calc(100% - 40px);
   height: 36px;
   border: 2px solid white;
   border-right: none;

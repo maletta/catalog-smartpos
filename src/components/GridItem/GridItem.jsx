@@ -87,6 +87,8 @@ const Price = styled.p`
   font-size: 1.3rem;
   text-align: left;
   margin-bottom: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const Unavailable = styled.p`
