@@ -686,6 +686,7 @@ const Payment = () => {
                           <SelectDropDown
                             id="pagamento"
                             label="Forma de pagamento"
+                            name="paymentType"
                             cacheOptions
                             options={paymentsType}
                             getOptionLabel={label => label.descricao}
@@ -752,7 +753,7 @@ const Payment = () => {
                 <Button
                   type="submit"
                   isLoading={loading}
-                  disabled={!reCaptchaToken}
+                  disabled={!reCaptchaToken || propsForm.values.pagamento.descricao === ''}
                   value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
                 />
               </Row>
