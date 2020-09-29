@@ -15,14 +15,14 @@ export const ThemeProvider = ({ children }) => {
     }
   };
 
-  const [state, dispatchTheme] = useReducer(reducer, smartposTheme);
+  const [theme, dispatchTheme] = useReducer(reducer, smartposTheme);
 
   return (
     <ThemeContext.Provider value={{
-      state, dispatchTheme,
+      theme, dispatchTheme,
     }}
     >
-      <ThemeProviderStyledComponents theme={{ ...state }}>
+      <ThemeProviderStyledComponents theme={{ ...theme }}>
         {children}
       </ThemeProviderStyledComponents>
     </ThemeContext.Provider>
