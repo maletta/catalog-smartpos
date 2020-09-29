@@ -48,6 +48,7 @@ const addressInitialValue = {
   cidade: '',
   codcidade: '',
   estado: '',
+  cepUnico: false,
 };
 
 const RegisterData = () => {
@@ -92,6 +93,7 @@ const RegisterData = () => {
 
       propsForm.setFieldValue('endereco', data.logradouro);
       propsForm.setFieldValue('tipoLogradouro', tipoLogradouro);
+      propsForm.setFieldValue('cepUnico', data.logradouro !== '');
     }
   };
 
@@ -120,6 +122,7 @@ const RegisterData = () => {
                     component={MaskedNumberInput}
                     onValueChange={handleChangeCEP(propsForm)}
                     isRequired
+                    disabled
                   />
                 </Grid>
                 <Grid cols="12 8 8 8 8">
@@ -129,6 +132,7 @@ const RegisterData = () => {
                     inputId="endereco"
                     component={Input}
                     isRequired
+                    disabled={!!propsForm.values.cepUnico}
                   />
                 </Grid>
                 <Grid cols="12 4 4 4 4">
