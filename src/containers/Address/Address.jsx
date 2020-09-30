@@ -122,7 +122,7 @@ const RegisterData = () => {
                     component={MaskedNumberInput}
                     onValueChange={handleChangeCEP(propsForm)}
                     isRequired
-                    disabled
+                    disabled={shoppingCart.withdraw === false}
                   />
                 </Grid>
                 <Grid cols="12 8 8 8 8">
