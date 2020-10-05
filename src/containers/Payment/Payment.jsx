@@ -32,6 +32,7 @@ import RadioButton from 'components/RadioGroup/RadioButton';
 
 import { calculateDiscountCoupon, validateCoupon } from 'utils/coupon';
 import paymentSchema from './paymentSchema';
+import paymentOfflineSchema from './paymentOfflineSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
 import Change from './components/Change';
@@ -651,7 +652,7 @@ const Payment = () => {
         <Formik
           onSubmit={submitCheckout}
           initialValues={initialValues}
-          validationSchema={offlinePayment ? {} : paymentSchema}
+          validationSchema={offlinePayment ? paymentOfflineSchema : paymentSchema}
           render={propsForm => (
             <Form>
               <Row>
