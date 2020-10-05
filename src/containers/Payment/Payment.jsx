@@ -753,7 +753,7 @@ const Payment = () => {
                 <Button
                   type="submit"
                   isLoading={loading}
-                  disabled={!reCaptchaToken || propsForm.values.pagamento.descricao === ''}
+                  disabled={!reCaptchaToken}
                   value={offlinePayment ? 'Faça o pedido' : 'Finalizar compra'}
                 />
               </Row>
