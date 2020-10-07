@@ -334,6 +334,7 @@ const Payment = () => {
   const handleChangeOnlinePayment = propsForm => () => {
     propsForm.setFieldValue('offlinePayment', false);
     propsForm.setFieldValue('gatewayPagseguro', true);
+    propsForm.setFieldValue('pagamento', '');
     setOfflinePayment(false);
   };
 
@@ -678,6 +679,7 @@ const Payment = () => {
                             id="pagamento"
                             label="Forma de pagamento"
                             cacheOptions
+                            value={propsForm.values.pagamento}
                             options={paymentsType}
                             getOptionLabel={label => label.descricao}
                             getOptionValue={option => option.codigo}
