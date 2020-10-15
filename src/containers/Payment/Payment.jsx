@@ -31,6 +31,7 @@ import { requestCEP } from 'api/cepRequests';
 import RadioButton from 'components/RadioGroup/RadioButton';
 
 import paymentSchema from './paymentSchema';
+import paymentOfflineSchema from './paymentOfflineSchema';
 import createOrder, { getPayments, getSessionPag } from './requestCheckout';
 import AddressCreditCard from './components/AddressCreditCard';
 import Change from './components/Change';
@@ -333,6 +334,7 @@ const Payment = () => {
   const handleChangeOnlinePayment = propsForm => () => {
     propsForm.setFieldValue('offlinePayment', false);
     propsForm.setFieldValue('gatewayPagseguro', true);
+    propsForm.setFieldValue('pagamento', '');
     setOfflinePayment(false);
   };
 
@@ -641,7 +643,7 @@ const Payment = () => {
         <Formik
           onSubmit={submitCheckout}
           initialValues={initialValues}
-          validationSchema={offlinePayment ? {} : paymentSchema}
+          validationSchema={offlinePayment ? paymentOfflineSchema : paymentSchema}
           render={propsForm => (
             <Form>
               <Row>
@@ -677,6 +679,7 @@ const Payment = () => {
                             id="pagamento"
                             label="Forma de pagamento"
                             cacheOptions
+                            value={propsForm.values.pagamento}
                             options={paymentsType}
                             getOptionLabel={label => label.descricao}
                             getOptionValue={option => option.codigo}
