@@ -184,7 +184,7 @@ const Header = ({ goHome, store }) => {
   };
 
   const formatPhoneNumber = (number = '') => {
-    if (number === '') return '';
+    if (number === '' || number === null) return '';
     const ddd = number.slice(0, 2);
     const phone = number.slice(2);
     return `(${ddd}) ${phone}`;
