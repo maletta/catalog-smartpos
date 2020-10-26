@@ -51,6 +51,12 @@ const App = () => {
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const { dispatchTheme } = useContext(ThemeContext);
 
+
+  const defineTheme = async (storeId) => {
+    const theme = await getTheme(storeId);
+    dispatchTheme({ type: 'THEME', payload: theme });
+  };
+
   const getCategoryList = (id) => {
     getCategories(id)
       .then(({ data }) => updateCategory(data))
@@ -81,7 +87,7 @@ const App = () => {
         allowOrderOutsideBusinessHours,
         openHours,
       } = data;
-
+      defineTheme(data.id);
       document.title = fantasia;
       setStore({ ...data, found: true, storeName });
       getCategoryList(data.id);
@@ -122,11 +128,6 @@ const App = () => {
     }
   };
 
-  const defineTheme = async () => {
-    const theme = await getTheme();
-    dispatchTheme({ type: 'THEME', payload: theme });
-  };
-
   useEffect(() => {
     if (store.id && !store.allowOrderOutsideBusinessHours) {
       businessHourRequest();
@@ -135,7 +136,6 @@ const App = () => {
   }, [loading]);
 
   useEffect(() => {
-    defineTheme();
     getStore();
     window.scrollTo(0, 0);
     initGA(history);

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import getStoreName from 'utils/getStoreName';
 import smartposTheme from 'styles/smartposTheme';
 
 export const adapterURLPayloadToTheme = payload => ({
@@ -84,16 +83,16 @@ const adapterThemeFromUrl = (themeBase64) => {
   return themeAdapted;
 };
 
-export const requestTheme = () => {
-  const storeName = getStoreName();
-  return axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/customizacao/${storeName}`);
-};
+export const requestTheme = storeId => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/customizacao/${storeId}`)
+  .then(r => r)
+  .catch(() => {
+  });
 
-export const getThemeFromApi = async () => {
+export const getThemeFromApi = async (storeId) => {
   try {
-    const { data } = await requestTheme();
+    const { data } = await requestTheme(storeId);
     const { theme, plan } = data;
-    const newTheme = hasTheme(theme) && isValidPlan(plan)
+    const newTheme = hasTheme(theme) && isValidPlan(plan) && storeId
       ? adapterPayloadToTheme(theme) : smartposTheme;
     return newTheme;
   } catch {
@@ -101,13 +100,13 @@ export const getThemeFromApi = async () => {
   }
 };
 
-export const getTheme = async () => {
+export const getTheme = async (storeId) => {
   const themeBase64 = getThemeFromUrl(window.location.search);
   let response = null;
   if (themeBase64) {
     response = adapterThemeFromUrl(themeBase64);
   } else {
-    response = await getThemeFromApi();
+    response = await getThemeFromApi(storeId);
   }
   return response;
 };
