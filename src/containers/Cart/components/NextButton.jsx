@@ -1,4 +1,6 @@
 import React, { useContext } from 'react';
+import { useRouter } from 'next/router';
+// import paths from 'paths';
 
 import Button from 'components/Form/Button';
 import ShopContext from 'contexts/ShopContext';
@@ -9,6 +11,7 @@ import { shouldRedirectToNextStep } from './cartFooterUtils';
 const NextButton = () => {
   const { shop } = useContext(ShopContext);
   const { shoppingCart } = useContext(ShoppingCartContext);
+  const router = useRouter();
 
   const isNotDeliverable = shoppingCart.withdraw ? false : !shoppingCart.deliveryFee.isDeliverable;
   const checkPickup = () => {
@@ -16,10 +19,11 @@ const NextButton = () => {
     if (isNotDeliverable) return isNotDeliverable;
     return false;
   };
+
   return (
     <Button
       value="Próximo"
-      onClick={() => shouldRedirectToNextStep(shop)}
+      onClick={() => shouldRedirectToNextStep(shop, router)}
       disabled={checkPickup()}
     />
   );

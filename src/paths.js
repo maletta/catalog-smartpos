@@ -7,7 +7,16 @@ const paths = {
   conclusion: '/conclusao',
   orderPlaced: '/pedido-realizado',
   previewCatalog: '/pre-visualizacao-catalogo',
-  singleProduct: '/item/:id/:descricao?',
+  singleProduct: '/item/[id]/[descricao]',
+  // home: '/',
+  // cart: '/carrinho',
+  // registerData: '/dados-cadastrais',
+  // address: '/endereco',
+  // payment: '/pagamento',
+  // conclusion: '/conclusao',
+  // orderPlaced: '/pedido-realizado',
+  // previewCatalog: '/pre-visualizacao-catalogo',
+  // singleProduct: '/item/:id/:descricao?',
 };
 
 export default paths;

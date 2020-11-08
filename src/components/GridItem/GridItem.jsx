@@ -3,11 +3,15 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+// import paths from 'paths';
+
 import lodash from 'lodash';
 
 import slug from 'utils/slug';
-import history from 'utils/history';
+// import history from 'utils/history';
 import uuidv1 from 'uuid/v1';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import Grid from 'components/Grid';
@@ -17,7 +21,7 @@ import ShopContext from 'contexts/ShopContext';
 import getModifiersOfProduct from 'api/modifiersRequests';
 import NoImage from 'assets/no-image.png';
 
-const LinkToItem = styled(Link)`
+const LinkToItem = styled.a`
   color: #212529;
   text-decoration: none;
 
@@ -131,6 +135,7 @@ const BuyText = styled.p`
 `;
 
 const GridItem = (props) => {
+  const router = useRouter();
   const { item } = props;
   const {
     id,
@@ -143,7 +148,7 @@ const GridItem = (props) => {
   } = item;
 
   const [image, setImage] = useState(NoImage);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${id}?lastUpdate=${atualizacao}`;
+  const imageBaseUrl = `${process.env.NEXT_PUBLIC_IMG_API}product/${id}?lastUpdate=${atualizacao}`;
 
   const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
@@ -168,7 +173,7 @@ const GridItem = (props) => {
     getModifiersOfProduct(product.tenant_id, product.id)
       .then(({ data }) => {
         if (data.length !== 0) {
-          history.push(`item/${id}/${slug(descricao)}`);
+          router.push(`item/${id}/${slug(descricao)}`);
           return;
         }
 
@@ -215,6 +220,7 @@ const GridItem = (props) => {
   };
 
   const isItemUnavailable = dontControlStock === 0 && stock <= 0;
+  const hrefToItemDescription = `/item/${id}/${descricao}`;
 
   const UnavailableItem = () => (
     <UnavailableBox>
@@ -223,13 +229,17 @@ const GridItem = (props) => {
   );
 
   const ItemButton = () => (
-    <LinkToItem to={hasVariant ? `item/${id}/${slug(descricao)}` : '/'}>
-      {shop.is_enableOrder === 1 && (
-        <Buy onClick={() => hasVariant !== 1 && addCart(item)}>
-          <BuyText>COMPRAR</BuyText>
-        </Buy>
-      )}
-    </LinkToItem>
+    <Link
+      href={hasVariant ? hrefToItemDescription : ''}
+    >
+      <LinkToItem>
+        {shop.is_enableOrder === 1 && (
+          <Buy onClick={() => hasVariant !== 1 && addCart(item)}>
+            <BuyText>COMPRAR</BuyText>
+          </Buy>
+        )}
+      </LinkToItem>
+    </Link>
   );
 
   const PriceItem = () => (
@@ -243,9 +253,11 @@ const GridItem = (props) => {
     <>
       <Grid cols="6 4 4 4 4" className="mb-3">
         <Container>
-          <LinkToItem to={`item/${id}/${slug(descricao)}`}>
-            <Img src={image} title={descricao} />
-          </LinkToItem>
+          <Link href={hrefToItemDescription}>
+            <LinkToItem>
+              <Img src={image} title={descricao} />
+            </LinkToItem>
+          </Link>
           <CardContent>
             <PriceItem />
             <Descricao>

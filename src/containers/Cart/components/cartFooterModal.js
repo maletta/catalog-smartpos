@@ -1,8 +1,7 @@
 import Swal from 'sweetalert2';
+import paths from 'paths';
 
 import imageURLClosedStore from 'assets/closed-store.svg';
-
-import { redirectToHome } from './cartFooterRouter';
 
 export const createHourLine = (itemHour) => {
   const { openHour, closeHour } = itemHour;
@@ -28,7 +27,7 @@ export const createHTMLTitle = (today) => {
   return html;
 };
 
-export const showStoreIsClosedModal = (today) => {
+export const showStoreIsClosedModal = (today, router) => {
   const modalConfig = {
     title: createHTMLTitle(today),
     text: `
@@ -41,7 +40,7 @@ export const showStoreIsClosedModal = (today) => {
     imageAlt: 'Loja fechada',
     showConfirmButton: true,
     confirmButtonColor: 'var(--button-primary-background',
-    onClose: redirectToHome,
+    onClose: () => router.push(paths.home),
   };
 
   Swal.fire(modalConfig);

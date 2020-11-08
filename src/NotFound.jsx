@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import store from 'assets/online-store.png';
 
 const Image = styled.div`
   display: grid;
@@ -28,7 +27,7 @@ const Footer = styled.footer`
 const NotFound = () => (
   <>
     <Image>
-      <img src={store} alt="store" width="300px" />
+      <img src="assets/online-store.png" alt="store" width="300px" />
     </Image>
     <Text>Loja não encontrada.</Text>
     <Footer>SmartPOS</Footer>

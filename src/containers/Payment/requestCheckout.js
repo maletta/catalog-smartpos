@@ -11,19 +11,19 @@ const createOrder = (values) => {
   };
 
   return axios.post(
-    `${process.env.REACT_APP_MAIN_API}/v1/loja/${values.catalog_id}/pedido`,
+    `${process.env.NEXT_PUBLIC_MAIN_API}/v1/loja/${values.catalog_id}/pedido`,
     checkout,
   );
 };
 
-const getPayments = storeID => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/${storeID}/pagamentos`);
+const getPayments = storeID => axios.get(`${process.env.NEXT_PUBLIC_MAIN_API}/v1/loja/${storeID}/pagamentos`);
 
 const getSessionPag = storeID => axios.get(
-  `${process.env.REACT_APP_MAIN_API}/v1/pagseguro/session/${storeID}`,
+  `${process.env.NEXT_PUBLIC_MAIN_API}/v1/pagseguro/session/${storeID}`,
 );
 
 const checkingDelivery = (locationCustomer, storeID) => axios.get(
-  `${process.env.REACT_APP_MAIN_API}/v1/loja/${storeID}/frete/${locationCustomer}`,
+  `${process.env.NEXT_PUBLIC_MAIN_API}/v1/loja/${storeID}/frete/${locationCustomer}`,
 );
 
 export {

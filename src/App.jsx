@@ -4,8 +4,8 @@ import React, { useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import moment from 'moment';
 
-import initGA from 'initGA';
-import paths from 'paths';
+// import initGA from 'initGA';
+// import paths from 'paths';
 import NotFound from 'NotFound';
 import AppRouter from 'Router';
 import { getStoreInfo, getCategories } from 'requests';
@@ -16,7 +16,7 @@ import Header from 'containers/Header';
 import Breadcrumb from 'containers/Breadcrumb';
 import CardShop from 'components/CardShop';
 
-import history from 'utils/history';
+// import history from 'utils/history';
 import getStoreName from 'utils/getStoreName';
 
 import FilterContext from 'contexts/FilterContext';
@@ -50,7 +50,6 @@ const App = () => {
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const { dispatchTheme } = useContext(ThemeContext);
-
 
   const defineTheme = async (storeId) => {
     const theme = await getTheme(storeId);
@@ -137,14 +136,14 @@ const App = () => {
 
   useEffect(() => {
     getStore();
-    window.scrollTo(0, 0);
-    initGA(history);
+    if (window) window.scrollTo(0, 0);
+    // initGA(history);
     cleanCart();
     // eslint-disable-next-line
   }, []);
 
   const goHome = () => {
-    history.push(paths.home);
+    // history.push(paths.home);
 
     updateFilter({
       categoria: 0,

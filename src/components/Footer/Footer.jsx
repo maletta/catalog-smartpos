@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import ReactGA from 'react-ga';
 
 import daysOfWeek from 'utils/daysOfWeek';
-import CardCredit from 'assets/Imagem 73@2x.png';
 
 const FullWidthCopyright = styled.div`
   background-color: #fff;
@@ -308,7 +307,7 @@ const Footer = ({ storeInfo }) => {
                 cols="12 11 4 4 4"
                 className="d-flex flex-column text-center align-items-center align-items-md-end"
               >
-                <CardCreditImg src={CardCredit} alt="bandeiras" />
+                <CardCreditImg src="assets/Imagem 73@2x.png" alt="bandeiras" />
                 <CaptionFlag>Bandeiras aceitas apenas para pagamento online</CaptionFlag>
               </Grid>
               )

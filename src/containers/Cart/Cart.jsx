@@ -1,7 +1,8 @@
 import React, { useEffect, useContext } from 'react';
+import { useRouter } from 'next/router';
 import lodash from 'lodash';
 
-import history from 'utils/history';
+// import history from 'utils/history';
 import paths from 'paths';
 
 import Grid from 'components/Grid';
@@ -21,6 +22,7 @@ const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
+  const router = useRouter();
 
   useEffect(() => {
     updateFilter({
@@ -31,7 +33,7 @@ const Cart = () => {
     });
 
     if (shop.is_enableOrder === 0) {
-      history.push(paths.home);
+      router.push(paths.home);
     }
     // eslint-disable-next-line
   }, []);

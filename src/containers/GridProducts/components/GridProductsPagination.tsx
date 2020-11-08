@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
 import ReactPaginate from 'react-paginate';
 
 import FilterContext from 'contexts/FilterContext';
@@ -25,10 +25,10 @@ const GridProductsPagination = (props: Props) => {
         activeClassName="active"
         pageCount={pageCount}
         forcePage={forcePage}
-        onPageChange={(data) => updateFilter({ page: data.selected + 1 })}
+        onPageChange={data => updateFilter({ page: data.selected + 1 })}
       />
     </Row>
-  )
+  );
 };
 
 export default GridProductsPagination;

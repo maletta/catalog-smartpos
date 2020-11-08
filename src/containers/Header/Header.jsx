@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
 import ReactGA from 'react-ga';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -9,7 +10,7 @@ import FiltersMobile from 'components/FiltersMobile';
 
 import FilterContext from 'contexts/FilterContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
-import history from 'utils/history';
+// import history from 'utils/history';
 import paths from 'paths';
 import ShopContext from 'contexts/ShopContext';
 
@@ -159,9 +160,9 @@ const Header = ({ goHome, store }) => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
+  const router = useRouter();
   const [search, setSearch] = useState('');
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}store/${store.codigo}?lastUpdate=${store.atualizacao}`;
-
+  const imageBaseUrl = `${process.env.NEXT_PUBLIC_IMG_API}store/${store.codigo}?lastUpdate=${store.atualizacao}`;
   const onSubmit = (e) => {
     e.preventDefault();
 
@@ -172,7 +173,7 @@ const Header = ({ goHome, store }) => {
         label: search,
       });
 
-      history.push(paths.home);
+      router.push(paths.home);
       updateFilter({
         search, page: 1, categoria: 0, label: '', categoryName: '',
       });
@@ -261,7 +262,7 @@ const Header = ({ goHome, store }) => {
           </Grid>
         </Row>
       </AreaMenu>
-      {history.location.pathname !== '/checkout' && <FiltersMobile />}
+      {router.pathname !== '/checkout' && <FiltersMobile />}
     </Container>
   );
 };

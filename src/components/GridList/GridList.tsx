@@ -17,18 +17,18 @@ const Text = styled.p`
 `;
 
 type Item = {
-  id: number
-  descricao: string
-  valorVenda: number
-  atualizacao: string
-  viewMode: string
-  hasVariant: boolean
-  not_control_stock: boolean
+  id: number,
+  descricao: string,
+  valorVenda: number,
+  atualizacao: string,
+  viewMode: string,
+  hasVariant: boolean,
+  not_control_stock: boolean,
   stock: number
 };
 
 type Props = {
-  notFound: boolean
+  notFound: boolean,
   items: Item[]
 };
 

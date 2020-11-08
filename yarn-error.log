@@ -1,0 +1,122 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add next
+
+PATH: 
+  C:\Program Files (x86)\Cmder\bin;C:\Program Files (x86)\Cmder\vendor\bin;C:\Program Files (x86)\Cmder\vendor\conemu-maximus5\ConEmu\Scripts;C:\Program Files (x86)\Cmder\vendor\conemu-maximus5;C:\Program Files (x86)\Cmder\vendor\conemu-maximus5\ConEmu;C:\Program Files\AdoptOpenJDK\jdk-11.0.8.10-hotspot\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Git\cmd;C:\Users\maletta\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Program Files (x86)\Yarn\bin\;C:\Program Files\MongoDB\Server\4.0\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Cmder;C:\Python27;C:\Android\Sdk\platform-tools;C:\Android\Sdk\tools;C:\Android\Sdk\emulator;C:\Program Files\AdoptOpenJDK\jdk-11.0.8.10-hotspot\\bin;C:\Users\maletta\AppData\Local\Streamlink\bin;C:\Users\maletta\AppData\Local\Microsoft\WindowsApps;C:\Users\maletta\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\maletta\AppData\Roaming\nvm;C:\Program Files\nodejs;C:\Users\maletta\AppData\Local\Yarn\bin;C:\Android\Sdk\platform-tools;C:\Android\Sdk\tools;C:\Android\Sdk\emulator;C:\Program Files (x86)\Cmder;C:\Python27;C:\Program Files\Java\jdk1.8.0_221\bin;C:\Program Files\Apache Software Foundation\apache-maven-3.6.3\bin;C:\Program Files\Git\cmd;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Program Files (x86)\Cmder
+
+Yarn version: 
+  1.17.3
+
+Node version: 
+  12.16.2
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.yarnpkg.com/@fortawesome/free-solid-svg-icons/-/free-solid-svg-icons-5.15.1.tgz: ESOCKETTIMEDOUT
+      at ClientRequest.<anonymous> (C:\Program Files (x86)\Yarn\lib\cli.js:141091:19)
+      at Object.onceWrapper (events.js:416:28)
+      at ClientRequest.emit (events.js:310:20)
+      at TLSSocket.emitRequestTimeout (_http_client.js:714:9)
+      at Object.onceWrapper (events.js:416:28)
+      at TLSSocket.emit (events.js:310:20)
+      at TLSSocket.Socket._onTimeout (net.js:479:8)
+      at listOnTimeout (internal/timers.js:549:17)
+      at processTimers (internal/timers.js:492:7)
+
+npm manifest: 
+  {
+    "name": "smartpos-catalogo",
+    "version": "1.0.0",
+    "scripts": {
+      "start": "react-scripts start",
+      "build": "react-scripts build",
+      "eslint": "eslint --fix src/**/*.{js,jsx}",
+      "stylelint": "stylelint src/**/*.{jsx,tsx}",
+      "lint": "yarn eslint && yarn stylelint",
+      "test": "react-scripts test --no-cache --runInBand"
+    },
+    "dependencies": {
+      "@fortawesome/fontawesome-svg-core": "^1.2.30",
+      "@fortawesome/free-brands-svg-icons": "^5.14.0",
+      "@fortawesome/free-regular-svg-icons": "^5.14.0",
+      "@fortawesome/free-solid-svg-icons": "^5.14.0",
+      "@fortawesome/react-fontawesome": "^0.1.11",
+      "axios": "^0.19.2",
+      "bootstrap": "^4.5.2",
+      "classnames": "^2.2.6",
+      "formik": "^1.5.8",
+      "history": "^4.9.0",
+      "lodash": "^4.17.20",
+      "moment": "^2.27.0",
+      "prop-types": "^15.6.2",
+      "query-string": "^6.13.1",
+      "react": "^16.13.1",
+      "react-dom": "^16.13.1",
+      "react-ga": "^2.5.7",
+      "react-google-recaptcha": "^2.1.0",
+      "react-image-magnify": "^2.7.4",
+      "react-items-carousel": "^2.8.0",
+      "react-number-format": "^4.4.1",
+      "react-paginate": "^6.3.2",
+      "react-quill": "^1.3.5",
+      "react-router-dom": "^5.2.0",
+      "react-scripts": "3.4.3",
+      "react-select": "^3.1.0",
+      "react-share": "^3.0.1",
+      "styled-components": "^5.1.1",
+      "sweetalert2": "^8.18.0",
+      "uuid": "^3.3.3",
+      "yup": "^0.29.3"
+    },
+    "devDependencies": {
+      "@types/jest": "^26.0.13",
+      "@types/lodash": "^4.14.161",
+      "@types/node": "^14.6.3",
+      "@types/react": "^16.9.49",
+      "@types/react-dom": "^16.9.8",
+      "@types/react-paginate": "^6.2.1",
+      "@types/react-router-dom": "^5.1.5",
+      "@types/styled-components": "^5.1.3",
+      "@types/yup": "^0.29.6",
+      "eslint-config-airbnb": "^17.1.0",
+      "eslint-plugin-import": "^2.14.0",
+      "eslint-plugin-jsx-a11y": "^6.1.2",
+      "eslint-plugin-react": "^7.11.1",
+      "git-commit-msg-linter": "^2.6.0",
+      "husky": "^1.2.0",
+      "lint-staged": "^10.3.0",
+      "stylelint": "^13.7.0",
+      "stylelint-config-recommended": "^3.0.0",
+      "stylelint-config-styled-components": "^0.1.1",
+      "stylelint-processor-styled-components": "^1.10.0",
+      "typescript": "^4.0.2"
+    },
+    "husky": {
+      "hooks": {
+        "pre-commit": "lint-staged"
+      }
+    },
+    "lint-staged": {
+      "*.{js,jsx}": "yarn lint"
+    },
+    "browserslist": {
+      "production": [
+        ">0.2%",
+        "not dead",
+        "not op_mini all"
+      ],
+      "development": [
+        "last 1 chrome version",
+        "last 1 firefox version",
+        "last 1 safari version"
+      ]
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

@@ -1,6 +1,7 @@
 import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import NumberFormat from 'react-number-format';
@@ -8,7 +9,7 @@ import PropTypes from 'prop-types';
 
 import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
-import history from 'utils/history';
+// import history from 'utils/history';
 import formatCurrency from 'utils/formatCurrency';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
@@ -40,9 +41,10 @@ import Captcha from './components/Captcha';
 import Container from './components/PaymentContainer';
 import CreditCardImage from './components/CreditCardImage';
 import {
-  pagseguro,
-  getInstallments,
-  getPaymentMethods,
+  usePagSeguroHook,
+  // pagseguro,
+  // getInstallments,
+  // getPaymentMethods,
 } from './pagseguro';
 import {
   differenceBetweenValuesErrorModal,
@@ -71,6 +73,8 @@ const Payment = () => {
   const { shop, updateOrderPlaced } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
+  const { getInstallments, getPaymentMethods, pagSeguro } = usePagSeguroHook();
+  const router = useRouter();
 
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [offlinePayment, setOfflinePayment] = useState(
@@ -109,7 +113,7 @@ const Payment = () => {
   useEffect(() => {
     getInstallments(creditCardBrand, amount, setInstallments);
     // eslint-disable-next-line
-  }, [creditCardBrand]);
+  }, [pagSeguro,creditCardBrand]);
 
   useEffect(() => {
     updateFilter({
@@ -122,15 +126,17 @@ const Payment = () => {
     });
 
     getSessionPag(shop.id).then(({ data }) => {
-      pagseguro.setSessionId(data.session);
-      getPaymentMethods(amount, setCreditCardBrands);
+      if (pagSeguro) {
+        pagSeguro.setSessionId(data.session);
+        getPaymentMethods(amount, setCreditCardBrands);
+      }
     });
     // eslint-disable-next-line
-  }, []);
+  }, [pagSeguro]);
 
   useEffect(() => {
     if (shop.is_enableOrder === 0) {
-      history.push(paths.home);
+      router.push(paths.home);
     }
     // eslint-disable-next-line
   }, []);
@@ -141,7 +147,9 @@ const Payment = () => {
   };
 
   const getHashReady = () => {
-    pagseguro.onSenderHashReady(handleSenderHashReady);
+    if (pagSeguro) {
+      pagSeguro.onSenderHashReady(handleSenderHashReady);
+    }
   };
 
   const sendCheckoutCatch = (statusCode) => {
@@ -173,7 +181,7 @@ const Payment = () => {
       updateShoppingCart({ coupon: {} });
       cleanCart(updateShoppingCart);
 
-      history.push(paths.conclusion);
+      router.push(paths.conclusion);
     } catch ({ response }) {
       const statusCode = response ? response.status : 0;
       sendCheckoutCatch(statusCode);
@@ -225,27 +233,28 @@ const Payment = () => {
     }
 
     const [expirationMonth, expirationYear] = formValues.expiration.split('/');
-
-    pagseguro.createCardToken({
-      cardNumber: formValues.cardNumber_unformatted,
-      brand: creditCardBrand,
-      cvv: formValues.cvv,
-      expirationMonth,
-      expirationYear,
-      success({ card }) {
-        const valuesPag = {
-          ...values,
-          senderHash: hash,
-          cardTokenPag: card.token,
-        };
-        sendCheckout(valuesPag, setSubmitting);
-      },
-      error() {
-        invalidCardModal();
-        setSubmitting(false);
-        setLoading(false);
-      },
-    });
+    if (pagSeguro) {
+      pagSeguro.createCardToken({
+        cardNumber: formValues.cardNumber_unformatted,
+        brand: creditCardBrand,
+        cvv: formValues.cvv,
+        expirationMonth,
+        expirationYear,
+        success({ card }) {
+          const valuesPag = {
+            ...values,
+            senderHash: hash,
+            cardTokenPag: card.token,
+          };
+          sendCheckout(valuesPag, setSubmitting);
+        },
+        error() {
+          invalidCardModal();
+          setSubmitting(false);
+          setLoading(false);
+        },
+      });
+    }
   };
 
   const initialValues = {
@@ -375,7 +384,7 @@ const Payment = () => {
 
     if (value.length < 7) return;
 
-    pagseguro.getBrand({
+    pagSeguro.getBrand({
       cardBin: value.substring(0, 7),
       success({ brand }) {
         setCreditCardBrand(brand.name);
@@ -385,7 +394,7 @@ const Payment = () => {
           propsForm.setFieldValue('installments', firstInstallments);
         };
 
-        pagseguro.getInstallments({
+        pagSeguro.getInstallments({
           amount,
           brand: brand.name,
           success: installmentSuccess,

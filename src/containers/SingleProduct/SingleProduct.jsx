@@ -1,14 +1,14 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import ItemsCarousel from 'react-items-carousel';
 import { Formik, Form, Field } from 'formik';
-import PropTypes from 'prop-types';
 import uuidv1 from 'uuid/v1';
 import lodash from 'lodash';
-import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import moment from 'moment';
-
+// import paths from 'paths';
 import formatCurrency from 'utils/formatCurrency';
 import SelectDropDown from 'components/Form/SelectDropDown';
 import ButtonPrice from 'components/Form/ButtonPrice';
@@ -279,7 +279,12 @@ const VariantContainer = styled.div`
   font-weight: 600;
 `;
 
-const SingleProduct = (props) => {
+const SingleProduct = () => {
+  const QuillNoSSRWrapper = dynamic(import('react-quill'), {
+    ssr: false,
+    loading: () => <p>Loading ...</p>,
+  });
+  const router = useRouter();
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const chevronWidth = 10;
   const [product, setProduct] = useState({
@@ -312,7 +317,7 @@ const SingleProduct = (props) => {
     setSubmitting(false);
 
     if (!shop.customerCanOrder) {
-      showStoreIsClosedModal(shop.openHours[moment().day()]);
+      showStoreIsClosedModal(shop.openHours[moment().day()], router);
       return;
     }
 
@@ -349,9 +354,10 @@ const SingleProduct = (props) => {
   };
 
   useEffect(() => {
+    const { query: { id } } = router;
     setLoaded(false);
     window.scrollTo(0, 0);
-    const { params: { id } } = props.match;
+    // const { params: { id } } = props.match;
 
     getInfoProduct(shop.id, id)
       .then((response) => {
@@ -387,7 +393,7 @@ const SingleProduct = (props) => {
         setModifierSelected([...modifierSelected, []]);
 
         if (response.codigo) {
-          const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
+          const imageBaseUrl = `${process.env.NEXT_PUBLIC_IMG_API}product/${response.codigo}?lastUpdate${response.atualizacao}`;
           const img = new Image();
           img.src = imageBaseUrl;
 
@@ -512,7 +518,7 @@ const SingleProduct = (props) => {
             {product.images && (
               product.images !== 'notFound' && ((product.images).map(img => (
                 <ModalImg
-                  src={`${process.env.REACT_APP_IMG_API}${img.key}`}
+                  src={`${process.env.NEXT_PUBLIC_IMG_API}${img.key}`}
                   title={product.descricao}
                   alt="Produto"
                 />
@@ -534,7 +540,7 @@ const SingleProduct = (props) => {
                 )}
                 {product.images !== 'notFound' && ((product.images).map((img, index) => (
                   <Thumb IsActive={activeItemIndex === index + 1}>
-                    <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+                    <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.NEXT_PUBLIC_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
                   </Thumb>
                 )))}
               </>
@@ -590,7 +596,7 @@ const SingleProduct = (props) => {
                 <>
                   <Fluid
                     onClick={() => setPropsModal({
-                      urlPhoto: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                      urlPhoto: `${process.env.NEXT_PUBLIC_IMG_API}${img.key}`,
                       isOpen: true,
                     })}
                   >
@@ -599,12 +605,12 @@ const SingleProduct = (props) => {
                       {...{
                         smallImage: {
                           isFluidWidth: true,
-                          src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                          src: `${process.env.NEXT_PUBLIC_IMG_API}${img.key}`,
                           title: product.descricao,
                           alt: 'Produto',
                         },
                         largeImage: {
-                          src: `${process.env.REACT_APP_IMG_API}${img.key}`,
+                          src: `${process.env.NEXT_PUBLIC_IMG_API}${img.key}`,
                           width: 1200,
                           height: 1200,
                         },
@@ -686,7 +692,7 @@ const SingleProduct = (props) => {
                                       )}
                                       {product.images !== 'notFound' && ((product.images).map((img, index) => (
                                         <Thumb IsActive={activeItemIndex === index + 1}>
-                                          <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.REACT_APP_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
+                                          <Img onClick={() => setActiveItemIndex(index + 1)} src={`${process.env.NEXT_PUBLIC_IMG_API}${img.key}`} title={product.descricao} alt="Produto" />
                                         </Thumb>
                                       )))}
                                     </>
@@ -703,7 +709,7 @@ const SingleProduct = (props) => {
                                     <SubTitle>Descrição do item</SubTitle>
                                   </Grid>
                                   <Grid cols="12 mb-3">
-                                    <ReactQuill
+                                    <QuillNoSSRWrapper
                                       readOnly
                                       theme="snow"
                                       value={product.longDescription}
@@ -835,7 +841,7 @@ const SingleProduct = (props) => {
                                     <SubTitle>Descrição do item</SubTitle>
                                   </Grid>
                                   <Grid cols="12" className="d-md-none mb-3">
-                                    <ReactQuill
+                                    <QuillNoSSRWrapper
                                       readOnly
                                       theme="snow"
                                       value={product.longDescription}
@@ -907,7 +913,7 @@ const SingleProduct = (props) => {
 };
 
 SingleProduct.propTypes = {
-  match: PropTypes.any.isRequired,
+  // match: PropTypes.any.isRequired,
 };
 
 export default SingleProduct;

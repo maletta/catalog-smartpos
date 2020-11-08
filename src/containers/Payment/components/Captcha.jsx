@@ -51,7 +51,7 @@ const Captcha = (props) => {
         >
           <ReCAPTCHA
             hl="pt-BR"
-            sitekey={process.env.REACT_APP_RECAPTCHAKEY_V2}
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHAKEY_V2}
             ref={recaptchaRef}
             onChange={setReCaptchaToken}
           />

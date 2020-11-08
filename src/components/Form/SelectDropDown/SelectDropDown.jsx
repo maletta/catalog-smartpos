@@ -15,7 +15,7 @@ import {
   oneOf,
 } from 'prop-types';
 
-import './style.css';
+// import './style.css';
 
 const Label = styled.label`
   width: 100%;

@@ -1,8 +1,9 @@
 import React from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
-import history from 'utils/history';
+// import history from 'utils/history';
 
 const isPrimaryColor = ({ isActive }) => (isActive ? 'var(--button-primary-background)' : '#b6b6b6');
 const isPointerCursor = ({ isActive }) => (isActive ? 'pointer' : 'auto');
@@ -45,25 +46,27 @@ const StepContainer = styled.div`
   align-items: center;
 `;
 
-const noop = () => { };
-const redirectToPage = path => () => {
-  history.push(path);
-};
 
 const Step = ({
   icon, text, isActive, path,
-}) => (
-  <StepContainer isActive={isActive} onClick={isActive ? redirectToPage(path) : noop}>
-    <StepCircle isActive={isActive}>
-      <FontAwesomeIcon
-        color="white"
-        size={window.outerWidth < 426 ? 'xs' : 'lg'}
-        icon={icon}
-      />
-    </StepCircle>
-    <StepText isActive={isActive}>{text}</StepText>
-  </StepContainer>
-);
+}) => {
+  const router = useRouter();
+  const redirectToPage = pathString => () => {
+    router.push(pathString);
+  };
+  return (
+    <StepContainer isActive={isActive} onClick={isActive ? redirectToPage(path) : () => {}}>
+      <StepCircle isActive={isActive}>
+        <FontAwesomeIcon
+          color="white"
+          size={window.outerWidth < 426 ? 'xs' : 'lg'}
+          icon={icon}
+        />
+      </StepCircle>
+      <StepText isActive={isActive}>{text}</StepText>
+    </StepContainer>
+  );
+};
 
 Step.propTypes = {
   icon: PropTypes.any.isRequired,

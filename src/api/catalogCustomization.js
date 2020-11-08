@@ -83,7 +83,7 @@ const adapterThemeFromUrl = (themeBase64) => {
   return themeAdapted;
 };
 
-export const requestTheme = storeId => axios.get(`${process.env.REACT_APP_MAIN_API}/v1/loja/customizacao/${storeId}`)
+export const requestTheme = storeId => axios.get(`${process.env.NEXT_PUBLIC_MAIN_API}/v1/loja/customizacao/${storeId}`)
   .then(r => r)
   .catch(() => {
   });

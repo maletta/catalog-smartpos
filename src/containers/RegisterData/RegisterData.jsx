@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 
 import paths from 'paths';
-import history from 'utils/history';
+// import history from 'utils/history';
 
 import Grid from 'components/Grid';
 import Row from 'components/Row';
@@ -33,10 +34,11 @@ const RegisterData = () => {
   const isNaturalPerson = personType === 'FISICA';
   const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
+  const router = useRouter();
 
   useEffect(() => {
     if (shop.is_enableOrder === 0) {
-      history.push(paths.home);
+      router.push(paths.home);
     }
     // eslint-disable-next-line
   }, []);
@@ -46,7 +48,7 @@ const RegisterData = () => {
       personData: { ...values, tipoPessoa: values.personType },
     });
 
-    history.push(paths.address);
+    router.push(paths.address);
   };
 
   const initialValues = {

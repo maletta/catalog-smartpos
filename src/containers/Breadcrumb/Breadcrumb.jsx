@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useRouter } from 'next/router';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import styled from 'styled-components';
@@ -8,7 +9,7 @@ import PropTypes from 'prop-types';
 import queryString from 'query-string';
 
 import paths from 'paths';
-import history from 'utils/history';
+// import history from 'utils/history';
 
 const Nav = styled.nav`
   &&& {
@@ -36,6 +37,7 @@ const LinkCategories = styled.span`
 const Breadcrumb = ({ goHome }) => {
   const { filter, updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
+  const router = useRouter();
   const { search, origin, pathname } = window.location;
   const parsed = queryString.parse(search) || '';
   const isCart = pathname.includes('carrinho');
@@ -46,7 +48,7 @@ const Breadcrumb = ({ goHome }) => {
   const isNotFinishingPurchase = !(isCart || isCheckout || isOrder);
 
   const goTo = () => {
-    history.push(paths.home);
+    router.push(paths.home);
 
     updateFilter({
       ...filter,

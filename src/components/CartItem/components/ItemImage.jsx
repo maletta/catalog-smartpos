@@ -22,7 +22,7 @@ const Img = styled.img`
 
 const ItemImage = ({ product }) => {
   const [imageProduct, setImage] = useState(NoImage);
-  const imageBaseUrl = `${process.env.REACT_APP_IMG_API}product/${product.id}?lastUpdate=${product.atualizacao}`;
+  const imageBaseUrl = `${process.env.NEXT_PUBLIC_IMG_API}product/${product.id}?lastUpdate=${product.atualizacao}`;
 
   const img = new Image();
   img.src = imageBaseUrl;

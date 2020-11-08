@@ -1,13 +1,13 @@
+import paths from 'paths';
 import formatCurrency from 'utils/formatCurrency';
 
-import { redirectToRegisterData } from './cartFooterRouter';
 import { showStoreIsClosedModal } from './cartFooterModal';
 
-export const shouldRedirectToNextStep = (shop) => {
+export const shouldRedirectToNextStep = (shop, router) => {
   if (shop.customerCanOrder) {
-    redirectToRegisterData();
+    router.push(paths.registerData);
   } else {
-    showStoreIsClosedModal(shop);
+    showStoreIsClosedModal(shop, router);
   }
 };
 

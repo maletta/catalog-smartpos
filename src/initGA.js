@@ -6,10 +6,10 @@ const trackPageView = (location) => {
 };
 
 const initGA = (history) => {
-  if (process.env.REACT_APP_ENV === 'production') {
-    ReactGA.initialize(process.env.REACT_APP_GA);
+  if (process.env.NEXT_PUBLIC_ENV === 'production') {
+    ReactGA.initialize(process.env.NEXT_PUBLIC_GA);
     trackPageView(history.location);
-    history.listen(trackPageView);
+    // history.listen(trackPageView);
   }
 };
 

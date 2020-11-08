@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
 import paths from 'paths';
-import history from 'utils/history';
+// import history from 'utils/history';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
@@ -68,6 +69,7 @@ const Footer = styled.div`
 
 const Conclusion = () => {
   const { shop, orderPlaced } = useContext(ShopContext);
+  const router = useRouter();
 
   const {
     address,
@@ -99,7 +101,7 @@ const Conclusion = () => {
   const positiveTotal = total > 0 ? total : 0;
 
   const handleGoBack = () => {
-    history.push(paths.home);
+    router.push(paths.home);
   };
 
   return (

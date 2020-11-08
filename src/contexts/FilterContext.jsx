@@ -1,14 +1,16 @@
 import React, { createContext, useState } from 'react';
+import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 
-import history from 'utils/history';
+// import history from 'utils/history';
 import paths from 'paths';
 
 const FilterContext = createContext();
 
 export const FilterProvider = ({ children }) => {
-  const parsed = queryString.parse(window.location.search);
+  const router = useRouter();
+  const parsed = queryString.parse(typeof window === 'object' ? window.location.search : {});
 
   const [filter, setFilter] = useState({
     label: parsed.label || 'Todas as categorias',
@@ -23,9 +25,10 @@ export const FilterProvider = ({ children }) => {
 
   const updateFilter = (newFilter) => {
     if (newFilter.redirect) {
-      history.push(paths.home);
-      const { origin, pathname } = window.location;
-      window.history.pushState({}, '', `${origin}${pathname}?categoria=${newFilter.categoria}&nome=${newFilter.categoryName}`);
+      router.push(paths.home);
+      // const { origin, pathname } = window.location;
+      // window.history.pushState({}, '',
+      // `${origin}${pathname}?categoria=${newFilter.categoria}&nome=${newFilter.categoryName}`);
     }
     setFilter(state => ({ ...state, ...newFilter }));
   };

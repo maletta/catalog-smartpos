@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
@@ -6,7 +7,7 @@ import lodash from 'lodash';
 import paths from 'paths';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ThemeContext from 'contexts/ThemeContext';
-import history from 'utils/history';
+// import history from 'utils/history';
 import slug from 'utils/slug';
 import formatCurrency from 'utils/formatCurrency';
 import SvgIcon from 'components/SvgIcon';
@@ -163,6 +164,7 @@ const FinishText = styled.span`
 const CardShop = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { theme } = useContext(ThemeContext);
+  const router = useRouter();
 
   const closeCard = () => {
     updateShoppingCart({ cardOverlay: false });
@@ -204,7 +206,7 @@ const CardShop = () => {
 
   const createItemImageURL = (item) => {
     const { id, atualizacao } = item;
-    const baseImgURL = process.env.REACT_APP_IMG_API;
+    const baseImgURL = process.env.NEXT_PUBLIC_IMG_API;
     return `${baseImgURL}product/${id}?lastUpdate=${atualizacao}`;
   };
 
@@ -216,7 +218,7 @@ const CardShop = () => {
     setTimeout(() => {
       scrollTop();
       closeCard();
-      history.push(`/item/${id}/${slug(descricao)}`);
+      router.push(`/item/${id}/${slug(descricao)}`);
       reloadPage();
     }, 500);
   };
@@ -225,7 +227,7 @@ const CardShop = () => {
     setTimeout(() => {
       scrollTop();
       updateShoppingCart({ cardOverlay: false });
-      history.push(paths.cart);
+      router.push(paths.cart);
     }, 500);
   };
 
@@ -233,7 +235,7 @@ const CardShop = () => {
     setTimeout(() => {
       scrollTop();
       closeCard();
-      history.push(paths.home);
+      router.push(paths.home);
     }, 500);
   };
 

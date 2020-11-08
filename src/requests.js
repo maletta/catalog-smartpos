@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const storePath = `${process.env.REACT_APP_MAIN_API}/v1/loja`;
+const storePath = `${process.env.NEXT_PUBLIC_MAIN_API}/v1/loja`;
 const createParamsFilter = filter => ({
   params: {
     ...filter,
@@ -19,6 +19,7 @@ const getSearch = (id, filter = defaultFilter) => axios.get(
 );
 
 const getStoreInfo = name => axios.get(`${storePath}/${name}`);
+
 const getCategories = id => axios.get(`${storePath}/categorias/${id}`);
 
 const getProducts = (store, filter = defaultFilter) => {

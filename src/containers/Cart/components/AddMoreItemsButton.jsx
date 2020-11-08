@@ -1,12 +1,13 @@
 import React, { useContext } from 'react';
+import { useRouter } from 'next/router';
+import paths from 'paths';
 
 import FilterContext from 'contexts/FilterContext';
 import Button from 'components/Form/Button';
 
-import { redirectToHome } from './cartFooterRouter';
-
 const AddMoreItemsButton = () => {
   const { updateFilter } = useContext(FilterContext);
+  const router = useRouter();
 
   const handleClickAddMoreItems = () => {
     updateFilter({
@@ -16,7 +17,7 @@ const AddMoreItemsButton = () => {
       search: '',
       categoryName: '',
     });
-    redirectToHome();
+    router.push(paths.home);
   };
 
   return (

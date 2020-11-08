@@ -1,9 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 
 import paths from 'paths';
-import history from 'utils/history';
+// import history from 'utils/history';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import Steps from 'components/Steps';
@@ -55,6 +56,7 @@ const RegisterData = () => {
   const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const [address, setAddress] = useState(addressInitialValue);
+  const router = useRouter();
 
   useEffect(() => {
     if (shoppingCart.cep) {
@@ -62,7 +64,7 @@ const RegisterData = () => {
     }
 
     if (shop.is_enableOrder === 0) {
-      history.push(paths.home);
+      router.push(paths.home);
     }
     // eslint-disable-next-line
   }, []);
@@ -73,7 +75,7 @@ const RegisterData = () => {
       address: values,
       deliveryFee: data,
     });
-    history.push(paths.payment);
+    router.push(paths.payment);
   };
 
   const handleChangeCEP = propsForm => async ({ value, formattedValue }) => {

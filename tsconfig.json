@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "jsx": "preserve",
     "esModuleInterop": true,
     "target": "es5",
@@ -23,7 +23,10 @@
   "include": [
     "src"
   ],
-  "files" : [
-    "src/styles/styled.d.ts",
+  "files": [
+    "src/styles/styled.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
   ]
 }

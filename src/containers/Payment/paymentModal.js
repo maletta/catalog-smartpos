@@ -1,7 +1,7 @@
 import Swal from 'sweetalert2';
 
-import history from 'utils/history';
-import paths from 'paths';
+// import history from 'utils/history';
+// import paths from 'paths';
 
 export const differenceBetweenValuesErrorModal = () => {
   Swal.fire({
@@ -10,7 +10,7 @@ export const differenceBetweenValuesErrorModal = () => {
     text:
       'Pedido com valores divergentes, faça o seu pedido novamente!',
     onClose: () => {
-      history.push(paths.home);
+      // history.push(paths.home);
     },
   });
 };

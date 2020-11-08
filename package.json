@@ -7,7 +7,10 @@
     "eslint": "eslint --fix src/**/*.{js,jsx}",
     "stylelint": "stylelint src/**/*.{jsx,tsx}",
     "lint": "yarn eslint && yarn stylelint",
-    "test": "react-scripts test --no-cache --runInBand"
+    "test": "react-scripts test --no-cache --runInBand",
+    "dev": "next dev",
+    "nextbuild": "next build",
+    "nextstart": "next start"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
@@ -22,6 +25,8 @@
     "history": "^4.9.0",
     "lodash": "^4.17.20",
     "moment": "^2.27.0",
+    "next": "^10.0.0",
+    "next-images": "^1.6.2",
     "prop-types": "^15.6.2",
     "query-string": "^6.13.1",
     "react": "^16.13.1",
