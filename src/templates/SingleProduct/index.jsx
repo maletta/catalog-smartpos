@@ -1,1 +1,1 @@
-export { default } from './SingleProduct';
+export { default, getServerSideProps } from './SingleProduct';
