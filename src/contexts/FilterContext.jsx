@@ -25,11 +25,20 @@ export const FilterProvider = ({ children }) => {
 
   const updateFilter = (newFilter) => {
     if (newFilter.redirect) {
-      router.push(paths.home);
+      router.push({
+        pathname: paths.home,
+        query: { categoria: newFilter.categoria, nome: newFilter.categoryName },
+      },
+      undefined,
+      {
+        shallow: true,
+      });
       // const { origin, pathname } = window.location;
       // window.history.pushState({}, '',
       // `${origin}${pathname}?categoria=${newFilter.categoria}&nome=${newFilter.categoryName}`);
+      console.log('passou pelo update - IF');
     }
+    console.log('passou pelo update ');
     setFilter(state => ({ ...state, ...newFilter }));
   };
 

@@ -12,7 +12,6 @@ const Page = ({ headProps }) => (
   <>
     <Head {...headProps} />
     <SingleProductTemplate />
-
   </>
 );
 
