@@ -9,13 +9,13 @@ export const ThemeProvider = ({ children }) => {
   const reducer = (state, action) => {
     switch (action.type) {
       case 'THEME':
-        return { ...state, ...action.payload };
+        return { ...state, ...action.payload, isLoading: false };
       default:
         return { ...state };
     }
   };
 
-  const [theme, dispatchTheme] = useReducer(reducer, smartposTheme);
+  const [theme, dispatchTheme] = useReducer(reducer, { ...smartposTheme, isLoading: true });
 
   return (
     <ThemeContext.Provider value={{

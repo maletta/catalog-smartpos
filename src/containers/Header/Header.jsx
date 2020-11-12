@@ -173,15 +173,24 @@ const Header = ({ goHome, store }) => {
         label: search,
       });
 
-      router.push(paths.home);
       updateFilter({
         search, page: 1, categoria: 0, label: '', categoryName: '',
       });
     }
 
     setSearch('');
-    const { origin, pathname } = window.location;
-    window.history.pushState({}, '', `${origin}${pathname}?search=${search}`);
+    router.push({
+      pathname: paths.home,
+      query: {
+        search,
+      },
+    },
+    undefined,
+    {
+      shallow: true,
+    });
+    // const { origin, pathname } = window.location;
+    // window.history.pushState({}, '', `${origin}${pathname}?search=${search}`);
   };
 
   const formatPhoneNumber = (number = '') => {

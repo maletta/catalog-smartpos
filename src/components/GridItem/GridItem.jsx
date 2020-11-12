@@ -3,15 +3,12 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import { Link } from 'react-router-dom';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
-// import paths from 'paths';
+import useRouterHook from 'utils/useRouterHook';
 
 import lodash from 'lodash';
 
 import slug from 'utils/slug';
-// import history from 'utils/history';
 import uuidv1 from 'uuid/v1';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import Grid from 'components/Grid';
@@ -135,7 +132,7 @@ const BuyText = styled.p`
 `;
 
 const GridItem = (props) => {
-  const router = useRouter();
+  const router = useRouterHook();
   const { item } = props;
   const {
     id,

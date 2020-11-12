@@ -38,7 +38,7 @@ const Breadcrumb = ({ goHome }) => {
   const { filter, updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
   const router = useRouter();
-  const { search, origin, pathname } = window.location;
+  const { search, pathname } = window.location;
   const parsed = queryString.parse(search) || '';
   const isCart = pathname.includes('carrinho');
   const isCheckout = pathname.includes('checkout');
@@ -48,7 +48,14 @@ const Breadcrumb = ({ goHome }) => {
   const isNotFinishingPurchase = !(isCart || isCheckout || isOrder);
 
   const goTo = () => {
-    router.push(paths.home);
+    router.push({
+      pathname: paths.home,
+      query: { categoria: filter.categoria, nome: filterCategoryName },
+    },
+    undefined,
+    {
+      shallow: true,
+    });
 
     updateFilter({
       ...filter,
@@ -56,11 +63,12 @@ const Breadcrumb = ({ goHome }) => {
       redirect: false,
     });
 
-    window.history.pushState(
-      {},
-      '',
-      `${origin}${pathname}?categoria=${filter.categoria}&nome=${filterCategoryName}`,
-    );
+
+    // window.history.pushState(
+    //   {},
+    //   '',
+    //   `${origin}${pathname}?categoria=${filter.categoria}&nome=${filterCategoryName}`,
+    // );
   };
 
   const FilterList = () => {

@@ -6,6 +6,5 @@ const getStoreNameFromServer = (url) => {
   return null;
 };
 
-const getStoreNameFromBrowser = () => getStoreNameFromServer(window.location.hostname);
 
-export { getStoreNameFromServer as default, getStoreNameFromBrowser };
+export { getStoreNameFromServer as default };

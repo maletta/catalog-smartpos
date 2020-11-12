@@ -1,6 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const Container = styled.div`
+  width: 100vw;
+  height: 100vh;
+`;
+
 const Image = styled.div`
   display: grid;
   place-items: center;
@@ -26,11 +31,13 @@ const Footer = styled.footer`
 
 const NotFound = () => (
   <>
-    <Image>
-      <img src="assets/online-store.png" alt="store" width="300px" />
-    </Image>
-    <Text>Loja não encontrada.</Text>
-    <Footer>SmartPOS</Footer>
+    <Container>
+      <Image>
+        <img src="assets/online-store.png" alt="store" width="300px" />
+      </Image>
+      <Text>Loja não encontrada.</Text>
+      <Footer>SmartPOS</Footer>
+    </Container>
   </>
 );
 

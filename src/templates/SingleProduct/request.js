@@ -84,6 +84,5 @@ export async function getImageProperties(product) {
     ? `${process.env.NEXT_PUBLIC_IMG_API}product/${product.code}?lastUpdate=${product.update}`
     : `${process.env.NEXT_PUBLIC_MAIN_API}/images/catalogo-share.jpg`;
 
-  // console.log('image url ', imageUrl);
   return getImageDimensions(imageUrl).then(r => r);
 }

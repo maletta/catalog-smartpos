@@ -36,9 +36,7 @@ export const FilterProvider = ({ children }) => {
       // const { origin, pathname } = window.location;
       // window.history.pushState({}, '',
       // `${origin}${pathname}?categoria=${newFilter.categoria}&nome=${newFilter.categoryName}`);
-      console.log('passou pelo update - IF');
     }
-    console.log('passou pelo update ');
     setFilter(state => ({ ...state, ...newFilter }));
   };
 
