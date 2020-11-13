@@ -7,6 +7,7 @@ export const ShopProvider = ({ children }) => {
   const [shop, setShop] = useState({
     is_enableOrder: 0,
     id: null,
+    storeName: null,
   });
 
   const [categories, setCategory] = useState([]);

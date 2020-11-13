@@ -1,16 +1,17 @@
 import ReactGA from 'react-ga';
 
-const trackPageView = (location) => {
-  ReactGA.set({ page: location.pathname });
-  ReactGA.pageview(`${window.location.hostname}${location.pathname}${location.search}`);
+const trackPageView = (url) => {
+  const pathname = url.split('?').shift();
+  ReactGA.set({ page: pathname });
+  ReactGA.pageview(`${window.location.hostname}${url}`);
 };
 
-const initGA = (history) => {
+const initGA = () => {
   if (process.env.NEXT_PUBLIC_ENV === 'production') {
     ReactGA.initialize(process.env.NEXT_PUBLIC_GA);
-    trackPageView(history.location);
-    // history.listen(trackPageView);
+    return trackPageView;
   }
+  return () => {};
 };
 
 export default initGA;

@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { useGlobalContext } from 'contexts/GlobalContext/context/hooks';
+// import { useGlobalContext } from 'contexts/GlobalContext/context/hooks';
+import ShopContext from 'contexts/ShopContext';
 
 const NextLink = ({
   href, as, passHref, prefetch, replace, scroll, shallow, children,
 }) => {
-  const { globalContext } = useGlobalContext();
+  // const { globalContext } = useGlobalContext();
+  const { shop } = useContext(ShopContext);
   const hasDomainName = process.env.NEXT_PUBLIC_GET_NAME_DOMAIN === 'true';
   let newUrl = href;
 
@@ -14,7 +16,7 @@ const NextLink = ({
     newUrl = {
       pathname: href,
       query: {
-        storeCode: globalContext.storeContext.storeName,
+        storeCode: shop.storeName,
       },
     };
 
@@ -23,7 +25,7 @@ const NextLink = ({
         pathname: href.pathname,
         query: {
           ...href.query,
-          storeCode: globalContext.storeContext.storeName,
+          storeCode: shop.storeName,
         },
       };
     }

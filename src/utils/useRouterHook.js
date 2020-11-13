@@ -1,9 +1,10 @@
+import { useContext } from 'react';
 import { useRouter } from 'next/router';
-import { useGlobalContext } from 'contexts/GlobalContext/context/hooks';
+import ShopContext from 'contexts/ShopContext';
 
 const useRouterHook = () => {
   const router = useRouter();
-  const { globalContext } = useGlobalContext();
+  const { shop } = useContext(ShopContext);
 
   const push = (url, as, options) => {
     let newUrl = url;
@@ -13,7 +14,7 @@ const useRouterHook = () => {
       newUrl = {
         pathname: url,
         query: {
-          storeCode: globalContext.storeContext.storeName,
+          storeCode: shop.storeName,
         },
       };
 
@@ -22,7 +23,7 @@ const useRouterHook = () => {
           pathname: url.pathname,
           query: {
             ...url.query,
-            storeCode: globalContext.storeContext.storeName,
+            storeCode: shop.storeName,
           },
         };
       }

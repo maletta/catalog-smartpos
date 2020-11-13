@@ -4,13 +4,14 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import useRouterHook from 'utils/useRouterHook';
 import useStoreNameHook from 'utils/useStoreNameHook';
+import { useRouter } from 'next/router';
 import moment from 'moment';
 
-import initGA from 'initGA';
+// import initGA from 'initGA';
 import paths from 'paths';
 import NotFound from 'NotFound';
 // import AppRouter from 'Router';
-import { getStoreInfo, getCategories } from 'requests';
+import { getCategories } from 'requests';
 
 import Spinner from 'components/Spinner';
 import Footer from 'components/Footer';
@@ -25,8 +26,8 @@ import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ThemeContext from 'contexts/ThemeContext';
-// import { useGlobalContext } from 'contexts/GlobalContext/context/hooks';
-// import { getStoreAction } from 'contexts/GlobalContext/actions/store';
+import { useGlobalContext } from 'contexts/GlobalContext/context/hooks';
+import { getStoreAction } from 'contexts/GlobalContext/actions/store';
 
 import getBusinessHour from 'api/businessHoursRequests';
 import { getTheme } from 'api/catalogCustomization';
@@ -47,21 +48,23 @@ const Content = styled.div`
   margin-bottom: 3rem;
 `;
 
+
 function AppWrapper({ children }) {
-  const trackPageView = initGA();
   const storeName = useStoreNameHook();
   const [loading, setLoading] = useState(true);
-  const [store, setStore] = useState({});
   const { updateShop, updateCategory } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
-  const { dispatchTheme } = useContext(ThemeContext);
+  const { theme, dispatchTheme } = useContext(ThemeContext);
+  const {
+    globalContext, dispatch,
+  } = useGlobalContext();
   const router = useRouterHook();
-
+  const router2 = useRouter();
 
   const defineTheme = async (storeId) => {
-    const theme = await getTheme(storeId);
-    dispatchTheme({ type: 'THEME', payload: theme });
+    const newTheme = await getTheme(storeId);
+    dispatchTheme({ type: 'THEME', payload: newTheme });
   };
 
   const getCategoryList = (id) => {
@@ -84,18 +87,16 @@ function AppWrapper({ children }) {
   };
 
   const getStore = async () => {
-    try {
-      const { data } = await getStoreInfo(storeName);
+    if (globalContext.storeContext.id) {
       const {
         is_enableOrder: isEnableOrder,
         fantasia,
         allowOrderOutsideBusinessHours,
         openHours,
-      } = data;
-      defineTheme(data.id);
+      } = globalContext.storeContext;
+      defineTheme(globalContext.storeContext.id);
       document.title = fantasia;
-      setStore({ ...data, found: true, storeName });
-      getCategoryList(data.id);
+      getCategoryList(globalContext.storeContext.id);
 
       let customerCanOrder = isEnableOrder === 1;
 
@@ -106,21 +107,22 @@ function AppWrapper({ children }) {
           customerCanOrder = isShopOpen(openHours);
         }
       }
-
       updateShop({
-        ...data, is_enableOrder: Number(customerCanOrder), customerCanOrder, storeName,
+        ...globalContext.storeContext, is_enableOrder: Number(customerCanOrder), customerCanOrder,
       });
-    } catch {
-      setStore({ found: false });
+    } else {
       setLoading(false);
+      dispatchTheme({ type: 'SET_THEME_LOADING', payload: false });
     }
   };
 
   const businessHourRequest = async () => {
     const currentDateFormat = moment().format();
     const timezone = currentDateFormat.substr(currentDateFormat.length - 6);
-    const { data } = await getBusinessHour(store.id, store.codigo, timezone);
-    updateShop(prev => ({ ...prev, data }));
+    const { data } = await getBusinessHour(
+      globalContext.storeContext.id, globalContext.storeContext.codigo, timezone,
+    );
+    updateShop(data);
   };
 
   const cleanCart = () => {
@@ -132,30 +134,6 @@ function AppWrapper({ children }) {
       updateShoppingCart({ cart: [] });
     }
   };
-
-  useEffect(() => {
-    if (store.id && !store.allowOrderOutsideBusinessHours) {
-      businessHourRequest();
-    }
-    // eslint-disable-next-line
-  }, [loading]);
-
-  useEffect(() => {
-    getStore();
-    window.scrollTo(0, 0);
-    cleanCart();
-  }, []);
-
-  useEffect(() => {
-    const handleHistoryChange = (url) => {
-      trackPageView(url);
-    };
-    router.events.on('routeChangeComplete', handleHistoryChange);
-
-    return () => {
-      router.events.off('routeChangeComplete', handleHistoryChange);
-    };
-  }, [router]);
 
   const goHome = () => {
     router.push(paths.home);
@@ -170,7 +148,41 @@ function AppWrapper({ children }) {
     });
   };
 
-  if (loading) {
+  useEffect(() => {
+    dispatch(getStoreAction(storeName));
+
+    const handleHistoryChange = () => {
+    };
+    router2.events.on('routeChangeComplete', handleHistoryChange);
+
+    return () => {
+      router2.events.off('routeChangeStart', handleHistoryChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    getStore();
+    window.scrollTo(0, 0);
+    // initGA(history);
+    cleanCart();
+    // eslint-disable-next-line
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (globalContext.storeContext.id
+      && !globalContext.storeContext.allowOrderOutsideBusinessHours) {
+      businessHourRequest();
+    }
+    // eslint-disable-next-line
+  }, [loading]);
+
+  useEffect(() => {
+
+    // handleHistoryChange();
+  }, [router]);
+
+
+  if (loading || theme.isLoading || globalContext.storeContext.found === null) {
     return (
       <Container>
         <Spinner />
@@ -178,7 +190,7 @@ function AppWrapper({ children }) {
     );
   }
 
-  if (!store.found) {
+  if (!globalContext.storeContext.found) {
     return <NotFound />;
   }
 
@@ -186,16 +198,17 @@ function AppWrapper({ children }) {
   return (
     <>
       <CardShop />
-      <Header goHome={goHome} store={store} />
+      <Header goHome={goHome} store={globalContext.storeContext} />
       <Content className="container">
         <Breadcrumb goHome={goHome} />
         {/* <AppRouter /> */}
         {children}
       </Content>
-      <Footer storeInfo={store} />
+      <Footer storeInfo={globalContext.storeContext} />
     </>
   );
 }
+
 
 AppWrapper.defaultProps = {
   children: '',
