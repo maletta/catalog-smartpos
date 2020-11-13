@@ -175,7 +175,6 @@ function AppWrapper({ children }) {
     );
   }
 
-  console.log(loading, theme.isLoading, globalContext.storeContext.found);
   if (!globalContext.storeContext.found) {
     return <NotFound />;
   }

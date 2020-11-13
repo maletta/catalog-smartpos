@@ -7,7 +7,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 /* eslint-disable react/jsx-props-no-spreading */
 import React from 'react';
 import PropTypes from 'prop-types';
-import App from 'next/app';
 
 import GlobalProvider from 'contexts/GlobalContext';
 import { FilterProvider } from 'contexts/FilterContext';
@@ -46,16 +45,22 @@ const ContextWrapper = ({ children }) => (
   </If>
 );
 
-export default class MyApp extends App {
-  render() {
-    const { Component, pageProps } = this.props;
-    return (
-      <ContextWrapper>
-        <Component {...pageProps} />
-      </ContextWrapper>
-    );
-  }
-}
+const App = ({ Component, pageProps }) => (
+  <ContextWrapper>
+    <Component {...pageProps} />
+  </ContextWrapper>
+);
+
+
+App.defaultProps = {
+  pageProps: '',
+};
+
+
+App.propTypes = {
+  Component: PropTypes.any.isRequired,
+  pageProps: PropTypes.any,
+};
 
 
 ContextWrapper.defaultProps = {
@@ -68,3 +73,5 @@ ContextWrapper.propTypes = {
     PropTypes.node,
   ]),
 };
+
+export default App;

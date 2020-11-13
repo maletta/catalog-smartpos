@@ -218,7 +218,7 @@ const GridItem = (props) => {
   };
 
   const isItemUnavailable = dontControlStock === 0 && stock <= 0;
-  const hrefToItemDescription = `/item/${id}/${descricao}`;
+  const hrefToItemDescription = `/item/${id}/${slug(descricao)}`;
 
   const UnavailableItem = () => (
     <UnavailableBox>
