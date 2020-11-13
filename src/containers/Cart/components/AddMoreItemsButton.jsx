@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import paths from 'paths';
 
 import FilterContext from 'contexts/FilterContext';
@@ -7,7 +7,7 @@ import Button from 'components/Form/Button';
 
 const AddMoreItemsButton = () => {
   const { updateFilter } = useContext(FilterContext);
-  const router = useRouter();
+  const router = useRouterHook();
 
   const handleClickAddMoreItems = () => {
     updateFilter({

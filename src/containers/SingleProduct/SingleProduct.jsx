@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import dynamic from 'next/dynamic';
 import styled from 'styled-components';
 import ItemsCarousel from 'react-items-carousel';
@@ -284,7 +284,7 @@ const SingleProduct = () => {
     ssr: false,
     loading: () => <p>Loading ...</p>,
   });
-  const router = useRouter();
+  const router = useRouterHook();
   const [activeItemIndex, setActiveItemIndex] = useState(0);
   const chevronWidth = 10;
   const [product, setProduct] = useState({

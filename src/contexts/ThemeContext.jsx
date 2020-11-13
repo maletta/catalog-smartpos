@@ -10,6 +10,8 @@ export const ThemeProvider = ({ children }) => {
     switch (action.type) {
       case 'THEME':
         return { ...state, ...action.payload, isLoading: false };
+      case 'SET_THEME_LOADING':
+        return { ...state, isLoading: false };
       default:
         return { ...state };
     }

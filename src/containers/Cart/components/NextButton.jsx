@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 // import paths from 'paths';
 
 import Button from 'components/Form/Button';
@@ -11,7 +11,7 @@ import { shouldRedirectToNextStep } from './cartFooterUtils';
 const NextButton = () => {
   const { shop } = useContext(ShopContext);
   const { shoppingCart } = useContext(ShoppingCartContext);
-  const router = useRouter();
+  const router = useRouterHook();
 
   const isNotDeliverable = shoppingCart.withdraw ? false : !shoppingCart.deliveryFee.isDeliverable;
   const checkPickup = () => {

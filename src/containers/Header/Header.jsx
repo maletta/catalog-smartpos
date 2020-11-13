@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import ReactGA from 'react-ga';
 import styled, { css } from 'styled-components';
 import PropTypes from 'prop-types';
@@ -160,7 +160,7 @@ const Header = ({ goHome, store }) => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
-  const router = useRouter();
+  const router = useRouterHook();
   const [search, setSearch] = useState('');
   const imageBaseUrl = `${process.env.NEXT_PUBLIC_IMG_API}store/${store.codigo}?lastUpdate=${store.atualizacao}`;
   const onSubmit = (e) => {

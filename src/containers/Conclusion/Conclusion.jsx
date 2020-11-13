@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import styled from 'styled-components';
 
 import paths from 'paths';
@@ -69,7 +69,7 @@ const Footer = styled.div`
 
 const Conclusion = () => {
   const { shop, orderPlaced } = useContext(ShopContext);
-  const router = useRouter();
+  const router = useRouterHook();
 
   const {
     address,

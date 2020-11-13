@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import lodash from 'lodash';
@@ -164,7 +164,7 @@ const FinishText = styled.span`
 const CardShop = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { theme } = useContext(ThemeContext);
-  const router = useRouter();
+  const router = useRouterHook();
 
   const closeCard = () => {
     updateShoppingCart({ cardOverlay: false });

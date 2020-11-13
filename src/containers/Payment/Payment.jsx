@@ -1,7 +1,7 @@
 import React, {
   useState, useEffect, useContext, useRef,
 } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 import NumberFormat from 'react-number-format';
@@ -74,7 +74,7 @@ const Payment = () => {
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { updateFilter } = useContext(FilterContext);
   const { getInstallments, getPaymentMethods, pagSeguro } = usePagSeguroHook();
-  const router = useRouter();
+  const router = useRouterHook();
 
   const [reCaptchaToken, setReCaptchaToken] = useState(false);
   const [offlinePayment, setOfflinePayment] = useState(

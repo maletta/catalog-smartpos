@@ -39,7 +39,7 @@ export const showStoreIsClosedModal = (today, router) => {
     imageHeight: 200,
     imageAlt: 'Loja fechada',
     showConfirmButton: true,
-    confirmButtonColor: 'var(--button-primary-background',
+    confirmButtonColor: 'var(--button-primary-background)',
     onClose: () => router.push(paths.home),
   };
 

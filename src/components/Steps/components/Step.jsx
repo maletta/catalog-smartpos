@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PropTypes from 'prop-types';
@@ -50,7 +50,7 @@ const StepContainer = styled.div`
 const Step = ({
   icon, text, isActive, path,
 }) => {
-  const router = useRouter();
+  const router = useRouterHook();
   const redirectToPage = pathString => () => {
     router.push(pathString);
   };

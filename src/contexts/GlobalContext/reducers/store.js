@@ -3,6 +3,7 @@ import * as ActionTypes from '../action-types';
 export const storeDefault = {
   storeName: null,
   id: null,
+  found: null,
 };
 
 const storeReducer = (state = storeDefault, action) => {

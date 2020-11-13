@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
+import useStoreNameHook from 'utils/useStoreNameHook';
 import moment from 'moment';
 
 // import initGA from 'initGA';
@@ -48,6 +49,7 @@ const Content = styled.div`
 
 
 function AppWrapper({ children }) {
+  const storeName = useStoreNameHook();
   const [loading, setLoading] = useState(true);
   const { updateShop, updateCategory } = useContext(ShopContext);
   const { updateFilter } = useContext(FilterContext);
@@ -56,7 +58,7 @@ function AppWrapper({ children }) {
   const {
     globalContext, dispatch,
   } = useGlobalContext();
-  const router = useRouter();
+  const router = useRouterHook();
 
   const defineTheme = async (storeId) => {
     const newTheme = await getTheme(storeId);
@@ -108,6 +110,7 @@ function AppWrapper({ children }) {
       });
     } else {
       setLoading(false);
+      dispatchTheme({ type: 'SET_THEME_LOADING', payload: false });
     }
   };
 
@@ -130,26 +133,6 @@ function AppWrapper({ children }) {
     }
   };
 
-  useEffect(() => {
-    if (globalContext.storeContext.id
-      && !globalContext.storeContext.allowOrderOutsideBusinessHours) {
-      businessHourRequest();
-    }
-    // eslint-disable-next-line
-  }, [loading]);
-
-  useEffect(() => {
-    getStore();
-    window.scrollTo(0, 0);
-    // initGA(history);
-    cleanCart();
-    // eslint-disable-next-line
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getStoreAction('smartposbr'));
-  }, []);
-
   const goHome = () => {
     router.push(paths.home);
 
@@ -163,7 +146,28 @@ function AppWrapper({ children }) {
     });
   };
 
-  if (loading || theme.isLoading) {
+  useEffect(() => {
+    getStore();
+    window.scrollTo(0, 0);
+    // initGA(history);
+    cleanCart();
+    // eslint-disable-next-line
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getStoreAction(storeName));
+  }, []);
+
+  useEffect(() => {
+    if (globalContext.storeContext.id
+      && !globalContext.storeContext.allowOrderOutsideBusinessHours) {
+      businessHourRequest();
+    }
+    // eslint-disable-next-line
+  }, [loading]);
+
+
+  if (loading || theme.isLoading || globalContext.storeContext.found === null) {
     return (
       <Container>
         <Spinner />
@@ -171,6 +175,7 @@ function AppWrapper({ children }) {
     );
   }
 
+  console.log(loading, theme.isLoading, globalContext.storeContext.found);
   if (!globalContext.storeContext.found) {
     return <NotFound />;
   }

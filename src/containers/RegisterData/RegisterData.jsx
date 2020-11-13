@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 
@@ -34,7 +34,7 @@ const RegisterData = () => {
   const isNaturalPerson = personType === 'FISICA';
   const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
-  const router = useRouter();
+  const router = useRouterHook();
 
   useEffect(() => {
     if (shop.is_enableOrder === 0) {

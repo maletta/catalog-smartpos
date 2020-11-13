@@ -1,5 +1,5 @@
 import React from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import styled from 'styled-components';
 
 import Button from 'components/Form/Button';
@@ -15,7 +15,7 @@ const TitleEmptyCart = styled.h2`
 `;
 
 const EmptyCart = () => {
-  const router = useRouter();
+  const router = useRouterHook();
 
   return (
     <Grid

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import styled from 'styled-components';
 import { Formik, Form, Field } from 'formik';
 
@@ -56,7 +56,7 @@ const RegisterData = () => {
   const { shop } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const [address, setAddress] = useState(addressInitialValue);
-  const router = useRouter();
+  const router = useRouterHook();
 
   useEffect(() => {
     if (shoppingCart.cep) {

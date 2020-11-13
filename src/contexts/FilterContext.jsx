@@ -1,5 +1,5 @@
 import React, { createContext, useState } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import PropTypes from 'prop-types';
 import queryString from 'query-string';
 
@@ -9,7 +9,7 @@ import paths from 'paths';
 const FilterContext = createContext();
 
 export const FilterProvider = ({ children }) => {
-  const router = useRouter();
+  const router = useRouterHook();
   const parsed = queryString.parse(typeof window === 'object' ? window.location.search : {});
 
   const [filter, setFilter] = useState({

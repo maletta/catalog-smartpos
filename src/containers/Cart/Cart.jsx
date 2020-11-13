@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import lodash from 'lodash';
 
 // import history from 'utils/history';
@@ -22,7 +22,7 @@ const Cart = () => {
   const { updateFilter } = useContext(FilterContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { shop } = useContext(ShopContext);
-  const router = useRouter();
+  const router = useRouterHook();
 
   useEffect(() => {
     updateFilter({

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { useRouter } from 'next/router';
+import useRouterHook from 'utils/useRouterHook';
 import Grid from 'components/Grid';
 import Row from 'components/Row';
 import styled from 'styled-components';
@@ -37,7 +37,7 @@ const LinkCategories = styled.span`
 const Breadcrumb = ({ goHome }) => {
   const { filter, updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
-  const router = useRouter();
+  const router = useRouterHook();
   const { search, pathname } = window.location;
   const parsed = queryString.parse(search) || '';
   const isCart = pathname.includes('carrinho');

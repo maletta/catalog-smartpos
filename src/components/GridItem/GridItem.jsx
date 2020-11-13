@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import Link from 'next/link';
+import Link from 'components/NextLink';
 import useRouterHook from 'utils/useRouterHook';
 
 import lodash from 'lodash';
@@ -21,6 +21,7 @@ import NoImage from 'assets/no-image.png';
 const LinkToItem = styled.a`
   color: #212529;
   text-decoration: none;
+  cursor: pointer;
 
   :hover {
     color: #212529;
