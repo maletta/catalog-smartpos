@@ -1,7 +1,7 @@
 
 import getImageDimensions from 'utils/imageDimensions';
 import getStoreNameFromServer from 'utils/getStoreNameFromServer';
-import { getDomain, searchStore } from './request';
+import { getDomain, searchStore, getFavIcon } from './request';
 
 export { default } from 'containers/GridProducts';
 
@@ -30,12 +30,15 @@ export async function getServerSideProps(context) {
     `${process.env.NEXT_PUBLIC_IMG_API}/category/${categoryCode}`,
   );
 
+  const favIcon = await getFavIcon(store);
+
   const headProps = {
     description: category.name,
     imageAlt: 'uma imagem genérica que representa uma categoria de produtos',
     imageHeight: imageProperties.dimensions.height,
     imageUrl: imageProperties.url,
     imageWidth: imageProperties.dimensions.width,
+    favIcon,
     siteName: domain.name,
     siteUrl: domain.hostDomain,
     title: store.fantasy,

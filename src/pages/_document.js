@@ -46,6 +46,9 @@ export default class MyDocument extends Document {
           <meta property="og:image:secure_url" content="/images/catalogo-share.jpg" />
           <meta property="og:image:width" content="1200" />
           <meta property="og:image:height" content="627" /> */}
+          <meta charset="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+          <meta name="theme-color" content="#f37c05" />
           <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossOrigin="anonymous" />
           <script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js" />
           {this.props.styleTags}

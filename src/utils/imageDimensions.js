@@ -20,7 +20,7 @@ async function getImageDimensions(url) {
       });
   } catch {
     result = {
-      dimensions: { width: 0, height: 0 },
+      dimensions: { width: 1200, height: 627 },
       url: '/images/catalogo-share.jpg',
     };
   }
