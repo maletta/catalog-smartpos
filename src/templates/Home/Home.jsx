@@ -21,7 +21,7 @@ export async function getServerSideProps(context) {
 
   const categoryName = query.nome || '';
 
-  const storeFromUrl = getStoreNameFromServer(req.headers.host) || storeCode;
+  const storeFromUrl = getStoreNameFromServer(req.headers.host) || storeCode || 'smartposbr';
 
   const store = await searchStore(storeFromUrl);
 
