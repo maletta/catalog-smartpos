@@ -9,6 +9,8 @@ export { default } from 'containers/GridProducts';
 export async function getServerSideProps(context) {
   const { req, query } = context;
 
+  const test = req.headers;
+
   const { storeCode } = query;
 
   const categoryCode = query.categoria || '';
@@ -54,6 +56,7 @@ export async function getServerSideProps(context) {
     props: {
       domain,
       headProps,
+      context: test,
     },
   };
 }
