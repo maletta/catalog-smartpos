@@ -8,7 +8,7 @@ export async function getServerSideProps(context) {
 }
 
 const Index = ({ context, headProps }) => {
-  console.log(context);
+  console.log('contexto ', context);
   return (
     <>
       <Head {...headProps} />

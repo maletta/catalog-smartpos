@@ -8,8 +8,12 @@ export { default } from 'containers/GridProducts';
 
 export async function getServerSideProps(context) {
   const { req, query } = context;
-
-  const test = req.headers;
+  const hasDomain = process.env.NEXT_PUBLIC_GET_NAME_DOMAIN;
+  const test = {
+    host: req.headers.host,
+    hasDomain: hasDomain === 'true',
+    envValue: process.env.NEXT_PUBLIC_GET_NAME_DOMAIN,
+  };
 
   const { storeCode } = query;
 
