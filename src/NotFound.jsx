@@ -33,7 +33,7 @@ const NotFound = () => (
   <>
     <Container>
       <Image>
-        <img src="assets/online-store.png" alt="store" width="300px" />
+        <img src="/assets/online-store.png" alt="store" width="300px" />
       </Image>
       <Text>Loja não encontrada.</Text>
       <Footer>SmartPOS</Footer>
