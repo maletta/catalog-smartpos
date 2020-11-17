@@ -85,17 +85,6 @@ function AppWrapper({ children }) {
   };
 
   const getStore = async () => {
-    const { storeCode } = router.query;
-
-    const storeNameFromUrl = window ? getStoreNameFromServer(window.location.hostname) : null;
-
-    const storeName2 = storeNameFromUrl || storeCode;
-
-    console.log('code from url ', storeCode);
-    console.log('window location ', window);
-    console.log('storeNameFromUrl ', storeNameFromUrl);
-
-
     try {
       const { data } = await getStoreInfo(storeName);
       const {
