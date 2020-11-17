@@ -14,6 +14,9 @@ const Head = ({
 }) => (
   <>
     <NextHead>
+      <meta charSet="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+      <meta name="theme-color" content="#f37c05" />
       <meta property="og:site_name" content={`${siteName}`} />
       <meta property="og:url" content={`${siteUrl}`} />
       <meta name="og:title" property="og:title" content={`${title}`} />
@@ -24,7 +27,6 @@ const Head = ({
         property="og:description"
         content={description}
       />
-      <meta name="theme-color" content="#f37c05" />
       <meta property="og:image" content={imageUrl} />
       <meta property="og:image:secure_url" content={imageUrl} />
       <meta property="og:image:width" content={imageWidth} />
@@ -40,8 +42,6 @@ const Head = ({
       <meta name="twitter:text:title" content={`${title}`} />
       <meta name="twitter:description" content={description} />
       <link rel="canonical" href={`${siteUrl}`} />
-      <meta name="viewport" content="width=dev ice-width, initial-scale1" />
-      <meta charSet="utf-8" />
       <title>{siteName}</title>
     </NextHead>
   </>

@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import useRouterHook from 'utils/useRouterHook';
 import useStoreNameHook from 'utils/useStoreNameHook';
-import getStoreNameFromServer from 'utils/getStoreNameFromServer';
 import moment from 'moment';
 
 import initGA from 'initGA';

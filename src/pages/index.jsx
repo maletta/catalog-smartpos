@@ -7,15 +7,12 @@ export async function getServerSideProps(context) {
   return getPropsFromSSR(context);
 }
 
-const Index = ({ context, headProps }) => {
-  console.log('contexto ', context);
-  return (
-    <>
-      <Head {...headProps} />
-      <HomeTemplate />
-    </>
-  );
-};
+const Index = ({ headProps }) => (
+  <>
+    <Head {...headProps} />
+    <HomeTemplate />
+  </>
+);
 
 Index.propTypes = {
   headProps: PropTypes.shape({
@@ -27,7 +24,6 @@ Index.propTypes = {
     siteUrl: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
   }).isRequired,
-  context: PropTypes.any.isRequired,
 };
 
 export default Index;

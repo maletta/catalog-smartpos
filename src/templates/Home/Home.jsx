@@ -8,12 +8,6 @@ export { default } from 'containers/GridProducts';
 
 export async function getServerSideProps(context) {
   const { req, query } = context;
-  const hasDomain = process.env.NEXT_PUBLIC_GET_NAME_DOMAIN;
-  const test = {
-    host: req.headers.host,
-    hasDomain: hasDomain === 'true',
-    envValue: process.env.NEXT_PUBLIC_GET_NAME_DOMAIN,
-  };
 
   const { storeCode } = query;
 
@@ -50,17 +44,10 @@ export async function getServerSideProps(context) {
     title: store.fantasy,
   };
 
-  // console.log('head props ', headProps);
-  // console.log(
-  //   'redirecionar para categoria ',
-  //   `${domain.url}${domain.parameters}`,
-  // );
-
   return {
     props: {
       domain,
       headProps,
-      context: test,
     },
   };
 }
