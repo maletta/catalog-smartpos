@@ -5,7 +5,7 @@ const useStoreNameHook = () => {
   const router = useRouter();
   const { storeCode } = router.query;
 
-  const storeNameFromUrl = window ? getStoreNameFromServer(window.location.pathname) : null;
+  const storeNameFromUrl = window ? getStoreNameFromServer(window.location.hostname) : null;
 
   const storeName = storeNameFromUrl || storeCode;
 
