@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import OnlineStore from 'assets/online-store.png';
+
+
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -33,9 +36,7 @@ const NotFound = () => (
   <>
     <Container>
       <Image>
-        <img src="/assets/online-store.png" alt="store" width="300px" data-name="with /" />
-        <img src="assets/online-store.png" alt="store" width="300px" data-name="without /" />
-
+        <img src={OnlineStore} alt="store" width="300px" />
       </Image>
       <Text>Loja não encontrada.</Text>
       <Footer>SmartPOS</Footer>
