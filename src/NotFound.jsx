@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import OnlineStore from 'assets/online-store.png';
+// import OnlineStore from 'assets/online-store.png';
 
 
 const Container = styled.div`
@@ -36,7 +36,7 @@ const NotFound = () => (
   <>
     <Container>
       <Image>
-        <img src={OnlineStore} alt="store" width="300px" />
+        <img src="assets/online-store.png" alt="store" width="300px" />
       </Image>
       <Text>Loja não encontrada.</Text>
       <Footer>SmartPOS</Footer>
