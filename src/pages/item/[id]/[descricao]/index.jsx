@@ -1,11 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SingleProductTemplate, { getServerSideProps as getPropsFromSSR } from 'templates/SingleProduct';
+import SingleProductTemplate
+// , { getServerSideProps as getPropsFromSSR }
+  from 'templates/SingleProduct';
 import Head from 'components/Head';
 
 
 export async function getServerSideProps(context) {
-  return getPropsFromSSR(context);
+  return {
+    props: {
+      headProps: {
+        description: 'riso descricao',
+        imageWidth: '225',
+        imageHeight: '225',
+        imageUrl: '/riso.jpg',
+        favIcon: '',
+        siteName: 'riso ',
+        siteUrl: context.req.headers.host,
+        title: 'riso',
+      },
+    },
+  };
 }
 
 const Page = ({ headProps }) => (
