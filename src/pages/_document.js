@@ -48,6 +48,7 @@ export default class MyDocument extends Document {
           <meta property="og:image:height" content="627" /> */}
           <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css" integrity="sha384-oS3vJWv+0UjzBfQzYUhtDYW+Pj2yciDJxpsK1OYPAYjqT085Qq/1cq5FLXAZQ7Ay" crossOrigin="anonymous" />
           <script type="text/javascript" src="https://stc.pagseguro.uol.com.br/pagseguro/api/v2/checkout/pagseguro.directpayment.js" />
+          <link rel="shortcut icon" id="icon" href="/favicon.png" />
           {this.props.styleTags}
         </Head>
         <body>

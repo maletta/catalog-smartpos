@@ -14,6 +14,7 @@ export async function searchStore(storeFromUrl) {
       code: response.data.codigo,
       user: response.data.usuario,
       fantasy: response.data.fantasia,
+      update: response.data.atualizacao,
     }));
   } catch (err) {
     // const {
@@ -25,6 +26,8 @@ export async function searchStore(storeFromUrl) {
       code: null,
       user: null,
       fantasy: 'Smartpos',
+      update: null,
+
     };
   }
   // console.log(store);
@@ -91,11 +94,7 @@ export async function getImageProperties(product) {
 
 export async function getFavIcon(store) {
   if (store.code) {
-    return {
-      url: `${process.env.NEXT_PUBLIC_IMG_API}store/${store.code}?lastUpdate=${store.update}`,
-    };
+    return `${process.env.NEXT_PUBLIC_IMG_API}store/${store.code}?lastUpdate=${store.update}`;
   }
-  return {
-    url: '/favicon.png',
-  };
+  return '/favicon.png';
 }
