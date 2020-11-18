@@ -10,7 +10,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       headProps: {
-        description: 'riso descricao',
+        description: 'riso item',
         imageWidth: '225',
         imageHeight: '225',
         imageUrl: '/riso.jpg',

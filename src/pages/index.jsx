@@ -10,7 +10,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       headProps: {
-        description: 'riso descricao',
+        description: 'riso index',
         imageWidth: '225',
         imageHeight: '225',
         imageUrl: '/riso.jpg',
@@ -23,12 +23,16 @@ export async function getServerSideProps(context) {
   };
 }
 
-const Index = ({ headProps }) => (
-  <>
-    <Head {...headProps} />
-    <HomeTemplate />
-  </>
-);
+const Index = ({ headProps }) => {
+  console.log('passou ', headProps);
+
+  return (
+    <>
+      <Head {...headProps} />
+      <HomeTemplate />
+    </>
+  );
+};
 
 Index.propTypes = {
   headProps: PropTypes.shape({
