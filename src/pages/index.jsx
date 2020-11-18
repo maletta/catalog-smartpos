@@ -1,10 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import HomeTemplate, { getServerSideProps as getPropsFromSSR } from 'templates/Home';
+import HomeTemplate
+// , { getServerSideProps as getPropsFromSSR }
+  from 'templates/Home';
 import Head from 'components/Head';
 
 export async function getServerSideProps(context) {
-  return getPropsFromSSR(context);
+  // return getPropsFromSSR(context);
+  return {
+    props: {
+      headProps: {
+        description: 'riso descricao',
+        imageWidth: '225',
+        imageHeight: '225',
+        imageUrl: '/riso.jpg',
+        favIcon: '',
+        siteName: 'riso ',
+        siteUrl: context.req.headers.host,
+        title: 'riso',
+      },
+    },
+  };
 }
 
 const Index = ({ headProps }) => (
