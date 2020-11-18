@@ -2,18 +2,15 @@ image: netpos/node-aws
 options:
   max-time: 10
 
-definitions:
-  caches:
-    nextcache: .next/cache
+pipelines:
   default:
     - step:
         caches:
           - node
-          - nextcache
         name: 🔨 Build & ✨ Lint
         script:
           - yarn install
-          - yarn next-build
+          - yarn nextbuild
           - yarn lint
   branches:
       develop:
@@ -31,7 +28,7 @@ definitions:
             deployment: test
             script:
               - yarn install
-              - yarn next-build
+              - yarn nextbuild
               - aws s3 sync --delete build s3://$S3_BUCKET
               - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
       master:
@@ -42,6 +39,6 @@ definitions:
             deployment: production
             script:
               - yarn install
-              - yarn next-build
+              - yarn nextbuild
               - aws s3 sync --delete build s3://$S3_BUCKET
               - aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
