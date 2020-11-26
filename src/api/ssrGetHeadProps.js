@@ -64,7 +64,7 @@ export async function getStoreProps(context) {
   ) : await getImageDimensions(favIcon);
 
   const headProps = {
-    description: category.name,
+    description: category.name || 'Catálogo de produtos',
     imageAlt: 'uma imagem genérica que representa uma categoria de produtos',
     imageHeight: imageProperties.dimensions.height,
     imageUrl: imageProperties.url,
