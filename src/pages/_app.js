@@ -23,26 +23,23 @@ import AppWrapper from 'containers/AppWrapper';
 
 import GlobalStyles from 'styles/Global';
 
-const If = ({ children, condition }) => (condition ? children : null);
 
 const ContextWrapper = ({ children }) => (
-  <If condition={typeof window === 'object'}>
-    <GlobalProvider>
-      <ThemeProvider>
-        <ShopProvider>
-          <FilterProvider>
-            <ShoppingCartProvider>
-              <GlobalStyles />
-              {/* {dynamicManifest()} */}
-              <AppWrapper>
-                {children}
-              </AppWrapper>
-            </ShoppingCartProvider>
-          </FilterProvider>
-        </ShopProvider>
-      </ThemeProvider>
-    </GlobalProvider>
-  </If>
+  <GlobalProvider>
+    <ThemeProvider>
+      <ShopProvider>
+        <FilterProvider>
+          <ShoppingCartProvider>
+            <GlobalStyles />
+            {/* {dynamicManifest()} */}
+            <AppWrapper>
+              {children}
+            </AppWrapper>
+          </ShoppingCartProvider>
+        </FilterProvider>
+      </ShopProvider>
+    </ThemeProvider>
+  </GlobalProvider>
 );
 
 const App = ({ Component, pageProps }) => (
