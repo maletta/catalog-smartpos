@@ -1,12 +1,21 @@
 const updateLocalCart = (newCart) => {
-  localStorage.setItem('cart', JSON.stringify(newCart));
+  if (typeof window === 'object') {
+    localStorage.setItem('cart', JSON.stringify(newCart));
+  }
 };
 
 const removeLocalCart = () => {
-  localStorage.removeItem('cart');
+  if (typeof window === 'object') {
+    localStorage.removeItem('cart');
+  }
 };
 
-const getLocalCart = () => JSON.parse(localStorage.getItem('cart') || '[]');
+const getLocalCart = () => {
+  if (typeof window === 'object') {
+    return JSON.parse(localStorage.getItem('cart') || '[]');
+  }
+  return [];
+};
 
 export default {
   updateLocalCart,

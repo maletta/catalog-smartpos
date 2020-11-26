@@ -23,16 +23,12 @@ export async function getServerSideProps(context) {
   };
 }
 
-const Index = ({ headProps }) => {
-  console.log('passou ', headProps);
-
-  return (
-    <>
-      <Head {...headProps} />
-      <HomeTemplate />
-    </>
-  );
-};
+const Index = ({ headProps }) => (
+  <>
+    <Head {...headProps} />
+    <HomeTemplate />
+  </>
+);
 
 Index.propTypes = {
   headProps: PropTypes.shape({
