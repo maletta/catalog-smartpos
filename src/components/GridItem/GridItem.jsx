@@ -16,7 +16,7 @@ import formatCurrency from 'utils/formatCurrency';
 
 import ShopContext from 'contexts/ShopContext';
 import getModifiersOfProduct from 'api/modifiersRequests';
-import NoImage from 'assets/no-image.png';
+// import NoImage from 'assets/no-image.png';
 
 const LinkToItem = styled.a`
   color: #212529;
@@ -145,6 +145,7 @@ const GridItem = (props) => {
     hasVariant,
   } = item;
 
+  const NoImage = 'assets/no-image.png';
   const [image, setImage] = useState(NoImage);
   const imageBaseUrl = `${process.env.NEXT_PUBLIC_IMG_API}product/${id}?lastUpdate=${atualizacao}`;
 

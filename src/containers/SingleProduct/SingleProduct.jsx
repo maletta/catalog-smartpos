@@ -23,7 +23,7 @@ import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ItemModifiers from 'components/ItemModifiers';
 import { getCategories } from 'requests';
 import ReactImageMagnify from 'react-image-magnify';
-import NoImage from 'assets/no-image.png';
+// import NoImage from 'assets/no-image.png';
 import ArrowLeft from 'assets/arrow-left.svg';
 import ArrowRight from 'assets/arrow-right.svg';
 import Modal from 'components/Modal/Modal';
@@ -305,6 +305,7 @@ const SingleProduct = () => {
   const { shop, categories } = useContext(ShopContext);
   const { shoppingCart, updateShoppingCart } = useContext(ShoppingCartContext);
   const { filter, updateFilter } = useContext(FilterContext);
+  const NoImage = 'assets/no-image.png';
   const [image, setImage] = useState(NoImage);
 
   const sumProductPricing = productPricing.product + productPricing.modifiers;

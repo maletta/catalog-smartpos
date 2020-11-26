@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
-import NoImage from 'assets/no-image.png';
+// import NoImage from 'assets/no-image.png';
 
 const Img = styled.img`
   height: 100px;
@@ -23,6 +23,7 @@ const Img = styled.img`
 const ImageBox = (props) => {
   const { product, shoppingCart, url } = props;
   const { id } = product;
+  const NoImage = 'assets/no-image.png';
 
   const [imageProduct, setImage] = useState(NoImage);
 
