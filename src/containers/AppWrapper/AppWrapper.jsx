@@ -1,27 +1,17 @@
 
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import useRouterHook from 'utils/useRouterHook';
 import useStoreNameHook from 'utils/useStoreNameHook';
 import moment from 'moment';
 
 import initGA from 'initGA';
-import paths from 'paths';
-import NotFound from 'NotFound';
 // import AppRouter from 'Router';
 import { getStoreInfo, getCategories } from 'requests';
-
-import Spinner from 'components/Spinner';
-import Footer from 'components/Footer';
-import Header from 'containers/Header';
-import Breadcrumb from 'containers/Breadcrumb';
-import CardShop from 'components/CardShop';
 
 // import history from 'utils/history';
 // import getStoreName from 'utils/getStoreName';
 
-import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import ShoppingCartContext from 'contexts/ShoppingCartContext';
 import ThemeContext from 'contexts/ThemeContext';
@@ -32,28 +22,12 @@ import getBusinessHour from 'api/businessHoursRequests';
 import { getTheme } from 'api/catalogCustomization';
 import { isCurrentTimeWithinTimeRange } from 'utils/withinTimeRange';
 
-
-const Container = styled.div`
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-`;
-
-const Content = styled.div`
-  position: relative;
-  top: 80px;
-  padding-bottom: 80px;
-  margin-bottom: 3rem;
-`;
-
 function AppWrapper({ children }) {
   const trackPageView = initGA();
   const storeName = useStoreNameHook();
   const [loading, setLoading] = useState(true);
   const [store, setStore] = useState({});
   const { updateShop, updateCategory } = useContext(ShopContext);
-  const { updateFilter } = useContext(FilterContext);
   const { updateShoppingCart } = useContext(ShoppingCartContext);
   const { dispatchTheme } = useContext(ThemeContext);
   const router = useRouterHook();
@@ -88,12 +62,10 @@ function AppWrapper({ children }) {
       const { data } = await getStoreInfo(storeName);
       const {
         is_enableOrder: isEnableOrder,
-        fantasia,
         allowOrderOutsideBusinessHours,
         openHours,
       } = data;
       defineTheme(data.id);
-      document.title = fantasia;
       setStore({ ...data, found: true, storeName });
       getCategoryList(data.id);
 
@@ -108,9 +80,10 @@ function AppWrapper({ children }) {
       }
 
       updateShop({
-        ...data, is_enableOrder: Number(customerCanOrder), customerCanOrder, storeName,
+        ...data, is_enableOrder: Number(customerCanOrder), customerCanOrder, storeName, found: true,
       });
     } catch {
+      updateShop({ found: false });
       setStore({ found: false });
       setLoading(false);
     }
@@ -144,7 +117,7 @@ function AppWrapper({ children }) {
     getStore();
     window.scrollTo(0, 0);
     cleanCart();
-  }, []);
+  }, [storeName]);
 
   useEffect(() => {
     const handleHistoryChange = (url) => {
@@ -157,44 +130,7 @@ function AppWrapper({ children }) {
     };
   }, [router]);
 
-  const goHome = () => {
-    router.push(paths.home);
-
-    updateFilter({
-      categoria: 0,
-      label: '',
-      page: 1,
-      search: '',
-      categoryName: 'Todas as categorias',
-      redirect: true,
-    });
-  };
-
-  if (loading) {
-    return (
-      <Container>
-        <Spinner />
-      </Container>
-    );
-  }
-
-  if (!store.found) {
-    return <NotFound />;
-  }
-
-
-  return (
-    <>
-      <CardShop />
-      <Header goHome={goHome} store={store} />
-      <Content className="container">
-        <Breadcrumb goHome={goHome} />
-        {/* <AppRouter /> */}
-        {children}
-      </Content>
-      <Footer storeInfo={store} />
-    </>
-  );
+  return children;
 }
 
 AppWrapper.defaultProps = {

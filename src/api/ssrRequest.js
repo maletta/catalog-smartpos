@@ -92,9 +92,9 @@ export async function getImageProperties(product) {
   return getImageDimensions(imageUrl).then(r => r);
 }
 
-export async function getFavIcon(store) {
+export async function getFavIcon(store, hostname) {
   if (store.code) {
     return `${process.env.NEXT_PUBLIC_IMG_API}store/${store.code}?lastUpdate=${store.update}`;
   }
-  return '/favicon.png';
+  return `${hostname}/favicon.png`;
 }

@@ -6,7 +6,6 @@ import styled from 'styled-components';
 import FilterContext from 'contexts/FilterContext';
 import ShopContext from 'contexts/ShopContext';
 import PropTypes from 'prop-types';
-import queryString from 'query-string';
 
 import paths from 'paths';
 // import history from 'utils/history';
@@ -38,8 +37,7 @@ const Breadcrumb = ({ goHome }) => {
   const { filter, updateFilter } = useContext(FilterContext);
   const { shop } = useContext(ShopContext);
   const router = useRouterHook();
-  const { search, pathname } = window.location;
-  const parsed = queryString.parse(search) || '';
+  const { query, pathname } = router;
   const isCart = pathname.includes('carrinho');
   const isCheckout = pathname.includes('checkout');
   const isOrder = pathname.includes('pedido');
@@ -74,7 +72,7 @@ const Breadcrumb = ({ goHome }) => {
   const FilterList = () => {
     if (filter.search) return `/ resultados para: ${filter.search}`;
 
-    const parsedName = parsed.nome;
+    const parsedName = query.nome;
     const filterLabel = filter.label;
     const showCategoryName = (parsedName || filterCategoryName) ? `${filterCategoryName}` : '';
     const showAllCategoriesText = (parsedName === undefined && filterCategoryName === '') ? 'Todas as categorias' : '';

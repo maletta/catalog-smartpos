@@ -8,6 +8,7 @@ export const ShopProvider = ({ children }) => {
     is_enableOrder: 0,
     id: null,
     storeName: null,
+    found: null,
   });
 
   const [categories, setCategory] = useState([]);
@@ -17,6 +18,11 @@ export const ShopProvider = ({ children }) => {
       cost: 0,
     },
     coupon: {},
+    email: '',
+    name: '',
+    documento: '',
+    foneFormatted: '',
+
   });
 
   const updateShop = (newShop) => {

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import SingleProductTemplate, { getServerSideProps as getPropsFromSSR } from 'templates/SingleProduct';
 import Head from 'components/Head';
+import Main from 'containers/Main';
 
 
 export async function getServerSideProps(context) {
@@ -11,7 +12,9 @@ export async function getServerSideProps(context) {
 const Page = ({ headProps }) => (
   <>
     <Head {...headProps} />
-    <SingleProductTemplate />
+    <Main>
+      <SingleProductTemplate />
+    </Main>
   </>
 );
 
