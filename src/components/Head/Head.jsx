@@ -41,6 +41,7 @@ const Head = ({
       <meta name="twitter:title" content={`${title}`} />
       <meta name="twitter:text:title" content={`${title}`} />
       <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={imageUrl} />
       <link rel="canonical" href={`${siteUrl}`} />
       <title>{siteName}</title>
     </NextHead>
